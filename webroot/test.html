@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js"></script>
+</head>
+<body>
+<div id="container">
+<!--
+    <div id="header" style="background: #ff0000; height: 25px;">
+    </div>
+    <div id="content" style="background: #00ffff; min-height: 200px;">
+    </div>
+    <div id="footer" style="background: #ff00ff; height: 25px;">
+    </div>
+-->
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+    //window.addEventListener('resize', handleWindowResize);
+    //handleWindowResize();
+    openDatabase();
+});
+
+var db = null;
+
+function openDatabase() {
+    // In the following line, you should include the prefixes of implementations you want to test.
+    window.indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+    // DON'T use "var indexedDB = ..." if you're not in a function.
+    // Moreover, you may need references to some window.IDB* objects:
+    window.IDBTransaction = window.IDBTransaction || window.webkitIDBTransaction || window.msIDBTransaction;
+    window.IDBKeyRange = window.IDBKeyRange || window.webkitIDBKeyRange || window.msIDBKeyRange
+    // (Mozilla has never prefixed these objects, so we don't need window.mozIDB*)
+
+    if (!window.indexedDB) {
+        window.alert("Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available.")
+    }
+
+    // Let us open our database
+    var request = window.indexedDB.open("EmcorPOS", 2);
+
+    request.onerror = function(e) {
+        // Do something with request.errorCode!
+        alert("Why didn't you allow my web app to use IndexedDB?!");
+    };
+
+    // We can only create Object stores in a versionchange transaction.
+    request.onupgradeneeded = function(e) {
+        db = e.target.result;
+
+        // A versionchange transaction is started automatically.
+        e.target.transaction.onerror = onerror;
+
+        if (db.objectStoreNames.contains("products")) {
+            db.deleteObjectStore("products");
+        }
+
+        // Create an objectStore to hold information about our customers. We're
+        // going to use "ssn" as our key path because it's guaranteed to be
+        // unique.
+        var objectStore = db.createObjectStore("products", { keyPath: "id" });
+    };
+
+    request.onsuccess = function(e) {
+        // Do something with request.result!
+        db = e.target.result;
+
+        addProduct();
+        getProducts();
+    }
+        
+}
+
+function addProduct() {
+    var trans = db.transaction(["products"], "readwrite");
+    var store = trans.objectStore("products");
+
+    var request = store.put({
+        "id" : new Date().getTime(),
+        "retailer_id":"1234567890",
+        "created" : new Date().getTime(),
+        "modified" : new Date().getTime()
+    });
+
+    trans.oncomplete = function(e) {
+        alert("add ok");
+    }
+
+    request.onerror = function(e) {
+        // Do something with request.errorCode!
+        console.log(e.value);
+    };
+
+}
+
+function getProducts() {
+    var trans = db.transaction(["products"]);
+    var store = trans.objectStore("products");
+
+    store.openCursor().onsuccess = function(e) {
+        var cursor = e.target.result;
+        if (cursor) {
+            console.log("id : " + cursor.key + ", " + cursor.value.retailer_id);
+            cursor.continue();
+        }
+    }
+}
+
+function onerror(e) {
+}
+
+function handleWindowResize() {
+    var height = $(window).height() - parseInt($('body').css('margin')) * 2;
+    var headerHeight = $('#header').height();
+    var footerHeight = $('#footer').height();
+    var contentHeight = height - headerHeight - footerHeight;
+
+    //alert(height);
+    $("#content").css({
+        "height": contentHeight
+    });
+}
+
+</script>
+</body>
+</html>
