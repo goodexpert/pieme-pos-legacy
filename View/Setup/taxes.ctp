@@ -255,11 +255,11 @@ jQuery(document).ready(function() {
         $(".modal-backdrop").show();
     });
     $(".edit-tax").click(function(){
-	    $("#popup-edit_tax").show();
-	    $(".modal-backdrop").show();
-	    $("#tax_rate-edit").val($(this).parent().prev().text());
-	    $("#tax_name-edit").val($(this).parent().prev().prev().text());
-	    target = $(this).attr("data-id");
+        $("#popup-edit_tax").show();
+        $(".modal-backdrop").show();
+        $("#tax_rate-edit").val($(this).parent().prev().text());
+        $("#tax_name-edit").val($(this).parent().prev().prev().text());
+        target = $(this).attr("data-id");
     });
     
     $(".confirm-close").click(function(){
@@ -271,42 +271,42 @@ jQuery(document).ready(function() {
     });
     
     $(".submit").click(function(){
-	    var tax_rate = $("#tax_rate").val().replace(/%/,'');
-		$.ajax({
-		  url: '/taxes/add.json',
-		  type: 'POST',
-		  data: {
-			  name: $("#tax_name").val(),
-			  rate: tax_rate / 100
-		  }
-		}).done(function(msg){
-		   location.reload();
-		});
+        var tax_rate = $("#tax_rate").val().replace(/%/,'');
+        $.ajax({
+          url: '/taxes/add.json',
+          type: 'POST',
+          data: {
+              name: $("#tax_name").val(),
+              rate: tax_rate / 100
+          }
+        }).done(function(msg){
+           location.reload();
+        });
     });
     $(".edit-submit").click(function(){
-    	var tax_rate = $("#tax_rate-edit").val().replace(/%/,'');
-	    $.ajax({
-		  url: '/taxes/edit.json',
-		  type: 'POST',
-		  data: {
-			  id: target,
-			  name: $("#tax_name-edit").val(),
-			  rate: tax_rate / 100
-		  }
-		});
-		location.reload();
+        var tax_rate = $("#tax_rate-edit").val().replace(/%/,'');
+        $.ajax({
+          url: '/taxes/edit.json',
+          type: 'POST',
+          data: {
+              id: target,
+              name: $("#tax_name-edit").val(),
+              rate: tax_rate / 100
+          }
+        });
+        location.reload();
     });
-	$(".delete-tax").click(function(){
-		target = $(this).attr("data-id");
-		$.ajax({
-			url: '/taxes/delete.json',
-			type: 'POST',
-			data: {
-			  id: target
-			} 
-		});
-		location.reload();
-	});
+    $(".delete-tax").click(function(){
+        target = $(this).attr("data-id");
+        $.ajax({
+            url: '/taxes/delete.json',
+            type: 'POST',
+            data: {
+              id: target
+            } 
+        });
+        location.reload();
+    });
 });
 </script>
 <!-- END JAVASCRIPTS -->

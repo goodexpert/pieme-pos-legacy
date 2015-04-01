@@ -6,6 +6,13 @@ App::uses('SimplePasswordHasher', 'Controller/Component/Auth');
 class UsersController extends AppController {
 
 /**
+ * Components property.
+ *
+ * @var array
+ */
+    public $components = array('RequestHandler');
+
+/**
  * Name of layout to use with this View.
  *
  * @var string
@@ -13,11 +20,11 @@ class UsersController extends AppController {
     public $layout = 'home';
 
 /**
- * This controller uses MerchantUser, MerchantRegister and MerchantOutlet models.
+ * This controller uses MerchantUser, MerchantUserType, MerchantRegister and MerchantOutlet models.
  *
  * @var array
  */
-    public $uses = array('MerchantUser', 'MerchantOutlet', 'MerchantRegister');
+    public $uses = array('MerchantUser', 'MerchantUserType', 'MerchantOutlet', 'MerchantRegister');
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -114,6 +121,71 @@ class UsersController extends AppController {
  */
     public function lock() {
         $this->layout = 'lock';
+    }
+
+/**
+ * Add a new user function.
+ *
+ * @return void
+ */
+    public function add() {
+        $user = $this->Auth->user();
+
+        if ($this->request->is('ajax') || $this->request->is('post')) {
+            $result = array(
+                'success' => false
+            );
+
+            $this->serialize($result);
+            return;
+        }
+
+        $user_types = $this->MerchantUserType->find('all');
+        $this->set('user_types', $user_types);
+
+        $outlets = $this->MerchantOutlet->find('all', array(
+            'conditions' => array(
+                'MerchantOutlet.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('outlets', $outlets);
+    }
+
+/**
+ * Edit a user details function.
+ *
+ * @return void
+ */
+    public function edit($id) {
+        $user = $this->Auth->user();
+
+        if ($this->request->is('ajax') || $this->request->is('post')) {
+            $result = array(
+                'success' => false
+            );
+
+            $this->serialize($result);
+            return;
+        }
+
+        $user_types = $this->MerchantUserType->find('all');
+        $this->set('user_types', $user_types);
+
+        $outlets = $this->MerchantOutlet->find('all', array(
+            'conditions' => array(
+                'MerchantOutlet.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('outlets', $outlets);
+    }
+
+/**
+ * View a user details function.
+ *
+ * @return void
+ */
+    public function view($id) {
+        $user = $this->Auth->user();
     }
 
 }

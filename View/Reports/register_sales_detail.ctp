@@ -2,195 +2,195 @@
 </div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
-	<div id="notify"></div>
-	<!-- BEGIN SIDEBAR -->
-	<div class="page-sidebar-wrapper">
-		<!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
-		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-		<div class="page-sidebar navbar-collapse collapse">
-			<ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
-				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-				<!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
-				<li class="sidebar-search-wrapper">
-					<!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-					<!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-					<!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-					<form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
-						<a href="javascript:;" class="remove">
-						<i class="icon-close"></i>
-						</a>
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search...">
-							<span class="input-group-btn">
-							<button class="btn submit"><i class="icon-magnifier"></i></button>
-							</span>
-						</div>
-					</form>
-					<!-- END RESPONSIVE QUICK SEARCH FORM -->
-				</li>
-				<li>
-					<a href="index">
-					Sell
-					</a>
-				</li>
-				<li>
-					<a href="history">
-					History </a>
-				</li>
-				<li class="active">
-					<a href="history">
-					Product <span class="selected">
-					</span>
-					</a>
-				</li>
-			</ul>
-		</div>
-		<!-- END HORIZONTAL RESPONSIVE MENU -->
-	</div>
-	<!-- END SIDEBAR -->
-	<!-- BEGIN CONTENT -->
-	<div class="page-content-wrapper">
-		<div class="page-content">
-			<div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-				<h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
-					Register Sales Detail
-				</h2>
-				<div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
-					<a href="#" id="export"><button class="btn btn-white pull-right">
-                    	<div class="glyphicon glyphicon-export"></div>&nbsp;
+    <div id="notify"></div>
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper">
+        <!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
+        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+        <div class="page-sidebar navbar-collapse collapse">
+            <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+                <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
+                <li class="sidebar-search-wrapper">
+                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+                    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
+                    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                    <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
+                        <a href="javascript:;" class="remove">
+                        <i class="icon-close"></i>
+                        </a>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                            <button class="btn submit"><i class="icon-magnifier"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <!-- END RESPONSIVE QUICK SEARCH FORM -->
+                </li>
+                <li>
+                    <a href="index">
+                    Sell
+                    </a>
+                </li>
+                <li>
+                    <a href="history">
+                    History </a>
+                </li>
+                <li class="active">
+                    <a href="history">
+                    Product <span class="selected">
+                    </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- END HORIZONTAL RESPONSIVE MENU -->
+    </div>
+    <!-- END SIDEBAR -->
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
+                    Register Sales Detail
+                </h2>
+                <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
+                    <a href="#" id="export"><button class="btn btn-white pull-right">
+                        <div class="glyphicon glyphicon-export"></div>&nbsp;
                     export</button></a>
-				</div>
-			</div>
-				
-			<!-- FILTER -->
+                </div>
+            </div>
+                
+            <!-- FILTER -->
             <div class="col-md-12 col-xs-12 col-sm-12 line-box filter-box">
                 <div class="col-md-4 col-xs-6 col-sm-6">
                     <dl>
-                    	<dt>Date from</dt> 
-                    	<dd>
+                        <dt>Date from</dt> 
+                        <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-							<input type="text" id="date_from">
-                    	</dd>
-                	</dl> 
+                            <input type="text" id="date_from">
+                        </dd>
+                    </dl> 
                 </div>
                 <div class="col-md-4 col-xs-6 col-sm-6">
-                	<dl>
-                    	<dt>Date to</dt> 
-                    	<dd>
+                    <dl>
+                        <dt>Date to</dt> 
+                        <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-							<input type="text" id="date_to">
-                    	</dd>
-                    </dl>
-                 </div>
-                <div class="col-md-4 col-xs-6 col-sm-6">
-                	<dl>
-                    	<dt>Register</dt>
-                        <dd>
-							<select>
-							<option value="1"></option>
-							</select>
+                            <input type="text" id="date_to">
                         </dd>
                     </dl>
                  </div>
                 <div class="col-md-4 col-xs-6 col-sm-6">
-                	<dl>
-                    	<dt>Outlet</dt>
+                    <dl>
+                        <dt>Register</dt>
                         <dd>
-							<select>
-							<option value="1"></option>
-							</select>
+                            <select>
+                            <option value="1"></option>
+                            </select>
                         </dd>
                     </dl>
                  </div>
                 <div class="col-md-4 col-xs-6 col-sm-6">
-                	<dl>
-                    	<dt>Customer group</dt>
+                    <dl>
+                        <dt>Outlet</dt>
                         <dd>
-							<select>
-							<option value="1"></option>
-							</select>
+                            <select>
+                            <option value="1"></option>
+                            </select>
+                        </dd>
+                    </dl>
+                 </div>
+                <div class="col-md-4 col-xs-6 col-sm-6">
+                    <dl>
+                        <dt>Customer group</dt>
+                        <dd>
+                            <select>
+                            <option value="1"></option>
+                            </select>
                         </dd>
                     </dl>
                  </div>
                  <div class="col-md-12 col-xs-12 col-sm-12">
                      <button class="btn btn-primary filter pull-right">Update</button>
                  </div>
-			</div>
-					<div class="col-md-3 col-sm-3 col-xs-3 col-omega">
-						<table class="table-bordered dataTable">
-							<colgroup>
-								<col width="60%">
-								<col width="40%">
-							</colgroup>
-							<thead>
-							<tr>
-								<th class="first-child">Date</th>
-								<th class="no-radius">Receipt</th>
-							</tr>
-							</thead>
-							<tbody>
-								<tr>
+            </div>
+                    <div class="col-md-3 col-sm-3 col-xs-3 col-omega">
+                        <table class="table-bordered dataTable">
+                            <colgroup>
+                                <col width="60%">
+                                <col width="40%">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th class="first-child">Date</th>
+                                <th class="no-radius">Receipt</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
                                     <td class="text-limit">March 25, 2015 6:12 PM</td>
                                     <td>0</td>
-								</tr>
-								<tr>
+                                </tr>
+                                <tr>
                                     <td colspan="2">&nbsp;</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-		<div class="col-md-9 col-sm-9 col-xs-9 col-alpha">
-			<div class="scroll-table">
-				<table class="table-bordered dataTable">
-					<colgroup>
-						<col width="10%">
-						<col width="10%">
-						<col width="10%">
-						<col width="10%">
-						<col width="15%">
-						<col width="10%">
-						<col width="15%">
-						<col width="10%">
-					</colgroup>
-					<thead>
-						<tr>
-							<th>Register</th>
-							<th>User</th>
-							<th>Customer</th>
-							<th>Notes</th>
-							<th>Products</th>
-							<th>Total</th>
-							<th>Payments</th>
-							<th>Paid</th>
-						</tr>
-						</thead>
-						<tbody>
-							<tr class="table-color-gr">
-								<td>takapuna #1</td>
-								<td>seongwuk.park@emcormedia.co.nz</td>
-								<td> </td>
-								<td class="discrete tiny"></td>
-								<td class="strong">Total sale</td>
-								<td class="strong currency">9.90</td>
-								<td class="strong">Total paid</td>
-								<td class="strong currency">9.90</td>
-							</tr>
-							<tr>
-								<td colspan="4"> </td>
-								<td class="strong">1 Coffee</td>
-								<td class="strong currency">9.90</td>
-								<td class="strong">1 Coffee</td>
-								<td class="strong currency">9.90</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- END CONTENT -->
-	<!-- BEGIN QUICK SIDEBAR -->
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+        <div class="col-md-9 col-sm-9 col-xs-9 col-alpha">
+            <div class="scroll-table">
+                <table class="table-bordered dataTable">
+                    <colgroup>
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="15%">
+                        <col width="10%">
+                        <col width="15%">
+                        <col width="10%">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>Register</th>
+                            <th>User</th>
+                            <th>Customer</th>
+                            <th>Notes</th>
+                            <th>Products</th>
+                            <th>Total</th>
+                            <th>Payments</th>
+                            <th>Paid</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="table-color-gr">
+                                <td>takapuna #1</td>
+                                <td>seongwuk.park@emcormedia.co.nz</td>
+                                <td> </td>
+                                <td class="discrete tiny"></td>
+                                <td class="strong">Total sale</td>
+                                <td class="strong currency">9.90</td>
+                                <td class="strong">Total paid</td>
+                                <td class="strong currency">9.90</td>
+                            </tr>
+                            <tr>
+                                <td colspan="4"> </td>
+                                <td class="strong">1 Coffee</td>
+                                <td class="strong currency">9.90</td>
+                                <td class="strong">1 Coffee</td>
+                                <td class="strong currency">9.90</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END CONTENT -->
+    <!-- BEGIN QUICK SIDEBAR -->
     <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
     <div class="page-quick-sidebar-wrapper">
         <div class="page-quick-sidebar">            
@@ -286,11 +286,11 @@
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
 jQuery(document).ready(function() {    
-	Metronic.init(); // init metronic core componets
-	Layout.init(); // init layout
-	QuickSidebar.init(); // init quick sidebar
-	Index.init();
-	
-	$("#date_from").datepicker();
+    Metronic.init(); // init metronic core componets
+    Layout.init(); // init layout
+    QuickSidebar.init(); // init quick sidebar
+    Index.init();
+    
+    $("#date_from").datepicker();
 });
 </script>

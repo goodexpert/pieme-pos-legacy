@@ -104,9 +104,9 @@ class ProductController extends AppController {
         
         $this->loadModel("MerchantOutlet");
         $outlets = $this->MerchantOutlet->find('all', array(
-        	'conditions' => array(
-        		'MerchantOutlet.merchant_id' => $this->Auth->user()['merchant_id']
-        	)
+            'conditions' => array(
+                'MerchantOutlet.merchant_id' => $this->Auth->user()['merchant_id']
+            )
         ));
         $this->set("outlets",$outlets);
 
@@ -223,7 +223,7 @@ class ProductController extends AppController {
                 $data = $this->request->data;
                 $data['merchant_id'] = $user['merchant_id'];
 
-                $this->MerchantProduct->id = $data['product_id'];
+                $this->MerchantProduct->id = $id;
                 $this->MerchantProduct->save(array('MerchantProduct' => $data));
 
                 // Step 2: update the price of the product in the default price book.
@@ -240,16 +240,16 @@ class ProductController extends AppController {
                 $this->MerchantPriceBookEntry->save($priceBookEntry);
 
                 // Step 3: If track_inventory is active, update the stock of product in the inventory of each outlet.
-                if ($data['track_inventory']) {
-                    // $inventories = $data['inventories'];
-                    // foreach ($inventories as $inventory) {
-                    //     $inventory['MerchantProductInventory']['outlet_id'];
-                    //     $inventory['MerchantProductInventory']['product_id'] = $this->MerchantProduct->id;
-                    //     $inventory['MerchantProductInventory']['count'];
-                    //     $inventory['MerchantProductInventory']['reorder_point'];
-                    //     $inventory['MerchantProductInventory']['restock_level'];
-                    // }
-                    // $this->MerchantProductInventory->saveMany($inventories);
+                if ($data['track_inventory'] == 1) {
+                     $inventories = $data['inventories'];
+                     foreach ($inventories as $inventory) {
+                         $inventory['MerchantProductInventory']['outlet_id'] = $inventory['outlet_id'];
+                         $inventory['MerchantProductInventory']['product_id'] = $this->MerchantProduct->id;
+                         $inventory['MerchantProductInventory']['count'] = $inventory['count'];
+                         $inventory['MerchantProductInventory']['reorder_point'] = $inventory['reorder_point'];
+                         $inventory['MerchantProductInventory']['restock_level'] = $inventory['restock_level'];
+                         $this->MerchantProductInventory->save($inventory);
+                     }
                 } else {
                 }
 
@@ -347,7 +347,7 @@ class ProductController extends AppController {
                 ),
                 'MerchantProductBrand' => array(
                     'className' => 'MerchantProductBrand',
-                    'foreignKey' => 'product_type_id'
+                    'foreignKey' => 'product_brand_id'
                 ),
                 'MerchantSupplier' => array(
                     'className' => 'MerchantSupplier',
@@ -359,6 +359,27 @@ class ProductController extends AppController {
         $product = $this->MerchantProduct->findById($id);
         $this->set("product", $product);
         $this->set("id", $id);
+        
+        $inventories = $this->MerchantProductInventory->find('all', array(
+            'fields' => array(
+                'MerchantProductInventory.*',
+                'MerchantOutlet.*',
+            ),
+            'conditions' => array(
+                'MerchantProductInventory.product_id' => $id
+            ),
+            'joins' => array(
+                array(
+                    'table' => 'merchant_outlets',
+                    'alias' => 'MerchantOutlet',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'MerchantProductInventory.outlet_id = MerchantOutlet.id',
+                    )
+                )
+            )
+        ));
+        $this->set('inventories',$inventories);
 
         $tags = $this->MerchantProductTag->find('all', array(
             'joins' => array(
@@ -416,7 +437,7 @@ class ProductController extends AppController {
             }
         }
     }
-    
+
     public function brand_quick() {
         $this->MerchantProductBrand->create();
         $productBrand['merchant_id'] = $this->Auth->user()['merchant_id'];
@@ -477,7 +498,7 @@ class ProductController extends AppController {
         }
 
     }
-    
+
     public function type_quick() {
         $result = array();
         try {
@@ -534,7 +555,6 @@ class ProductController extends AppController {
         }
     }
 
-
     public function add_product_category() {
         $result = array();
         
@@ -553,16 +573,17 @@ class ProductController extends AppController {
     }
 
     function addpics() {
-        $tempFile = $this->request->data;
-        $targetPath = APP.'webroot'.DS.'test'.DS;
-        $targetFile =  $targetPath. $this->request->data;
+        $tempFile = $_FILES['file']['tmp_name'];
+        $targetPath = getcwd() . '/test/';
+        $targetFile =  $targetPath. $FILES['file']['name'];
         move_uploaded_file($tempFile,$targetFile);
     }
+
     public function add_variants() {
         $this->loadModel('MerchantVariant');
         $result = array();
         if($this->request->is('post')) {
-        
+
             try {
                 $data = $this->request->data;
                 $this->MerchantVariant->create();
@@ -577,5 +598,5 @@ class ProductController extends AppController {
             $this->serialize($result);
         }
     }
-    
+
 }

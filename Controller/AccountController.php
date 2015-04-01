@@ -35,28 +35,28 @@ class AccountController extends AppController {
  * @return void
  */
     public function index() {
-    	$this->loadModel("Plan");
-    	$plans = $this->Plan->find('all');
-    	$this->set('plans',$plans);
+        $this->loadModel("Plan");
+        $plans = $this->Plan->find('all');
+        $this->set('plans',$plans);
     }
-    
+
     public function update_plan() {
-    	$this->loadModel("Merchant");
-    	$this->loadModel("Plan");
-	    $user = $this->Auth->user();
-	    
-	    if($this->request->is('post')) {
-	    	$data = $this->request->data;
-	    	
-	    	$result = array();
-	    	try {
-			    $this->Merchant->id = $user['merchant_id'];
-			    $this->Merchant->save($data);
-			} catch (Exception $e) {
+        $this->loadModel("Merchant");
+        $this->loadModel("Plan");
+        $user = $this->Auth->user();
+        
+        if($this->request->is('post')) {
+            $data = $this->request->data;
+            
+            $result = array();
+            try {
+                $this->Merchant->id = $user['merchant_id'];
+                $this->Merchant->save($data);
+            } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
             }
             $this->serialize($result);
-	    }
+        }
     }
 
 }

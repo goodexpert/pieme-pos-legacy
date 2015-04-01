@@ -2,92 +2,92 @@
 </div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
-	<div id="notify"></div>
-	<!-- BEGIN SIDEBAR -->
-	<div class="page-sidebar-wrapper">
-		<!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
-		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-		<div class="page-sidebar navbar-collapse collapse">
-			<ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
-				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-				<!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
-				<li class="sidebar-search-wrapper">
-					<!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-					<!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-					<!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-					<form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
-						<a href="javascript:;" class="remove">
-						<i class="icon-close"></i>
-						</a>
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search...">
-							<span class="input-group-btn">
-							<button class="btn submit"><i class="icon-magnifier"></i></button>
-							</span>
-						</div>
-					</form>
-					<!-- END RESPONSIVE QUICK SEARCH FORM -->
-				</li>
-				<li>
-					<a href="index">
-					Sell
-					</a>
-				</li>
-				<li>
-					<a href="history">
-					History </a>
-				</li>
-				<li class="active">
-					<a href="history">
-					Product <span class="selected">
-					</span>
-					</a>
-				</li>
-			</ul>
-		</div>
-		<!-- END HORIZONTAL RESPONSIVE MENU -->
-	</div>
-	<!-- END SIDEBAR -->
-	<!-- BEGIN CONTENT -->
-	<div class="page-content-wrapper">
-		<div class="page-content">
-		
-		
-			<div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-				<h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
-					Sales Totals by Period
-				</h2>
-				<div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
-					<a href="#" id="export"><button class="btn btn-white pull-right">
-                    	<div class="glyphicon glyphicon-export"></div>&nbsp;
+    <div id="notify"></div>
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper">
+        <!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
+        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+        <div class="page-sidebar navbar-collapse collapse">
+            <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+                <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
+                <li class="sidebar-search-wrapper">
+                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+                    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
+                    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                    <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
+                        <a href="javascript:;" class="remove">
+                        <i class="icon-close"></i>
+                        </a>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                            <button class="btn submit"><i class="icon-magnifier"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <!-- END RESPONSIVE QUICK SEARCH FORM -->
+                </li>
+                <li>
+                    <a href="index">
+                    Sell
+                    </a>
+                </li>
+                <li>
+                    <a href="history">
+                    History </a>
+                </li>
+                <li class="active">
+                    <a href="history">
+                    Product <span class="selected">
+                    </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- END HORIZONTAL RESPONSIVE MENU -->
+    </div>
+    <!-- END SIDEBAR -->
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+        <div class="page-content">
+        
+        
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
+                    Sales Totals by Period
+                </h2>
+                <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
+                    <a href="#" id="export"><button class="btn btn-white pull-right">
+                        <div class="glyphicon glyphicon-export"></div>&nbsp;
                     export</button></a>
-				</div>
-			</div>
-				
-			<!-- FILTER -->
+                </div>
+            </div>
+                
+            <!-- FILTER -->
             <div class="col-md-12 col-xs-12 col-sm-12 line-box filter-box">
                 <div class="col-md-4 col-xs-6 col-sm-6">
                     <dl>
-                    	<dt>Date from</dt> 
-                    	<dd>
+                        <dt>Date from</dt> 
+                        <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-							<input type="text" id="date_from">
-                    	</dd>
-                	</dl> 
+                            <input type="text" id="date_from">
+                        </dd>
+                    </dl> 
                 </div>
                 <div class="col-md-4 col-xs-6 col-sm-6">
-                	<dl>
-                    	<dt>Date to</dt> 
-                    	<dd>
+                    <dl>
+                        <dt>Date to</dt> 
+                        <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-							<input type="text" id="date_to">
-                    	</dd>
+                            <input type="text" id="date_to">
+                        </dd>
                     </dl>
                  </div>
                 <div class="col-md-4 col-xs-6 col-sm-6">
-                	<dl>
-                    	<dt>Compare to the last</dt>
+                    <dl>
+                        <dt>Compare to the last</dt>
                         <dd>
                             <select>
                                 <option value="1">1 Period</option>
@@ -109,106 +109,106 @@
                  <div class="col-md-12 col-xs-12 col-sm-12">
                      <button class="btn btn-primary filter pull-right">Update</button>
                  </div>
-			</div>
-					<div class="col-md-3 col-omega">
-						<table class="table-bordered dataTable">
-							<colgroup>
-								<col width="15%">
-								<col width="15%">
-							</colgroup>
-							<thead>
-							<tr>
-								<th>Order</th>
-								<th>Product</th>
-							</tr>
-							</thead>
-							<tbody>
+            </div>
+                    <div class="col-md-3 col-omega">
+                        <table class="table-bordered dataTable">
+                            <colgroup>
+                                <col width="15%">
+                                <col width="15%">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>Product</th>
+                            </tr>
+                            </thead>
+                            <tbody>
                                 <?php
                                     foreach ($order['MerchantStockOrderItem'] as $idx => $item):
                                 ?>
-								<tr>
+                                <tr>
                                     <td><?php echo $idx+1; ?></td>
                                     <td><?php echo $item['MerchantProduct']['name']; ?></td>
-								</tr>
+                                </tr>
                                 <?php
                                     endforeach;
                                 ?>
-								<tr class="table-result">
-									<td><strong>Total</strong></td>
-									<td></td>
-								</tr>
-								
-							</tbody>
-						</table>
-					</div>
-		<div class="col-md-9 col-alpha">
-			<div class="scroll-table">
-				<table class="table-bordered dataTable">
-						<colgroup>
-						<col width="10%">
-						<col width="10%">
-						<col width="10%">
-						<col width="10%">
-						<col width="10%">
-						<col width="10%">
-						<col width="10%">
-						<col width="10%">
-						<col width="">
-					</colgroup>
-					<thead>
-						<tr>
-							<th>SKU</th>
-							<th>Supplier code</th>
-							<th>Stock</th>
-							<th>Ordered</th>
-							<th>Received</th>
-							<th>Supply Cost</th>
-							<th>Total Supply Cost</th>
-							<th>Retail Price</th>
-							<th class="last-child">Total Retail Price</th>
-						</tr>
-						</thead>
-						<tbody>
+                                <tr class="table-result">
+                                    <td><strong>Total</strong></td>
+                                    <td></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+        <div class="col-md-9 col-alpha">
+            <div class="scroll-table">
+                <table class="table-bordered dataTable">
+                        <colgroup>
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="10%">
+                        <col width="">
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th>SKU</th>
+                            <th>Supplier code</th>
+                            <th>Stock</th>
+                            <th>Ordered</th>
+                            <th>Received</th>
+                            <th>Supply Cost</th>
+                            <th>Total Supply Cost</th>
+                            <th>Retail Price</th>
+                            <th class="last-child">Total Retail Price</th>
+                        </tr>
+                        </thead>
+                        <tbody>
                                 <?php
                                     $totalOrdered = $totalReceived = 0;
                                     $totalSupplyCost = 0.00;
                                     foreach ($order['MerchantStockOrderItem'] as $item):
                                 ?>
-							<tr>
+                            <tr>
                                 <td><?php echo $item['MerchantProduct']['sku']; ?></td>
-                               	<td><?php echo $item['MerchantProduct']['supplier_code']; ?></td>
+                                   <td><?php echo $item['MerchantProduct']['supplier_code']; ?></td>
                                 <td><?php echo $item['MerchantProduct']['MerchantProductInventory'][0]['count']; ?></td>
                                 <td><?php echo $item['count']; ?></td>
                                 <td><?php echo is_null($item['received']) ? '0' : $item['received']; ?></td>
                                 <td><?php echo $item['supply_price']; ?></td>
                                 <td><?php echo round($item['count'] * $item['supply_price'], 2); ?></td>
-                    	        <td></td>
-							</tr>
+                                <td></td>
+                            </tr>
                                <?php
                                        $totalOrdered += $item['count'];
                                        $totalReceived += $item['received'];
                                        $totalSupplyCost += round($item['count'] * $item['supply_price'], 2);
                                    endforeach;
                                ?>
-							<tr class="table-result">
-								<td></td>
-								<td></td>
-								<td></td>
+                            <tr class="table-result">
+                                <td></td>
+                                <td></td>
+                                <td></td>
                                 <td><?php echo $totalOrdered; ?></td>
                                 <td><?php echo $totalReceived; ?></td>
                                 <td><?php echo sprintf('%.2f', $totalSupplyCost); ?></td>
-								<td></td>
-								<td></td>
-								<td></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- END CONTENT -->
-	<!-- BEGIN QUICK SIDEBAR -->
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END CONTENT -->
+    <!-- BEGIN QUICK SIDEBAR -->
     <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
     <div class="page-quick-sidebar-wrapper">
         <div class="page-quick-sidebar">            
@@ -304,11 +304,11 @@
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
 jQuery(document).ready(function() {    
-	Metronic.init(); // init metronic core componets
-	Layout.init(); // init layout
-	QuickSidebar.init(); // init quick sidebar
-	Index.init();
-	
-	$("#date_from").datepicker();
+    Metronic.init(); // init metronic core componets
+    Layout.init(); // init layout
+    QuickSidebar.init(); // init quick sidebar
+    Index.init();
+    
+    $("#date_from").datepicker();
 });
 </script>

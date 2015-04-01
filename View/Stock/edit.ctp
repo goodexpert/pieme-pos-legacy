@@ -111,7 +111,7 @@
                         <span class="search-tri"></span>
                         <div class="search-default"> No Result </div>
                         <?php foreach($products as $product){ ?>
-                        <button type="button" data-stock="0" data-order-id="<?=$order['MerchantStockOrder']['id'];?>" data-name="<?=$product['MerchantProduct']['name'];?>" data-sku="<?=$product['MerchantProduct']['sku'];?>" data-id="<?=$product['MerchantProduct']['id'];?>" data-price-include-tax="<?=$product['MerchantProduct']['price_include_tax'];?>" class="data-found"><?=$product['MerchantProduct']['name']." (".$product['MerchantProduct']['sku'].")";?></button>
+                        <button type="button" data-stock="0" data-order-id="<?=$order['MerchantStockOrder']['id'];?>" data-name="<?=$product['MerchantProduct']['name'];?>" data-sku="<?=$product['MerchantProduct']['sku'];?>" data-id="<?=$product['MerchantProduct']['id'];?>" data-price-include-tax="<?=$product['MerchantProduct']['price_include_tax'];?>" data-inventory-count="<?php echo is_null($product['MerchantProductInventory']['count']) ? '0' : $product['MerchantProductInventory']['count']; ?>" data-supply-price="<?php echo $product['MerchantProduct']['supply_price']; ?>" class="data-found"><?=$product['MerchantProduct']['name']." (".$product['MerchantProduct']['sku'].")";?></button>
                         <?php } ?> 
                     </div>
                 </div>
@@ -147,7 +147,7 @@
                                 <input type="hidden" name="data[MerchantStockOrderItem][<?php echo $idx; ?>][price_include_tax]" value="<?php echo $item['MerchantProduct']['price_include_tax']; ?>" />
                                 <td><?php echo $idx+1; ?></td>
                                 <td><?php echo $item['MerchantProduct']['name']; ?></td>
-                                <td><?php echo $item['MerchantProduct']['handle']; ?></td>
+                                <td><?php echo $item['MerchantProduct']['MerchantProductInventory'][0]['count']; ?></td>
                                 <td>
                                     <?php
                                         $count = $this->Form->input('MerchantStockOrderItem.' . $idx . '.count', array(
@@ -164,12 +164,12 @@
                                             'type' => 'text',
                                             'div'  => false,
                                             'label' => false,
-                                            'value' => $item['MerchantProduct']['supply_price']
+                                            'value' => sprintf("%.2f", round($item['MerchantProduct']['supply_price'], 2))
                                         ));
                                         echo $supplyPrice;
                                     ?>
                                 </td>
-                                <td><?php echo round($item['count'] * $item['MerchantProduct']['supply_price'], 5); ?></td>
+                                <td><?php echo sprintf("%.2f", round($item['count'] * $item['MerchantProduct']['supply_price'], 2)); ?></td>
                             </tr>
                             <?php
                                     endforeach;
@@ -440,6 +440,8 @@ jQuery(document).ready(function() {
     var selectedProductId;
     var selectedOrderId;
     var selectedProductPriceIncludeTax;
+    var selectedProductSupplyPrice;
+    var selectedProductInventoryCount;
     $(".data-found").click(function(){
         $("#product_search").val($(this).attr("data-sku"));
         $(".search_result").hide();
@@ -448,6 +450,8 @@ jQuery(document).ready(function() {
         selectedProductId = $(this).attr("data-id");
         selectedOrderId = $(this).attr("data-order-id");
         selectedProductPriceIncludeTax = $(this).attr("data-price-include-tax");
+        selectedProductSupplyPrice = $(this).attr("data-supply-price");
+        selectedProductInventoryCount = $(this).attr("data-inventory-count");
     });
 
     $(document).on("click",".add-order-item",function(){
@@ -455,9 +459,12 @@ jQuery(document).ready(function() {
             if($("tr[data-id="+selectedProductId+"]").length == 0){
                 // next index
                 var nextIdx = $('.dataTable tbody tr').length;
-                $(".dataTable").children("tbody").append('<tr data-id="'+selectedProductId+'" class="added-order"><input type="hidden" name="data[MerchantStockOrderItem]['+nextIdx+'][order_id]" value="'+selectedOrderId+'"><input type="hidden" name="data[MerchantStockOrderItem]['+nextIdx+'][product_id]" value="'+selectedProductId+'"><input type="hidden" name="data[MerchantStockOrderItem]['+nextIdx+'][name]" value="'+selectedProductName+'"><input type="hidden" name="data[MerchantStockOrderItem]['+nextIdx+'][price_include_tax]" value="'+selectedProductPriceIncludeTax+'"><td>'+(nextIdx+1)+'</td><td>'+selectedProductName+'</td><td>0</td><td><input name="data[MerchantStockOrderItem]['+nextIdx+'][count]" placeholder="0" maxlength="11" type="text" id="MerchantStockOrderItem0Count" value="'+$("#product_quantity").val()+'"></td><td><input name="data[MerchantStockOrderItem]['+nextIdx+'][supply_price]" placeholder="0.00000" maxlength="15,5" type="text"></td><td>0<span class="remove inline-block pull-right"><span class="glyphicon glyphicon-remove"></span></span></td></tr>');
+                var supplyPrice = parseFloat(selectedProductSupplyPrice);
+                var roundedSupplyPrice = (Math.round(supplyPrice*100)/100).toFixed(2);
+                var total = (Math.round(parseFloat($("#product_quantity").val() * roundedSupplyPrice)*100)/100).toFixed(2);
+                
+                $(".dataTable").children("tbody").append('<tr data-id="'+selectedProductId+'" class="added-order"><input type="hidden" name="data[MerchantStockOrderItem]['+nextIdx+'][order_id]" value="'+selectedOrderId+'"><input type="hidden" name="data[MerchantStockOrderItem]['+nextIdx+'][product_id]" value="'+selectedProductId+'"><input type="hidden" name="data[MerchantStockOrderItem]['+nextIdx+'][name]" value="'+selectedProductName+'"><input type="hidden" name="data[MerchantStockOrderItem]['+nextIdx+'][price_include_tax]" value="'+selectedProductPriceIncludeTax+'"><td>'+(nextIdx+1)+'</td><td>'+selectedProductName+'</td><td>'+selectedProductInventoryCount+'</td><td><input name="data[MerchantStockOrderItem]['+nextIdx+'][count]" placeholder="0" maxlength="11" type="text" value="'+$("#product_quantity").val()+'"></td><td><input name="data[MerchantStockOrderItem]['+nextIdx+'][supply_price]" placeholder="0.00000" maxlength="15,5" type="text" value="'+roundedSupplyPrice+'"></td><td>'+total+'<span class="remove inline-block pull-right"><span class="glyphicon glyphicon-remove"></span></span></td></tr>');
             } else {
-                //$("tr[data-id="+selectedProductId+"]").find("#MerchantStockOrderItem0Count").val(function(i, oldval){
                 $("tr[data-id="+selectedProductId+"]").find("input[name*=count]").val(function(i, oldval){
                     return parseInt($("#product_quantity").val(),10) + parseInt(oldval, 10);
                 });

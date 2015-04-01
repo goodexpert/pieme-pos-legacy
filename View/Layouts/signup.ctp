@@ -40,7 +40,7 @@
 <link rel="stylesheet" href="/css/jquery.keypad.css">
 <link href="/css/custom.keypad.css" rel="stylesheet" type="text/css">
 <!-- END THEME STYLES -->
-<link rel="shortcut icon" href="favicon.ico"/>
+<link rel="shortcut icon" href="onzsa.ico"/>
 
 
 
@@ -58,161 +58,161 @@
 <!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
 <body class="page-header-fixed page-quick-sidebar-over-content page-full-width">
 <!-- BEGIN HEADER -->
-		<div class="page-header navbar navbar-fixed-top">
-			<!-- BEGIN HEADER INNER -->
-			<div class="page-header-inner">
-				<!-- BEGIN LOGO -->
-				<div class="page-logo">
-					<a href="/index.php">
-					<img src="/img/ONZSA_logo-05.png" alt="logo" class="logo-default"/>
-					</a>
-				</div>
-				<!-- END LOGO -->
-				<!-- BEGIN HORIZANTAL MENU -->
-				<!-- DOC: Apply "hor-menu-light" class after the "hor-menu" class below to have a horizontal menu with white background -->
-				<!-- DOC: This is desktop version of the horizontal menu. The mobile version is defined(duplicated) sidebar menu below. So the horizontal menu has 2 seperate versions -->
-				<div class="hor-menu hidden-sm hidden-xs">
-					<ul class="nav navbar-nav">
-						<!-- DOC: Remove data-hover="dropdown" and data-close-others="true" attributes below to disable the horizontal opening on mouse hover -->
-						<li>
-							<a href="/dashboard">
-							Dashboard
-							</a>
-						</li>
-						<li>
-							<a href="/index.php">
-							Sell
-							</a>
-						</li>
-						<li>
-							<a href="/history">
-							History </a>
-						</li>
-						<li>
-							<a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
-							Product <i class="fa fa-angle-down"></i></a>
-							<ul class="dropdown-menu pull-left">
-								<li>
-									<a href="/product">Product</a>
-								</li>
-								<li>
-									<a href="/product/brand">Brand</a>
-								</li>
-								<li>
-									<a href="/product/type">Types</a>
-								</li>
-								<li>
-									<a href="/pricebook">Price Books</a>
-								</li>
-								<li>
-									<a href="/product/supplier">Suppliers</a>
-								</li>
-								<li>
-									<a href="/product/tag">Tags</a>
-								</li>
-								<li>
-									<a href="/stock">Stock Control</a>
-								</li>
-							</ul>
-						</li>
-						<li>
-							<a href="/customer">
-							Customer </a>
-						</li>
-						<li>
-							<a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
-							Setup <i class="fa fa-angle-down"></i></a>
-							<ul class="dropdown-menu pull-left">
-								<li>
-									<a href="/setup">General</a>
-								</li>
-								<li>
-									<a href="/setup">Quick Keys</a>
-								</li>
-							</ul>
-						</li>
-					</ul>
-				</div>
-				<!-- END HORIZANTAL MENU -->
-				<!-- BEGIN RESPONSIVE MENU TOGGLER -->
-				<a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
-				</a>
-				<!-- END RESPONSIVE MENU TOGGLER -->
-				<!-- BEGIN TOP NAVIGATION MENU -->
-				<div class="top-menu">
-					<ul class="nav navbar-nav pull-right">
+        <div class="page-header navbar navbar-fixed-top">
+            <!-- BEGIN HEADER INNER -->
+            <div class="page-header-inner">
+                <!-- BEGIN LOGO -->
+                <div class="page-logo">
+                    <a href="/index.php">
+                    <img src="/img/ONZSA_logo-05.png" alt="logo" class="logo-default"/>
+                    </a>
+                </div>
+                <!-- END LOGO -->
+                <!-- BEGIN HORIZANTAL MENU -->
+                <!-- DOC: Apply "hor-menu-light" class after the "hor-menu" class below to have a horizontal menu with white background -->
+                <!-- DOC: This is desktop version of the horizontal menu. The mobile version is defined(duplicated) sidebar menu below. So the horizontal menu has 2 seperate versions -->
+                <div class="hor-menu hidden-sm hidden-xs">
+                    <ul class="nav navbar-nav">
+                        <!-- DOC: Remove data-hover="dropdown" and data-close-others="true" attributes below to disable the horizontal opening on mouse hover -->
+                        <li>
+                            <a href="/dashboard">
+                            Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/index.php">
+                            Sell
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/history">
+                            History </a>
+                        </li>
+                        <li>
+                            <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
+                            Product <i class="fa fa-angle-down"></i></a>
+                            <ul class="dropdown-menu pull-left">
+                                <li>
+                                    <a href="/product">Product</a>
+                                </li>
+                                <li>
+                                    <a href="/product/brand">Brand</a>
+                                </li>
+                                <li>
+                                    <a href="/product/type">Types</a>
+                                </li>
+                                <li>
+                                    <a href="/pricebook">Price Books</a>
+                                </li>
+                                <li>
+                                    <a href="/product/supplier">Suppliers</a>
+                                </li>
+                                <li>
+                                    <a href="/product/tag">Tags</a>
+                                </li>
+                                <li>
+                                    <a href="/stock">Stock Control</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="/customer">
+                            Customer </a>
+                        </li>
+                        <li>
+                            <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
+                            Setup <i class="fa fa-angle-down"></i></a>
+                            <ul class="dropdown-menu pull-left">
+                                <li>
+                                    <a href="/setup">General</a>
+                                </li>
+                                <li>
+                                    <a href="/setup">Quick Keys</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <!-- END HORIZANTAL MENU -->
+                <!-- BEGIN RESPONSIVE MENU TOGGLER -->
+                <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
+                </a>
+                <!-- END RESPONSIVE MENU TOGGLER -->
+                <!-- BEGIN TOP NAVIGATION MENU -->
+                <div class="top-menu">
+                    <ul class="nav navbar-nav pull-right">
 
-						<!-- BEGIN USER LOGIN DROPDOWN -->
-						<li class="dropdown dropdown-user">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-							<img alt="" class="img-circle" src="/img/avt.jpg"/>
-							<span class="username">
-							User </span>
-							<i class="fa fa-angle-down"></i>
-							</a>
-							<ul class="dropdown-menu">
-								<li>
-									<a href="extra_profile.html">
-									<i class="icon-user"></i> My Profile </a>
-								</li>
-								<li>
-									<a href="page_calendar.html">
-									<i class="icon-calendar"></i> My Calendar </a>
-								</li>
-								<li>
-									<a href="inbox.html">
-									<i class="icon-envelope-open"></i> My Inbox <span class="badge badge-danger">
-									3 </span>
-									</a>
-								</li>
-								<li>
-									<a href="#">
-									<i class="icon-rocket"></i> My Tasks <span class="badge badge-success">
-									7 </span>
-									</a>
-								</li>
-								<li class="divider">
-								</li>
-								<li>
-									<a href="extra_lock.html">
-									<i class="icon-lock"></i> Lock Screen </a>
-								</li>
-								<li>
-									<a href="login.html">
-									<i class="icon-key"></i> Log Out </a>
-								</li>
-							</ul>
-						</li>
-						<!-- END USER LOGIN DROPDOWN -->
-						<!-- BEGIN QUICK SIDEBAR TOGGLER -->
-						<li class="dropdown dropdown-quick-sidebar-toggler">
-							<a href="javascript:;" class="dropdown-toggle">
-							<i class="glyphicon glyphicon-question-sign"></i>
-							</a>
-						</li>
-						<!-- END QUICK SIDEBAR TOGGLER -->
-					</ul>
-				</div>
-				<!-- END TOP NAVIGATION MENU -->
-			</div>
-			<!-- END HEADER INNER -->
-		</div>
-		<!-- END HEADER -->
-	<div id="content">
+                        <!-- BEGIN USER LOGIN DROPDOWN -->
+                        <li class="dropdown dropdown-user">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                            <img alt="" class="img-circle" src="/img/avt.jpg"/>
+                            <span class="username">
+                            User </span>
+                            <i class="fa fa-angle-down"></i>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="extra_profile.html">
+                                    <i class="icon-user"></i> My Profile </a>
+                                </li>
+                                <li>
+                                    <a href="page_calendar.html">
+                                    <i class="icon-calendar"></i> My Calendar </a>
+                                </li>
+                                <li>
+                                    <a href="inbox.html">
+                                    <i class="icon-envelope-open"></i> My Inbox <span class="badge badge-danger">
+                                    3 </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                    <i class="icon-rocket"></i> My Tasks <span class="badge badge-success">
+                                    7 </span>
+                                    </a>
+                                </li>
+                                <li class="divider">
+                                </li>
+                                <li>
+                                    <a href="extra_lock.html">
+                                    <i class="icon-lock"></i> Lock Screen </a>
+                                </li>
+                                <li>
+                                    <a href="login.html">
+                                    <i class="icon-key"></i> Log Out </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!-- END USER LOGIN DROPDOWN -->
+                        <!-- BEGIN QUICK SIDEBAR TOGGLER -->
+                        <li class="dropdown dropdown-quick-sidebar-toggler">
+                            <a href="javascript:;" class="dropdown-toggle">
+                            <i class="glyphicon glyphicon-question-sign"></i>
+                            </a>
+                        </li>
+                        <!-- END QUICK SIDEBAR TOGGLER -->
+                    </ul>
+                </div>
+                <!-- END TOP NAVIGATION MENU -->
+            </div>
+            <!-- END HEADER INNER -->
+        </div>
+        <!-- END HEADER -->
+    <div id="content">
 
-		<?php echo $this->Session->flash(); ?>
+        <?php echo $this->Session->flash(); ?>
 
-		<?php echo $this->fetch('content'); ?>
-	</div>
-	<div id="footer">
-		<!-- BEGIN FOOTER -->
-		<div class="page-footer">
-			<div class="page-footer-inner">
-				 <?=date("Y");?> &copy; Emcor Media Lab.
-			</div>
-		</div>
-		<!-- END FOOTER -->
-	</div>
+        <?php echo $this->fetch('content'); ?>
+    </div>
+    <div id="footer">
+        <!-- BEGIN FOOTER -->
+        <div class="page-footer">
+            <div class="page-footer-inner">
+                 <?=date("Y");?> &copy; Emcor Media Lab.
+            </div>
+        </div>
+        <!-- END FOOTER -->
+    </div>
 </div>
 </body>
 <!-- END BODY -->

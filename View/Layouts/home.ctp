@@ -28,7 +28,7 @@
 <link href="/css/custom.keypad.css" rel="stylesheet" type="text/css">
 <link href="/css/dataTable.css" rel="stylesheet" type="text/css">
 <!-- END THEME STYLES -->
-<link rel="shortcut icon" href="favicon.ico"/>
+<link rel="shortcut icon" href="onzsa.ico"/>
 
 </head>
 <!-- END HEAD -->
@@ -43,20 +43,20 @@
 <!-- DOC: Apply "page-sidebar-reversed" class to put the sidebar on the right side -->
 <!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
 <body class="page-header-fixed page-quick-sidebar-over-content page-full-width">
-	<div id="container">
-		<div id="header">
-			<?php echo $this->element('header'); ?>
-		</div>
-		<div id="content">
+    <div id="container">
+        <div id="header">
+            <?php echo $this->element('header'); ?>
+        </div>
+        <div id="content">
 
-			<?php echo $this->Session->flash(); ?>
+            <?php echo $this->Session->flash(); ?>
 
-			<?php echo $this->fetch('content'); ?>
-		</div>
-		<div id="footer">
-			<?php echo $this->element('footer'); ?>
-		</div>
-	</div>
+            <?php echo $this->fetch('content'); ?>
+        </div>
+        <div id="footer">
+            <?php echo $this->element('footer'); ?>
+        </div>
+    </div>
 </div>
 </body>
 </html>

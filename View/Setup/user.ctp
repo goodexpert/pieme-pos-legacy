@@ -59,12 +59,23 @@
                     Users
                 </h2>
                 <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
-                    <a href="/quickkey/add"><button class="btn btn-white pull-right">
+                    <a href="/users/add"><button class="btn btn-white pull-right">
                         <div class="glyphicon glyphicon-plus"></div>&nbsp;
                     Add user</button></a> 
                 </div>
             </div>
         <table id="historyTable" class="table table-striped table-bordered dataTable">
+            <colgroup>
+                <col width="5%">
+                <col width="10%">
+                <col width="10%">
+                <col width="10%">
+                <col width="7%">
+                <col width="13%">
+                <col width="13%">
+                <col width="13%">
+                <col width="">
+            </colgroup>
             <thead>
             <tr>
                 <th></th>
@@ -81,19 +92,32 @@
             <tbody>
                 <?php foreach($users as $user) : ?>
                 <tr>
-                    <td></td>
+                    <td class="text-center"><img src="../img/no-image.png" alt="product"></td>
                     <td><?php echo $user['MerchantUser']['username'];?></td>
                     <td><?php echo $user['MerchantUser']['display_name'];?></td>
                     <td><?php echo $user['MerchantUser']['user_type'];?></td>
                     <td><?php echo $user['MerchantUser']['outlet_id'];?></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>
+                        <div class="input-group">
+                          <span class="input-group-addon">$</span>
+                          <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group">
+                          <span class="input-group-addon">$</span>
+                          <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="input-group">
+                          <span class="input-group-addon">$</span>
+                          <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                        </div>
+                    </td>
                     <td><?php echo $user['MerchantUser']['last_logged'];?></td>
                 </tr>
                 <?php endforeach; ?>
-            
-            
             </tbody>
         </table>
         

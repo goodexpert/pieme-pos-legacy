@@ -5,6 +5,13 @@ App::uses('AppController', 'Controller');
 class PaymentsController extends AppController {
 
 /**
+ * Components property.
+ *
+ * @var array
+ */
+    public $components = array('RequestHandler');
+
+/**
  * Name of layout to use with this View.
  *
  * @var string
@@ -12,13 +19,11 @@ class PaymentsController extends AppController {
     public $layout = 'home';
 
 /**
- * This controller use MerchantPaymentType and PaymentType models.
+ * This controller uses PaymentType and MerchantPaymentType models.
  *
  * @var array
  */
-    public $uses = array('MerchantPaymentType', 'PaymentType');
-    
-    public $components = array('RequestHandler');
+    public $uses = array('PaymentType', 'MerchantPaymentType');
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -43,14 +48,14 @@ class PaymentsController extends AppController {
         $this->set('payments', $payments);
         
         if($this->request->is('post')) {
-	        $data = $this->request->data;
-	        $data['merchant_id'] = $user['merchant_id'];
-	        
-	        $this->MerchantPaymentType->create();
-	        $this->MerchantPaymentType->save($data);
-	        
-	        header("Location: /setup/payments");
-	        exit();
+            $data = $this->request->data;
+            $data['merchant_id'] = $user['merchant_id'];
+            
+            $this->MerchantPaymentType->create();
+            $this->MerchantPaymentType->save($data);
+            
+            header("Location: /setup/payments");
+            exit();
         }
     }
 
@@ -61,12 +66,12 @@ class PaymentsController extends AppController {
         $this->set('payment', $payment);
         
         if($this->request->is('put')) {
-        	$data = $this->request->data;
-        	$result = array();
-        	try {
-		        $this->MerchantPaymentType->id = $id;
-		        $this->MerchantPaymentType->save($data);
-		    } catch (Exception $e) {
+            $data = $this->request->data;
+            $result = array();
+            try {
+                $this->MerchantPaymentType->id = $id;
+                $this->MerchantPaymentType->save($data);
+            } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
             }
             $this->serialize($result);
@@ -77,10 +82,10 @@ class PaymentsController extends AppController {
         $user = $this->Auth->user();
         
         if($this->request->is('delete')) {
-        	$result = array();
-        	try {
-	        	$this->MerchantPaymentType->delete($id);
-	        } catch (Exception $e) {
+            $result = array();
+            try {
+                $this->MerchantPaymentType->delete($id);
+            } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
             }
             $this->serialize($result);

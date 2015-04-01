@@ -5,6 +5,13 @@ App::uses('AppController', 'Controller');
 class SetupController extends AppController {
 
 /**
+ * Components property.
+ *
+ * @var array
+ */
+    public $components = array('RequestHandler');
+
+/**
  * Name of layout to use with this View.
  *
  * @var string
@@ -17,8 +24,6 @@ class SetupController extends AppController {
  * @var array
  */
     public $uses = array();
-    
-    public $components = array('RequestHandler');
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -56,29 +61,29 @@ class SetupController extends AppController {
     }
     
     public function edit() {
-	    $user = $this->Auth->user();
-	    
-	    $this->loadModel("Merchant");
-	    $this->loadModel("Contact");
-	    
-	    if($this->request->is('put')) {
-		    $data = $this->request->data;
-		    
-		    $result = array();
-		    try {
-			    $this->Merchant->id = $user['merchant_id'];
-			    $this->Merchant->save($data);
-			    
-			    $this->Contact->id = $user['Merchant']['contact_id'];
-			    $this->Contact->save($data);
-			} catch (Exception $e) {
+        $user = $this->Auth->user();
+        
+        $this->loadModel("Merchant");
+        $this->loadModel("Contact");
+        
+        if($this->request->is('put')) {
+            $data = $this->request->data;
+            
+            $result = array();
+            try {
+                $this->Merchant->id = $user['merchant_id'];
+                $this->Merchant->save($data);
+                
+                $this->Contact->id = $user['Merchant']['contact_id'];
+                $this->Contact->save($data);
+            } catch (Exception $e) {
                 $dataSource->rollback();
                 $result['message'] = $e->getMessage();
             }
             $this->serialize($result);
             var_dump($result);
             exit();
-	    }
+        }
     }
 
     public function payments() {
@@ -139,12 +144,12 @@ class SetupController extends AppController {
 
         $this->loadModel('MerchantQuickKey');
 
-		$items = $this->MerchantQuickKey->find('all', array(
+        $items = $this->MerchantQuickKey->find('all', array(
             'conditions' => array(
                 'MerchantQuickKey.merchant_id' => $user['merchant_id']
             )
-		));
-		$this->set("items",$items);
+        ));
+        $this->set("items",$items);
     }
 
     public function loyalty() {

@@ -111,7 +111,8 @@
                         <span class="search-tri"></span>
                         <div class="search-default"> No Result </div>
                         <?php foreach($products as $product){ ?>
-                        <button type="button" data-stock="0" data-order-id="<?=$order['MerchantStockOrder']['id'];?>" data-name="<?=$product['MerchantProduct']['name'];?>" data-sku="<?=$product['MerchantProduct']['sku'];?>" data-id="<?=$product['MerchantProduct']['id'];?>" data-price-include-tax="<?=$product['MerchantProduct']['price_include_tax'];?>" class="data-found"><?=$product['MerchantProduct']['name']." (".$product['MerchantProduct']['sku'].")";?></button>
+                        <!--<button type="button" data-stock="0" data-order-id="<?=$order['MerchantStockOrder']['id'];?>" data-name="<?=$product['MerchantProduct']['name'];?>" data-sku="<?=$product['MerchantProduct']['sku'];?>" data-id="<?=$product['MerchantProduct']['id'];?>" data-price-include-tax="<?=$product['MerchantProduct']['price_include_tax'];?>" class="data-found"><?=$product['MerchantProduct']['name']." (".$product['MerchantProduct']['sku'].")";?></button>-->
+                        <button type="button" data-stock="0" data-order-id="<?=$order['MerchantStockOrder']['id'];?>" data-name="<?=$product['MerchantProduct']['name'];?>" data-sku="<?=$product['MerchantProduct']['sku'];?>" data-id="<?=$product['MerchantProduct']['id'];?>" data-price-include-tax="<?=$product['MerchantProduct']['price_include_tax'];?>" data-inventory-count="<?php echo is_null($product['MerchantProductInventory']['count']) ? '0' : $product['MerchantProductInventory']['count']; ?>" data-supply-price="<?php echo $product['MerchantProduct']['supply_price']; ?>" class="data-found"><?=$product['MerchantProduct']['name']." (".$product['MerchantProduct']['sku'].")";?></button>
                         <?php } ?> 
                     </div>
                 </div>
@@ -151,7 +152,7 @@
                                 <input type="hidden" name="data[MerchantStockOrderItem][<?php echo $idx; ?>][price_include_tax]" value="<?php echo $item['MerchantProduct']['price_include_tax']; ?>" />
                                 <td><?php echo $idx+1; ?></td>
                                 <td><?php echo $item['MerchantProduct']['name']; ?></td>
-                                <td><?php echo $item['MerchantProduct']['handle']; ?></td>
+                                <td><?php echo $item['MerchantProduct']['MerchantProductInventory'][0]['count']; ?></td>
                                 <td><?php echo $item['count']; ?></td>
                                 <td>
                                     <?php
@@ -170,12 +171,14 @@
                                         $supplyPrice = $this->Form->input('MerchantStockOrderItem.' . $idx . '.supply_price', array(
                                             'type' => 'text',
                                             'div'  => 'false',
-                                            'label' => false
+                                            'label' => false,
+                                            'value' => sprintf("%.2f", round($this->request->data['MerchantStockOrderItem'][$idx]
+                                            ['supply_price'], 2))
                                         ));     
                                         echo $supplyPrice;
                                     ?>
                                 </td>
-                                <td><?php echo round($item['received'] * $item['MerchantProduct']['supply_price'], 5); ?></td>
+                                <td><?php echo sprintf("%.2f", round($item['count'] * $item['supply_price'], 2)); ?></td>
                             </tr>
                             <?php
                                     endforeach;

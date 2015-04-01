@@ -1,26 +1,26 @@
 <style>
 .line-box-stitle {
-	padding: 8px 20px;
+    padding: 8px 20px;
 }
 .help-block {
-	padding-left: 14px;
+    padding-left: 14px;
 }
 .variant_add {
-	float: left;
-	padding-top: 12px;
-	margin-left: 29px;
-	font-size: 12px;
-	color: blue;
-	text-decoration: underline;
+    float: left;
+    padding-top: 12px;
+    margin-left: 29px;
+    font-size: 12px;
+    color: blue;
+    text-decoration: underline;
 }
 .variant_max {
-	float: left;
-	padding-top: 12px;
-	margin-left: 29px;
-	font-size: 12px;
+    float: left;
+    padding-top: 12px;
+    margin-left: 29px;
+    font-size: 12px;
 }
 .variant_add:hover {
-	cursor: pointer;
+    cursor: pointer;
 }
 </style>
 
@@ -31,11 +31,11 @@
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
 
-	<div id="loader-wrapper" style="display:none">
-	
-	    <div id="loader"></div>
-	    
-	</div>
+    <div id="loader-wrapper" style="display:none">
+    
+        <div id="loader"></div>
+        
+    </div>
 
 
   <div id="notify"></div>
@@ -93,7 +93,7 @@
                     <dd class="col-md-9">
                       <select class="form-control" id="product_type">
                         <?php foreach($types as $type){?>
-                        	<option value="<?=$type['MerchantProductType']['id'];?>" <?php if($type['MerchantProductType']['id'] == $product['MerchantProduct']['product_type_id']){echo "selected";}?>><?=$type['MerchantProductType']['name'];?></option>
+                            <option value="<?=$type['MerchantProductType']['id'];?>" <?php if($type['MerchantProductType']['id'] == $product['MerchantProduct']['product_type_id']){echo "selected";}?>><?=$type['MerchantProductType']['name'];?></option>
                         <?php } ?>
                         <option value="add-type">+ Add type</option>
                       </select>
@@ -105,7 +105,7 @@
                       <select class="form-control" id="product_supplier">
                         <option></option>
                         <?php foreach($suppliers as $supplier){?>
-                        	<option value="<?=$supplier['MerchantSupplier']['id'];?>" <?php if($supplier['MerchantSupplier']['id'] == $product['MerchantProduct']['supplier_id']){echo "selected";}?>><?=$supplier['MerchantSupplier']['name'];?></option>
+                            <option value="<?=$supplier['MerchantSupplier']['id'];?>" <?php if($supplier['MerchantSupplier']['id'] == $product['MerchantProduct']['supplier_id']){echo "selected";}?>><?=$supplier['MerchantSupplier']['name'];?></option>
                         <?php } ?>
                         <option value="add-supplier">+ Add supplier</option>
                       </select>
@@ -119,8 +119,8 @@
                     <dt class="col-md-3">Product brand</dt>
                     <dd class="col-md-9">
                       <select class="form-control" id="product_brand">
-                      	<?php foreach($brands as $brand){?>
-                        	<option value="<?=$brand['MerchantProductBrand']['id'];?>" <?php if($brand['MerchantProductBrand']['id'] == $product['MerchantProduct']['product_brand_id']){echo "selected";}?>><?=$brand['MerchantProductBrand']['name'];?></option>
+                          <?php foreach($brands as $brand){?>
+                            <option value="<?=$brand['MerchantProductBrand']['id'];?>" <?php if($brand['MerchantProductBrand']['id'] == $product['MerchantProduct']['product_brand_id']){echo "selected";}?>><?=$brand['MerchantProductBrand']['name'];?></option>
                         <?php } ?>
                         <option value="add-brand">+ Add brand</option>
                       </select>
@@ -136,9 +136,9 @@
                     <dt class="col-md-3">Unit</dt>
                     <dd class="col-md-9">
                       <select>
-                      	<option selected></option>
-                      	<option value="kg">kg</option>
-                      	<option value="g">g</option>
+                          <option selected></option>
+                          <option value="kg">kg</option>
+                          <option value="g">g</option>
                       </select>
                     </dd>
                   </dl>
@@ -212,23 +212,23 @@
               <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega"> 
                   <div class="set-price col-md-12">
                     <div class="set-price-box col-md-2 col-xs-2 col-sm-2 col-alpha">
-						<h5><strong>Supply price</strong></h5>
+                        <h5><strong>Supply price</strong></h5>
                       <input type="text" id="supply_price" value="<?=number_format($product['MerchantProduct']['supply_price'],2,'.','');?>">
                       <div class="info">Excluding tax</div>
                     </div>
                     <div class="set-price-box col-md-2 col-xs-2 col-sm-2 col-alpha">
-                    	<h5><strong>x Markup (%)</strong></h5>
+                        <h5><strong>x Markup (%)</strong></h5>
                       <input type="text" id="markup" value="<?=$product['MerchantProduct']['markup'];?>">
                     </div>
                     <div class="set-price-box col-md-2 col-xs-2 col-sm-2 col-alpha">
-                    	<h5><strong> = Retail price</strong></h5>
+                        <h5><strong> = Retail price</strong></h5>
                       <input type="text" id="retail_price_exclude" value="<?=number_format($product['MerchantProduct']['price'],2,'.','');?>">
                       <div class="info">Excluding tax</div>
                     </div>
                     <div class="set-price-box col-md-3 col-xs-3 col-sm-3 col-alpha">
-                    	<h5><strong>+ Sales tax</strong></h5>
+                        <h5><strong>+ Sales tax</strong></h5>
                       <select id="sales_tax">
-                      	<?php foreach($taxes as $tax){ ?>
+                          <?php foreach($taxes as $tax){ ?>
                         <option tax-id="<?=$tax['MerchantTaxRate']['id'];?>" value="<?=$tax['MerchantTaxRate']['rate'];?>" <?php if($tax['MerchantTaxRate']['id'] == $product['MerchantProduct']['tax_id']){echo "selected";}?>><?=$tax['MerchantTaxRate']['name'];?></span></option>
                         <?php } ?>
                       </select>
@@ -236,7 +236,7 @@
                       <div class="tax_info">Currenty, GST (15%)</div>
                     </div>
                     <div class="set-price-box col-md-3 col-xs-3 col-sm-3 col-alpha col-omega">
-                    	<h5><strong>= Retail price</strong></h5>
+                        <h5><strong>= Retail price</strong></h5>
                       <input type="text" id="retail_price_include" value="<?=number_format($product['MerchantProduct']['price']+$product['MerchantProduct']['tax'],2,'.','');?>">
                       <div class="info">Including tax</div>
                     </div>
@@ -250,30 +250,30 @@
             <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega" style="padding:0;padding-bottom:15px;"> 
               <!-- START col-md-12-->
               <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega variant_attr"> 
-				<div class="line-box-stitle">Variants allow you to specify the different attributes of your product, such as size or color. You can define up to three attributes for this product (e.g. color), and each attribute can have many values (e.g. black, green, etc).
-				</div>
-            	<span class="help-block">
+                <div class="line-box-stitle">Variants allow you to specify the different attributes of your product, such as size or color. You can define up to three attributes for this product (e.g. color), and each attribute can have many values (e.g. black, green, etc).
+                </div>
+                <span class="help-block">
                   <input type="checkbox" name="variant" id="variant">
                   <label for="variant">This product has variants</label>
                 </span>
                 <div id="first_variant_attr" class="col-md-12 col-sm-12 col-xs-12" style="display:none;">
-                	<div class="dashed-line-gr"></div>
-                	<div class="col-md-12 col-xs-12 col-sm-12">
-	                	<div class="col-md-3 col-xs-3 col-sm-3">
-		                    <h5><strong>Attribute</strong></h5>
-	                    	<div class="info"><select class="variant_value_1"><option></option><option value="variant_value_add">+ Add new attribute</option>
-	                    	<?php foreach($variants as $variant){ ?>
-	                    	<option value="<?=$variant['MerchantVariant']['name'];?>"><?=$variant['MerchantVariant']['name'];?></option>
-	                    	<?php } ?>
-	                    	
-	                    	</select></div>
-	                    </div>
-	                    <div class="col-md-3 col-xs-3 col-sm-3">
-	                    	<h5><strong>Default value</strong></h5>
-	                    	<div class="info"><input type="text" class="variant_default_1"></div>
-	                    </div>
-                	</div>
-                	<span class="variant_add">Add Another Attribute</span>
+                    <div class="dashed-line-gr"></div>
+                    <div class="col-md-12 col-xs-12 col-sm-12">
+                        <div class="col-md-3 col-xs-3 col-sm-3">
+                            <h5><strong>Attribute</strong></h5>
+                            <div class="info"><select class="variant_value_1"><option></option><option value="variant_value_add">+ Add new attribute</option>
+                            <?php foreach($variants as $variant){ ?>
+                            <option value="<?=$variant['MerchantVariant']['name'];?>"><?=$variant['MerchantVariant']['name'];?></option>
+                            <?php } ?>
+                            
+                            </select></div>
+                        </div>
+                        <div class="col-md-3 col-xs-3 col-sm-3">
+                            <h5><strong>Default value</strong></h5>
+                            <div class="info"><input type="text" class="variant_default_1"></div>
+                        </div>
+                    </div>
+                    <span class="variant_add">Add Another Attribute</span>
                 </div>
               </div>
               <!-- END col-md-12-->
@@ -289,7 +289,7 @@
                   <dl class="form-group">
                     <dt class="col-md-3">Stock keeping unit</dt>
                     <dd class="col-md-9">
-                		<input type="text" class="form-control" id="sku" value="<?=$product['MerchantProduct']['sku'];?>">
+                        <input type="text" class="form-control" id="sku" value="<?=$product['MerchantProduct']['sku'];?>">
                     </dd>
                   </dl>
                   <dl class="form-group">
@@ -305,7 +305,7 @@
                 <!-- END col-md-6--> 
               </div>
               <div class="col-md-12 col-xs-12 col-sm-12" id="type_standard">
-              	<div class="line-box-stitle col-md-12 col-xs-12 col-sm-12">
+                  <div class="line-box-stitle col-md-12 col-xs-12 col-sm-12">
                   <dl class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                     <dt class="col-md-2">Stock Tracking</dt>
                     <dd class="col-md-10">
@@ -320,20 +320,20 @@
                   </div>
                   <div class="col-md-2 col-xs-4 col-sm-4">
                     <h5><strong>Current stock</strong></h5>
-                	<input type="text" class="form-control" id="stock_count">
+                    <input type="text" class="form-control" id="stock_count">
                   </div>
                   <div class="col-md-3 col-xs-4 col-sm-4">
                     <h5><strong>Re-order point</strong></h5>
-                	<input type="text" class="form-control">
+                    <input type="text" class="form-control">
                   </div>
                   <div class="col-md-3 col-xs-4 col-sm-4">
                     <h5><strong>Re-order amount</strong></h5>
-                	<input type="text" class="form-control">
+                    <input type="text" class="form-control">
                   </div>
                 </div>
               </div>
               <div class="col-md-12 col-xs-12 col-sm-12" id="type_composite" style="display:none;">
-              	<div class="line-box-stitle col-md-12 col-xs-12 col-sm-12">
+                  <div class="line-box-stitle col-md-12 col-xs-12 col-sm-12">
                   <dl class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                     <dt class="col-md-12">Composite products contained specified quantities of one or more standard products.</dt>
                   </dl>
@@ -341,45 +341,45 @@
                     <h5><strong>Product:</strong></h5>
                     <input type="search" id="composite_search" placeholder="Search Products">
                     <div class="search_result">
-                    	<span class="search-tri"></span>
-						<div class="search-default"> No Result </div>
-                    	<?php foreach($items as $item){ ?>
+                        <span class="search-tri"></span>
+                        <div class="search-default"> No Result </div>
+                        <?php foreach($items as $item){ ?>
                     
-                    	<button type="button" data-id="<?=$item['MerchantProduct']['id'];?>" class="data-found"><?=$item['MerchantProduct']['name'];?></button>
-                    	
-                    	<?php } ?>
-                    	 
+                        <button type="button" data-id="<?=$item['MerchantProduct']['id'];?>" class="data-found"><?=$item['MerchantProduct']['name'];?></button>
+                        
+                        <?php } ?>
+                         
                     </div>
                   </div>
                   <div class="col-md-2 col-xs-2 col-sm-2">
                     <h5><strong>Quantity:</strong></h5>
                     <div class="input-group">
-	                    <input type="number">
-	                    <span class="input-group-btn">
-	                    	<button type="button" id="composite_attr_add" class="btn btn-default" style="height:29px;padding-top:4px;">Add</button>
-	                    </span>
+                        <input type="number">
+                        <span class="input-group-btn">
+                            <button type="button" id="composite_attr_add" class="btn btn-default" style="height:29px;padding-top:4px;">Add</button>
+                        </span>
                     </div>
                   </div>
                   <div class="dashed-line-gr"></div>
                   
                   <div class="col-md-12 col-sm-12 col-xs-12 composite-attr">
-                  	<div class="col-md-4 col-sm-4 col-xs-4">
-                  	hello
-                  	</div>
-                  	<div class="col-md-2 col-xs-2 col-sm-2 col-alpha">
-		                <input type="number" class="form-control">
-		                <button type="button" class="btn remove remove_composite_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button>
-	                </div>
+                      <div class="col-md-4 col-sm-4 col-xs-4">
+                      hello
+                      </div>
+                      <div class="col-md-2 col-xs-2 col-sm-2 col-alpha">
+                        <input type="number" class="form-control">
+                        <button type="button" class="btn remove remove_composite_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button>
+                    </div>
                   </div>
                   
                   <div class="col-md-12 col-sm-12 col-xs-12 composite-attr">
-                  	<div class="col-md-4 col-sm-4 col-xs-4">
-                  	hello
-                  	</div>
-                  	<div class="col-md-2 col-xs-2 col-sm-2 col-alpha">
-		                <input type="number" class="form-control">
-		                <button type="button" class="btn remove remove_composite_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button>
-	                </div>
+                      <div class="col-md-4 col-sm-4 col-xs-4">
+                      hello
+                      </div>
+                      <div class="col-md-2 col-xs-2 col-sm-2 col-alpha">
+                        <input type="number" class="form-control">
+                        <button type="button" class="btn remove remove_composite_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button>
+                    </div>
                   </div>
                   
                 </div>
@@ -392,7 +392,7 @@
             <div class="col-md-12 margin-top-20 col-omega">
               <div class="pull-right">
                 <button type="button" class="btn btn-default btn-wide cancel margin-right-10">Cancel</button>
-				<button type="button" class="btn btn-primary btn-wide addProduct">Submit</button>
+                <button type="button" class="btn btn-primary btn-wide editProduct">Save</button>
               </div>
             </div>
           </div>
@@ -483,367 +483,365 @@ jQuery(document).ready(function() {
 </script> 
 <script>
 $(document).ready(function(){
-	$(document).on("keyup", "#supply_price", function(key){
-		 var code = key.keyCode || key.which;
-		 var clean = $(this).val().replace(/[^\d\.]/g, '');
-		 $(this).val(clean);
-		 if(code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8"){
-		 
-		 	$("#markup").val(($("#retail_price_exclude").val() - $(this).val()) / ($(this).val()) * 100);
-		 	
-		 }
-	});
-	$(document).on("keyup", "#markup", function(key){
-		 var code = key.keyCode || key.which;
-		 var clean = $(this).val().replace(/[^\d\.]/g, '');
-		 $(this).val(clean);
-		 if(code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8"){
-		 	var retail_exclude = parseFloat($("#supply_price").val()) * ($(this).val() / 100) + parseFloat($("#supply_price").val());
-		 	$("#retail_price_exclude").val(retail_exclude.toFixed(2));
-		 	$("#retail_price_include").val(parseFloat(retail_exclude * $("#sales_tax").val() + retail_exclude).toFixed(2));
-		 	$("#sales_tax_calc").val(parseFloat(retail_exclude * $("#sales_tax").val()).toFixed(2));
-		 }
-	});
-	$(document).on("keyup", "#retail_price_exclude", function(key){
-		 var code = key.keyCode || key.which;
-		 var clean = $(this).val().replace(/[^\d\.]/g, '');
-		 $(this).val(clean);
-		 if(code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8"){
-		 	var sales_tax = $(this).val() * $("#sales_tax").val();
-		 	$("#markup").val(parseFloat(($("#retail_price_exclude").val() - $("#supply_price").val()) * 100 / $("#supply_price").val()).toFixed(2));
-		 	$("#sales_tax_calc").val(parseFloat(sales_tax).toFixed(2));
-		 	$("#retail_price_include").val(parseFloat(sales_tax + parseFloat($(this).val())).toFixed(2));
-		 }
-	});
-	$(document).on("change", "#sales_tax", function(){
-		$("#sales_tax_calc").val(parseFloat($("#retail_price_exclude").val() * $(this).val()).toFixed(2));
-		$("#retail_price_include").val(parseFloat($("#retail_price_exclude").val() * $(this).val() + parseFloat($("#retail_price_exclude").val())).toFixed(2));
-		if($(".default_tax").is(":selected")){
-			$(".tax_info").show('slow');
-		} else {
-			$(".tax_info").hide('slow');
-		}
-	});
+    $(document).on("keyup", "#supply_price", function(key){
+         var code = key.keyCode || key.which;
+         var clean = $(this).val().replace(/[^\d\.]/g, '');
+         $(this).val(clean);
+         if(code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8"){
+         
+             $("#markup").val(($("#retail_price_exclude").val() - $(this).val()) / ($(this).val()) * 100);
+             
+         }
+    });
+    $(document).on("keyup", "#markup", function(key){
+         var code = key.keyCode || key.which;
+         var clean = $(this).val().replace(/[^\d\.]/g, '');
+         $(this).val(clean);
+         if(code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8"){
+             var retail_exclude = parseFloat($("#supply_price").val()) * ($(this).val() / 100) + parseFloat($("#supply_price").val());
+             $("#retail_price_exclude").val(retail_exclude.toFixed(2));
+             $("#retail_price_include").val(parseFloat(retail_exclude * $("#sales_tax").val() + retail_exclude).toFixed(2));
+             $("#sales_tax_calc").val(parseFloat(retail_exclude * $("#sales_tax").val()).toFixed(2));
+         }
+    });
+    $(document).on("keyup", "#retail_price_exclude", function(key){
+         var code = key.keyCode || key.which;
+         var clean = $(this).val().replace(/[^\d\.]/g, '');
+         $(this).val(clean);
+         if(code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8"){
+             var sales_tax = $(this).val() * $("#sales_tax").val();
+             $("#markup").val(parseFloat(($("#retail_price_exclude").val() - $("#supply_price").val()) * 100 / $("#supply_price").val()).toFixed(2));
+             $("#sales_tax_calc").val(parseFloat(sales_tax).toFixed(2));
+             $("#retail_price_include").val(parseFloat(sales_tax + parseFloat($(this).val())).toFixed(2));
+         }
+    });
+    $(document).on("change", "#sales_tax", function(){
+        $("#sales_tax_calc").val(parseFloat($("#retail_price_exclude").val() * $(this).val()).toFixed(2));
+        $("#retail_price_include").val(parseFloat($("#retail_price_exclude").val() * $(this).val() + parseFloat($("#retail_price_exclude").val())).toFixed(2));
+        if($(".default_tax").is(":selected")){
+            $(".tax_info").show('slow');
+        } else {
+            $(".tax_info").hide('slow');
+        }
+    });
 });
 </script>
 
 <script>
 $(document).ready(function(){
-	var variant_count = 2;
-	$(document).on('click','.variant_add',function(){
-		$(this).parent().parent().parent().append('<div class="col-md-12 col-sm-12 col-xs-12 variant_attr variant_added" style="margin-top:15px;"><div class="col-md-12 col-xs-12 col-sm-12"><div class="col-md-3 col-xs-3 col-sm-3"><div class="info"><select class="variant_value_'+variant_count+'"><option></option><option value="variant_value_add">+ Add new attribute</option><?php foreach($variants as $variant){ ?><option value="<?=$variant['MerchantVariant']['name'];?>"><?=$variant['MerchantVariant']['name'];?></option><?php } ?></select></div></div><div class="col-md-3 col-xs-3 col-sm-3"><div class="info"><input type="text" class="variant_default_'+variant_count+'"></div></div><div class="col-md-2 col-xs-2 col-sm-2"><button class="btn remove remove_variant_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button></div></div><div>'+ ($(".variant_attr").length >= 2 ? '<span class="variant_max">A product has a maximum of three variants.</span><span class="variant_add" style="display:none;">Add Another Attribute</span>':'<span class="variant_add">Add Another Attribute</span>') +'</div></div>');
-		$(this).hide();
-		variant_count++;
-	});
-	
-	$(document).on('click','.remove_variant_attr',function(){
-		$(this).parent().parent().parent().remove();
-		$(".variant_max").remove();
-		$(".variant_attr:last").children().children(".variant_add").show();
-		variant_count--;
-	});
+    var variant_count = 2;
+    $(document).on('click','.variant_add',function(){
+        $(this).parent().parent().parent().append('<div class="col-md-12 col-sm-12 col-xs-12 variant_attr variant_added" style="margin-top:15px;"><div class="col-md-12 col-xs-12 col-sm-12"><div class="col-md-3 col-xs-3 col-sm-3"><div class="info"><select class="variant_value_'+variant_count+'"><option></option><option value="variant_value_add">+ Add new attribute</option><?php foreach($variants as $variant){ ?><option value="<?=$variant['MerchantVariant']['name'];?>"><?=$variant['MerchantVariant']['name'];?></option><?php } ?></select></div></div><div class="col-md-3 col-xs-3 col-sm-3"><div class="info"><input type="text" class="variant_default_'+variant_count+'"></div></div><div class="col-md-2 col-xs-2 col-sm-2"><button class="btn remove remove_variant_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button></div></div><div>'+ ($(".variant_attr").length >= 2 ? '<span class="variant_max">A product has a maximum of three variants.</span><span class="variant_add" style="display:none;">Add Another Attribute</span>':'<span class="variant_add">Add Another Attribute</span>') +'</div></div>');
+        $(this).hide();
+        variant_count++;
+    });
+    
+    $(document).on('click','.remove_variant_attr',function(){
+        $(this).parent().parent().parent().remove();
+        $(".variant_max").remove();
+        $(".variant_attr:last").children().children(".variant_add").show();
+        variant_count--;
+    });
 
-	$(document).on('click','.remove_composite_attr',function(){
-		$(this).parent().parent().remove();
-	});
-	
-	$(document).on('change','#variant',function(){
-		
-		if($(this).is(":checked")){
-			$("#first_variant_attr").show();
-			$(".variant_add").show();
-		} else {
-			$("#first_variant_attr").hide();
-			$(".variant_added").remove();
-			$(".variant_value").val('');
-		}
-		
-	});
+    $(document).on('click','.remove_composite_attr',function(){
+        $(this).parent().parent().remove();
+    });
+    
+    $(document).on('change','#variant',function(){
+        
+        if($(this).is(":checked")){
+            $("#first_variant_attr").show();
+            $(".variant_add").show();
+        } else {
+            $("#first_variant_attr").hide();
+            $(".variant_added").remove();
+            $(".variant_value").val('');
+        }
+        
+    });
 
-	$(document).on('click','.type-add',function(){
-		$.ajax({
-			url: "/product/type.json",
-			type: "POST",
-			data: {
-				product_type_name: $(".type-name").val(),
-			}
-		}).done(function(result){
-			$("#product_type").append('<option value="'+result['id']+'">'+result['name']+'</option>');
-			$("#product_type").val(result['id']);
-		});
-	});
+    $(document).on('click','.type-add',function(){
+        $.ajax({
+            url: "/product/type.json",
+            type: "POST",
+            data: {
+                product_type_name: $(".type-name").val(),
+            }
+        }).done(function(result){
+            $("#product_type").append('<option value="'+result['id']+'">'+result['name']+'</option>');
+            $("#product_type").val(result['id']);
+        });
+    });
 
-	$(document).on('click','.brand-add',function(){
-		$.ajax({
-			url: "/product/brand.json",
-			type: "POST",
-			data: {
-				product_brand_name: $(".brand-name").val(),
-				product_brand_desc: $(".brand-description").val()
-			}
-		}).done(function(result){
-			$("#product_brand").append('<option value="'+result['id']+'">'+result['name']+'</option>');
-			$("#product_brand").val(result['id']);
-		});
-	});
+    $(document).on('click','.brand-add',function(){
+        $.ajax({
+            url: "/product/brand.json",
+            type: "POST",
+            data: {
+                product_brand_name: $(".brand-name").val(),
+                product_brand_desc: $(".brand-description").val()
+            }
+        }).done(function(result){
+            $("#product_brand").append('<option value="'+result['id']+'">'+result['name']+'</option>');
+            $("#product_brand").val(result['id']);
+        });
+    });
 
 
 
-	/* DYNAMIC TAG SETTING */
-	var FormSamples = function () {
-	
-	
-	    return {
-	        //main function to initiate the module
-	        init: function () {
-	        	var tags = [];
+    /* DYNAMIC TAG SETTING */
+    var FormSamples = function () {
+    
+    
+        return {
+            //main function to initiate the module
+            init: function () {
+                var tags = [];
 
-	            $(".select2_sample3").select2({
-	                tags: tags
-	            });
-	
-	        }
-	
-	    };
-	
-	}();
-	
-	FormSamples.init();
+                $(".select2_sample3").select2({
+                    tags: tags
+                });
+    
+            }
+    
+        };
+    
+    }();
+    
+    FormSamples.init();
 
-	/* DYNAMIC PROUCT SEARCH START */
-	
-	var $cells = $(".data-found");
-	$(".search_result").hide();
-	$(".search-default").hide();
+    /* DYNAMIC PROUCT SEARCH START */
+    
+    var $cells = $(".data-found");
+    $(".search_result").hide();
+    $(".search-default").hide();
 
-	$(document).on("keyup","#composite_search",function() {
-	    var val = $.trim(this.value).toUpperCase();
-	    if (val === ""){
-	        $(".search_result").hide();
-	    }
-	    else {
-	        $cells.hide();
-	        $(".search_result").show();
-	        var coffee = 0;
-	        $cells.filter(function() {
-	            return -1 != $(this).text().toUpperCase().indexOf(val);
-	        }).show("fast",function(){
-		        $(".search-default").hide();
-	        });
+    $(document).on("keyup","#composite_search",function() {
+        var val = $.trim(this.value).toUpperCase();
+        if (val === ""){
+            $(".search_result").hide();
+        }
+        else {
+            $cells.hide();
+            $(".search_result").show();
+            var coffee = 0;
+            $cells.filter(function() {
+                return -1 != $(this).text().toUpperCase().indexOf(val);
+            }).show("fast",function(){
+                $(".search-default").hide();
+            });
 
-	        if($(".search_result").height() == 0){
-	        	$(".search-default").show();
-	        }
-	    }
-	    
-	    $cells.click(function(){
-		   $("#composite_search").val($(this).text());
-		});
-	});
+            if($(".search_result").height() == 0){
+                $(".search-default").show();
+            }
+        }
+        
+        $cells.click(function(){
+           $("#composite_search").val($(this).text());
+        });
+    });
 
-	/* DYNAMIC PRODUCT SEARCH END */
+    /* DYNAMIC PRODUCT SEARCH END */
 
 
     /* PRODUCT ADD */
-   $(document).on('click','.addProduct',function(){
-	    $("#loader-wrapper").show();
-	    var name = $("#product_name").val();
-    	var handle = $("#product_handle").val();
-    	var type = $("#product_type").val();
-    	var brand = $("#product_brand").val();
-    	var description = $("#product_description").val();
-    	var image = "no-image.png";
-    	var sku = $("#sku").val();
-    	if($("#product_supplier").val() !== ""){
-	    	var supplier = $("#product_supplier").val();
-    	} else {
-	    	var supplier;
-    	}
-    	
-    	var supplier_code = $("#supplier_code").val();
-    	var supply_price = $("#supply_price").val();
-    	var retail_price = $("#retail_price_exclude").val();
-    	var tax_rate = $("#sales_tax").val();
-    	var tax = $("#sales_tax_calc").val();
-    	var tax_id = $('option:selected',"#sales_tax").attr("tax-id");
-    	var price_including_tax = $("#retail_price_include").val();
-    	var tags = $("input[type=hidden]").val().split(",");
-    	var stock_type = $("#stock_type").val();
-    	var stock_count = $("#stock_count").val();
-    	
-    	var variant_option_one_name = $(".variant_value_1").val();
-	    var variant_option_one_value = $(".variant_default_1").val();
-	    var variant_option_two_name = '';
-	    var variant_option_two_value = '';
-	    var variant_option_three_name = '';
-	    var variant_option_three_value = '';
-	    
-    	if($(".variant_value_2").val() !== undefined){
-	    	variant_option_two_name = $(".variant_value_2").val();
-	    	variant_option_two_value = $(".variant_default_2").val();
-    	}
-    	if($(".variant_value_3").val() !== undefined){
-	    	variant_option_three_name = $(".variant_value_3").val();
-	    	variant_option_three_value = $(".variant_default_3").val();
-    	}
-    	
-    	console.log(variant_option_one_name+', '+variant_option_one_value+'<br>'+variant_option_two_name+', '+variant_option_two_value+'<br>'+variant_option_three_name+', '+variant_option_three_value+'<br>');
-    	
-    	
-		$(".incorrect-message").remove();
-		$(".required").each(function(){
-			if($(this).val() == ""){
-				$(this).parent().addClass("incorrect");
-				$('<h5 class="incorrect-message"><i class="glyphicon glyphicon-remove-circle margin-right-5"></i>This field is required.</h5>').insertAfter($(this));
-			} else {
-				$(this).parent().removeClass("incorrect");
-			}
-		});
-		
-		if($(".incorrect").length == 0) {
-		
-	    	var created = moment().format("YYYY-MM-DD HH:mm");
-	    	var availability;
-	    	if($("#availability").attr('checked')){
-		    	availability = 1;
-	    	} else {
-		    	availability = 0;
-	    	}
-	    	var category;
-	    	$.ajax({
-		    	url: "/product/add.json",
-		    	type: "POST",
-		    	data: {
-		    		id: $("#product_id").val(),
-			    	name: name,
-			    	handle: handle,
-			    	product_type_id: type,
-			    	product_brand_id: brand,
-			    	supplier_id: supplier,
-			    	supplier_code: supplier_code,
-			    	supply_price: supply_price,
-			    	price: price_including_tax,
-			    	tax: tax,
-			    	tax_id: tax_id,
-			    	description: description,
-			    	image: image,
-			    	stock_type: stock_type,
-			    	sku: sku,
-			    	is_active: availability,
-			    	variant_option_one_name: variant_option_one_name,
-			    	variant_option_one_value: variant_option_one_value,
-			    	variant_option_two_name: variant_option_two_name,
-			    	variant_option_two_value: variant_option_two_value,
-			    	variant_option_three_name: variant_option_three_name,
-			    	variant_option_three_value: variant_option_three_value
-		    	},
-		    	async: false
-	    	}).done(function(result){
-		    	category = result['product_id'];
-	    	});
-	    	
-	    	var tagId;
-	    	
-	    	var tagArray = $("input[type=hidden]").val().split(",");
-	    	var i = 0;
-	    	$(tagArray).each(function(){
-		    	$.ajax({
-			    	url: "/product/tag.json",
-			    	type: 'POST',
-			    	data: {
-				    	name: tagArray[i]
-			    	},
-			    	async: false
-		    	}).done(function(result){
-		    		result['id'];
-		    		
-		    		$.ajax({
-			    		url: "/product/add_product_category.json",
-			    		type: "POST",
-			    		data: {
-				    		product_id: category,
-				    		product_tag_id: result['id']
-			    		}
-		    		}).done(function(){
-			    		window.location.href = "/product";
-		    		});
-		    		
-		    	});
-		    	i++;
-	    	});
-	    } else {
-		    $("html, body").animate({ scrollTop: 0 }, "slow");
-	    }
+   $(document).on('click','.editProduct',function(){
+        $("#loader-wrapper").show();
+        var name = $("#product_name").val();
+        var handle = $("#product_handle").val();
+        var type = $("#product_type").val();
+        var brand = $("#product_brand").val();
+        var description = $("#product_description").val();
+        var image = "no-image.png";
+        var sku = $("#sku").val();
+        if($("#product_supplier").val() !== ""){
+            var supplier = $("#product_supplier").val();
+        } else {
+            var supplier;
+        }
+        
+        var supplier_code = $("#supplier_code").val();
+        var supply_price = $("#supply_price").val();
+        var retail_price = $("#retail_price_exclude").val();
+        var tax_rate = $("#sales_tax").val();
+        var tax = $("#sales_tax_calc").val();
+        var tax_id = $('option:selected',"#sales_tax").attr("tax-id");
+        var price_including_tax = $("#retail_price_include").val();
+        var tags = $("input[type=hidden]").val().split(",");
+        var stock_type = $("#stock_type").val();
+        var stock_count = $("#stock_count").val();
+        
+        var variant_option_one_name = $(".variant_value_1").val();
+        var variant_option_one_value = $(".variant_default_1").val();
+        var variant_option_two_name = '';
+        var variant_option_two_value = '';
+        var variant_option_three_name = '';
+        var variant_option_three_value = '';
+        
+        if($(".variant_value_2").val() !== undefined){
+            variant_option_two_name = $(".variant_value_2").val();
+            variant_option_two_value = $(".variant_default_2").val();
+        }
+        if($(".variant_value_3").val() !== undefined){
+            variant_option_three_name = $(".variant_value_3").val();
+            variant_option_three_value = $(".variant_default_3").val();
+        }
+        
+        console.log(variant_option_one_name+', '+variant_option_one_value+'<br>'+variant_option_two_name+', '+variant_option_two_value+'<br>'+variant_option_three_name+', '+variant_option_three_value+'<br>');
+        
+        
+        $(".incorrect-message").remove();
+        $(".required").each(function(){
+            if($(this).val() == ""){
+                $(this).parent().addClass("incorrect");
+                $('<h5 class="incorrect-message"><i class="glyphicon glyphicon-remove-circle margin-right-5"></i>This field is required.</h5>').insertAfter($(this));
+            } else {
+                $(this).parent().removeClass("incorrect");
+            }
+        });
+        
+        if($(".incorrect").length == 0) {
+        
+            var created = moment().format("YYYY-MM-DD HH:mm");
+            var availability;
+            if($("#availability").attr('checked')){
+                availability = 1;
+            } else {
+                availability = 0;
+            }
+            var category;
+            $.ajax({
+                url: window.location,
+                type: "PUT",
+                data: {
+                    name: name,
+                    handle: handle,
+                    product_type_id: type,
+                    product_brand_id: brand,
+                    supplier_id: supplier,
+                    supplier_code: supplier_code,
+                    supply_price: supply_price,
+                    price: price_including_tax,
+                    tax: tax,
+                    tax_id: tax_id,
+                    description: description,
+                    image: image,
+                    stock_type: stock_type,
+                    sku: sku,
+                    is_active: availability,
+                    variant_option_one_name: variant_option_one_name,
+                    variant_option_one_value: variant_option_one_value,
+                    variant_option_two_name: variant_option_two_name,
+                    variant_option_two_value: variant_option_two_value,
+                    variant_option_three_name: variant_option_three_name,
+                    variant_option_three_value: variant_option_three_value
+                },
+            }).done(function(result){
+                category = result['product_id'];
+            });
+            
+            var tagId;
+            
+            var tagArray = $("input[type=hidden]").val().split(",");
+            var i = 0;
+            $(tagArray).each(function(){
+                $.ajax({
+                    url: "/product/tag.json",
+                    type: 'POST',
+                    data: {
+                        name: tagArray[i]
+                    },
+                    async: false
+                }).done(function(result){
+                    result['id'];
+                    
+                    $.ajax({
+                        url: "/product/add_product_category.json",
+                        type: "POST",
+                        data: {
+                            product_id: category,
+                            product_tag_id: result['id']
+                        }
+                    }).done(function(){
+                        window.location.href = "/product";
+                    });
+                    
+                });
+                i++;
+            });
+        } else {
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+        }
     });
-	
-	$(document).on("change","select",function(){
+    
+    $(document).on("change","select",function(){
 
-		if($("select option[value=add-type]").attr("selected")){
-			$.confirm({
-				title:'Add Product Type',
-				text:'<input type="text" class="type-name" placeholder="Type Name">',
-				confirmButton: "Add",
-				cancelButton: "Cancel",
-				cancel: function(button){
-					$("#product_type").val('');
-				},
-				confirmButtonClass: "type-add"
-			});
-		}
-		
-		if($("select option[value=add-brand]").attr("selected")){
-			$.confirm({
-				title:'Add Product Brand',
-				text:'<input type="text" class="brand-name" placeholder="Brand Name"><textarea placeholder="Brand Description" style="width:100%;" class="brand-description"></textarea>',
-				confirmButton: "Add",
-				cancelButton: "Cancel",
-				cancel: function(button){
-					$("#product_brand").val('');
-				},
-				confirmButtonClass: "brand-add"
-			});
-		}
-		
-		if($("select option[value=add-supplier]").attr("selected")){
-			$.confirm({
-				title:'Add Supplier',
-				text:'<input type="text" class="type-name" placeholder="Supplier Name">',
-				confirmButton: "Add",
-				cancelButton: "Cancel",
-				cancel: function(button){
-					$("#product_supplier").val('');
-				},
-				confirmButtonClass: "supplier-add"
-			});
-		}
-		
-		if($("select option[value=variant_value_add]").attr("selected")){
-			var selection = $(this);
-			$.confirm({
-				title:'Add Variant',
-				text:'<input type="text" class="variant-name" placeholder="Variant Name"><br><input type="text" class="variant-default_value" placeholder="Default Value">',
-				confirmButton: "Add",
-				cancelButton: "Cancel",
-				cancel: function(button){
-					selection.val('');
-				},
-				confirmButtonClass: "variant-add"
-			});
-		}
-		
-		if($("#stock_type").val() == 'standard'){
-			$("#type_standard").show();
-			$("#type_composite").hide();
-		} else {
-			$("#type_standard").hide();
-			$("#type_composite").show();
-		}
-		
-	});
-	
-	$(".cancel").click(function(){
-		parent.history.back();
-	});
+        if($("select option[value=add-type]").attr("selected")){
+            $.confirm({
+                title:'Add Product Type',
+                text:'<input type="text" class="type-name" placeholder="Type Name">',
+                confirmButton: "Add",
+                cancelButton: "Cancel",
+                cancel: function(button){
+                    $("#product_type").val('');
+                },
+                confirmButtonClass: "type-add"
+            });
+        }
+        
+        if($("select option[value=add-brand]").attr("selected")){
+            $.confirm({
+                title:'Add Product Brand',
+                text:'<input type="text" class="brand-name" placeholder="Brand Name"><textarea placeholder="Brand Description" style="width:100%;" class="brand-description"></textarea>',
+                confirmButton: "Add",
+                cancelButton: "Cancel",
+                cancel: function(button){
+                    $("#product_brand").val('');
+                },
+                confirmButtonClass: "brand-add"
+            });
+        }
+        
+        if($("select option[value=add-supplier]").attr("selected")){
+            $.confirm({
+                title:'Add Supplier',
+                text:'<input type="text" class="type-name" placeholder="Supplier Name">',
+                confirmButton: "Add",
+                cancelButton: "Cancel",
+                cancel: function(button){
+                    $("#product_supplier").val('');
+                },
+                confirmButtonClass: "supplier-add"
+            });
+        }
+        
+        if($("select option[value=variant_value_add]").attr("selected")){
+            var selection = $(this);
+            $.confirm({
+                title:'Add Variant',
+                text:'<input type="text" class="variant-name" placeholder="Variant Name"><br><input type="text" class="variant-default_value" placeholder="Default Value">',
+                confirmButton: "Add",
+                cancelButton: "Cancel",
+                cancel: function(button){
+                    selection.val('');
+                },
+                confirmButtonClass: "variant-add"
+            });
+        }
+        
+        if($("#stock_type").val() == 'standard'){
+            $("#type_standard").show();
+            $("#type_composite").hide();
+        } else {
+            $("#type_standard").hide();
+            $("#type_composite").show();
+        }
+        
+    });
+    
+    $(".cancel").click(function(){
+        parent.history.back();
+    });
 
 });
 </script> 

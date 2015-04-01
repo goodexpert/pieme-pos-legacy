@@ -2,202 +2,196 @@
 </div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
-	<!-- BEGIN SIDEBAR -->
-	<div class="page-sidebar-wrapper">
-		<!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
-		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-		<div class="page-sidebar navbar-collapse collapse">
-			<ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
-				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-				<!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
-				<li class="sidebar-search-wrapper">
-					<!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-					<!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-					<!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-					<form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
-						<a href="javascript:;" class="remove">
-						<i class="icon-close"></i>
-						</a>
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search...">
-							<span class="input-group-btn">
-							<button class="btn submit"><i class="icon-magnifier"></i></button>
-							</span>
-						</div>
-					</form>
-					<!-- END RESPONSIVE QUICK SEARCH FORM -->
-				</li>
-				<li class="active">
-					<a href="index">
-					Sell <span class="selected">
-					</span>
-					</a>
-				</li>
-				<li>
-					<a href="history">
-					History </a>
-				</li>
-			</ul>
-		</div>
-		<!-- END HORIZONTAL RESPONSIVE MENU -->
-	</div>
-	<!-- END SIDEBAR -->
-	<!-- BEGIN CONTENT -->
-	<div class="page-content-wrapper">
-		<div class="page-content">
-			<div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-				<h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">Add Customer</h2>
-			</div>
-			<div class="col-md-12 col-sm-12 col-xs-12">
-				<div class="line-box col-md-12 col-sm-12 col-xs-12">
-					<div class="col-md-6 col-sm-6 col-xs-6">
-						<dl class="pull-left">
-							<dt>Contact name</dt>
-							<dd>
-								<div class="col-md-6 col-sm-6 col-xs-6 col-alpha">
-									<input type="text" placeholder="First" class="name_first">
-								</div>
-								<div class="col-md-6 col-sm-6 col-xs-6 col-omega col-alpha">
-									<input type="text" placeholder="Last" class="name_last">
-								</div>
-							</dd>
-							<dt>Company</dt>
-							<dd><input type="text" class="company_name"></dd>
-							<dt>Customer code</dt>
-							<dd><input type="text" class="customer_code pull-left required"></dd>
-							<dt>Customer group</dt>
-							<dd><select class="customer_group">
-							<?php foreach($groups as $group){ ?>
-							
-								<option value="<?=$group['MerchantCustomerGroup']['id'];?>"><?=$group['MerchantCustomerGroup']['name'];?></option>
-							
-							<?php } ?>
-							</select></dd>
-						</dl>
-					</div>
-					<div class="col-md-6 col-sm-6 col-xs-6">
-						<dl>
-							<dt>Date of birth</dt>
-							<dd>
-								<div class="col-md-4 col-sm-4 col-xs-4 col-alpha">
-									<input type="text" class="customer_dd" placeholder="DD" maxlength="2">
-								</div>
-								<div class="col-md-4 col-sm-4 col-xs-4 col-alpha">
-									<input type="number" class="customer_mm" placeholder="MM" maxlength="2">
-								</div>
-								<div class="col-md-4 col-sm-4 col-xs-4 col-alpha">
-									<input type="number" class="customer_yyyy" placeholder="YYYY" maxlength="4">
-								</div>
-							</dd>
-							<dt>Gender</dt> 
-							<dd>
-								<div class="col-md-6 col-sm-6 col-xs-6 col-alpha">
-									<input type="radio" id="female" value="F" name="gender"><label for="female"> Female</label>
-								</div>
-								<div class="col-md-6 col-sm-6 col-xs-6 col-alpha">
-									<input type="radio" id="male" value="M" name="gender"><label for="male"> Male</label>
-								</div>
-							</dd>
-						</dl>
-					</div>
-				</div>
-			<div class="col-md-12 col-sm-12 col-xs-12 margin-top-20">
-				<div class="line-box col-md-12 col-sm-12 col-xs-12">
-					<div class="col-md-6 col-sm-6 col-xs-6">
-						<dl>
-							<dt>Phone</dt>
-							<dd><input type="text" class="phone"></dd>
-							<dt>Mobile</dt>
-							<dd><input type="text" class="mobile"></dd>
-						</dl>
-					</div>
-					<div class="col-md-6 col-sm-6 col-xs-6">
-						<dl>
-							<dt>Email</dt>
-							<dd><input type="email" class="email"></dd>
-							<dt>Website</dt>
-							<dd><input type="text" class="website"></dd>
-						</dl>
-					</div>
-				</div>
-			</div>
-			
-			<div class="col-md-12 col-sm-12 col-xs-12 margin-top-20">
-				<div class="line-box col-md-12 col-sm-12 col-xs-12">
-					<div class="col-md-6 col-sm-6 col-xs-6">
-						<div class="line-box-stitle">Physical Address</div>
-						<dl>
-							<dt>Street</dt>
-							<dd><input type="text" class="physical_street_1"></dd>
-							<dt>Street</dt>
-							<dd><input type="text" class="physical_street_2"></dd>
-							<dt>Suburb</dt>
-							<dd><input type="text" class="physical_suburb"></dd>
-							<dt>City</dt>
-							<dd><input type="text" class="physical_city"></dd>
-							<dt>Physical postcode</dt>
-							<dd><input type="text" class="physical_postcode"></dd>
-							<dt>State</dt>
-							<dd><input type="text" class="physical_state"></dd>
-							<dt>Country</dt>
-							<dd><select class="physical_country"><option>Select a country</option><option value="1">NZ</option></select></dd>
-						</dl>
-					</div>
-					<div class="col-md-6 col-sm-6 col-xs-6">
-						<div class="line-box-stitle">Postal Address
-							<span class="clickable same_as_physical pull-right btn btn-default">Same as Physical Address</span>
-						</div>
-						<dl>
-							<dt>Street</dt>
-							<dd><input type="text" class="postal_street_1"></dd>
-							<dt>Street</dt>
-							<dd><input type="text" class="postal_street_2"></dd>
-							<dt>Suburb</dt>
-							<dd><input type="text" class="postal_suburb"></dd>
-							<dt>City</dt>
-							<dd><input type="text" class="postal_city"></dd>
-							<dt>Physical postcode</dt>
-							<dd><input type="text" class="postal_postcode"></dd>
-							<dt>State</dt>
-							<dd><input type="text" class="postal_state"></dd>
-							<dt>Country</dt>
-							<dd><select class="postal_country"><option>Select a country</option><option value="1">NZ</option></select></dd>
-						</dl>
-					</div>
-				</div>
-			</div>
-			
-			<div class="col-md-12 col-sm-12 col-xs-12 margin-top-20">
-				<div class="line-box col-md-12 col-sm-12 col-xs-12">
-					<div class="col-md-6 col-sm-6 col-xs-6">
-						<dl>
-							<dt>Custom Field 1</dt>
-							<dd><input type="text" class="customer_field_1"></dd>
-							<dt>Custom Field 2</dt>
-							<dd><input type="text" class="customer_field_2"></dd>
-							<dt>Custom Field 3</dt>
-							<dd><input type="text" class="customer_field_3"></dd>
-							<dt>Custom Field 4</dt>
-							<dd><input type="text" class="customer_field_4"></dd>
-						</dl>
-					</div>
-					<div class="col-md-6 col-sm-6 col-xs-6">
-						<dl>
-							<dt>Note</dt>
-							<dd><textarea class="customer_note" rows="5" style="width:100%;"></textarea></dd>
-						</dl>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
-				<button class="btn btn-primary btn-wide save pull-right">Save</button>
-				<button class="btn btn-default btn-wide pull-right margin-right-10">Cancel</button>
-			</div>
-		</div>
-	</div>
-	<!-- END CONTENT -->
-	<!-- BEGIN QUICK SIDEBAR -->
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper">
+        <!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
+        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+        <div class="page-sidebar navbar-collapse collapse">
+            <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+                <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
+                <li class="sidebar-search-wrapper">
+                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+                    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
+                    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                    <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
+                        <a href="javascript:;" class="remove">
+                        <i class="icon-close"></i>
+                        </a>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                            <button class="btn submit"><i class="icon-magnifier"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <!-- END RESPONSIVE QUICK SEARCH FORM -->
+                </li>
+                <li class="active">
+                    <a href="index">
+                    Sell <span class="selected">
+                    </span>
+                    </a>
+                </li>
+                <li>
+                    <a href="history">
+                    History </a>
+                </li>
+            </ul>
+        </div>
+        <!-- END HORIZONTAL RESPONSIVE MENU -->
+    </div>
+    <!-- END SIDEBAR -->
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">Add Customer</h2>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="line-box col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <dl class="pull-left">
+                            <dt>Contact name</dt>
+                            <dd>
+                                <div class="col-md-6 col-sm-6 col-xs-6 col-alpha">
+                                    <input type="text" placeholder="First" class="name_first">
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-6 col-omega col-alpha">
+                                    <input type="text" placeholder="Last" class="name_last">
+                                </div>
+                            </dd>
+                            <dt>Company</dt>
+                            <dd><input type="text" class="company_name"></dd>
+                            <dt>Customer code</dt>
+                            <dd><input type="text" class="customer_code pull-left required"></dd>
+                            <dt>Customer group</dt>
+                            <dd><select class="customer_group">
+                            <?php foreach($groups as $group){ ?>
+                            
+                                <option value="<?=$group['MerchantCustomerGroup']['id'];?>"><?=$group['MerchantCustomerGroup']['name'];?></option>
+                            
+                            <?php } ?>
+                            </select></dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <dl>
+                            <dt>Date of birth</dt>
+                            <dd>
+                                <div class="col-md-4 col-sm-4 col-xs-4 col-alpha">
+                                    <input type="text" class="customer_dd" placeholder="DD" maxlength="2">
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-4 col-alpha">
+                                    <input type="number" class="customer_mm" placeholder="MM" maxlength="2">
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-4 col-alpha">
+                                    <input type="number" class="customer_yyyy" placeholder="YYYY" maxlength="4">
+                                </div>
+                            </dd>
+                            <dt>Gender</dt> 
+                            <dd>
+                                <div class="col-md-6 col-sm-6 col-xs-6 col-alpha">
+                                    <input type="radio" id="female" value="F" name="gender"><label for="female"> Female</label>
+                                </div>
+                                <div class="col-md-6 col-sm-6 col-xs-6 col-alpha">
+                                    <input type="radio" id="male" value="M" name="gender"><label for="male"> Male</label>
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+                <div class="line-box col-md-12 col-sm-12 col-xs-12 margin-top-20">
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <dl>
+                            <dt>Phone</dt>
+                            <dd><input type="text" class="phone"></dd>
+                            <dt>Mobile</dt>
+                            <dd><input type="text" class="mobile"></dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <dl>
+                            <dt>Email</dt>
+                            <dd><input type="email" class="email"></dd>
+                            <dt>Website</dt>
+                            <dd><input type="text" class="website"></dd>
+                        </dl>
+                    </div>
+                </div>
+            
+                <div class="line-box col-md-12 col-sm-12 col-xs-12 margin-top-20">
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <div class="line-box-stitle">Physical Address</div>
+                        <dl>
+                            <dt>Street</dt>
+                            <dd><input type="text" class="physical_street_1"></dd>
+                            <dt>Street</dt>
+                            <dd><input type="text" class="physical_street_2"></dd>
+                            <dt>Suburb</dt>
+                            <dd><input type="text" class="physical_suburb"></dd>
+                            <dt>City</dt>
+                            <dd><input type="text" class="physical_city"></dd>
+                            <dt>Physical postcode</dt>
+                            <dd><input type="text" class="physical_postcode"></dd>
+                            <dt>State</dt>
+                            <dd><input type="text" class="physical_state"></dd>
+                            <dt>Country</dt>
+                            <dd><select class="physical_country"><option>Select a country</option><option value="1">NZ</option></select></dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <div class="line-box-stitle">Postal Address
+                            <span class="clickable same_as_physical pull-right btn btn-default">Same as Physical Address</span>
+                        </div>
+                        <dl>
+                            <dt>Street</dt>
+                            <dd><input type="text" class="postal_street_1"></dd>
+                            <dt>Street</dt>
+                            <dd><input type="text" class="postal_street_2"></dd>
+                            <dt>Suburb</dt>
+                            <dd><input type="text" class="postal_suburb"></dd>
+                            <dt>City</dt>
+                            <dd><input type="text" class="postal_city"></dd>
+                            <dt>Physical postcode</dt>
+                            <dd><input type="text" class="postal_postcode"></dd>
+                            <dt>State</dt>
+                            <dd><input type="text" class="postal_state"></dd>
+                            <dt>Country</dt>
+                            <dd><select class="postal_country"><option>Select a country</option><option value="1">NZ</option></select></dd>
+                        </dl>
+                    </div>
+                </div>
+            
+                <div class="line-box col-md-12 col-sm-12 col-xs-12 margin-top-20">
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <dl>
+                            <dt>Custom Field 1</dt>
+                            <dd><input type="text" class="customer_field_1"></dd>
+                            <dt>Custom Field 2</dt>
+                            <dd><input type="text" class="customer_field_2"></dd>
+                            <dt>Custom Field 3</dt>
+                            <dd><input type="text" class="customer_field_3"></dd>
+                            <dt>Custom Field 4</dt>
+                            <dd><input type="text" class="customer_field_4"></dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6 col-sm-6 col-xs-6">
+                        <dl>
+                            <dt>Note</dt>
+                            <dd><textarea class="customer_note" rows="5" style="width:100%;"></textarea></dd>
+                        </dl>
+                    </div>
+                </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
+                <button class="btn btn-primary btn-wide save pull-right">Save</button>
+                <button class="btn btn-default btn-wide pull-right margin-right-10">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <!-- END CONTENT -->
+    <!-- BEGIN QUICK SIDEBAR -->
     <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
     <div class="page-quick-sidebar-wrapper">
         <div class="page-quick-sidebar">            
@@ -298,13 +292,13 @@ jQuery(document).ready(function() {
    Index.init();
    
    $(document).on("click",".same_as_physical",function(){
-	  $(".postal_street_1").val($(".physical_street_1").val());
-	  $(".postal_street_2").val($(".physical_street_2").val());
-	  $(".postal_suburb").val($(".physical_suburb").val());
-	  $(".postal_city").val($(".physical_city").val());
-	  $(".postal_postcode").val($(".physical_postcode").val());
-	  $(".postal_state").val($(".physical_state").val());
-	  $(".postal_country").val($(".physical_country").val());
+      $(".postal_street_1").val($(".physical_street_1").val());
+      $(".postal_street_2").val($(".physical_street_2").val());
+      $(".postal_suburb").val($(".physical_suburb").val());
+      $(".postal_city").val($(".physical_city").val());
+      $(".postal_postcode").val($(".physical_postcode").val());
+      $(".postal_state").val($(".physical_state").val());
+      $(".postal_country").val($(".physical_country").val());
    });
    
 });
@@ -314,64 +308,64 @@ jQuery(document).ready(function() {
 <script>
 
 $(".save").click(function(){
-	var gender;
-	$("input[type=radio]").each(function(){
-		if($(this).attr("checked")){
-			gender = $(this).val();
-		}
-	});
-	
-	$(".required").each(function(){
-		if($(this).val() == ""){
-			$(this).parent().addClass("incorrect");
-			$('<h5 class="incorrect-message"><i class="glyphicon glyphicon-remove-circle margin-right-5"></i>This field is required.</h5>').insertAfter($(this));
-		} else {
-			$(this).parent().removeClass("incorrect");
-		}
-	});
-	
-	if($(".incorrect").length == 0) {
-		$.ajax({
-			url: '/customer/add',
-			type: 'POST',
-			data: {
-			    company_name: $(".company_name").val(),
-			    first_name: $(".name_first").val(),
-			    last_name: $(".name_last").val(),
-			    birthday: $(".customer_yyyy").val()+'-'+$(".customer_mm").val()+'-'+$(".customer_dd").val(),
-			    phone: $(".phone").val(),
-			    mobile: $(".mobile").val(),
-			    email: $(".email").val(),
-			    website: $(".website").val(),
-			    physical_address_1: $(".physical_street_1").val(),
-			    physical_address_2: $(".physical_street_2").val(),
-			    physical_suburb: $(".physical_suburb").val(),
-			    physical_city: $(".physical_city").val(),
-			    physical_state: $(".physical_state").val(),
-			    physical_postcode: $(".physical_postcode").val(),
-			    physical_country: $(".physical_country").val(),
-			    postal_address_1: $(".postal_street_1").val(),
-			    postal_address_2: $(".postal_street_2").val(),
-			    postal_suburb: $(".postal_suburb").val(),
-			    postal_city: $(".postal_city").val(),
-			    postal_state: $(".postal_state").val(),
-			    postal_postcode: $(".postal_postcode").val(),
-			    postal_country: $(".postal_country").val(),
-			    customer_group_id: $(".customer_group").val(),
-			    customer_code: $(".customer_code").val(),
-			    name: $(".name_first").val() +' '+ $(".name_last").val(),
-			    gender: gender,
-			    user_field_1: $(".customer_field_1").val(),
-			    user_field_2: $(".customer_field_2").val(),
-			    user_field_3: $(".customer_field_3").val(),
-			    user_field_4: $(".customer_field_4").val(),
-			    note: $(".customer_note").val()
-			}
-		}).done(function(){
-			window.location.href = "/customer";
-		});
-	} else {
-		$("html, body").animate({ scrollTop: 0 }, "slow");
-	}
+    var gender;
+    $("input[type=radio]").each(function(){
+        if($(this).attr("checked")){
+            gender = $(this).val();
+        }
+    });
+    
+    $(".required").each(function(){
+        if($(this).val() == ""){
+            $(this).parent().addClass("incorrect");
+            $('<h5 class="incorrect-message"><i class="glyphicon glyphicon-remove-circle margin-right-5"></i>This field is required.</h5>').insertAfter($(this));
+        } else {
+            $(this).parent().removeClass("incorrect");
+        }
+    });
+    
+    if($(".incorrect").length == 0) {
+        $.ajax({
+            url: '/customer/add',
+            type: 'POST',
+            data: {
+                company_name: $(".company_name").val(),
+                first_name: $(".name_first").val(),
+                last_name: $(".name_last").val(),
+                birthday: $(".customer_yyyy").val()+'-'+$(".customer_mm").val()+'-'+$(".customer_dd").val(),
+                phone: $(".phone").val(),
+                mobile: $(".mobile").val(),
+                email: $(".email").val(),
+                website: $(".website").val(),
+                physical_address_1: $(".physical_street_1").val(),
+                physical_address_2: $(".physical_street_2").val(),
+                physical_suburb: $(".physical_suburb").val(),
+                physical_city: $(".physical_city").val(),
+                physical_state: $(".physical_state").val(),
+                physical_postcode: $(".physical_postcode").val(),
+                physical_country: $(".physical_country").val(),
+                postal_address_1: $(".postal_street_1").val(),
+                postal_address_2: $(".postal_street_2").val(),
+                postal_suburb: $(".postal_suburb").val(),
+                postal_city: $(".postal_city").val(),
+                postal_state: $(".postal_state").val(),
+                postal_postcode: $(".postal_postcode").val(),
+                postal_country: $(".postal_country").val(),
+                customer_group_id: $(".customer_group").val(),
+                customer_code: $(".customer_code").val(),
+                name: $(".name_first").val() +' '+ $(".name_last").val(),
+                gender: gender,
+                user_field_1: $(".customer_field_1").val(),
+                user_field_2: $(".customer_field_2").val(),
+                user_field_3: $(".customer_field_3").val(),
+                user_field_4: $(".customer_field_4").val(),
+                note: $(".customer_note").val()
+            }
+        }).done(function(){
+            window.location.href = "/customer";
+        });
+    } else {
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+    }
 });
 </script>

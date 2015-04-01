@@ -4,106 +4,106 @@
 </div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
-	<div id="notify"></div>
-	<!-- BEGIN SIDEBAR -->
-	<div class="page-sidebar-wrapper">
-		<!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
-		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-		<div class="page-sidebar navbar-collapse collapse">
-			<ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
-				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-				<!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
-				<li class="sidebar-search-wrapper">
-					<!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-					<!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-					<!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-					<form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
-						<a href="javascript:;" class="remove">
-						<i class="icon-close"></i>
-						</a>
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search...">
-							<span class="input-group-btn">
-							<button class="btn submit"><i class="icon-magnifier"></i></button>
-							</span>
-						</div>
-					</form>
-					<!-- END RESPONSIVE QUICK SEARCH FORM -->
-				</li>
-				<li>
-					<a href="index">
-					Sell
-					</a>
-				</li>
-				<li>
-					<a href="history">
-					History </a>
-				</li>
-				<li class="active">
-					<a href="history">
-					Product <span class="selected">
-					</span>
-					</a>
-				</li>
-			</ul>
-		</div>
-		<!-- END HORIZONTAL RESPONSIVE MENU -->
-	</div>
-	<!-- END SIDEBAR -->
-	<!-- BEGIN CONTENT -->
-	<div class="page-content-wrapper">
-		<div class="page-content">
-			<div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-bottom-20">
-				<h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
-					New Payment Type
-				</h2>
-			</div>
-			<div class="col-md-12 col-xs-12 col-sm-12 form-title">Detail</div>
-			<div class="line-box line-box-content col-md-12 col-sm-12 col-xs-12">
-            	<div class="col-md-6">
+    <div id="notify"></div>
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper">
+        <!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
+        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+        <div class="page-sidebar navbar-collapse collapse">
+            <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+                <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
+                <li class="sidebar-search-wrapper">
+                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+                    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
+                    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                    <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
+                        <a href="javascript:;" class="remove">
+                        <i class="icon-close"></i>
+                        </a>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                            <button class="btn submit"><i class="icon-magnifier"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <!-- END RESPONSIVE QUICK SEARCH FORM -->
+                </li>
+                <li>
+                    <a href="index">
+                    Sell
+                    </a>
+                </li>
+                <li>
+                    <a href="history">
+                    History </a>
+                </li>
+                <li class="active">
+                    <a href="history">
+                    Product <span class="selected">
+                    </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- END HORIZONTAL RESPONSIVE MENU -->
+    </div>
+    <!-- END SIDEBAR -->
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-bottom-20">
+                <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
+                    New Payment Type
+                </h2>
+            </div>
+            <div class="col-md-12 col-xs-12 col-sm-12 form-title">Detail</div>
+            <div class="line-box line-box-content col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-6">
                        <dl>
                          <dt>Payment type</dt>
                          <dd>
                             <select>
-								<optgroup label="General"><option value="1">Cash</option>
-									<option value="2">Cheque</option>
-									<option value="3">Credit Card</option>
-									<option value="4">EFTPOS</option>
-									<option value="9">Finance</option>
-									<option value="10">Voucher</option>
-									<option value="11">Credit Note</option>
-									<option value="101">Cash (Concealed totals)</option>
-								</optgroup>
-								<optgroup label="Integrated"><option value="5">Integrated EFTPOS (DPS)</option>
-									<option value="8">Square</option>
-									<option value="102">Element</option>
-									<option value="103">PayPal</option>
-									<option value="105">Authorize.Net</option>
-									<option value="108">Tyro</option>
-									<option value="111">iZettle</option>
-									<option value="114">Smartpay</option>
-								</optgroup>
-							</select>
+                                <optgroup label="General"><option value="1">Cash</option>
+                                    <option value="2">Cheque</option>
+                                    <option value="3">Credit Card</option>
+                                    <option value="4">EFTPOS</option>
+                                    <option value="9">Finance</option>
+                                    <option value="10">Voucher</option>
+                                    <option value="11">Credit Note</option>
+                                    <option value="101">Cash (Concealed totals)</option>
+                                </optgroup>
+                                <optgroup label="Integrated"><option value="5">Integrated EFTPOS (DPS)</option>
+                                    <option value="8">Square</option>
+                                    <option value="102">Element</option>
+                                    <option value="103">PayPal</option>
+                                    <option value="105">Authorize.Net</option>
+                                    <option value="108">Tyro</option>
+                                    <option value="111">iZettle</option>
+                                    <option value="114">Smartpay</option>
+                                </optgroup>
+                            </select>
                         </dd>
                          <dt>Name</dt>
                          <dd>
-                          	<input type="text">
+                              <input type="text">
                          </dd>
-                  	</dl>
+                      </dl>
                 </div>
                 <div class="col-md-6">
-					
-              	</div>
-			</div>
-			<div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
-				<button class="btn btn-primary btn-wide save pull-right">Save</button>
-				<button class="btn btn-default btn-wide pull-right margin-right-10">Cancel</button>
-			</div>
-		</div>
-	</div>
-	<!-- END CONTENT -->
-	<!-- BEGIN QUICK SIDEBAR -->
+                    
+                  </div>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
+                <button class="btn btn-primary btn-wide save pull-right">Save</button>
+                <button class="btn btn-default btn-wide pull-right margin-right-10">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <!-- END CONTENT -->
+    <!-- BEGIN QUICK SIDEBAR -->
     <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
     <div class="page-quick-sidebar-wrapper">
         <div class="page-quick-sidebar">            

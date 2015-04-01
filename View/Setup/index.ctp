@@ -248,38 +248,38 @@
               </div>
           </div>
         </div>
-		<div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
-			<button class="btn btn-primary btn-wide save pull-right">Save</button>
-			<button class="btn btn-default btn-wide pull-right margin-right-10">Cancel</button>
-		</div>
-		</div>
+        <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
+            <button class="btn btn-primary btn-wide save pull-right">Save</button>
+            <button class="btn btn-default btn-wide pull-right margin-right-10">Cancel</button>
+        </div>
+        </div>
     </div>
   </div>
-	<!-- ADD TAX POPUP BOX -->
-	<div id="popup-add_tax" class="confirmation-modal modal fade in" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;">
-	    <div class="modal-dialog">
-	        <div class="modal-content">
-	            <div class="modal-header">
-	                <button type="button" class="confirm-close" data-dismiss="modal" aria-hidden="true">
-	                <i class="glyphicon glyphicon-remove"></i>
-	                </button>
-	                <h4 class="modal-title">Add New Sales Tax</h4>
-	            </div>
-	            <div class="modal-body">
-	                <dl>
-	                    <dt>Tax name</dt>
-	                    <dd><input type="text" id="tax_name"></dd>
-	                    <dt>Tax rate (%)</dt>
-	                    <dd><input type="text" id="tax_rate"></dd>
-	            </div>
-	            <div class="modal-footer">
-	                <button class="btn btn-primary confirm-close">Cancel</button>
-	                <button class="btn btn-success submit">Add</button>
-	            </div>
-	        </div>
-	    </div>
-	</div>
-	<!-- ADD TAX POPUP BOX END -->
+    <!-- ADD TAX POPUP BOX -->
+    <div id="popup-add_tax" class="confirmation-modal modal fade in" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="confirm-close" data-dismiss="modal" aria-hidden="true">
+                    <i class="glyphicon glyphicon-remove"></i>
+                    </button>
+                    <h4 class="modal-title">Add New Sales Tax</h4>
+                </div>
+                <div class="modal-body">
+                    <dl>
+                        <dt>Tax name</dt>
+                        <dd><input type="text" id="tax_name"></dd>
+                        <dt>Tax rate (%)</dt>
+                        <dd><input type="text" id="tax_rate"></dd>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary confirm-close">Cancel</button>
+                    <button class="btn btn-success submit">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ADD TAX POPUP BOX END -->
   <!-- END CONTENT --> 
   <!-- BEGIN QUICK SIDEBAR --> 
   <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
@@ -362,8 +362,8 @@ jQuery(document).ready(function() {
 
    $('#merchant_default_tax_id').on('change', function(e) {
        if ($(this).val() == 'add-new') {
-	       $("#popup-add_tax").show();
-	       $(".modal-backdrop").show();
+           $("#popup-add_tax").show();
+           $(".modal-backdrop").show();
        }
    });
    
@@ -375,20 +375,20 @@ jQuery(document).ready(function() {
     });
 
     $(".submit").click(function(){
-	    var tax_rate = $("#tax_rate").val().replace(/%/,'');
-		$.ajax({
-		  url: '/taxes/add.json',
-		  type: 'POST',
-		  data: {
-			  name: $("#tax_name").val(),
-			  rate: tax_rate / 100
-		  }
-		}).done(function(msg){
-			$("#merchant_default_tax_id").prepend('<option value="'+msg['id']+'">'+msg['data']['name']+' ('+msg['data']['rate']*100+'%)</option>');
-			$("#merchant_default_tax_id").val(msg['id']);
-			$("#popup-add_tax").hide();
-			$(".modal-backdrop").hide();
-		});
+        var tax_rate = $("#tax_rate").val().replace(/%/,'');
+        $.ajax({
+          url: '/taxes/add.json',
+          type: 'POST',
+          data: {
+              name: $("#tax_name").val(),
+              rate: tax_rate / 100
+          }
+        }).done(function(msg){
+            $("#merchant_default_tax_id").prepend('<option value="'+msg['id']+'">'+msg['data']['name']+' ('+msg['data']['rate']*100+'%)</option>');
+            $("#merchant_default_tax_id").val(msg['id']);
+            $("#popup-add_tax").hide();
+            $(".modal-backdrop").hide();
+        });
     });
 
    $('.same_as_physical').on('click', function(e) {
@@ -396,45 +396,45 @@ jQuery(document).ready(function() {
    });
    
    $(".save").click(function(){
-	   $.ajax({
-		  url: '/setup/edit.json',
-		  type: 'PUT',
-		  data: {
-			  name: $("#merchant_name").val(),
-			  domain_prefix: $("#merchant_domain_prefix").val(),
-			  default_currency: $("#merchant_default_currency").val(),
-			  time_zone: $("#merchant_time_zone").val(),
-			  display_price_tax_inclusive: $("#merchant_display_price_tax_inclusive").val(),
-			  default_tax_id: $("#merchant_default_tax_id").val(),
-			  label_printer_format: $("#merchant_label_printer_formant").val(),
-			  use_sku_sequence: $("#merchant_use_sku_sequence").val(),
-			  sku_sequence: $("#merchant_sku_sequence").val(),
-			  switching_security: $("#merchant_switching_security").val(),
-			  allow_cashier_discount: $("#merchant_allow_cashier_discount").val(),
-			  first_name: $("#merchant_contact_first_name").val(),
-			  last_name: $("#merchant_contact_last_name").val(),
-			  email: $("#merchant_contact_email").val(),
-			  phone: $("#merchant_contact_phone").val(),
-			  website: $("#merchant_contact_website").val(),
-			  physical_address1: $("#merchant_contact_physical_address1").val(),
-			  physical_address2: $("#merchant_contact_physical_address2").val(),
-			  physical_suburb: $("#merchant_contact_physical_suburb").val(),
-			  physical_city: $("#merchant_contact_physical_city").val(),
-			  physical_postcode: $("#merchant_contact_physical_postcode").val(),
-			  physical_state: $("#merchant_contact_physical_state").val(),
-			  physical_country_id: $("#merchant_contact_physical_country_id").val(),
-			  postal_address1: $("#merchant_contact_postal_address1").val(),
-			  postal_address2: $("#merchant_contact_postal_address2").val(),
-			  postal_suburb: $("#merchant_contact_postal_suburb").val(),
-			  postal_city: $("#merchant_contact_postal_city").val(),
-			  postal_postcode: $("#merchant_contact_postal_postcode").val(),
-			  postal_state: $("#merchant_contact_postal_state").val(),
-			  postal_country_id: $("#merchant_contact_postal_country_id").val(),
-		  } 
-	   }).done(function(msg){
-		   console.log(msg);
-	   });
-	   console.log("clicked");
+       $.ajax({
+          url: '/setup/edit.json',
+          type: 'PUT',
+          data: {
+              name: $("#merchant_name").val(),
+              domain_prefix: $("#merchant_domain_prefix").val(),
+              default_currency: $("#merchant_default_currency").val(),
+              time_zone: $("#merchant_time_zone").val(),
+              display_price_tax_inclusive: $("#merchant_display_price_tax_inclusive").val(),
+              default_tax_id: $("#merchant_default_tax_id").val(),
+              label_printer_format: $("#merchant_label_printer_formant").val(),
+              use_sku_sequence: $("#merchant_use_sku_sequence").val(),
+              sku_sequence: $("#merchant_sku_sequence").val(),
+              switching_security: $("#merchant_switching_security").val(),
+              allow_cashier_discount: $("#merchant_allow_cashier_discount").val(),
+              first_name: $("#merchant_contact_first_name").val(),
+              last_name: $("#merchant_contact_last_name").val(),
+              email: $("#merchant_contact_email").val(),
+              phone: $("#merchant_contact_phone").val(),
+              website: $("#merchant_contact_website").val(),
+              physical_address1: $("#merchant_contact_physical_address1").val(),
+              physical_address2: $("#merchant_contact_physical_address2").val(),
+              physical_suburb: $("#merchant_contact_physical_suburb").val(),
+              physical_city: $("#merchant_contact_physical_city").val(),
+              physical_postcode: $("#merchant_contact_physical_postcode").val(),
+              physical_state: $("#merchant_contact_physical_state").val(),
+              physical_country_id: $("#merchant_contact_physical_country_id").val(),
+              postal_address1: $("#merchant_contact_postal_address1").val(),
+              postal_address2: $("#merchant_contact_postal_address2").val(),
+              postal_suburb: $("#merchant_contact_postal_suburb").val(),
+              postal_city: $("#merchant_contact_postal_city").val(),
+              postal_postcode: $("#merchant_contact_postal_postcode").val(),
+              postal_state: $("#merchant_contact_postal_state").val(),
+              postal_country_id: $("#merchant_contact_postal_country_id").val(),
+          } 
+       }).done(function(msg){
+           console.log(msg);
+       });
+       console.log("clicked");
    });
 });
 

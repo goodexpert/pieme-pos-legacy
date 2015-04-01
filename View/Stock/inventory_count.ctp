@@ -1,11 +1,11 @@
 <style>
 .order-product-header {
-	background: #eee;
-	margin-bottom: 20px;
-	padding: 10px 15px;
+    background: #eee;
+    margin-bottom: 20px;
+    padding: 10px 15px;
 }
 .line-box {
-	padding: 0;
+    padding: 0;
 }
 </style>
 
@@ -13,125 +13,154 @@
 </div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
-	<div id="notify"></div>
-	<!-- BEGIN SIDEBAR -->
-	<div class="page-sidebar-wrapper">
-		<!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
-		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-		<div class="page-sidebar navbar-collapse collapse">
-			<ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
-				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-				<!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
-				<li class="sidebar-search-wrapper">
-					<!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-					<!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-					<!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-					<form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
-						<a href="javascript:;" class="remove">
-						<i class="icon-close"></i>
-						</a>
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search...">
-							<span class="input-group-btn">
-							<button class="btn submit"><i class="icon-magnifier"></i></button>
-							</span>
-						</div>
-					</form>
-					<!-- END RESPONSIVE QUICK SEARCH FORM -->
-				</li>
-				<li>
-					<a href="index">
-					Sell
-					</a>
-				</li>
-				<li>
-					<a href="history">
-					History </a>
-				</li>
-				<li class="active">
-					<a href="history">
-					Product <span class="selected">
-					</span>
-					</a>
-				</li>
-			</ul>
-		</div>
-		<!-- END HORIZONTAL RESPONSIVE MENU -->
-	</div>
-	<!-- END SIDEBAR -->
-	<!-- BEGIN CONTENT -->
-	<div class="page-content-wrapper">
-		<div class="page-content">
-			<div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-				<div class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
-					<h2>
-						Inventory Count
-					</h2>
-					<h5>Create, schedule and complete counts to keep track of your inventory.</h5>
-				</div>
-				<div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
-    				<a href="/inventory_count/create">
-    					<button id="" class="btn btn-white pull-right" style="color:black">
-                        	<div class="glyphicon glyphicon-plus"></div>&nbsp;
+    <div id="notify"></div>
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper">
+        <!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
+        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+        <div class="page-sidebar navbar-collapse collapse">
+            <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+                <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
+                <li class="sidebar-search-wrapper">
+                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+                    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
+                    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                    <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
+                        <a href="javascript:;" class="remove">
+                        <i class="icon-close"></i>
+                        </a>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                            <button class="btn submit"><i class="icon-magnifier"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <!-- END RESPONSIVE QUICK SEARCH FORM -->
+                </li>
+                <li>
+                    <a href="index">
+                    Sell
+                    </a>
+                </li>
+                <li>
+                    <a href="history">
+                    History </a>
+                </li>
+                <li class="active">
+                    <a href="history">
+                    Product <span class="selected">
+                    </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- END HORIZONTAL RESPONSIVE MENU -->
+    </div>
+    <!-- END SIDEBAR -->
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                <div class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
+                    <h2>
+                        Inventory Count
+                    </h2>
+                    <h5>Create, schedule and complete counts to keep track of your inventory.</h5>
+                </div>
+                <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
+                    <a href="/inventory_count/create">
+                        <button id="" class="btn btn-white pull-right" style="color:black">
+                            <div class="glyphicon glyphicon-plus"></div>&nbsp;
                         New inventory count</button>
                     </a>
-				</div>
-			</div>
-			<div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-				<div class="inventory-content">
-					<div class="inventory-tab">
-						<ul>
-							<li class="active">Due</li>
-							<li>Upcoming</li>
-							<li>Completed</li>
-							<li>Cancelled</li>
-						</ul>
-					</div>
-					<div class="inventory-Due">
-						<table id="productTable" class="table-bordered dataTable">
-							<colgroup>
-								<col width="5%">
-								<col width="55%">
-								<col width="20%">
-								<col width="20%">
-							</colgroup>
-							<thead>
-								<tr role="row">
-									<th><input type="checkbox" value="1" checked=""></th>
-									<th>INVENTORY COUNT</th>
-									<th>OUTLET</th>
-									<th>COUNT</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr role="row" class="odd">
-									<td> </td>
-									<td>
-										<p>Main Outlet 25-03-2015 3:00 PM <span class="text-bg-blue">In progress</span></p>
-										<h6>25 Mar 2015</h6>
-									</td>
-									<td>Main Outlet</td>
-									<td>Full</td>
-								</tr>
-								<tr role="row" class="even">
-									<td> </td>
-									<td>
-										<p>Main Outlet 25-03-2015 3:00 PM <span class="text-bg-blue">In progress</span></p>
-										<h6>25 Mar 2015</h6>
-									</td>
-									<td>Main Outlet</td>
-									<td>Full</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- END CONTENT -->
-	<!-- BEGIN QUICK SIDEBAR -->
+                </div>
+            </div>
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                <div class="inventory-content">
+                    <div class="inventory-tab">
+                        <ul>
+                            <li class="active">Due</li>
+                            <li>Upcoming</li>
+                            <li>Completed</li>
+                            <li>Cancelled</li>
+                        </ul>
+                    </div>
+                    <div class="inventory-Due">
+                        <table id="productTable" class="table-bordered dataTable">
+                            <colgroup>
+                                <col width="5%">
+                                <col width="55%">
+                                <col width="20%">
+                                <col width="20%">
+                            </colgroup>
+                            <thead>
+                                <tr role="row">
+                                    <th><input type="checkbox" value="1" checked=""></th>
+                                    <th>INVENTORY COUNT</th>
+                                    <th>OUTLET</th>
+                                    <th>COUNT</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!--
+                                <tr role="row" class="odd">
+                                    <td> </td>
+                                    <td>
+                                        <p>Main Outlet 25-03-2015 3:00 PM <span class="text-bg-blue">In progress</span></p>
+                                        <h6>25 Mar 2015</h6>
+                                    </td>
+                                    <td>Main Outlet</td>
+                                    <td>Full</td>
+                                </tr>
+                                <tr role="row" class="even">
+                                    <td> </td>
+                                    <td>
+                                        <p>Main Outlet 25-03-2015 3:00 PM <span class="text-bg-blue">In progress</span></p>
+                                        <h6>25 Mar 2015</h6>
+                                    </td>
+                                    <td>Main Outlet</td>
+                                    <td>Full</td>
+                                </tr>
+                                -->
+                                <?php
+                                    if ( count($orders) > 0 ):
+                                        foreach ($orders as $order):
+                                ?>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <p>
+                                            <?php echo $order['MerchantStockOrder']['name']; ?>
+                                            <?php if ( $order['MerchantStockOrder']['status'] == 'STOCKTAKE' ): ?>
+                                            <span class="text-bg-blue">In progress</span>
+                                            <?php endif; ?>
+                                        </p>
+                                    </td>
+                                    <td><?php echo $order['MerchantOutlet']['name']; ?></td>
+                                    <td></td>
+                                </tr>
+                                <?php
+                                        endforeach;
+                                    else:
+                                ?>
+                                <tr>
+                                    <td colspan="4">There is no data ...</td>
+                                </tr>
+                                <?php
+                                    endif;
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END CONTENT -->
+    <!-- BEGIN QUICK SIDEBAR -->
     <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
     <div class="page-quick-sidebar-wrapper">
         <div class="page-quick-sidebar">            
@@ -228,10 +257,10 @@
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script>
 jQuery(document).ready(function() {    
-	Metronic.init(); // init metronic core componets
-	Layout.init(); // init layout
-	QuickSidebar.init() // init quick sidebar
-	Index.init();
+    Metronic.init(); // init metronic core componets
+    Layout.init(); // init layout
+    QuickSidebar.init() // init quick sidebar
+    Index.init();
 });
 </script>
 <!-- END JAVASCRIPTS -->

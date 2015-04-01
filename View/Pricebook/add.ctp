@@ -2,58 +2,58 @@
 </div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
-	<div id="notify"></div>
-	<!-- BEGIN SIDEBAR -->
-	<div class="page-sidebar-wrapper">
-		<!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
-		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-		<div class="page-sidebar navbar-collapse collapse">
-			<ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
-				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-				<!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
-				<li class="sidebar-search-wrapper">
-					<!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-					<!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-					<!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-					<form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
-						<a href="javascript:;" class="remove">
-						<i class="icon-close"></i>
-						</a>
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search...">
-							<span class="input-group-btn">
-							<button class="btn submit"><i class="icon-magnifier"></i></button>
-							</span>
-						</div>
-					</form>
-					<!-- END RESPONSIVE QUICK SEARCH FORM -->
-				</li>
-				<li>
-					<a href="index">
-					Sell
-					</a>
-				</li>
-				<li>
-					<a href="history">
-					History </a>
-				</li>
-				<li class="active">
-					<a href="history">
-					Product <span class="selected">
-					</span>
-					</a>
-				</li>
-			</ul>
-		</div>
-		<!-- END HORIZONTAL RESPONSIVE MENU -->
-	</div>
-	<!-- END SIDEBAR -->
-	<!-- BEGIN CONTENT -->
-	<div class="page-content-wrapper">
-		<div class="page-content">
-			<h3>New Price Book</h3>
-			<div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">Detail</div>
+    <div id="notify"></div>
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper">
+        <!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
+        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+        <div class="page-sidebar navbar-collapse collapse">
+            <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+                <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
+                <li class="sidebar-search-wrapper">
+                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+                    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
+                    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                    <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
+                        <a href="javascript:;" class="remove">
+                        <i class="icon-close"></i>
+                        </a>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                            <button class="btn submit"><i class="icon-magnifier"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <!-- END RESPONSIVE QUICK SEARCH FORM -->
+                </li>
+                <li>
+                    <a href="index">
+                    Sell
+                    </a>
+                </li>
+                <li>
+                    <a href="history">
+                    History </a>
+                </li>
+                <li class="active">
+                    <a href="history">
+                    Product <span class="selected">
+                    </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- END HORIZONTAL RESPONSIVE MENU -->
+    </div>
+    <!-- END SIDEBAR -->
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <h3>New Price Book</h3>
+            <div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">Detail</div>
             <div class="line-box line-box-content col-md-12 col-sm-12 col-xs-12">
                 <div class="price_book_details">
                     <div class="col-md-6">
@@ -77,7 +77,7 @@
                           <dt>Valid from</dt>
                           <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-							<input type="text" id="valid_from">
+                            <input type="text" id="valid_from">
                           </dd>
                           <dt>Valid to</dt>
                           <dd>
@@ -90,59 +90,59 @@
                             <input type="button" class="btn btn-white btn-right general selecetd col-md-6" value="general">
                           </dd>
                         </dl>
-                	</div>
+                    </div>
                 </div>
                 <div class="price_book_general" style="display:none;">
-					<div class="dashed-line"></div>
+                    <div class="dashed-line"></div>
                     <h2>General</h2>
-					<div class="margin-bottom-20 col-md-12 col-alpha col-omega">
-						<dl class="col-md-6">
-							<dt>Markup</dt>
-							<dd><input type="text"></dd>
-							<dt>Discount</dt>
-							<dd><input type="text"></dd>
-						</dl>
-						<dl class="col-md-6">
-							<dt>Min. Units</dt>
-							<dd><input type="number"></dd>
-							<dt>Max. Unites</dt>
-							<dd><input type="number"></dd>
-						</dl>
-					</div>
+                    <div class="margin-bottom-20 col-md-12 col-alpha col-omega">
+                        <dl class="col-md-6">
+                            <dt>Markup</dt>
+                            <dd><input type="text"></dd>
+                            <dt>Discount</dt>
+                            <dd><input type="text"></dd>
+                        </dl>
+                        <dl class="col-md-6">
+                            <dt>Min. Units</dt>
+                            <dd><input type="number"></dd>
+                            <dt>Max. Unites</dt>
+                            <dd><input type="number"></dd>
+                        </dl>
+                    </div>
                 </div>
                 <div class="price_book_individual">
-					<div class="dashed-line"></div>
+                    <div class="dashed-line"></div>
                     <h2>Individual</h2>
-					<div class="margin-bottom-20 price_book_individual-search">
-						<input type="search" id="search" placeholder="Search Products">
-						<div class="search_result">
-							<span class="search-tri"></span>
-							<?php foreach($items as $item){ ?>
-						
-							<button type="button" data-id="<?=$item['MerchantProduct']['id'];?>" data-supply_price="<?=$item['MerchantProduct']['supply_price'];?>" data-price="<?=$item['MerchantProduct']['price'];?>" data-tax="<?=$item['MerchantProduct']['tax'];?>" class="data-found"><?=$item['MerchantProduct']['name'];?>
-							</button>
-							
-							<?php } ?>
-						</div>
-					</div>
+                    <div class="margin-bottom-20 price_book_individual-search">
+                        <input type="search" id="search" placeholder="Search Products">
+                        <div class="search_result">
+                            <span class="search-tri"></span>
+                            <?php foreach($items as $item){ ?>
+                        
+                            <button type="button" data-id="<?=$item['MerchantProduct']['id'];?>" data-supply_price="<?=$item['MerchantProduct']['supply_price'];?>" data-price="<?=$item['MerchantProduct']['price'];?>" data-tax="<?=$item['MerchantProduct']['tax'];?>" class="data-found"><?=$item['MerchantProduct']['name'];?>
+                            </button>
+                            
+                            <?php } ?>
+                        </div>
+                    </div>
                     <!-- DATA HOLDER START -->
                     <input type="hidden" class="data-name">
                     <input type="hidden" class="data-supply_price">
                     <input type="hidden" class="data-handle">
                     <!-- DATA HOLDER END -->
                     <table class="table table-bordered dataTable">
-					  <colgroup>
-							<col width="15%">
-							<col width="10%">
-							<col width="10%">
-							<col width="10%">
-							<col width="10%">
-							<col width="10%">
-							<col width="10%">
-							<col width="10%">
-							<col width="10%">
-							<col width="5%">
-					  </colgroup>
+                      <colgroup>
+                            <col width="15%">
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="10%">
+                            <col width="5%">
+                      </colgroup>
                           <thead>
                             <tr>
                                 <th>Product</th>
@@ -172,16 +172,16 @@
                             </tr>
                         </tbody>
                     </table>
-           		</div>
-			</div>   
+                   </div>
+            </div>   
             <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
-				<button class="btn btn-primary btn-wide save pull-right">Save</button>
-				<button class="btn btn-default btn-wide pull-right margin-right-10">Cancel</button>
-			</div>
-		</div>
-	</div>
-	<!-- END CONTENT -->
-	<!-- BEGIN QUICK SIDEBAR -->
+                <button class="btn btn-primary btn-wide save pull-right">Save</button>
+                <button class="btn btn-default btn-wide pull-right margin-right-10">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <!-- END CONTENT -->
+    <!-- BEGIN QUICK SIDEBAR -->
     <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
     <div class="page-quick-sidebar-wrapper">
         <div class="page-quick-sidebar">            
@@ -289,47 +289,47 @@ jQuery(document).ready(function() {
    $("#valid_to").datepicker();
    
    $(".general").click(function(){
-	  $(".price_book_general").show('bounce');
-	  $(".price_book_individual").hide();
+      $(".price_book_general").show('bounce');
+      $(".price_book_individual").hide();
    });
    $(".individual").click(function(){
-	  $(".price_book_general").hide();
-	  $(".price_book_individual").show('bounce');
+      $(".price_book_general").hide();
+      $(".price_book_individual").show('bounce');
    });
    
-	$(document).on("click",".data-found",function(){
-		
-		$("tbody").append('<tr><td>'+$(this).text()+'</td><td>'+$(this).attr("data-supply_price")+'</td><td><input type="text"></td><td><input type="text"></td><td>'+($(this).attr("data-price")*(1-$(this).attr("data-tax"))).toFixed(2)+'</td><td>'+($(this).attr("data-price")*$(this).attr("data-tax")).toFixed(2)+'</td><td><input type="text" value="'+$(this).attr("data-price")+'"></td><td><input type="number"></td><td><input type="number"></td><td><div class="clickable remove"><i class="glyphicon glyphicon-remove"></i></div></td></tr>');
-		
-	});
-	/* DYNAMIC PROUCT SEARCH START */
+    $(document).on("click",".data-found",function(){
+        
+        $("tbody").append('<tr><td>'+$(this).text()+'</td><td>'+$(this).attr("data-supply_price")+'</td><td><input type="text"></td><td><input type="text"></td><td>'+($(this).attr("data-price")*(1-$(this).attr("data-tax"))).toFixed(2)+'</td><td>'+($(this).attr("data-price")*$(this).attr("data-tax")).toFixed(2)+'</td><td><input type="text" value="'+$(this).attr("data-price")+'"></td><td><input type="number"></td><td><input type="number"></td><td><div class="clickable remove"><i class="glyphicon glyphicon-remove"></i></div></td></tr>');
+        
+    });
+    /* DYNAMIC PROUCT SEARCH START */
 
    var $cells = $(".data-found");
    $cells.hide();
    $(".search_result").hide();
 
    $(document).on("keyup","#search",function() {
-	    var val = $.trim(this.value).toUpperCase();
-	    if (val === "")
-	        $cells.hide();
-	    else {
-	        $cells.hide();
-	        $(".search_result").show();
-	        $cells.filter(function() {
-	            return -1 != $(this).text().toUpperCase().indexOf(val);
-	        }).show();
-	        
-	    }
-	    $cells.click(function(){
-		   $("#search").val($(this).text());
-		});
-	});
-	
-	/* DYNAMIC PRODUCT SEARCH END */
-	
-	$(document).on("click",".remove",function() {
-		$(this).parent().parent().remove();
-	});
+        var val = $.trim(this.value).toUpperCase();
+        if (val === "")
+            $cells.hide();
+        else {
+            $cells.hide();
+            $(".search_result").show();
+            $cells.filter(function() {
+                return -1 != $(this).text().toUpperCase().indexOf(val);
+            }).show();
+            
+        }
+        $cells.click(function(){
+           $("#search").val($(this).text());
+        });
+    });
+    
+    /* DYNAMIC PRODUCT SEARCH END */
+    
+    $(document).on("click",".remove",function() {
+        $(this).parent().parent().remove();
+    });
 });
 </script>
 
@@ -340,8 +340,8 @@ function indexedDBOk() {
     return "indexedDB" in window;
 }
 document.addEventListener("DOMContentLoaded", function(){
-	var openRequest = indexedDB.open("emcor");
-	openRequest.onupgradeneeded = function(e) {
+    var openRequest = indexedDB.open("emcor");
+    openRequest.onupgradeneeded = function(e) {
         var thisDB = e.target.result;
     }
     
@@ -352,56 +352,56 @@ document.addEventListener("DOMContentLoaded", function(){
         
         
         $(".save").click(function(){
-	       var openPriceBook = db.transaction(["price_book"],"readwrite").objectStore("price_book");
-	       var bookData = {
-		       name: $("#price_book_name").val(),
-		       valid_from: $("#valid_from").val(),
-		       valid_to: $("#valid_to").val()
-	       }
-	       openPriceBook.add(bookData).onsuccess = function(e){
-		       console.log(e);
-	       }
+           var openPriceBook = db.transaction(["price_book"],"readwrite").objectStore("price_book");
+           var bookData = {
+               name: $("#price_book_name").val(),
+               valid_from: $("#valid_from").val(),
+               valid_to: $("#valid_to").val()
+           }
+           openPriceBook.add(bookData).onsuccess = function(e){
+               console.log(e);
+           }
         });
         
         
         
         var productStore = db.transaction(["products"],"readwrite").objectStore("products");
         productStore.openCursor().onsuccess = function(e) {
-	        
-	        var product = e.target.result;
-	        
-	        if(product){
-	        	$(".search_result").append('<button type="button" data-id="'+product.value.id+'" data-supply_price="'+product.value.supply_price+'" data-price="'+product.value.price_including_tax+'" data-tax="'+product.value.tax_rate+'" class="data-found">'+product.value.name+'</button>');
-	        	product.continue();
-	        } else {
-	        
-		       /* DYNAMIC PROUCT SEARCH START */
+            
+            var product = e.target.result;
+            
+            if(product){
+                $(".search_result").append('<button type="button" data-id="'+product.value.id+'" data-supply_price="'+product.value.supply_price+'" data-price="'+product.value.price_including_tax+'" data-tax="'+product.value.tax_rate+'" class="data-found">'+product.value.name+'</button>');
+                product.continue();
+            } else {
+            
+               /* DYNAMIC PROUCT SEARCH START */
    
-			   var $cells = $(".data-found");
-			   $cells.hide();
-			
-			   $(document).on("keyup","#search",function() {
-				    var val = $.trim(this.value).toUpperCase();
-				    if (val === "")
-				        $cells.hide();
-				    else {
-				        $cells.hide();
-				        $cells.filter(function() {
-				            return -1 != $(this).text().toUpperCase().indexOf(val); }).show();
-				    }
-				    $cells.click(function(){
-					   $("#search").val($(this).text());
-					});
-				});
-				
-				/* DYNAMIC PRODUCT SEARCH END */
-				
-				
-				$(document).on("click",".remove",function() {
-					$(this).parent().parent().remove();
-				});
-				
-	        }
+               var $cells = $(".data-found");
+               $cells.hide();
+            
+               $(document).on("keyup","#search",function() {
+                    var val = $.trim(this.value).toUpperCase();
+                    if (val === "")
+                        $cells.hide();
+                    else {
+                        $cells.hide();
+                        $cells.filter(function() {
+                            return -1 != $(this).text().toUpperCase().indexOf(val); }).show();
+                    }
+                    $cells.click(function(){
+                       $("#search").val($(this).text());
+                    });
+                });
+                
+                /* DYNAMIC PRODUCT SEARCH END */
+                
+                
+                $(document).on("click",".remove",function() {
+                    $(this).parent().parent().remove();
+                });
+                
+            }
         }
         
                 

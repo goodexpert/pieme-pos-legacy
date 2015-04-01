@@ -2,126 +2,126 @@
 </div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
-	<!-- BEGIN SIDEBAR -->
-	<div class="page-sidebar-wrapper">
-		<!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
-		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-		<div class="page-sidebar navbar-collapse collapse">
-			<ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
-				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-				<!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
-				<li class="sidebar-search-wrapper">
-					<!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-					<!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-					<!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-					<form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
-						<a href="javascript:;" class="remove">
-						<i class="icon-close"></i>
-						</a>
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search...">
-							<span class="input-group-btn">
-							<button class="btn submit"><i class="icon-magnifier"></i></button>
-							</span>
-						</div>
-					</form>
-					<!-- END RESPONSIVE QUICK SEARCH FORM -->
-				</li>
-				<li>
-					<a href="index">
-					Sell
-					</a>
-				</li>
-				<li>
-					<a href="history">
-					History </a>
-				</li>
-				<li class="active">
-					<a href="history">
-					Product <span class="selected"></span>
-					</a>
-				</li>
-			</ul>
-		</div>
-		<!-- END HORIZONTAL RESPONSIVE MENU -->
-	</div>
-	<!-- END SIDEBAR -->
-	<!-- BEGIN CONTENT -->
-	<div class="page-content-wrapper">
-		<div class="page-content">
-			<div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-				<h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
-					View Receipt
-				</h2>
-				<div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
-					<button id="import" class="btn btn-white pull-right print">
-                    	<div class="glyphicon glyphicon-print"></div>&nbsp;
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper">
+        <!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
+        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+        <div class="page-sidebar navbar-collapse collapse">
+            <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+                <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
+                <li class="sidebar-search-wrapper">
+                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+                    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
+                    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                    <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
+                        <a href="javascript:;" class="remove">
+                        <i class="icon-close"></i>
+                        </a>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                            <button class="btn submit"><i class="icon-magnifier"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <!-- END RESPONSIVE QUICK SEARCH FORM -->
+                </li>
+                <li>
+                    <a href="index">
+                    Sell
+                    </a>
+                </li>
+                <li>
+                    <a href="history">
+                    History </a>
+                </li>
+                <li class="active">
+                    <a href="history">
+                    Product <span class="selected"></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- END HORIZONTAL RESPONSIVE MENU -->
+    </div>
+    <!-- END SIDEBAR -->
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
+                    View Receipt
+                </h2>
+                <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
+                    <button id="import" class="btn btn-white pull-right print">
+                        <div class="glyphicon glyphicon-print"></div>&nbsp;
                     print</button>
-				</div>
-			</div>
-			<div class="receipt-parent col-md-12 col-xs-12 col-sm-12">
-				<div class="col-md-12 col-xs-12 col-sm-12">
-					<div class="receipt-pos">
-						<span class="receipt-pos-inner"></span>
-					</div>
-				</div>
-				<div id="receipt" class="receipt-content">
-					  <div class="col-md-12 col-xs-12 col-sm-12 show-amount">
-						<div class="receipt-header">
-							<h2>ONZSA</h2>
-						</div>
-						<div class="dashed-line-gr"></div>
-						<div class="receipt-body">
-							<div class="receipt-body-customer">
-								<?php if($sales[0]['RegisterSale']['customer_id'] !== null){ ?>
-								<span class="receipt-customer-name">customer name</span><br>
-								<?php } ?>
-								<span class="receupt-customer-region">New Zealand</span>
-							</div>
-							<h4 class="receipt-body-type">
-								Receipt / Tax Invoice
-							</h4>
-							<div class="receipt-body-info">
-								Invoice #: <span class="invoice-id"><?=$_GET['r'];?></span><br>
-								<span class="invoice-date"><?=$sales[0]['RegisterSale']['sale_date'];?></span><br>
-								Served by: sales person on register: Register
-							</div>
-							<div class="dashed-line-gr"></div>
-							<div class="col-md-12 col-xs-12 col-sm-12 col-omega col-alpha receipt-body-sales">
-								<table class="col-md-12 col-xs-12 col-sm-12 col-omega col-alpha receipt-product-table">
-									<?php foreach($sales[0]['RegisterSaleItem'] as $item){ ?>
-									<tr>
-										<td class="receipt-product-qty"><?=$item['quantity'];?></td>
-										<td class="receipt-product-name"><?=$item['MerchantProduct']['name'];?></td>
-										<td class="receipt-price pull-right">$<?=number_format($item['price'],2,'.','');?></td>
-									</tr>
-									<?php } ?>
-								</table>
-								<div class="dashed-line-gr"></div>
-								<table class="col-md-12 col-xs-12 col-sm-12 col-omega col-alpha receipt-product-table-total">
-									<tr>
-										<th>Subtotal</th>
-										<td class="total-amount receipt-subtotal pull-right">$<?=$sales[0]['RegisterSale']['total_price'] - $sales[0]['RegisterSale']['total_tax'];?></td>
-									</tr>
-									<tr>
-										<th>Tax (GST)</th>
-										<td class="total-amount receipt-tax pull-right">$<?=number_format($sales[0]['RegisterSale']['total_tax'],3,'.','');?></td>
-									</tr>
-									<tr>
-										<th>TOTAL</th>
-										<td class="total-amount receipt-total pull-right">$<?=number_format($sales[0]['RegisterSale']['total_price'],2,'.','');?></td>
-									</tr>
-								</table>
-							</div>
-						</div>
-					 </div>
-					<div class="receipt-bt"></div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- BEGIN QUICK SIDEBAR -->
+                </div>
+            </div>
+            <div class="receipt-parent col-md-12 col-xs-12 col-sm-12">
+                <div class="col-md-12 col-xs-12 col-sm-12">
+                    <div class="receipt-pos">
+                        <span class="receipt-pos-inner"></span>
+                    </div>
+                </div>
+                <div id="receipt" class="receipt-content">
+                      <div class="col-md-12 col-xs-12 col-sm-12 show-amount">
+                        <div class="receipt-header">
+                            <h2>ONZSA</h2>
+                        </div>
+                        <div class="dashed-line-gr"></div>
+                        <div class="receipt-body">
+                            <div class="receipt-body-customer">
+                                <?php if($sales[0]['RegisterSale']['customer_id'] !== null){ ?>
+                                <span class="receipt-customer-name">customer name</span><br>
+                                <?php } ?>
+                                <span class="receupt-customer-region">New Zealand</span>
+                            </div>
+                            <h4 class="receipt-body-type">
+                                Receipt / Tax Invoice
+                            </h4>
+                            <div class="receipt-body-info">
+                                Invoice #: <span class="invoice-id"><?=$_GET['r'];?></span><br>
+                                <span class="invoice-date"><?=$sales[0]['RegisterSale']['sale_date'];?></span><br>
+                                Served by: sales person on register: Register
+                            </div>
+                            <div class="dashed-line-gr"></div>
+                            <div class="col-md-12 col-xs-12 col-sm-12 col-omega col-alpha receipt-body-sales">
+                                <table class="col-md-12 col-xs-12 col-sm-12 col-omega col-alpha receipt-product-table">
+                                    <?php foreach($sales[0]['RegisterSaleItem'] as $item){ ?>
+                                    <tr>
+                                        <td class="receipt-product-qty"><?=$item['quantity'];?></td>
+                                        <td class="receipt-product-name"><?=$item['MerchantProduct']['name'];?></td>
+                                        <td class="receipt-price pull-right">$<?=number_format($item['price'],2,'.','');?></td>
+                                    </tr>
+                                    <?php } ?>
+                                </table>
+                                <div class="dashed-line-gr"></div>
+                                <table class="col-md-12 col-xs-12 col-sm-12 col-omega col-alpha receipt-product-table-total">
+                                    <tr>
+                                        <th>Subtotal</th>
+                                        <td class="total-amount receipt-subtotal pull-right">$<?=$sales[0]['RegisterSale']['total_price'] - $sales[0]['RegisterSale']['total_tax'];?></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Tax (GST)</th>
+                                        <td class="total-amount receipt-tax pull-right">$<?=number_format($sales[0]['RegisterSale']['total_tax'],3,'.','');?></td>
+                                    </tr>
+                                    <tr>
+                                        <th>TOTAL</th>
+                                        <td class="total-amount receipt-total pull-right">$<?=number_format($sales[0]['RegisterSale']['total_price'],2,'.','');?></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                     </div>
+                    <div class="receipt-bt"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- BEGIN QUICK SIDEBAR -->
     <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
     <div class="page-quick-sidebar-wrapper">
         <div class="page-quick-sidebar">            
@@ -226,10 +226,10 @@ jQuery(document).ready(function() {
 
 <script>
 $(document).ready(function(){
-	$(".print").click(function(){
-		$("#receipt").jqprint();
-		return false;
-	});
+    $(".print").click(function(){
+        $("#receipt").jqprint();
+        return false;
+    });
 });
 </script>
 <script>

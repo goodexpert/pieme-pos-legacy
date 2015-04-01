@@ -2,95 +2,95 @@
 </div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
-	<div id="notify"></div>
-	<!-- BEGIN SIDEBAR -->
-	<div class="page-sidebar-wrapper">
-		<!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
-		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-		<div class="page-sidebar navbar-collapse collapse">
-			<ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
-				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-				<!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
-				<li class="sidebar-search-wrapper">
-					<!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-					<!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-					<!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-					<form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
-						<a href="javascript:;" class="remove">
-						<i class="icon-close"></i>
-						</a>
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search...">
-							<span class="input-group-btn">
-							<button class="btn submit"><i class="icon-magnifier"></i></button>
-							</span>
-						</div>
-					</form>
-					<!-- END RESPONSIVE QUICK SEARCH FORM -->
-				</li>
-				<li>
-					<a href="index">
-					Sell
-					</a>
-				</li>
-				<li>
-					<a href="history">
-					History </a>
-				</li>
-				<li class="active">
-					<a href="history">
-					Product <span class="selected">
-					</span>
-					</a>
-				</li>
-			</ul>
-		</div>
-		<!-- END HORIZONTAL RESPONSIVE MENU -->
-	</div>
-	<!-- END SIDEBAR -->
-	<!-- BEGIN CONTENT -->
-	<div class="page-content-wrapper">
-		<div class="page-content">
+    <div id="notify"></div>
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper">
+        <!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
+        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+        <div class="page-sidebar navbar-collapse collapse">
+            <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+                <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
+                <li class="sidebar-search-wrapper">
+                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+                    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
+                    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                    <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
+                        <a href="javascript:;" class="remove">
+                        <i class="icon-close"></i>
+                        </a>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                            <button class="btn submit"><i class="icon-magnifier"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <!-- END RESPONSIVE QUICK SEARCH FORM -->
+                </li>
+                <li>
+                    <a href="index">
+                    Sell
+                    </a>
+                </li>
+                <li>
+                    <a href="history">
+                    History </a>
+                </li>
+                <li class="active">
+                    <a href="history">
+                    Product <span class="selected">
+                    </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- END HORIZONTAL RESPONSIVE MENU -->
+    </div>
+    <!-- END SIDEBAR -->
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+        <div class="page-content">
 
-			<div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-				<h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">Select a Sale to Open</h2>
-			</div>
-			<table id="retrieveTable" class="table-bordered">
-				<thead>
-					<tr>
-						<th>Date/time</th>
-						<th>Status</th>
-						<th>User</th>
-						<th>Customer</th>
-						<th>Code</th>
-						<th>Total</th>
-						<th>Note</th>
-						<th></th>
-					</tr>
-				</thead>
-				<tbody>
-				
-					<?php foreach($items as $item) { ?>
-						<tr>
-							<td><?=$item['RegisterSale']['created'];?></td>
-							<td><?=$item['RegisterSale']['status'];?></td>
-							<td><?=$item['RegisterSale']['user_id'];?></td>
-							<td><?=$item['RegisterSale']['customer_id'];?></td>
-							<td>Customer code</td>
-							<td><?=number_format($item['RegisterSale']['total_price'],2,'.','');?></td>
-							<td><?=$item['RegisterSale']['note'];?></td>
-							<td></td>
-						</tr>
-					<?php } ?>
-				
-				</tbody>
-			</table>
-					
-		</div>
-	</div>
-	<!-- END CONTENT -->
-	<!-- BEGIN QUICK SIDEBAR -->
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">Select a Sale to Open</h2>
+            </div>
+            <table id="retrieveTable" class="table-bordered">
+                <thead>
+                    <tr>
+                        <th>Date/time</th>
+                        <th>Status</th>
+                        <th>User</th>
+                        <th>Customer</th>
+                        <th>Code</th>
+                        <th>Total</th>
+                        <th>Note</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                
+                    <?php foreach($items as $item) { ?>
+                        <tr>
+                            <td><?=$item['RegisterSale']['created'];?></td>
+                            <td><?=$item['RegisterSale']['status'];?></td>
+                            <td><?=$item['RegisterSale']['user_id'];?></td>
+                            <td><?=$item['RegisterSale']['customer_id'];?></td>
+                            <td>Customer code</td>
+                            <td><?=number_format($item['RegisterSale']['total_price'],2,'.','');?></td>
+                            <td><?=$item['RegisterSale']['note'];?></td>
+                            <td></td>
+                        </tr>
+                    <?php } ?>
+                
+                </tbody>
+            </table>
+                    
+        </div>
+    </div>
+    <!-- END CONTENT -->
+    <!-- BEGIN QUICK SIDEBAR -->
     <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
     <div class="page-quick-sidebar-wrapper">
         <div class="page-quick-sidebar">            
@@ -188,11 +188,11 @@
 <script src="/js/notify.js" type="text/javascript"></script>
 <script>
 jQuery(document).ready(function() {
-	Metronic.init(); // init metronic core componets
-	Layout.init(); // init layout
-	QuickSidebar.init(); // init quick sidebar
-	Index.init();
-	$("#retrieveTable").DataTable({
+    Metronic.init(); // init metronic core componets
+    Layout.init(); // init layout
+    QuickSidebar.init(); // init quick sidebar
+    Index.init();
+    $("#retrieveTable").DataTable({
         searching: false
     });
     $("#retrieveTable_length").hide();

@@ -40,7 +40,7 @@
 <link rel="stylesheet" href="/css/jquery.keypad.css">
 <link href="/css/custom.keypad.css" rel="stylesheet" type="text/css">
 <!-- END THEME STYLES -->
-<link rel="shortcut icon" href="favicon.ico"/>
+<link rel="shortcut icon" href="onzsa.ico"/>
 
 
 
@@ -58,88 +58,88 @@
 <!-- DOC: Apply "page-full-width" class to the body element to have full width page without the sidebar menu -->
 <body class="page-header-fixed page-quick-sidebar-over-content page-full-width">
 <!-- BEGIN HEADER -->
-		<div class="page-header navbar navbar-fixed-top">
-			<!-- BEGIN HEADER INNER -->
-			<div class="page-header-inner container">
-				<!-- BEGIN LOGO -->
-				<div class="page-logo">
-					<a href="/index.php">
-					<img src="/img/ONZSA_logo-05.png" alt="logo" class="logo-default"/>
-					</a>
-				</div>
-				<!-- END LOGO -->
-				
-			</div>
-			<!-- END HEADER INNER -->
-		</div>
-		<!-- END HEADER -->
-	<div id="content">
-	
-	
-			
-			
-		<div class="clearfix"> </div>
-		<!-- BEGIN CONTAINER -->
-		<div class="page-container"> 
-		  
-		  <!-- BEGIN CONTENT -->
-		  <div class="page-content-wrapper">
-		    <div class="page-content sell-index col-lg-12 col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
-		      <div class="maximum col-lg-12 col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
-				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-					<div class="signin-container">
-						<div class="line-box">
-							<form action="/users/login" method="post">
-								<h1>Sign in</h1>
-								<div class="dashed-line-gr"></div>
-								<dl>
-									<dt>Email or Username</dt>
-									<dd><input name="data[MerchantUser][username]" type="text"></dd>
-									<dt>Password</dt>
-									<dd><input name="data[MerchantUser][password]" type="password"></dd>
-								</dl>
-								<div class="dashed-line-gr"></div>
-								<button class="btn btn-success"><img src="/img/ONZSA_eye.png">Start onzsa</button>
-							</form>
-						</div>
-					</div>
-				</div>
-		      </div>
-		    </div>
-		  </div>
-		  <!-- END CONTENT -->
-		</div>
-		<!-- END CONTAINER --> 
-		<!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
-		<!-- BEGIN CORE PLUGINS --> 
-		<!--[if lt IE 9]>
-		<script src="/assets/global/plugins/respond.min.js"></script>
-		<script src="/assets/global/plugins/excanvas.min.js"></script> 
-		<![endif]--> 
-		<script src="/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script> 
-		<script src="/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script> 
-		<!-- IMPORTANT! Load jquery-ui-1.10.3.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip --> 
-		<script src="/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script> 
-		<script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script> 
-		<script src="/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script> 
-		<script src="/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script> 
-		<script src="/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script> 
-		<script src="/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script> 
-		<script src="/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script> 
-		<script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script> 
-		<!-- END CORE PLUGINS -->
-	</div>
-		
+        <div class="page-header navbar navbar-fixed-top">
+            <!-- BEGIN HEADER INNER -->
+            <div class="page-header-inner container">
+                <!-- BEGIN LOGO -->
+                <div class="page-logo">
+                    <a href="/index.php">
+                    <img src="/img/ONZSA_logo-05.png" alt="logo" class="logo-default"/>
+                    </a>
+                </div>
+                <!-- END LOGO -->
+                
+            </div>
+            <!-- END HEADER INNER -->
+        </div>
+        <!-- END HEADER -->
+    <div id="content">
+    
+    
+            
+            
+        <div class="clearfix"> </div>
+        <!-- BEGIN CONTAINER -->
+        <div class="page-container"> 
+          
+          <!-- BEGIN CONTENT -->
+          <div class="page-content-wrapper">
+            <div class="page-content sell-index col-lg-12 col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
+              <div class="maximum col-lg-12 col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="signin-container">
+                        <div class="line-box">
+                            <form action="/users/login" method="post">
+                                <h1>Sign in</h1>
+                                <div class="dashed-line-gr"></div>
+                                <dl>
+                                    <dt>Email or Username</dt>
+                                    <dd><input name="data[MerchantUser][username]" type="text"></dd>
+                                    <dt>Password</dt>
+                                    <dd><input name="data[MerchantUser][password]" type="password"></dd>
+                                </dl>
+                                <div class="dashed-line-gr"></div>
+                                <button class="btn btn-success"><img src="/img/ONZSA_eye.png">Start onzsa</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- END CONTENT -->
+        </div>
+        <!-- END CONTAINER --> 
+        <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+        <!-- BEGIN CORE PLUGINS --> 
+        <!--[if lt IE 9]>
+        <script src="/assets/global/plugins/respond.min.js"></script>
+        <script src="/assets/global/plugins/excanvas.min.js"></script> 
+        <![endif]--> 
+        <script src="/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script> 
+        <script src="/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script> 
+        <!-- IMPORTANT! Load jquery-ui-1.10.3.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip --> 
+        <script src="/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script> 
+        <script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script> 
+        <script src="/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script> 
+        <script src="/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script> 
+        <script src="/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script> 
+        <script src="/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script> 
+        <script src="/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script> 
+        <script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script> 
+        <!-- END CORE PLUGINS -->
+    </div>
+        
 
-	<div id="footer">
-		<!-- BEGIN FOOTER -->
-		<div class="page-footer">
-			<div class="page-footer-inner">
-				 <?=date("Y");?> &copy; Emcor Media Lab.
-			</div>
-		</div>
-		<!-- END FOOTER -->
-	</div>
+    <div id="footer">
+        <!-- BEGIN FOOTER -->
+        <div class="page-footer">
+            <div class="page-footer-inner">
+                 <?=date("Y");?> &copy; Emcor Media Lab.
+            </div>
+        </div>
+        <!-- END FOOTER -->
+    </div>
 </div>
 </body>
 <!-- END BODY -->

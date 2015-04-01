@@ -1,0 +1,10 @@
+# CakePHP logs and generated files
+####################################
+*.log*
+cake_toolbar_cache*
+myapp_cake_*
+
+# OS generated files
+####################################
+.DS_Store
+Thumbs.db

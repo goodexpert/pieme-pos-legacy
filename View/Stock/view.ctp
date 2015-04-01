@@ -2,159 +2,159 @@
 </div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
-	<div id="notify"></div>
-	<!-- BEGIN SIDEBAR -->
-	<div class="page-sidebar-wrapper">
-		<!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
-		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-		<div class="page-sidebar navbar-collapse collapse">
-			<ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
-				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-				<!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
-				<li class="sidebar-search-wrapper">
-					<!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-					<!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-					<!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-					<form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
-						<a href="javascript:;" class="remove">
-						<i class="icon-close"></i>
-						</a>
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search...">
-							<span class="input-group-btn">
-							<button class="btn submit"><i class="icon-magnifier"></i></button>
-							</span>
-						</div>
-					</form>
-					<!-- END RESPONSIVE QUICK SEARCH FORM -->
-				</li>
-				<li>
-					<a href="index">
-					Sell
-					</a>
-				</li>
-				<li>
-					<a href="history">
-					History </a>
-				</li>
-				<li class="active">
-					<a href="history">
-					Product <span class="selected">
-					</span>
-					</a>
-				</li>
-			</ul>
-		</div>
-		<!-- END HORIZONTAL RESPONSIVE MENU -->
-	</div>
-	<!-- END SIDEBAR -->
-	<!-- BEGIN CONTENT -->
-	<div class="page-content-wrapper">
-		<div class="page-content">
-			<div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-				<h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
+    <div id="notify"></div>
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper">
+        <!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
+        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+        <div class="page-sidebar navbar-collapse collapse">
+            <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+                <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
+                <li class="sidebar-search-wrapper">
+                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+                    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
+                    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                    <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
+                        <a href="javascript:;" class="remove">
+                        <i class="icon-close"></i>
+                        </a>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                            <button class="btn submit"><i class="icon-magnifier"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <!-- END RESPONSIVE QUICK SEARCH FORM -->
+                </li>
+                <li>
+                    <a href="index">
+                    Sell
+                    </a>
+                </li>
+                <li>
+                    <a href="history">
+                    History </a>
+                </li>
+                <li class="active">
+                    <a href="history">
+                    Product <span class="selected">
+                    </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- END HORIZONTAL RESPONSIVE MENU -->
+    </div>
+    <!-- END SIDEBAR -->
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
                     <?php echo $order['MerchantStockOrder']['name'] . ' (' . $order['MerchantStockOrder']['status'] . ')'; ?>
-				</h2>
-				
-				<div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
-					<button class="btn btn-white pull-right btn-right">
-                    	<div class="glyphicon glyphicon-import"></div>&nbsp;
+                </h2>
+                
+                <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
+                    <button class="btn btn-white pull-right btn-right">
+                        <div class="glyphicon glyphicon-import"></div>&nbsp;
                     Import Products</button>
                     <a href="/stock/editDetails/<?php echo $order['MerchantStockOrder']['id']; ?>"  class="btn btn-white pull-right btn-center">
-                    	<div class="glyphicon glyphicon-edit"></div>&nbsp;
+                        <div class="glyphicon glyphicon-edit"></div>&nbsp;
                     Edit Details</button>
                     <a href="/stock/edit/<?php echo $order['MerchantStockOrder']['id']; ?>" class="btn btn-white pull-right btn-left">
-                    	<div class="glyphicon glyphicon-edit"></div>&nbsp;
+                        <div class="glyphicon glyphicon-edit"></div>&nbsp;
                      Edit Products</a>
                     </a>
-				</div>
-			</div>
-			<div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">Details
+                </div>
+            </div>
+            <div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">Details
                 <span class="clickable same_as_physical pull-right btn btn-default btn-right">
                     <a href="/stock/markSent/<?php echo $order['MerchantStockOrder']['id']; ?>">Mark as sent</a>
                 </span>
-            	<span class="clickable same_as_physical pull-right btn btn-default btn-left">Print labels</span>
+                <span class="clickable same_as_physical pull-right btn btn-default btn-left">Print labels</span>
             </div>
                 
                 <div class="line-box line-box-content col-md-12 col-sm-12 col-xs-12">
-					<div class="col-md-6 margin-bottom-20">
-						<dl>
-							<dt>Deliver to</dt>
+                    <div class="col-md-6 margin-bottom-20">
+                        <dl>
+                            <dt>Deliver to</dt>
                             <dd><?php echo $order['MerchantOutlet']['name']; ?></dd>
-						</dl>
-					</div>
-					<div class="col-md-6 margin-bottom-20">
-						<dl>
-							<dt>Created</dt>
+                        </dl>
+                    </div>
+                    <div class="col-md-6 margin-bottom-20">
+                        <dl>
+                            <dt>Created</dt>
                             <dd><?php echo date('d F Y', strtotime($order['MerchantStockOrder']['created'])); ?></dd>
-						</dl>
-					</div>
-					<div class="col-md-3 col-omega">
-						<table class="table-bordered dataTable">
-							<colgroup>
-								<col width="15%">
-								<col width="15%">
-							</colgroup>
-							<thead>
-							<tr>
-								<th>Order</th>
-								<th>Product</th>
-							</tr>
-							</thead>
-							<tbody>
+                        </dl>
+                    </div>
+                    <div class="col-md-3 col-omega">
+                        <table class="table-bordered dataTable">
+                            <colgroup>
+                                <col width="15%">
+                                <col width="15%">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>Product</th>
+                            </tr>
+                            </thead>
+                            <tbody>
                                 <?php
                                     foreach ($order['MerchantStockOrderItem'] as $idx => $item):
                                 ?>
-								<tr>
+                                <tr>
                                     <td><?php echo $idx+1; ?></td>
                                     <td><?php echo $item['MerchantProduct']['name']; ?></td>
-								</tr>
+                                </tr>
                                 <?php
                                     endforeach;
                                 ?>
-								<tr class="table-result">
-									<td><strong>Total</strong></td>
-									<td></td>
-								</tr>
-								
-							</tbody>
-						</table>
-					</div>
-					<div class="col-md-9 col-alpha">
-						<div class="scroll-table">
-						<table class="table-bordered dataTable">
-							<colgroup>
-								<col width="10%">
-								<col width="10%">
-								<col width="10%">
-								<col width="10%">
-								<col width="10%">
-								<col width="10%">
-								<col width="10%">
-								<col width="10%">
-								<col width="">
-							</colgroup>
-							<thead>
-							<tr>
-								<th>SKU</th>
-								<th>Supplier code</th>
-								<th>Stock</th>
-								<th>Ordered</th>
-								<th>Received</th>
-								<th>Supply Cost</th>
-								<th>Total Supply Cost</th>
-								<th>Retail Price</th>
-								<th class="last-child">Total Retail Price</th>
-							</tr>
-							</thead>
-							<tbody>
+                                <tr class="table-result">
+                                    <td><strong>Total</strong></td>
+                                    <td></td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-md-9 col-alpha">
+                        <div class="scroll-table">
+                        <table class="table-bordered dataTable">
+                            <colgroup>
+                                <col width="10%">
+                                <col width="10%">
+                                <col width="10%">
+                                <col width="10%">
+                                <col width="10%">
+                                <col width="10%">
+                                <col width="10%">
+                                <col width="10%">
+                                <col width="">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>SKU</th>
+                                <th>Supplier code</th>
+                                <th>Stock</th>
+                                <th>Ordered</th>
+                                <th>Received</th>
+                                <th>Supply Cost</th>
+                                <th>Total Supply Cost</th>
+                                <th>Retail Price</th>
+                                <th class="last-child">Total Retail Price</th>
+                            </tr>
+                            </thead>
+                            <tbody>
                                 <?php
                                     $totalOrdered = $totalReceived = 0;
                                     $totalSupplyCost = 0.00;
                                     foreach ($order['MerchantStockOrderItem'] as $item):
                                 ?>
-								<tr>
+                                <tr>
                                     <td><?php echo $item['MerchantProduct']['sku']; ?></td>
                                     <td><?php echo $item['MerchantProduct']['supplier_code']; ?></td>
                                     <td>
@@ -169,98 +169,98 @@
                                     <td><?php echo $item['supply_price']; ?></td>
                                     <td><?php echo round($item['count'] * $item['supply_price'], 2); ?></td>
                                     <td></td>
-								</tr>
+                                </tr>
                                 <?php
                                         $totalOrdered += $item['count'];
                                         $totalReceived += $item['received'];
                                         $totalSupplyCost += round($item['count'] * $item['supply_price'], 2);
                                     endforeach;
                                 ?>
-								<tr class="table-result">
-									<td></td>
-									<td></td>
-									<td></td>
+                                <tr class="table-result">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
                                     <td><?php echo $totalOrdered; ?></td>
                                     <td><?php echo $totalReceived; ?></td>
                                     <td><?php echo sprintf('%.2f', $totalSupplyCost); ?></td>
-									<td></td>
-									<td></td>
-									<td></td>
-								</tr>
-							</tbody>
-						</table>
-						</div>
-					</div>
-	            </div>
-				<div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
                     <?php if ( $order['MerchantStockOrder']['status'] == 'SENT' ): ?>
                     <a href="/stock/receive/<?php echo $order['MerchantStockOrder']['id']; ?>" class="btn btn-primary btn-wide pull-right send">Receive</a>
                     <?php else: ?>
-					<button type="submit" class="btn btn-primary btn-wide pull-right send">Send</button>
+                    <button type="submit" class="btn btn-primary btn-wide pull-right send">Send</button>
                     <?php endif; ?>
-					<a href="#" class="btn btn-default btn-wide pull-left margin-right-10 cancel-order">Cancel</a>
-					
+                    <a href="#" class="btn btn-default btn-wide pull-left margin-right-10 cancel-order">Cancel</a>
+                    
                 </form>
 
-			</div>
-            		
-		</div>
-	</div>
-	<!-- END CONTENT -->
-	<!-- Save&Send POPUP BOX -->
-	<div class="confirmation-modal modal fade in save_send" tabindex="-1" role="dialog" aria-hidden="false">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="confirm-close close-pop" data-dismiss="modal" aria-hidden="true">
-					<i class="glyphicon glyphicon-remove"></i>
-					</button>
-					<h4 class="modal-title">Send order</h4>
-				</div>
-				<div class="modal-body margin-bottom-20">
-					<dl>
-                    	<dt>Recipient name</dt>
+            </div>
+                    
+        </div>
+    </div>
+    <!-- END CONTENT -->
+    <!-- Save&Send POPUP BOX -->
+    <div class="confirmation-modal modal fade in save_send" tabindex="-1" role="dialog" aria-hidden="false">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="confirm-close close-pop" data-dismiss="modal" aria-hidden="true">
+                    <i class="glyphicon glyphicon-remove"></i>
+                    </button>
+                    <h4 class="modal-title">Send order</h4>
+                </div>
+                <div class="modal-body margin-bottom-20">
+                    <dl>
+                        <dt>Recipient name</dt>
                         <dd><input type="text"></dd>
-                    	<dt>Email</dt>
+                        <dt>Email</dt>
                         <dd><input type="text"></dd>
-                    	<dt>CC</dt>
+                        <dt>CC</dt>
                         <dd><input type="text"></dd>
-                    	<dt>Subject</dt>
+                        <dt>Subject</dt>
                         <dd><input type="text"></dd>
-                    	<dt>Message</dt>
+                        <dt>Message</dt>
                         <dd><textarea col="2"></textarea></dd>
                     </dl>
-				</div>
-				<div class="modal-footer">
-					<button class="close-pop btn btn-primary btn-wide" type="button" data-dismiss="modal">Cancel</button>
-					<button class="confirm btn btn-success btn-wide" type="button" data-dismiss="modal">Send</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- Save&Send POPUP BOX END -->
-	<!-- Cancel POPUP BOX -->
-	<div class="confirmation-modal modal fade in cancel-confirm" tabindex="-1" role="dialog" aria-hidden="false" style="display:none;">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="confirm-close close-pop" data-dismiss="modal" aria-hidden="true">
-					<i class="glyphicon glyphicon-remove"></i>
-					</button>
-					<h4 class="modal-title">Are you sure?</h4>
-				</div>
-				<div class="modal-body margin-bottom-20">
-					<p>You are about to perform an action that can't be undone.</p>
-				</div>
-				<div class="modal-footer">
-					<button class="close-pop btn btn-primary btn-wide" type="button" data-dismiss="modal">Cancel</button>
-					<button class="confirm btn btn-success send btn-wide" type="button" data-dismiss="modal">Ok</button>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- Cancel POPUP BOX END -->
-	<!-- BEGIN QUICK SIDEBAR -->
+                </div>
+                <div class="modal-footer">
+                    <button class="close-pop btn btn-primary btn-wide" type="button" data-dismiss="modal">Cancel</button>
+                    <button class="confirm btn btn-success btn-wide" type="button" data-dismiss="modal">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Save&Send POPUP BOX END -->
+    <!-- Cancel POPUP BOX -->
+    <div class="confirmation-modal modal fade in cancel-confirm" tabindex="-1" role="dialog" aria-hidden="false" style="display:none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="confirm-close close-pop" data-dismiss="modal" aria-hidden="true">
+                    <i class="glyphicon glyphicon-remove"></i>
+                    </button>
+                    <h4 class="modal-title">Are you sure?</h4>
+                </div>
+                <div class="modal-body margin-bottom-20">
+                    <p>You are about to perform an action that can't be undone.</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="close-pop btn btn-primary btn-wide" type="button" data-dismiss="modal">Cancel</button>
+                    <button class="confirm btn btn-success send btn-wide" type="button" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Cancel POPUP BOX END -->
+    <!-- BEGIN QUICK SIDEBAR -->
     <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
     <div class="page-quick-sidebar-wrapper">
         <div class="page-quick-sidebar">            
@@ -357,47 +357,47 @@
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script>
 jQuery(document).ready(function() {    
-	Metronic.init(); // init metronic core componets
-	Layout.init(); // init layout
-	QuickSidebar.init() // init quick sidebar
-	Index.init();
+    Metronic.init(); // init metronic core componets
+    Layout.init(); // init layout
+    QuickSidebar.init() // init quick sidebar
+    Index.init();
 
-	$(".datepicker").datepicker({ dateFormat: 'yy-mm-dd' });
+    $(".datepicker").datepicker({ dateFormat: 'yy-mm-dd' });
 
-	$(document).on('click','.save',function(){
-		$.ajax({
+    $(document).on('click','.save',function(){
+        $.ajax({
 
-			url: '/stock/order.json',
-			type: 'POST',
-			data: {
-				name: $("#order-name").val(),
-				supplier_id: $("#order-supplier").val(),
-				outlet_id: $("#order-outlet").val(),
-				type: 'SUPPLIER',
-				status: 'OPEN',
-				due_date: $("#order-due").val()
-			}
-		
-		}).done(function(result){
-			console.log(result);
-		});
-	});
+            url: '/stock/order.json',
+            type: 'POST',
+            data: {
+                name: $("#order-name").val(),
+                supplier_id: $("#order-supplier").val(),
+                outlet_id: $("#order-outlet").val(),
+                type: 'SUPPLIER',
+                status: 'OPEN',
+                due_date: $("#order-due").val()
+            }
+        
+        }).done(function(result){
+            console.log(result);
+        });
+    });
    
-	$(".cancel").click(function(){
-		parent.history.back();
-	});
-	
-	$(".close-pop").click(function(){
-		$(".confirmation-modal").hide();
-	});
+    $(".cancel").click(function(){
+        parent.history.back();
+    });
+    
+    $(".close-pop").click(function(){
+        $(".confirmation-modal").hide();
+    });
     /*
-	$(".send").click(function(){
-		$(".save_send").show();
-	});
+    $(".send").click(function(){
+        $(".save_send").show();
+    });
      */
-	$(".cancel-order").click(function(){
-		$(".cancel-confirm").show();
-	});
+    $(".cancel-order").click(function(){
+        $(".cancel-confirm").show();
+    });
 });
 </script>
 <!-- END JAVASCRIPTS -->

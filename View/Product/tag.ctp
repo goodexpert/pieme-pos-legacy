@@ -4,95 +4,95 @@
 </div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
-	<div id="notify"></div>
-	<!-- BEGIN SIDEBAR -->
-	<div class="page-sidebar-wrapper">
-		<!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
-		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-		<div class="page-sidebar navbar-collapse collapse">
-			<ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
-				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-				<!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
-				<li class="sidebar-search-wrapper">
-					<!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-					<!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-					<!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-					<form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
-						<a href="javascript:;" class="remove">
-						<i class="icon-close"></i>
-						</a>
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search...">
-							<span class="input-group-btn">
-							<button class="btn submit"><i class="icon-magnifier"></i></button>
-							</span>
-						</div>
-					</form>
-					<!-- END RESPONSIVE QUICK SEARCH FORM -->
-				</li>
-				<li>
-					<a href="index">
-					Sell
-					</a>
-				</li>
-				<li>
-					<a href="history">
-					History </a>
-				</li>
-				<li class="active">
-					<a href="history">
-					Product <span class="selected">
-					</span>
-					</a>
-				</li>
-			</ul>
-		</div>
-		<!-- END HORIZONTAL RESPONSIVE MENU -->
-	</div>
-	<!-- END SIDEBAR -->
-	<!-- BEGIN CONTENT -->
-	<div class="page-content-wrapper">
-		<div class="page-content">
-			<div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-				<h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
-					Tags
-				</h2>
-				<div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
-					<button class="add-tag btn btn-white pull-right">
-                    	<div class="glyphicon glyphicon-plus"></div>&nbsp;
+    <div id="notify"></div>
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper">
+        <!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
+        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+        <div class="page-sidebar navbar-collapse collapse">
+            <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+                <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
+                <li class="sidebar-search-wrapper">
+                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+                    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
+                    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                    <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
+                        <a href="javascript:;" class="remove">
+                        <i class="icon-close"></i>
+                        </a>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                            <button class="btn submit"><i class="icon-magnifier"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <!-- END RESPONSIVE QUICK SEARCH FORM -->
+                </li>
+                <li>
+                    <a href="index">
+                    Sell
+                    </a>
+                </li>
+                <li>
+                    <a href="history">
+                    History </a>
+                </li>
+                <li class="active">
+                    <a href="history">
+                    Product <span class="selected">
+                    </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- END HORIZONTAL RESPONSIVE MENU -->
+    </div>
+    <!-- END SIDEBAR -->
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
+                    Tags
+                </h2>
+                <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
+                    <button class="add-tag btn btn-white pull-right">
+                        <div class="glyphicon glyphicon-plus"></div>&nbsp;
                     New Tag</button>
-				</div>
-			</div>
-			
-			<br>
-			
-			<table id="tagTable" class="table-bordered">
-				<thead>
-				<tr>
-					<th>Name</th>
-					<th>Number of Products</th>
-					<th></th>
-				</tr>
-				</thead>
-				<tbody>
-					
-					<?php foreach($tags as $tag){ ?>
-					<tr>
-						<td><?php echo $tag['MerchantProductTag']['name'];?></td>
-						<td><?php echo count($tag['MerchantProudctCategory']);?></td>
-						<td></td>
-					</tr>
-					<?php } ?>
-					
-				</tbody>
-			</table>
-			
-			
-		</div>
-	</div>
-	<!-- END CONTENT -->
-	<!-- BEGIN QUICK SIDEBAR -->
+                </div>
+            </div>
+            
+            <br>
+            
+            <table id="tagTable" class="table-bordered">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Number of Products</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                    
+                    <?php foreach($tags as $tag){ ?>
+                    <tr>
+                        <td><?php echo $tag['MerchantProductTag']['name'];?></td>
+                        <td><?php echo count($tag['MerchantProudctCategory']);?></td>
+                        <td></td>
+                    </tr>
+                    <?php } ?>
+                    
+                </tbody>
+            </table>
+            
+            
+        </div>
+    </div>
+    <!-- END CONTENT -->
+    <!-- BEGIN QUICK SIDEBAR -->
     <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
     <div class="page-quick-sidebar-wrapper">
         <div class="page-quick-sidebar">            
@@ -140,11 +140,11 @@
 <!-- END QUICK SIDEBAR -->
 </div>
 <div id="add_tag_box" class="pop-hide">
-	<input type="hidden" value="" class="tag_id_add">
-	Tag name <input type="text" class="tag_name_add"><br>
-	<input type="button" value="add" class="tag_add">
-	<input type="button" value="edit" class="tag_edit">
-	<input type="button" value="cancel" class="add_tag_box_close">
+    <input type="hidden" value="" class="tag_id_add">
+    Tag name <input type="text" class="tag_name_add"><br>
+    <input type="button" value="add" class="tag_add">
+    <input type="button" value="edit" class="tag_edit">
+    <input type="button" value="cancel" class="add_tag_box_close">
 </div>
 <!-- END CONTAINER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
@@ -209,31 +209,31 @@ jQuery(document).ready(function() {
 
 <script>
 
-    	$("#tagTable").DataTable({
-    		searching: false
-    	});
-    	$("#tagTable_length").hide();
+        $("#tagTable").DataTable({
+            searching: false
+        });
+        $("#tagTable_length").hide();
 
                 
         $(".add-tag").confirm({
-			title:'Add new tag',
-			text:'<input type="text" id="tag_name" placeholder="Tag name">',
-			confirmButton: "Add",
-			confirm: function(button){
-				$.ajax({
-					url: "/product/tag",
-					type: "POST",
-					data: {
-						name: $("#tag_name").val()
-					}
-				}).done(function(){
-					location.reload();
-				});
-			},
-			confirmButtonClass: "tag-add pull-right btn-success margin-left-10",
-			cancel: function(button){
-				$("input").val('');
-			},
-			cancelButton: "Cancel",
-		});
+            title:'Add new tag',
+            text:'<input type="text" id="tag_name" placeholder="Tag name">',
+            confirmButton: "Add",
+            confirm: function(button){
+                $.ajax({
+                    url: "/product/tag",
+                    type: "POST",
+                    data: {
+                        name: $("#tag_name").val()
+                    }
+                }).done(function(){
+                    location.reload();
+                });
+            },
+            confirmButtonClass: "tag-add pull-right btn-success margin-left-10",
+            cancel: function(button){
+                $("input").val('');
+            },
+            cancelButton: "Cancel",
+        });
 </script>

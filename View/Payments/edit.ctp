@@ -185,28 +185,28 @@
 <script src="/js/notify.js" type="text/javascript"></script>
 <script>
 jQuery(document).ready(function() {    
-	Metronic.init(); // init metronic core componets
-	Layout.init(); // init layout
-	QuickSidebar.init() // init quick sidebar
-	Index.init();
-	
-	$(".edit").click(function(){
-		$.ajax({
-			url: window.location,
-			type: 'PUT',
-			data: {
-				name: $("#payment_name").val()
-			}
-		});
-		window.location.href = "/setup/payments";
-	});
-	$(".delete").click(function(){
-		$.ajax({
-			url: '/payments/'+window.location.pathname.split("/")[2]+'/delete',
-			type: 'DELETE'
-		});
-		window.location.href = "/setup/payments";
-	});
+    Metronic.init(); // init metronic core componets
+    Layout.init(); // init layout
+    QuickSidebar.init() // init quick sidebar
+    Index.init();
+    
+    $(".edit").click(function(){
+        $.ajax({
+            url: window.location,
+            type: 'PUT',
+            data: {
+                name: $("#payment_name").val()
+            }
+        });
+        window.location.href = "/setup/payments";
+    });
+    $(".delete").click(function(){
+        $.ajax({
+            url: '/payments/'+window.location.pathname.split("/")[2]+'/delete',
+            type: 'DELETE'
+        });
+        window.location.href = "/setup/payments";
+    });
 });
 </script>
 <!-- END JAVASCRIPTS -->

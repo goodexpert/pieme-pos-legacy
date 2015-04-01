@@ -1,11 +1,11 @@
 <style>
 .order-product-header {
-	background: #eee;
-	margin-bottom: 20px;
-	padding: 10px 15px;
+    background: #eee;
+    margin-bottom: 20px;
+    padding: 10px 15px;
 }
 .line-box {
-	padding: 0;
+    padding: 0;
 }
 </style>
 
@@ -13,194 +13,194 @@
 </div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
-	<div id="notify"></div>
-	<!-- BEGIN SIDEBAR -->
-	<div class="page-sidebar-wrapper">
-		<!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
-		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-		<div class="page-sidebar navbar-collapse collapse">
-			<ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
-				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-				<!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
-				<li class="sidebar-search-wrapper">
-					<!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-					<!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-					<!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-					<form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
-						<a href="javascript:;" class="remove">
-						<i class="icon-close"></i>
-						</a>
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search...">
-							<span class="input-group-btn">
-							<button class="btn submit"><i class="icon-magnifier"></i></button>
-							</span>
-						</div>
-					</form>
-					<!-- END RESPONSIVE QUICK SEARCH FORM -->
-				</li>
-				<li>
-					<a href="index">
-					Sell
-					</a>
-				</li>
-				<li>
-					<a href="history">
-					History </a>
-				</li>
-				<li class="active">
-					<a href="history">
-					Product <span class="selected">
-					</span>
-					</a>
-				</li>
-			</ul>
-		</div>
-		<!-- END HORIZONTAL RESPONSIVE MENU -->
-	</div>
-	<!-- END SIDEBAR -->
-	<!-- BEGIN CONTENT -->
-	<div class="page-content-wrapper">
-		<div class="page-content">
-			<div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-				<div class="pull-left col-md-9 col-xs-9 col-sm-9 col-alpha col-omega">
-					<h2>
-						Review Inventory Count
-					</h2>
-					<h4 class="col-lg-5 col-md-6 col-xs-12 col-sm-7 col-alpha">Main Outlet 25-03-2015 3:00 PM</h4>
-					<h5 class="col-lg-7 col-md-6 col-xs-12 col-sm-5 col-alpha col-omega">Full Count</h5>
-					<div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-						<h5 class="col-lg-4 col-md-5 col-xs-12 col-sm-6 col-alpha col-omega">
-							<span class="glyphicon glyphicon-calendar"></span>&nbsp;
-							Start: 25 Mar 2015, 2:37 PM
-						</h5>
-						<h5 class="col-lg-8 col-md-7 col-xs-12 col-sm-6 col-alpha col-omega">
-							<span class="glyphicon glyphicon-map-marker"></span>&nbsp;
-							Main Outlet
-						</h5>
-				</div>
-			</div>
-			<div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-				<div class="inventory-content">
-					<div class="inventory-tab">
-						<ul>
-							<li class="active">Uncounted</li>
-							<li>Upmatched</li>
-							<li>Matched</li>
-							<li>Excluded</li>
-							<li>All</li>
-						</ul>
-					</div>
-					<div class="inventory-Due">
-						<span class="glyphicon glyphicon-info-sign pull-left" style="color:#cccccc;"></span><h5>The amount you counted was more or less than expected. You might like to double-check items in this list</h5>
-						<table id="productTable" class="table-bordered dataTable">
-							<colgroup>
-								<col width="2%">
-								<col width="50%">
-								<col width="12%">
-								<col width="12%">
-								<col width="12%">
-								<col width="12%">
-							</colgroup>
-							<thead>
-								<tr role="row">
-									<th colspan="2" class="text-center">COUNT LIST</th>
-									<th colspan="2" class="text-center">INVENTORY COUNT</th>
-									<th colspan="2" class="text-center">DIFFERENCES</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr role="row" class="odd table-color-gr">
-									<td><input type="checkbox"></td>
-									<td>
-										PRODUCT 
-									</td>
-									<td>EXPECTED</td>
-									<td>TOTAL</td>
-									<td>UNIT</td>
-									<td>COST</td>
-								</tr>
-								<tr role="row" class="even">
-									<td><input type="checkbox"></td>
-									<td>T-shirt (Demo)
-										<h6>tshirt-white</h6>
-									</td>
-									<td>8</td>
-									<td>6</td>
-									<td>5</td>
-									<td>$0.00</td>
-								</tr>
-								<tr role="row" class="even table-color">
-									<td> </td>
-									<td><strong>Total</strong></td>
-									<td> </td>
-									<td> </td>
-									<td><strong>-15</strong></td>
-									<td><strong>$0.00</strong></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
-			<div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
-				<button id="Complete" class="btn btn-primary btn-wide pull-right">Complete</button>
-				<button class="btn btn-default pull-right margin-right-10 ">Resume Count</button>
-				<button id="Abandon" class="btn btn-default pull-left">Abandon Count</button>
-			</div>
-		</div>
-	</div>
+    <div id="notify"></div>
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper">
+        <!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
+        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+        <div class="page-sidebar navbar-collapse collapse">
+            <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+                <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
+                <li class="sidebar-search-wrapper">
+                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+                    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
+                    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                    <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
+                        <a href="javascript:;" class="remove">
+                        <i class="icon-close"></i>
+                        </a>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                            <button class="btn submit"><i class="icon-magnifier"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <!-- END RESPONSIVE QUICK SEARCH FORM -->
+                </li>
+                <li>
+                    <a href="index">
+                    Sell
+                    </a>
+                </li>
+                <li>
+                    <a href="history">
+                    History </a>
+                </li>
+                <li class="active">
+                    <a href="history">
+                    Product <span class="selected">
+                    </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- END HORIZONTAL RESPONSIVE MENU -->
+    </div>
+    <!-- END SIDEBAR -->
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                <div class="pull-left col-md-9 col-xs-9 col-sm-9 col-alpha col-omega">
+                    <h2>
+                        Review Inventory Count
+                    </h2>
+                    <h4 class="col-lg-5 col-md-6 col-xs-12 col-sm-7 col-alpha">Main Outlet 25-03-2015 3:00 PM</h4>
+                    <h5 class="col-lg-7 col-md-6 col-xs-12 col-sm-5 col-alpha col-omega">Full Count</h5>
+                    <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                        <h5 class="col-lg-4 col-md-5 col-xs-12 col-sm-6 col-alpha col-omega">
+                            <span class="glyphicon glyphicon-calendar"></span>&nbsp;
+                            Start: 25 Mar 2015, 2:37 PM
+                        </h5>
+                        <h5 class="col-lg-8 col-md-7 col-xs-12 col-sm-6 col-alpha col-omega">
+                            <span class="glyphicon glyphicon-map-marker"></span>&nbsp;
+                            Main Outlet
+                        </h5>
+                </div>
+            </div>
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                <div class="inventory-content">
+                    <div class="inventory-tab">
+                        <ul>
+                            <li class="active">Uncounted</li>
+                            <li>Upmatched</li>
+                            <li>Matched</li>
+                            <li>Excluded</li>
+                            <li>All</li>
+                        </ul>
+                    </div>
+                    <div class="inventory-Due">
+                        <span class="glyphicon glyphicon-info-sign pull-left" style="color:#cccccc;"></span><h5>The amount you counted was more or less than expected. You might like to double-check items in this list</h5>
+                        <table id="productTable" class="table-bordered dataTable">
+                            <colgroup>
+                                <col width="2%">
+                                <col width="50%">
+                                <col width="12%">
+                                <col width="12%">
+                                <col width="12%">
+                                <col width="12%">
+                            </colgroup>
+                            <thead>
+                                <tr role="row">
+                                    <th colspan="2" class="text-center">COUNT LIST</th>
+                                    <th colspan="2" class="text-center">INVENTORY COUNT</th>
+                                    <th colspan="2" class="text-center">DIFFERENCES</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr role="row" class="odd table-color-gr">
+                                    <td><input type="checkbox"></td>
+                                    <td>
+                                        PRODUCT 
+                                    </td>
+                                    <td>EXPECTED</td>
+                                    <td>TOTAL</td>
+                                    <td>UNIT</td>
+                                    <td>COST</td>
+                                </tr>
+                                <tr role="row" class="even">
+                                    <td><input type="checkbox"></td>
+                                    <td>T-shirt (Demo)
+                                        <h6>tshirt-white</h6>
+                                    </td>
+                                    <td>8</td>
+                                    <td>6</td>
+                                    <td>5</td>
+                                    <td>$0.00</td>
+                                </tr>
+                                <tr role="row" class="even table-color">
+                                    <td> </td>
+                                    <td><strong>Total</strong></td>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td><strong>-15</strong></td>
+                                    <td><strong>$0.00</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
+                <button id="Complete" class="btn btn-primary btn-wide pull-right">Complete</button>
+                <button class="btn btn-default pull-right margin-right-10 ">Resume Count</button>
+                <button id="Abandon" class="btn btn-default pull-left">Abandon Count</button>
+            </div>
+        </div>
+    </div>
   <!-- COMPLETE POPUP BOX -->
   <div id="Complete_popup" class="confirmation-modal modal fade in" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;">
-  	<div class="modal-dialog">
-  		<div class="modal-content">
-  			<div class="modal-header">
-  				<button type="button" class="confirm-close cancel" data-dismiss="modal" aria-hidden="true">
-  				<i class="glyphicon glyphicon-remove"></i>
-  				</button>
-  				<h4 class="modal-title">Complete Stocktake</h4>
-  			</div>
-  			<div class="modal-body">
-  				Awesome! You've finished counting. When you click submit, we'll begin updating your inventory levels.
-  			</div>
-  			<div class="modal-footer">
-				<button class="btn btn-primary">Cancel</button>
-				<button class="btn btn-success">Submit</button>
-			</div>
-  		</div>
-  	</div>
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="confirm-close cancel" data-dismiss="modal" aria-hidden="true">
+                  <i class="glyphicon glyphicon-remove"></i>
+                  </button>
+                  <h4 class="modal-title">Complete Stocktake</h4>
+              </div>
+              <div class="modal-body">
+                  Awesome! You've finished counting. When you click submit, we'll begin updating your inventory levels.
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-primary">Cancel</button>
+                <button class="btn btn-success">Submit</button>
+            </div>
+          </div>
+      </div>
   </div>
   <!-- COMPLETE POPUP BOX END -->
   <!-- Abandon count POPUP BOX -->
   <div id="Abandon_popup" class="confirmation-modal modal fade in" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;">
-  	<div class="modal-dialog">
-  		<div class="modal-content">
-  			<div class="modal-header">
-  				<button type="button" class="confirm-close cancel" data-dismiss="modal" aria-hidden="true">
-  				<i class="glyphicon glyphicon-remove"></i>
-  				</button>
-  				<h4 class="modal-title">Are you sure you want to abandon count?</h4>
-  			</div>
-  			<div class="modal-body">
-  				Your inventory levels will not be updated. A record of this inventory will be saved but you will no longer be able to edit it.
-  			</div>
-  			<div class="modal-footer">
-				<button class="btn btn-primary">Cancel</button>
-				<button class="btn btn-success">Abandon</button>
-			</div>
-  		</div>
-  	</div>
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="confirm-close cancel" data-dismiss="modal" aria-hidden="true">
+                  <i class="glyphicon glyphicon-remove"></i>
+                  </button>
+                  <h4 class="modal-title">Are you sure you want to abandon count?</h4>
+              </div>
+              <div class="modal-body">
+                  Your inventory levels will not be updated. A record of this inventory will be saved but you will no longer be able to edit it.
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-primary">Cancel</button>
+                <button class="btn btn-success">Abandon</button>
+            </div>
+          </div>
+      </div>
   </div>
   <!-- COMPLETE POPUP BOX END -->
-	
-	
-	
-	
-	
-	
-	<!-- END CONTENT -->
-	<!-- BEGIN QUICK SIDEBAR -->
+    
+    
+    
+    
+    
+    
+    <!-- END CONTENT -->
+    <!-- BEGIN QUICK SIDEBAR -->
     <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
     <div class="page-quick-sidebar-wrapper">
         <div class="page-quick-sidebar">            
@@ -297,22 +297,22 @@
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script>
 jQuery(document).ready(function() {    
-	Metronic.init(); // init metronic core componets
-	Layout.init(); // init layout
-	QuickSidebar.init() // init quick sidebar
-	Index.init();
-	$("#Complete").click(function(){
-		$("#Complete_popup").show();
-	});
-	$(".confirm-close").click(function(){
-		$("#Complete_popup").hide();
-	});
-	$("#Abandon").click(function(){
-		$("#Abandon_popup").show();
-	});
-	$(".confirm-close").click(function(){
-		$("#Abandon_popup").hide();
-	});
+    Metronic.init(); // init metronic core componets
+    Layout.init(); // init layout
+    QuickSidebar.init() // init quick sidebar
+    Index.init();
+    $("#Complete").click(function(){
+        $("#Complete_popup").show();
+    });
+    $(".confirm-close").click(function(){
+        $("#Complete_popup").hide();
+    });
+    $("#Abandon").click(function(){
+        $("#Abandon_popup").show();
+    });
+    $(".confirm-close").click(function(){
+        $("#Abandon_popup").hide();
+    });
 });
 </script>
 <!-- END JAVASCRIPTS -->

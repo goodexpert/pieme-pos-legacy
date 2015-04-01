@@ -74,11 +74,13 @@
   <div class="page-content-wrapper">
     <div class="page-content">
       <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-        <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega"> Add Product </h2>
+        <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega"> Add User </h2>
       </div>
       <div class="portlet box product-add">
         <div class="portlet-body form"> 
           <!-- BEGIN FORM-->
+          <input type="hidden" name="merchant_user['id']" id="merchant_user_id" />
+          <input type="hidden" name="merchant_user['merchant_id']" id="merchant_user_merchant_id" />
           <div class="form-horizontal">
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title">Detail</div>
             <!-- START col-md-12-->
@@ -88,96 +90,72 @@
                 <!-- START col-md-6-->
                 <div class="col-md-6 col-alpha col-omega">
                   <dl>
-                    <dt class="col-md-4">Product type</dt>
+                    <dt class="col-md-4">Username</dt>
                     <dd class="col-md-8">
-                      <select id="product_type">
-                        <?php foreach($types as $type){?>
-                            <option value="<?=$type['MerchantProductType']['id'];?>"><?=$type['MerchantProductType']['name'];?></option>
-                        <?php } ?>
-                        <option value="add-type">+ Add type</option>
-                      </select>
-                    </dd>
+                        <input type="text" name="merchant_user['username']" id="merchant_user_username">                
+                     </dd>
                   </dl>
                   <dl>
-                    <dt class="col-md-4">Supplier</dt>
+                    <dt class="col-md-4">Display name</dt>
                     <dd class="col-md-8">
-                      <select id="product_supplier">
-                        <option></option>
-                        <?php foreach($suppliers as $supplier){?>
-                            <option value="<?=$supplier['MerchantSupplier']['id'];?>"><?=$supplier['MerchantSupplier']['name'];?></option>
-                        <?php } ?>
-                        <option value="add-supplier">+ Add supplier</option>
-                      </select>
-                    </dd>
+                        <input type="text" name="merchant_user['display_name']" id="merchant_user_display_name">                
+                     </dd>
                   </dl>
                   <dl>
-                    <dt class="col-md-4">Account code</dt>
+                    <dt class="col-md-4">Email Address</dt>
                     <dd class="col-md-8">
-                      <input type="text" id="Account_code">
-                    </dd>
-                  </dl>
-                </div>
-                <!-- END col-md-6--> 
-                <!-- START col-md-6-->
-                <div class="col-md-6 col-alpha col-omega">
-                  <dl>
-                    <dt class="col-md-4">Product brand</dt>
-                    <dd class="col-md-8">
-                      <select id="product_brand">
-                          <?php foreach($brands as $brand){?>
-                            <option value="<?=$brand['MerchantProductBrand']['id'];?>"><?=$brand['MerchantProductBrand']['name'];?></option>
-                        <?php } ?>
-                        <option value="add-brand">+ Add brand</option>
-                      </select>
-                    </dd>
+                        <input type="text" name="merchant_user['email']" id="merchant_user_email">                
+                     </dd>
                   </dl>
                   <dl>
-                    <dt class="col-md-4">Supplier code</dt>
+                    <dt class="col-md-4">Outlet</dt>
                     <dd class="col-md-8">
-                      <input type="text" id="supplier_code">
-                    </dd>
-                  </dl>
-                  <dl>
-                    <dt class="col-md-4">Purchasing code</dt>
-                    <dd class="col-md-8">
-                      <input type="text" id="Purchasing_code">
-                    </dd>
-                  </dl>
-                </div>
-                <!-- END col-md-6--> 
-              </div>
-              <!-- END col-md-12-->
-              <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega dashed-line-gr"></div>
-              <!-- START col-md-12-->
-              <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-top-20"> 
-                <!-- START col-md-6-->
-                <div class="col-md-6 col-alpha col-omega">
-                  <dl>
-                    <dt class="col-md-4">Product name</dt>
-                    <dd class="col-md-8">
-                      <input type="text" class="required" id="product_name">
-                      <span class="help-block">
-                      <input type="checkbox" id="availability" value="1" checked>
-                      This product can be sold </span> </dd>
-                  </dl>
-                </div>
-                <div class="col-md-6 col-alpha col-omega">
-                  <dl>
-                    <dt class="col-md-4">Product handle</dt>
-                    <dd class="col-md-8">
-                      <input type="text" class="required" id="product_handle">
-                      <span class="help-block"> A unique identifier for this product </span> </dd>
-                  </dl>
-                </div>
-                <!-- END col-md-6-->
-                <div class="col-md-12 col-xs-12 col-sm-12 margin-top-20 col-alpha col-omega">
-                  <dl>
-                    <dt class="col-md-2 height-inherit">Description</dt>
-                    <dd class="col-md-10 height-inherit">
-                      <textarea id="product_description" style="width:100%" rows="4"></textarea>
+                        <select name="merchant_user['outlet_id']" id="merchant_user_outlet_id">
+                        <?php
+                            foreach($outlets as $outlet) :
+                                $outlet_id = $outlet['MerchantOutlet']['id'];
+                                $name = $outlet['MerchantOutlet']['name'];
+                         ?>
+                            <option value="<?php echo $outlet_id; ?>"><?php echo $name; ?></option>
+                        <?php
+                            endforeach;
+                         ?>
+                        </select>              
                      </dd>
                   </dl>
                 </div>
+                <!-- END col-md-6--> 
+                <!-- START col-md-6-->
+                <div class="col-md-6 col-alpha col-omega">
+                  <dl>
+                    <dt class="col-md-4">Password</dt>
+                    <dd class="col-md-8">
+                        <input type="text" name="merchant_user['password']" id="merchant_user_password">                
+                     </dd>
+                  </dl>
+                  <dl>
+                    <dt class="col-md-4">Password again</dt>
+                    <dd class="col-md-8">
+                        <input type="text" name="merchant_user['password_confirm']" id="merchant_user_password_confirm">                
+                     </dd>
+                  </dl>
+                  <dl>
+                    <dt class="col-md-4">User account type</dt>
+                    <dd class="col-md-8">
+                        <select name="merchant_user['user_type']" id="merchant_user_type">
+                        <?php
+                            foreach($user_types as $user_type) :
+                                $type = $user_type['MerchantUserType']['user_type'];
+                         ?>
+                            <option value="<?php echo $type; ?>"><?php echo $type; ?></option>
+                        <?php
+                            endforeach;
+                         ?>
+                        </select>              
+                     </dd>
+                  </dl>
+                </div>
+                <!-- END col-md-6--> 
               </div>
               <!-- END col-md-12-->
               <div class="dashed-line-gr"></div>
@@ -193,214 +171,6 @@
                         </form>
                      </dd>
                   </dl>
-              </div>
-              <!-- END col-md-12-->
-              <div class="col-md-12 col-alpha col-omega">
-                  <dl>
-                    <dt class="col-md-2">Product tags</dt>
-                        <input type="hidden" id="tag_list" value='<?php echo json_encode($tags);?>'>
-                    <dd class="col-md-10">
-                      <input type="hidden" class="select2_sample3 product_tag" value="">
-                    </dd>
-                  </dl>
-              </div>
-              <!-- END col-md-12-->
-            </div>
-            <!-- END col-md-12-->
-            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Pricing</div>
-            <!-- START col-md-12-->
-            <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega"> 
-              <!-- START col-md-12-->
-              <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega"> 
-                  <div class="set-price col-md-12">
-                    <div class="set-price-box col-md-2 col-xs-2 col-sm-2 col-alpha">
-                        <h5><strong>Supply price</strong></h5>
-                      <input type="text" id="supply_price" value="0.00">
-                      <div class="info">Excluding tax</div>
-                    </div>
-                    <div class="set-price-box col-md-2 col-xs-2 col-sm-2 col-alpha">
-                        <h5><strong>x Markup (%)</strong></h5>
-                      <input type="text" id="markup" value="0.00">
-                    </div>
-                    <div class="set-price-box col-md-2 col-xs-2 col-sm-2 col-alpha">
-                        <h5><strong> = Retail price</strong></h5>
-                      <input type="text" id="retail_price_exclude" value="0.00">
-                      <div class="info">Excluding tax</div>
-                    </div>
-                    <div class="set-price-box col-md-3 col-xs-3 col-sm-3 col-alpha">
-                        <h5><strong>+ Sales tax</strong></h5>
-                      <select id="sales_tax">
-                          <?php foreach($taxes as $tax){ ?>
-                        <option tax-id="<?=$tax['MerchantTaxRate']['id'];?>" value="<?=$tax['MerchantTaxRate']['rate'];?>"><?=$tax['MerchantTaxRate']['name'];?></span></option>
-                        <?php } ?>
-                      </select>
-                      <input type="text" id="sales_tax_calc" class="textOnly" value="0.00" disabled>
-                      <div class="tax_info">Currenty, GST (15%)</div>
-                    </div>
-                    <div class="set-price-box col-md-3 col-xs-3 col-sm-3 col-alpha col-omega">
-                        <h5><strong>= Retail price</strong></h5>
-                      <input type="text" id="retail_price_include" value="0.00">
-                      <div class="info">Including tax</div>
-                    </div>
-                  </div>
-              </div>
-              <!-- END col-md-12-->
-            </div>
-            <!-- END col-md-12-->
-            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Variants</div>
-            <!-- START col-md-12-->
-            <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega" style="padding:0;padding-bottom:15px;"> 
-              <!-- START col-md-12-->
-              <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega variant_attr"> 
-                <div class="line-box-stitle">Variants allow you to specify the different attributes of your product, such as size or color. You can define up to three attributes for this product (e.g. color), and each attribute can have many values (e.g. black, green, etc).
-                </div>
-                <span class="help-block">
-                  <input type="checkbox" name="variant" id="variant">
-                  <label for="variant">This product has variants</label>
-                </span>
-                <div id="first_variant_attr" class="col-md-12 col-sm-12 col-xs-12" style="display:none;">
-                    <div class="dashed-line-gr"></div>
-                    <div class="col-md-12 col-xs-12 col-sm-12">
-                        <div class="col-md-3 col-xs-3 col-sm-3">
-                            <h5><strong>Attribute</strong></h5>
-                            <div class="info"><select class="variant_value_1"><option></option><option value="variant_value_add">+ Add new attribute</option>
-                            <?php foreach($variants as $variant){ ?>
-                            <option value="<?=$variant['MerchantVariant']['name'];?>"><?=$variant['MerchantVariant']['name'];?></option>
-                            <?php } ?>
-                            
-                            </select></div>
-                        </div>
-                        <div class="col-md-3 col-xs-3 col-sm-3">
-                            <h5><strong>Default value</strong></h5>
-                            <div class="info"><input type="text" class="variant_default_1"></div>
-                        </div>
-                    </div>
-                    <span class="variant_add">Add Another Attribute</span>
-                </div>
-              </div>
-              <!-- END col-md-12-->
-            </div>
-            <!-- END col-md-12-->
-            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Inventory</div>
-            <!-- START col-md-12-->
-            <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega"> 
-              <!-- START col-md-12-->
-              <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega"> 
-                <!-- START col-md-6-->
-                <div class="col-md-6 col-alpha col-omega">
-                  <dl>
-                    <dt class="col-md-4">Stock keeping unit</dt>
-                    <dd class="col-md-8">
-                        <input type="text" class="required" id="sku">
-                    </dd>
-                  </dl>
-                  <dl>
-                    <dt class="col-md-4">Stock type</dt>
-                    <dd class="col-md-8">
-                      <select id="stock_type">
-                        <option value="standard">Standard</option>
-                        <option value="composite">Composite</option>
-                      </select>
-                    </dd>
-                  </dl>
-                </div>
-                <!-- END col-md-6--> 
-              </div>
-              <div class="col-md-12 col-xs-12 col-sm-12 col-omega col-alpha" id="type_standard">
-                  <div class="line-box-stitle col-md-12 col-xs-12 col-sm-12">
-                      <dl class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                        <dt class="col-md-2">Stock Tracking</dt>
-                        <dd class="col-md-10">
-                          <input id="track_inventory" type="checkbox" value="1" checked>
-                          Track stock levels with onzsa
-                        </dd>
-                      </dl>
-                      <div class="dashed-line-gr"></div>
-                      <div class="col-md-12 col-sm-12 col-xs-12 stock-tracking-header">
-                          <div class="col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
-                            <h5><strong>Store</strong></h5>
-                          </div>
-                          <div class="col-md-2 col-xs-4 col-sm-4">
-                            <h5><strong>Current stock</strong></h5>
-                          </div>
-                          <div class="col-md-3 col-xs-4 col-sm-4">
-                            <h5><strong>Re-order point</strong></h5>
-                          </div>
-                          <div class="col-md-3 col-xs-4 col-sm-4">
-                            <h5><strong>Re-order amount</strong></h5>
-                          </div>
-                      </div>
-                      
-                      <?php foreach($outlets as $outlet) { ?>
-                      <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega stock-tracking">
-                            <input type="hidden" class="stock-outlet_id" value="<?php echo $outlet['MerchantOutlet']['id'];?>">
-                          <div class="col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
-                            <div class="info"><?php echo $outlet['MerchantOutlet']['name'];?></div>
-                          </div>
-                          <div class="col-md-2 col-xs-4 col-sm-4">
-                            <input type="text" class="form-control stock_count">
-                          </div>
-                          <div class="col-md-3 col-xs-4 col-sm-4">
-                            <input type="text" class="form-control stock_reorder_point">
-                          </div>
-                          <div class="col-md-3 col-xs-4 col-sm-4">
-                            <input type="text" class="form-control stock_reorder_amount">
-                          </div>
-                      </div>
-                      <?php } ?>
-                   </div>
-              </div>
-              <div class="col-md-12 col-xs-12 col-sm-12" id="type_composite" style="display:none;">
-                  <div class="line-box-stitle col-md-12 col-xs-12 col-sm-12">
-                  <dl class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                    <dt class="col-md-12">Composite products contained specified quantities of one or more standard products.</dt>
-                  </dl>
-                  <div class="col-md-4 col-xs-4 col-sm-4">
-                    <h5><strong>Product:</strong></h5>
-                    <input type="search" id="composite_search" placeholder="Search Products">
-                    <div class="search_result">
-                        <span class="search-tri"></span>
-                        <div class="search-default"> No Result </div>
-                        <?php foreach($items as $item){ ?>
-                    
-                        <button type="button" data-id="<?=$item['MerchantProduct']['id'];?>" class="data-found"><?=$item['MerchantProduct']['name'];?></button>
-                        
-                        <?php } ?>
-                         
-                    </div>
-                  </div>
-                  <div class="col-md-2 col-xs-2 col-sm-2">
-                    <h5><strong>Quantity:</strong></h5>
-                    <div class="input-group">
-                        <input type="number">
-                        <span class="input-group-btn">
-                            <button type="button" id="composite_attr_add" class="btn btn-default" style="height:29px;padding-top:4px;">Add</button>
-                        </span>
-                    </div>
-                  </div>
-                  <div class="dashed-line-gr"></div>
-                  
-                  <div class="col-md-12 col-sm-12 col-xs-12 composite-attr">
-                      <div class="col-md-4 col-sm-4 col-xs-4">
-                      hello
-                      </div>
-                      <div class="col-md-2 col-xs-2 col-sm-2 col-alpha">
-                        <input type="number" class="form-control">
-                        <button type="button" class="btn remove remove_composite_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button>
-                    </div>
-                  </div>
-                  
-                  <div class="col-md-12 col-sm-12 col-xs-12 composite-attr">
-                      <div class="col-md-4 col-sm-4 col-xs-4">
-                      hello
-                      </div>
-                      <div class="col-md-2 col-xs-2 col-sm-2 col-alpha">
-                        <input type="number" class="form-control">
-                        <button type="button" class="btn remove remove_composite_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button>
-                    </div>
-                  </div>
-                  
-                </div>
               </div>
               <!-- END col-md-12-->
             </div>
@@ -743,12 +513,6 @@ $(document).ready(function(){
             } else {
                 availability = 0;
             }
-            var has_variant;
-            if($("#variant").is(':checked')){
-                has_variant = 1;
-            } else {
-                has_variant = 0;
-            }
             var track_inventory;
             if($("#track_inventory").is(':checked')){
                 track_inventory = 1;
@@ -775,14 +539,13 @@ $(document).ready(function(){
                     price: retail_price,
                     tax: tax,
                     price_include_tax: price_include_tax,
-                    markup: markup / 100,
+                    markup: markup,
                     tax_id: tax_id,
                     description: description,
                     image: image,
                     stock_type: stock_type,
                     sku: sku,
                     is_active: availability,
-                    has_variants: has_variant,
                     variant_option_one_name: variant_option_one_name,
                     variant_option_one_value: variant_option_one_value,
                     variant_option_two_name: variant_option_two_name,
@@ -792,13 +555,10 @@ $(document).ready(function(){
                     track_inventory: track_inventory,
                     inventories: inventories
                 },
-                success: function(result){
-                    category = result['product_id'];
-                    window.location.href = "/product";
-                },
-                error: function(msg){
-                    alert(msg);
-                }
+                //async: false
+            }).done(function(result){
+                category = result['product_id'];
+                window.location.href = "/product";
             });
             var tagId;
             var tagArray = $("input:hidden.product_tag").val().split(",");

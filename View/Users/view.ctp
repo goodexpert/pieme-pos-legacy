@@ -1,3 +1,5 @@
+<link href="/css/dataTable.css" rel="stylesheet" type="text/css">
+
 <div class="clearfix">
 </div>
 <!-- BEGIN CONTAINER -->
@@ -51,111 +53,83 @@
     <!-- END SIDEBAR -->
     <!-- BEGIN CONTENT -->
     <div class="page-content-wrapper">
-        <div class="page-content">
-        
-            <?php if ($this->request->data['MerchantStockOrder']['type'] == 'OUTLET'): ?>
-            <h3>Update Transfer</h3>
-            <?php else: ?>
-            <h3>Update Order</h3>
-            <?php endif; ?>
-            
-            <div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">Details</div>
-                
-                <form action="/stock/editDetails/<?php echo $this->request->data['MerchantStockOrder']['id']; ?>" method="post" id="stock_order_form">
-                <div class="line-box line-box-content col-md-12 col-sm-12 col-xs-12">
-                    <div class="col-md-6">
-                        <dl>
-                            <dt>Order name</dt>
-                            <dd>
-                                <?php
-                                    $orderName = $this->Form->input('MerchantStockOrder.name', array(
-                                        'type' => 'text',
-                                        'div'  => false,
-                                        'label' => false,
-                                        'placeholder' => 'Order - ' . date('D d F Y')
-                                    ));
-
-                                    echo $orderName;
-                                ?>
-                            </dd>
-
-                            <dt>Due at</dt>
-                            <dd>
-                                <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                                <?php
-                                    $dueAt = $this->Form->input('MerchantStockOrder.due_date', array(
-                                        'type' => 'text',
-                                        'div'  => false,
-                                        'label' => false,
-                                        'class' => 'datepicker',
-                                        'placeholder' => date('Y-m-d')
-                                    ));
-
-                                    echo $dueAt;
-                                ?>
-                            </dd>
-
-
-                        </dl>
-                    </div>
-                    <div class="col-md-6">
-                        <dl>
-                            <?php if ( $this->request->data['MerchantStockOrder']['type'] == 'OUTLET' ): ?>
-                            <dt>Source outlet</dt>
-                            <dd>
-                                <?php
-                                    foreach ($outlets as $outlet):
-                                        if ( $outlet['MerchantOutlet']['id'] == $this->request->data['MerchantStockOrder']['source_outlet_id'] ):
-                                            $source_outlet = $outlet['MerchantOutlet']['name'];
-                                            break;
-                                        endif;
-                                    endforeach;
-                                    echo $source_outlet;
-                                ?>
-                            </dd>
-                            <?php endif; ?>
-
-                            <?php if ( $this->request->data['MerchantStockOrder']['type'] == 'SUPPLIER' ): ?>
-                            <dt>Supplier</dt>
-                            <dd>
-                                <?php echo is_null($this->request->data['MerchantSupplier']['name']) ? 'Any' : $order['MerchantSupplier']['name']; ?>
-                            </dd>
-                            <?php endif; ?>
-
-                            <dt>Deliver to</dt>
-                            <dd>
-                                <?php echo $this->request->data['MerchantOutlet']['name']; ?> 
-                            </dd>
-
-                            <?php if ( $this->request->data['MerchantStockOrder']['type'] == 'SUPPLIER' ): ?>
-                            <dt>Supplier invoice</dt>
-                            <dd>
-                                <?php
-                                    $supplierInvoice = $this->Form->input('MerchantStockOrder.supplier_invoice', array(
-                                        'type' => 'text',
-                                        'div'  => false,
-                                        'label' => false
-                                    ));
-
-                                    echo $supplierInvoice;
-                                ?>
-                            </dd>
-                            <?php endif; ?>
-
-                        </dl>
-                    </div>
-                </div>
-                <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
-                    <button type="submit" class="btn btn-primary btn-wide pull-right save">Save</button>
-                    <a href="/stock/index" class="btn btn-default btn-wide pull-left margin-right-10 cancel">Cancel</a>
-                    <button type="submit" class="btn btn-default btn-wide pull-left">Delete</button>
-                </div>
-                </form>
-
+        <div id="Users-container" class="page-content">
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">User Mail address</h2>
+                <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega">
+                <button class="btn btn-white add-customer pull-right margin-top-20">
+                <div class="glyphicon glyphicon-edit"></div>&nbsp;Edit</button>
             </div>
-                    
+        </div>
+        <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+            <div class="col-lg-6 col-md-12 col-xs-12 col-sm-12 user-info-box margin-top-20">
+                <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega line-box">
+                    <div class="col-md-4 col-xs-4 col-sm-4 col-alpha">
+                        <span class="profile-img"></span>
+                    </div>
+                    <div class="col-md-8 col-xs-8 col-sm-8 col-alpha">
+                        <dl>
+                            <dt>Username</dt>
+                            <dd><?=$authUser['username'];?></dd>
+                            <dt>Name</dt>
+                            <dd><?=$authUser['display_name'];?></dd>
+                            <dt>Email</dt>
+                            <dd><?=$authUser['email'];?></dd>
+                            <dt>Limit to outlet</dt>
+                            <dd>-</dd>
+                            <dt>Created at</dt>
+                            <dd><?=$authUser['created'];?></dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 col-xs-12 col-sm-12 user-info-box margin-top-20">
+                <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title">Alerts</div>
+                <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                    <ul>
+                        <li>You have 25 days left on your trial. Activate your account now.</li>
+                        <li>You have 25 days left on your trial. Activate your account now.</li>
+                        <li>You have 25 days left on your trial. Activate your account now.</li>
+                        <li>You have 25 days left on your trial. Activate your account now.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+            <div class="col-lg-6 col-md-12 col-xs-12 col-sm-12 user-info-box-bg margin-top-20">
+                <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title">Sales Targets</div>
+                <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-12 col-xs-12 col-sm-12 user-info-box-bg margin-top-20">
+                <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title">Sales History</div>
+                <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 col-xs-12 col-sm-12 margin-top-20">
+            <table id="historyTable" class="table table-striped table-bordered dataTable">
+                <thead>
+                    <tr>
+                        <th class="hisID">ID</th>
+                        <th class="hisUser">User</th>
+                        <th class="hisCustomer">Customer</th>
+                        <th class="hisNote">Note</th>
+                        <th class="hisStatus">Status</th>
+                        <th class="hisType">Type</th>
+                        <th class="tblTotal">Total</th>
+                        <th class="hisDate">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                
+                </tbody>
+            </table>
         </div>
     </div>
+</div>
     <!-- END CONTENT -->
     <!-- BEGIN QUICK SIDEBAR -->
     <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
@@ -249,40 +223,17 @@
 <script src="/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
 <script src="/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
 <script src="/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
-<!-- END PAGE LEVEL SCRIPTS -->
+<script type="text/javascript" src="/js/jquery.confirm.js"></script>
 
-<script src="/js/dataTable.js" type="text/javascript"></script>
+<script src="/js/jquery.popupoverlay.js" type="text/javascript"></script>
+
+<!-- END PAGE LEVEL SCRIPTS -->
 <script>
 jQuery(document).ready(function() {    
-    Metronic.init(); // init metronic core componets
-    Layout.init(); // init layout
-    QuickSidebar.init() // init quick sidebar
-    Index.init();
-
-    $(".datepicker").datepicker({ dateFormat: 'yy-mm-dd' });
-
-    $(document).on('click','.save',function(){
-        $.ajax({
-
-            url: '/stock/order.json',
-            type: 'POST',
-            data: {
-                name: $("#order-name").val(),
-                supplier_id: $("#order-supplier").val(),
-                outlet_id: $("#order-outlet").val(),
-                type: 'SUPPLIER',
-                status: 'OPEN',
-                due_date: $("#order-due").val()
-            }
-        
-        }).done(function(result){
-            console.log(result);
-        });
-    });
-   
-    $(".cancel").click(function(){
-        parent.history.back();
-    });
+   Metronic.init(); // init metronic core componets
+   Layout.init(); // init layout
+   QuickSidebar.init() // init quick sidebar
+   Index.init();
 });
 </script>
-<!-- END JAVASCRIPTS -->
+<!-- END JAVASCRIPT -->

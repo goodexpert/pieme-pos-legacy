@@ -4,103 +4,103 @@
 </div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
-	<div id="notify"></div>
-	<!-- BEGIN SIDEBAR -->
-	<div class="page-sidebar-wrapper">
-		<!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
-		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-		<div class="page-sidebar navbar-collapse collapse">
-			<ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
-				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-				<!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
-				<li class="sidebar-search-wrapper">
-					<!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-					<!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-					<!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-					<form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
-						<a href="javascript:;" class="remove">
-						<i class="icon-close"></i>
-						</a>
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search...">
-							<span class="input-group-btn">
-							<button class="btn submit"><i class="icon-magnifier"></i></button>
-							</span>
-						</div>
-					</form>
-					<!-- END RESPONSIVE QUICK SEARCH FORM -->
-				</li>
-				<li>
-					<a href="index">
-					Sell
-					</a>
-				</li>
-				<li>
-					<a href="history">
-					History </a>
-				</li>
-				<li class="active">
-					<a href="history">
-					Product <span class="selected">
-					</span>
-					</a>
-				</li>
-			</ul>
-		</div>
-		<!-- END HORIZONTAL RESPONSIVE MENU -->
-	</div>
-	<!-- END SIDEBAR -->
-	<!-- BEGIN CONTENT -->
-	<div class="page-content-wrapper">
-		<div class="page-content">
-			<div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-bottom-20">
-				<h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
-					Users
-				</h2>
-				<div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
-					<a href="/quickkey/add"><button class="btn btn-white pull-right">
-                    	<div class="glyphicon glyphicon-plus"></div>&nbsp;
+    <div id="notify"></div>
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper">
+        <!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
+        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+        <div class="page-sidebar navbar-collapse collapse">
+            <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+                <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
+                <li class="sidebar-search-wrapper">
+                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+                    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
+                    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                    <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
+                        <a href="javascript:;" class="remove">
+                        <i class="icon-close"></i>
+                        </a>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                            <button class="btn submit"><i class="icon-magnifier"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <!-- END RESPONSIVE QUICK SEARCH FORM -->
+                </li>
+                <li>
+                    <a href="index">
+                    Sell
+                    </a>
+                </li>
+                <li>
+                    <a href="history">
+                    History </a>
+                </li>
+                <li class="active">
+                    <a href="history">
+                    Product <span class="selected">
+                    </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- END HORIZONTAL RESPONSIVE MENU -->
+    </div>
+    <!-- END SIDEBAR -->
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-bottom-20">
+                <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
+                    Users
+                </h2>
+                <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
+                    <a href="/quickkey/add"><button class="btn btn-white pull-right">
+                        <div class="glyphicon glyphicon-plus"></div>&nbsp;
                     Add user</button></a> 
-				</div>
-			</div>
-		<table id="historyTable" class="table table-striped table-bordered dataTable">
-			<thead>
-			<tr>
-				<th></th>
-				<th>Username</th>
-				<th>Display Name</th>
-				<th>Account Type</th>
-				<th>Outlet</th>
-				<th>Daily Target</th>
-				<th>Weekly Target</th>
-				<th>Monthly Target</th>
-				<th>Last Login</th>
-			</tr>
-			</thead>
-			<tbody>
-				<?php foreach($users as $user) { ?>
-				<tr>
-					<td></td>
-					<td><?=$user['MerchantUser']['username'];?></td>
-					<td><?=$user['MerchantUser']['display_name'];?></td>
-					<td><?=$user['MerchantUser']['user_type'];?></td>
-					<td><?=$user['MerchantUser']['outlet_id'];?></td>
-					<td></td>
-					<td></td>
-					<td></td>
-					<td><?=$user['MerchantUser']['last_logged'];?></td>
-				</tr>
-				<?php } ?>
-			
-			
-			</tbody>
-		</table>
-		
-		</div>
-	</div>
-	<!-- END CONTENT -->
-	<!-- BEGIN QUICK SIDEBAR -->
+                </div>
+            </div>
+        <table id="historyTable" class="table table-striped table-bordered dataTable">
+            <thead>
+            <tr>
+                <th></th>
+                <th>Username</th>
+                <th>Display Name</th>
+                <th>Account Type</th>
+                <th>Outlet</th>
+                <th>Daily Target</th>
+                <th>Weekly Target</th>
+                <th>Monthly Target</th>
+                <th>Last Login</th>
+            </tr>
+            </thead>
+            <tbody>
+                <?php foreach($users as $user) { ?>
+                <tr>
+                    <td></td>
+                    <td><?=$user['MerchantUser']['username'];?></td>
+                    <td><?=$user['MerchantUser']['display_name'];?></td>
+                    <td><?=$user['MerchantUser']['user_type'];?></td>
+                    <td><?=$user['MerchantUser']['outlet_id'];?></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><?=$user['MerchantUser']['last_logged'];?></td>
+                </tr>
+                <?php } ?>
+            
+            
+            </tbody>
+        </table>
+        
+        </div>
+    </div>
+    <!-- END CONTENT -->
+    <!-- BEGIN QUICK SIDEBAR -->
     <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
     <div class="page-quick-sidebar-wrapper">
         <div class="page-quick-sidebar">            

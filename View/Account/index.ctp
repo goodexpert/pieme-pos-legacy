@@ -2,97 +2,97 @@
 </div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
-	<div id="notify"></div>
-	<!-- BEGIN SIDEBAR -->
-	<div class="page-sidebar-wrapper">
-		<!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
-		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-		<div class="page-sidebar navbar-collapse collapse">
-			<ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
-				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-				<!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
-				<li class="sidebar-search-wrapper">
-					<!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-					<!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-					<!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-					<form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
-						<a href="javascript:;" class="remove">
-						<i class="icon-close"></i>
-						</a>
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search...">
-							<span class="input-group-btn">
-							<button class="btn submit"><i class="icon-magnifier"></i></button>
-							</span>
-						</div>
-					</form>
-					<!-- END RESPONSIVE QUICK SEARCH FORM -->
-				</li>
-				<li>
-					<a href="index">
-					Sell
-					</a>
-				</li>
-				<li>
-					<a href="history">
-					History </a>
-				</li>
-				<li class="active">
-					<a href="history">
-					Product <span class="selected">
-					</span>
-					</a>
-				</li>
-			</ul>
-		</div>
-		<!-- END HORIZONTAL RESPONSIVE MENU -->
-	</div>
-	<!-- END SIDEBAR -->
-	<!-- BEGIN CONTENT -->
-	<div class="page-content-wrapper">
-		<div class="page-content">
-			<h2>Account</h2>
-			<div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega line-box">
-				<h4 class="col-md-12 col-sm-12 col-xs-12">
-					Select a Plan
-				</h4>
-				<h5 class="col-md-12 col-sm-12 col-xs-12 margin-bottom-20">
-					You have 1 Outlet, 1 Register, 5 Products, 3 Customers and 1 User.<br>
-				</h5>
-				<div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
-					<?php foreach($plans as $plan) { ?>
-					<div class="col-md-3 col-sm-6 col-xs-6 margin-bottom-20">
-						<div class="plan-item clickable <?php if($authUser['Merchant']['plan_id'] == $plan['Plan']['id']){echo "selected_plan";}?> line-box">
-							<div class="col-md-12 col-sm-12 col-xs-12 plan-header">
-								<input type="radio" value="<?php echo $plan['Plan']['id'];?>" name="account_plan" <?php if($authUser['Merchant']['plan_id'] == $plan['Plan']['id']){echo "checked";}?>> <lable for="account_plan"><?php echo $plan['Plan']['name'];?></lable>
-							</div>
-							<div class="col-md-12 col-sm-12 col-xs-12">
-								<div class="plan-price">
-									FREE
-								</div>
-								<span class="triangle-left"></span>
-								<span class="triangle-right"></span>
-							</div>
-							<div class="col-md-12 col-sm-12 col-xs-12 plan-desc">
-								<ul>
-									<li>Single outlet</li>
-									<li>1 register included</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-					<?php } ?>
-				</div>
-			</div>
-			<div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
-				<button class="btn btn-primary btn-wide save pull-right">Save</button>
-				<button class="btn btn-default btn-wide pull-right margin-right-10">Cancel</button>
-			</div>
-		</div>
-	</div>
-	<!-- END CONTENT -->
-	<!-- BEGIN QUICK SIDEBAR -->
+    <div id="notify"></div>
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper">
+        <!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
+        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+        <div class="page-sidebar navbar-collapse collapse">
+            <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+                <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
+                <li class="sidebar-search-wrapper">
+                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+                    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
+                    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                    <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
+                        <a href="javascript:;" class="remove">
+                        <i class="icon-close"></i>
+                        </a>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                            <button class="btn submit"><i class="icon-magnifier"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <!-- END RESPONSIVE QUICK SEARCH FORM -->
+                </li>
+                <li>
+                    <a href="index">
+                    Sell
+                    </a>
+                </li>
+                <li>
+                    <a href="history">
+                    History </a>
+                </li>
+                <li class="active">
+                    <a href="history">
+                    Product <span class="selected">
+                    </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- END HORIZONTAL RESPONSIVE MENU -->
+    </div>
+    <!-- END SIDEBAR -->
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <h2>Account</h2>
+            <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega line-box">
+                <h4 class="col-md-12 col-sm-12 col-xs-12">
+                    Select a Plan
+                </h4>
+                <h5 class="col-md-12 col-sm-12 col-xs-12 margin-bottom-20">
+                    You have 1 Outlet, 1 Register, 5 Products, 3 Customers and 1 User.<br>
+                </h5>
+                <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
+                    <?php foreach($plans as $plan) { ?>
+                    <div class="col-md-3 col-sm-6 col-xs-6 margin-bottom-20">
+                        <div class="plan-item clickable <?php if($authUser['Merchant']['plan_id'] == $plan['Plan']['id']){echo "selected_plan";}?> line-box">
+                            <div class="col-md-12 col-sm-12 col-xs-12 plan-header">
+                                <input type="radio" value="<?php echo $plan['Plan']['id'];?>" name="account_plan" <?php if($authUser['Merchant']['plan_id'] == $plan['Plan']['id']){echo "checked";}?>> <lable for="account_plan"><?php echo $plan['Plan']['name'];?></lable>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="plan-price">
+                                    FREE
+                                </div>
+                                <span class="triangle-left"></span>
+                                <span class="triangle-right"></span>
+                            </div>
+                            <div class="col-md-12 col-sm-12 col-xs-12 plan-desc">
+                                <ul>
+                                    <li>Single outlet</li>
+                                    <li>1 register included</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <?php } ?>
+                </div>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
+                <button class="btn btn-primary btn-wide save pull-right">Save</button>
+                <button class="btn btn-default btn-wide pull-right margin-right-10">Cancel</button>
+            </div>
+        </div>
+    </div>
+    <!-- END CONTENT -->
+    <!-- BEGIN QUICK SIDEBAR -->
     <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
     <div class="page-quick-sidebar-wrapper">
         <div class="page-quick-sidebar">            
@@ -189,34 +189,34 @@
 <script src="/js/notify.js" type="text/javascript"></script>
 <script>
 jQuery(document).ready(function() {    
-	Metronic.init(); // init metronic core componets
-	Layout.init(); // init layout
-	QuickSidebar.init() // init quick sidebar
-	Index.init();
-	
-	
-	$(".plan-item").click(function(){
-		$(".plan-item").children(".plan-header").children(".radio").children("span").removeClass('checked');
-		$(".plan-item").children(".plan-header").children(".radio").children("span").children("input[name=account_plan]").attr({'checked':false});
-		$(".plan-item").removeClass("selected_plan");
-		$(this).children(".plan-header").children(".radio").children("span").addClass('checked');
-		$(this).children(".plan-header").children(".radio").children("span").children("input[name=account_plan]").attr({'checked':'checked'});
-		$(this).addClass("selected_plan");
-	});
-	
-	$(".save").click(function(){
-		var plan_id = $("input[name=account_plan]:checked").val();
-		
-		$.ajax({
-			url: '/account/update_plan.json',
-			type: 'POST',
-			data: {
-				plan_id: plan_id
-			}
-		}).done(function(result){
-			console.log(result);
-		});
-	});
+    Metronic.init(); // init metronic core componets
+    Layout.init(); // init layout
+    QuickSidebar.init() // init quick sidebar
+    Index.init();
+    
+    
+    $(".plan-item").click(function(){
+        $(".plan-item").children(".plan-header").children(".radio").children("span").removeClass('checked');
+        $(".plan-item").children(".plan-header").children(".radio").children("span").children("input[name=account_plan]").attr({'checked':false});
+        $(".plan-item").removeClass("selected_plan");
+        $(this).children(".plan-header").children(".radio").children("span").addClass('checked');
+        $(this).children(".plan-header").children(".radio").children("span").children("input[name=account_plan]").attr({'checked':'checked'});
+        $(this).addClass("selected_plan");
+    });
+    
+    $(".save").click(function(){
+        var plan_id = $("input[name=account_plan]:checked").val();
+        
+        $.ajax({
+            url: '/account/update_plan.json',
+            type: 'POST',
+            data: {
+                plan_id: plan_id
+            }
+        }).done(function(result){
+            console.log(result);
+        });
+    });
 });
 </script>
 <!-- END JAVASCRIPTS -->

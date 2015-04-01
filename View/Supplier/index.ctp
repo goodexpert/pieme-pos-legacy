@@ -5,96 +5,96 @@
 </div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
-	<div id="notify"></div>
-	<!-- BEGIN SIDEBAR -->
-	<div class="page-sidebar-wrapper">
-		<!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
-		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-		<div class="page-sidebar navbar-collapse collapse">
-			<ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
-				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-				<!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
-				<li class="sidebar-search-wrapper">
-					<!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-					<!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-					<!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-					<form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
-						<a href="javascript:;" class="remove">
-						<i class="icon-close"></i>
-						</a>
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search...">
-							<span class="input-group-btn">
-							<button class="btn submit"><i class="icon-magnifier"></i></button>
-							</span>
-						</div>
-					</form>
-					<!-- END RESPONSIVE QUICK SEARCH FORM -->
-				</li>
-				<li>
-					<a href="index">
-					Sell
-					</a>
-				</li>
-				<li>
-					<a href="history">
-					History </a>
-				</li>
-				<li class="active">
-					<a href="history">
-					Product <span class="selected">
-					</span>
-					</a>
-				</li>
-			</ul>
-		</div>
-		<!-- END HORIZONTAL RESPONSIVE MENU -->
-	</div>
-	<!-- END SIDEBAR -->
-	<!-- BEGIN CONTENT -->
-	<div class="page-content-wrapper">
-		<div class="page-content">
-		
-			<div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-				<h2 class="col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
-					Supplier
-				</h2>
-				
-				<div class="col-md-5 col-xs-5 col-sm-5 col-alpha col-omega">
-					<a href="/supplier/add">
-					<button class="btn btn-white pull-right margin-top-20">Add</button>
-					</a>
-				</div>
-			</div>
-			
-			<table id="supplierTable" class="table-bordered">
-				<thead>
-				<tr>
-					<th>Name</th>
-					<th>Description</th>
-					<th></th>
-				</tr>
-				</thead>
-				<tbody>
-					<?php foreach($suppliers as $supplier) { ?>
-					<tr data-id="<?=$supplier['MerchantSupplier']['id'];?>">
-						<td class="supplier_name"><?=$supplier['MerchantSupplier']['name'];?></td>
-						<td><?=$supplier['MerchantSupplier']['description'];?></td>
-						<td>
-							<a href="/product?supplier=<?=$supplier['MerchantSupplier']['id'];?>">View Products</a>
-							 | <a href="/supplier/edit?id=<?=$supplier['MerchantSupplier']['id'];?>" class="edit-supplier">Edit</a> 
-							 | <span class="clickable delete-supplier" data-id="<?=$supplier['MerchantSupplier']['id'];?>">Delete</span>
-						</td>
-					</tr>
-					<?php } ?>
-				</tbody>
-			</table>
-		
-		</div>
-	</div>
-	<!-- END CONTENT -->
-	<!-- BEGIN QUICK SIDEBAR -->
+    <div id="notify"></div>
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper">
+        <!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
+        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+        <div class="page-sidebar navbar-collapse collapse">
+            <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+                <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
+                <li class="sidebar-search-wrapper">
+                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+                    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
+                    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                    <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
+                        <a href="javascript:;" class="remove">
+                        <i class="icon-close"></i>
+                        </a>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                            <button class="btn submit"><i class="icon-magnifier"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <!-- END RESPONSIVE QUICK SEARCH FORM -->
+                </li>
+                <li>
+                    <a href="index">
+                    Sell
+                    </a>
+                </li>
+                <li>
+                    <a href="history">
+                    History </a>
+                </li>
+                <li class="active">
+                    <a href="history">
+                    Product <span class="selected">
+                    </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- END HORIZONTAL RESPONSIVE MENU -->
+    </div>
+    <!-- END SIDEBAR -->
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+        <div class="page-content">
+        
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                <h2 class="col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
+                    Supplier
+                </h2>
+                
+                <div class="col-md-5 col-xs-5 col-sm-5 col-alpha col-omega">
+                    <a href="/supplier/add">
+                    <button class="btn btn-white pull-right margin-top-20">Add</button>
+                    </a>
+                </div>
+            </div>
+            
+            <table id="supplierTable" class="table-bordered">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                    <?php foreach($suppliers as $supplier) { ?>
+                    <tr data-id="<?=$supplier['MerchantSupplier']['id'];?>">
+                        <td class="supplier_name"><?=$supplier['MerchantSupplier']['name'];?></td>
+                        <td><?=$supplier['MerchantSupplier']['description'];?></td>
+                        <td>
+                            <a href="/product?supplier=<?=$supplier['MerchantSupplier']['id'];?>">View Products</a>
+                             | <a href="/supplier/edit?id=<?=$supplier['MerchantSupplier']['id'];?>" class="edit-supplier">Edit</a> 
+                             | <span class="clickable delete-supplier" data-id="<?=$supplier['MerchantSupplier']['id'];?>">Delete</span>
+                        </td>
+                    </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+        
+        </div>
+    </div>
+    <!-- END CONTENT -->
+    <!-- BEGIN QUICK SIDEBAR -->
     <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
     <div class="page-quick-sidebar-wrapper">
         <div class="page-quick-sidebar">            
@@ -170,37 +170,37 @@
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
 jQuery(document).ready(function() {    
-	Metronic.init(); // init metronic core componets
-	Layout.init(); // init layout
-	QuickSidebar.init() // init quick sidebar
-	Index.init();
-	
-	$("#supplierTable").DataTable({
-    	searching: false
-	});
-	$("#supplierTable_length").hide();
-	
-	$(".delete-supplier").click(function(){
-		var id = $(this).attr("data-id");
-		var parentTr = $(this).parent().parent()
-		$.confirm({
-			text:'Delete this supplier',
-			confirmButton: "Delete",
-			confirm: function(button){
-				$.ajax({
-					url: "/supplier/delete.json",
-					type: "POST",
-					data: {
-						id: id
-					}
-				}).done(function(result){
-					location.reload();
-				});
-			},
-			confirmButtonClass: "pull-right btn-success margin-left-10",
-			cancelButton: "Cancel",
-		});
-	});
+    Metronic.init(); // init metronic core componets
+    Layout.init(); // init layout
+    QuickSidebar.init() // init quick sidebar
+    Index.init();
+    
+    $("#supplierTable").DataTable({
+        searching: false
+    });
+    $("#supplierTable_length").hide();
+    
+    $(".delete-supplier").click(function(){
+        var id = $(this).attr("data-id");
+        var parentTr = $(this).parent().parent()
+        $.confirm({
+            text:'Delete this supplier',
+            confirmButton: "Delete",
+            confirm: function(button){
+                $.ajax({
+                    url: "/supplier/delete.json",
+                    type: "POST",
+                    data: {
+                        id: id
+                    }
+                }).done(function(result){
+                    location.reload();
+                });
+            },
+            confirmButtonClass: "pull-right btn-success margin-left-10",
+            cancelButton: "Cancel",
+        });
+    });
 });
 </script>
 <script type="text/javascript" src="/js/jquery.confirm.js"></script>

@@ -152,6 +152,7 @@ class StockController extends AppController {
             } catch (Exception $e) {
                 $dataSource->rollback();
                 $this->Session->setFlash($e->getMessage());
+                debug($e->getMessage());
             }
         }
     
@@ -255,7 +256,6 @@ class StockController extends AppController {
             }
         }
 
-        $stockOrder = $this->MerchantStockOrder->findById($id);
 
         // get the merchant stock order
         $this->MerchantStockOrder->bindModel(array(
@@ -285,22 +285,8 @@ class StockController extends AppController {
                 )
             )
         ));
-
-        $this->loadModel('MerchantProduct');
-        $this->MerchantProduct->bindModel(array(
-            'hasMany' => array(
-                'MerchantProductInventory' => array(
-                    'className' => 'MerchantProductInventory',
-                    'foreignKey' => 'product_id',
-                    'conditions' => array(
-                        'MerchantProductInventory.outlet_id' => $stockOrder['MerchantStockOrder']['outlet_id']
-                    )
-                )
-            )
-        ));
-
         $order = $this->MerchantStockOrder->find('first', array(
-            'recursive' => 3,
+            'recursive' => 2,
             'conditions' => array(
                 'MerchantStockOrder.id' => $id
             )
@@ -308,21 +294,35 @@ class StockController extends AppController {
         $this->set('order', $order);
 
         // get the list of products
-        $products = $this->MerchantProduct->find('all', array(
-            'fields' => array('MerchantProduct.*', 'MerchantProductInventory.*'),
-            'joins' => array(
-                array(
-                    'table' => 'merchant_product_inventories',
-                    'alias' => 'MerchantProductInventory',
-                    'type' => 'LEFT',
-                    'conditions' => array(
-                        'MerchantProduct.id = MerchantProductInventory.product_id',
-                        'MerchantProductInventory.outlet_id' => $order['MerchantStockOrder']['outlet_id']
-                    )
+        /*
+        $this->loadModel('MerchantProduct');
+        $this->MerchantProduct->bindModel(array(
+            'hasMany' => array(
+                'MerchantProductInventory' => array(
+                    'className' => 'MerchantProductInventory',
+                    'foreignKey' => 'product_id'
                 )
-            ),
+            )
+        ));
+        $products = $this->MerchantProduct->find('all', array(
             'conditions' => array(
                 'MerchantProduct.merchant_id' => $order['MerchantStockOrder']['merchant_id']
+            )
+        ));
+        $this->set('products', $products);
+         */
+        $this->loadModel('MerchantProductInventory');
+        $this->MerchantProductInventory->bindModel(array(
+            'belongsTo' => array(
+                'MerchantProduct' => array(
+                    'className' => 'MerchantProduct',
+                    'foreignKey' => 'product_id'
+                )
+            )
+        ));
+        $products = $this->MerchantProductInventory->find('all', array(
+            'conditions' => array(
+                'MerchantProductInventory.outlet_id' => $order['MerchantStockOrder']['outlet_id']
             )
         ));
         $this->set('products', $products);
@@ -928,8 +928,6 @@ class StockController extends AppController {
                 $this->Session->setFlash($e->getMessage());
             }
         }
-
-        $stockOrder = $this->MerchantStockOrder->findById($id);
         
         // get the merchant stock order
         $this->loadModel('MerchantStockOrder');
@@ -962,21 +960,8 @@ class StockController extends AppController {
             )
         ));
 
-        $this->loadModel('MerchantProduct');
-        $this->MerchantProduct->bindModel(array(
-            'hasMany' => array(
-                'MerchantProductInventory' => array(
-                    'className' => 'MerchantProductInventory',
-                    'foreignKey' => 'product_id',
-                    'conditions' => array(
-                        'MerchantProductInventory.outlet_id' => $stockOrder['MerchantStockOrder']['outlet_id']
-                    )
-                )
-            )
-        ));
-
         $order = $this->MerchantStockOrder->find('first', array(
-            'recursive' => 3,
+            'recursive' => 2,
             'conditions' => array(
                 'MerchantStockOrder.id' => $id
             )
@@ -985,24 +970,22 @@ class StockController extends AppController {
 
 
         // get the list of products
-        $products = $this->MerchantProduct->find('all', array(
-            'fields' => array('MerchantProduct.*', 'MerchantProductInventory.*'),
-            'joins' => array(
-                array(
-                    'table' => 'merchant_product_inventories',
-                    'alias' => 'MerchantProductInventory',
-                    'type' => 'LEFT',
-                    'conditions' => array(
-                        'MerchantProduct.id = MerchantProductInventory.product_id',
-                        'MerchantProductInventory.outlet_id' => $order['MerchantStockOrder']['outlet_id']
-                    )
+        $this->loadModel('MerchantProduct');
+        $this->MerchantProduct->bindModel(array(
+            'hasMany' => array(
+                'MerchantProductInventory' => array(
+                    'className' => 'MerchantProductInventory',
+                    'foreignKey' => 'product_id'
                 )
-            ),
+            )
+        ));
+        $products = $this->MerchantProduct->find('all', array(
             'conditions' => array(
                 'MerchantProduct.merchant_id' => $order['MerchantStockOrder']['merchant_id']
             )
         ));
         $this->set('products', $products);
+
 
         if ( !$this->request->data ) {
             $this->request->data = $order;
@@ -1011,62 +994,9 @@ class StockController extends AppController {
     }
 
     public function inventoryCount() {
-        // get the list 
-        $this->MerchantStockOrder->bindModel(array(
-            'belongsTo' => array(
-                'MerchantOutlet' => array(
-                    'className' => 'MerchantOutlet',
-                    'foreignKey' => 'outlet_id'
-                )
-            )
-        ));
-        $orders = $this->MerchantStockOrder->find('all', array(
-            'conditions' => array(
-                'MerchantStockOrder.type' => 'STOCKTAKE'
-            )
-        ));
-        $this->set('orders', $orders);
-
     }
 
-    public function newInventoryCount() { 
-        // create a merchant stock order
-        if ( $this->request->is('post') ) {
-            $data = $this->request->data;
-
-            $data['MerchantStockOrder']['merchant_id'] = $this->Auth->user()['merchant_id'];
-            $data['MerchantStockOrder']['type'] = 'STOCKTAKE';
-            $data['MerchantStockOrder']['status'] = 'STOCKTAKE_UPCOMMING';
-            $data['MerchantStockOrder']['date'] = date('Y-m-d h:i:s', strtotime($data['MerchantStockOrder']['start_date'] . ' ' . $data['MerchantStockOrder']['start_time']));
-
-            $dataSource = $this->MerchantStockOrder->getDataSource();
-            $dataSource->begin();
-
-            try {
-                // create a merchant stock order
-                $this->MerchantStockOrder->create();
-                $this->MerchantStockOrder->save($data);
-
-                $order_id = $this->MerchantStockOrder->id;
-
-                $dataSource->commit();
-
-                // redirect to index
-                $this->redirect('/inventory_count');
-            } catch (Exception $e) {
-                $dataSource->rollback();
-                $this->Session->setFlash($e->getMessage());
-            }
-        }
-
-        // get the list of merchant outlets
-        $this->loadModel('MerchantOutlet');
-        $outlets = $this->MerchantOutlet->find('list', array(
-            'fields' => array('MerchantOutlet.id', 'MerchantOutlet.name'),
-            'conditions' => array('MerchantOutlet.merchant_id' => $this->Auth->user()['merchant_id']),
-            'recursive' => 0
-        ));
-        $this->set('outlets', $outlets);
+    public function newInventoryCount() {
     }
 
     public function viewInventoryCount() {

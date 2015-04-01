@@ -2,169 +2,169 @@
 </div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
-	<div id="notify"></div>
-	<!-- BEGIN SIDEBAR -->
-	<div class="page-sidebar-wrapper">
-		<!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
-		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-		<div class="page-sidebar navbar-collapse collapse">
-			<ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
-				<!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-				<!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
-				<li class="sidebar-search-wrapper">
-					<!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-					<!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-					<!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-					<form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
-						<a href="javascript:;" class="remove">
-						<i class="icon-close"></i>
-						</a>
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="Search...">
-							<span class="input-group-btn">
-							<button class="btn submit"><i class="icon-magnifier"></i></button>
-							</span>
-						</div>
-					</form>
-					<!-- END RESPONSIVE QUICK SEARCH FORM -->
-				</li>
-				<li>
-					<a href="index">
-					Sell
-					</a>
-				</li>
-				<li>
-					<a href="history">
-					History </a>
-				</li>
-				<li class="active">
-					<a href="history">
-					Product <span class="selected">
-					</span>
-					</a>
-				</li>
-			</ul>
-		</div>
-		<!-- END HORIZONTAL RESPONSIVE MENU -->
-	</div>
-	<!-- END SIDEBAR -->
-	<!-- BEGIN CONTENT -->
-	<div class="page-content-wrapper">
-		<div class="page-content">
-		
-			<h3>New Supplier</h3>
-			
-			<!-- DETAILS -->
-			<div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">Details</div>
+    <div id="notify"></div>
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper">
+        <!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
+        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+        <div class="page-sidebar navbar-collapse collapse">
+            <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
+                <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
+                <li class="sidebar-search-wrapper">
+                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
+                    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
+                    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                    <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
+                        <a href="javascript:;" class="remove">
+                        <i class="icon-close"></i>
+                        </a>
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search...">
+                            <span class="input-group-btn">
+                            <button class="btn submit"><i class="icon-magnifier"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <!-- END RESPONSIVE QUICK SEARCH FORM -->
+                </li>
+                <li>
+                    <a href="index">
+                    Sell
+                    </a>
+                </li>
+                <li>
+                    <a href="history">
+                    History </a>
+                </li>
+                <li class="active">
+                    <a href="history">
+                    Product <span class="selected">
+                    </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <!-- END HORIZONTAL RESPONSIVE MENU -->
+    </div>
+    <!-- END SIDEBAR -->
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+        <div class="page-content">
+        
+            <h3>New Supplier</h3>
+            
+            <!-- DETAILS -->
+            <div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">Details</div>
             <div class="line-box line-box-content col-md-12 col-sm-12 col-xs-12">
-            	<div class="col-md-6 col-sm-12 col-xs-12">
-	            	<dl>
-		            	<dt>Supplier name</dt>
-		            	<dd><input type="text" class="required" id="supplier_name"></dd>
-		            	
-		            	<dt>Default markup</dt>
-		            	<dd><input type="text" value="0"></dd>
-		            	
-		            	<dt>Description</dt>
-		            	<dd><textarea style="width:100%;" id="supplier_desc"></textarea></dd>
-	            	</dl>
-            	</div>
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <dl>
+                        <dt>Supplier name</dt>
+                        <dd><input type="text" class="required" id="supplier_name"></dd>
+                        
+                        <dt>Default markup</dt>
+                        <dd><input type="text" value="0"></dd>
+                        
+                        <dt>Description</dt>
+                        <dd><textarea style="width:100%;" id="supplier_desc"></textarea></dd>
+                    </dl>
+                </div>
             </div>
             
             <!-- CONTACT INFORMATION -->
             <div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">Contact Information</div>
             <div class="line-box line-box-content col-md-12 col-sm-12 col-xs-12">
-            	<div class="col-md-6 col-sm-12 col-xs-12" style="border-right:1px solid #eee;">
-	            	<dl>
-		            	<dt>Company</dt>
-		            	<dd><input type="text" id="company_name"></dd>
-		            	
-		            	<dt>Contact name</dt>
-		            	<dd><input type="text" style="width:49%;" placeholder="First" id="first_name">
-		            	<input type="text" class="pull-right" style="width:49%;" placeholder="Last" id="last_name"></dd>
-		            	
-		            	<dt>Phone</dt>
-		            	<dd><input type="text" id="phone"></dd>
-		            	
-		            	<dt>Mobile</dt>
-		            	<dd><input type="text" id="mobile"></dd>
-	            	</dl>
-            	</div>
-            	
-            	<div class="col-md-6 col-sm-12 col-xs-12">
-            		<dl>
-            			<dt>Email</dt>
-            			<dd><input type="text" id="email"></dd>
-            			
-            			<dt>Website</dt>
-            			<dd><input type="text" id="website"></dd>
-            		</dl>
-            	</div>
+                <div class="col-md-6 col-sm-12 col-xs-12" style="border-right:1px solid #eee;">
+                    <dl>
+                        <dt>Company</dt>
+                        <dd><input type="text" id="company_name"></dd>
+                        
+                        <dt>Contact name</dt>
+                        <dd><input type="text" style="width:49%;" placeholder="First" id="first_name">
+                        <input type="text" class="pull-right" style="width:49%;" placeholder="Last" id="last_name"></dd>
+                        
+                        <dt>Phone</dt>
+                        <dd><input type="text" id="phone"></dd>
+                        
+                        <dt>Mobile</dt>
+                        <dd><input type="text" id="mobile"></dd>
+                    </dl>
+                </div>
+                
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <dl>
+                        <dt>Email</dt>
+                        <dd><input type="text" id="email"></dd>
+                        
+                        <dt>Website</dt>
+                        <dd><input type="text" id="website"></dd>
+                    </dl>
+                </div>
             </div>
-		
+        
             <!-- Address -->
             <div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">Address</div>
             <div class="line-box line-box-content col-md-12 col-sm-12 col-xs-12">
-        		<div class="col-md-6 col-sm-12 col-xs-12">
-					<div class="line-box-stitle">Physical Address</div>
-					<dl>
-						<dt>Street</dt>
-						<dd><input type="text" class="physical_street_1"></dd>
-						<dt>Street</dt>
-						<dd><input type="text" class="physical_street_2"></dd>
-						<dt>Suburb</dt>
-						<dd><input type="text" class="physical_suburb"></dd>
-						<dt>City</dt>
-						<dd><input type="text" class="physical_city"></dd>
-						<dt>Physical postcode</dt>
-						<dd><input type="text" class="physical_postcode"></dd>
-						<dt>State</dt>
-						<dd><input type="text" class="physical_state"></dd>
-						<dt>Country</dt>
-						<dd><select class="physical_country"><option selected disabled>Select a country</option>
-						<?php foreach($countries as $country) { ?>
-							<option value="<?=$country['Country']['country_code'];?>"><?=$country['Country']['country_name'];?></option>
-						<?php } ?>
-						</select></dd>
-					</dl>
-				</div>
-				<div class="col-md-6 col-sm-12 col-xs-12">
-					<div class="line-box-stitle">Postal Address
-						<span class="clickable same_as_physical pull-right btn btn-default">Same as Physical Address</span>
-					</div>
-					<dl>
-						<dt>Street</dt>
-						<dd><input type="text" class="postal_street_1"></dd>
-						<dt>Street</dt>
-						<dd><input type="text" class="postal_street_2"></dd>
-						<dt>Suburb</dt>
-						<dd><input type="text" class="postal_suburb"></dd>
-						<dt>City</dt>
-						<dd><input type="text" class="postal_city"></dd>
-						<dt>Physical postcode</dt>
-						<dd><input type="text" class="postal_postcode"></dd>
-						<dt>State</dt>
-						<dd><input type="text" class="postal_state"></dd>
-						<dt>Country</dt>
-						<dd><select class="postal_country"><option selected disabled>Select a country</option>
-						<?php foreach($countries as $country) { ?>
-							<option value="<?=$country['Country']['country_code'];?>"><?=$country['Country']['country_name'];?></option>
-						<?php } ?>
-						</select></dd>
-					</dl>
-				</div>
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <div class="line-box-stitle">Physical Address</div>
+                    <dl>
+                        <dt>Street</dt>
+                        <dd><input type="text" class="physical_street_1"></dd>
+                        <dt>Street</dt>
+                        <dd><input type="text" class="physical_street_2"></dd>
+                        <dt>Suburb</dt>
+                        <dd><input type="text" class="physical_suburb"></dd>
+                        <dt>City</dt>
+                        <dd><input type="text" class="physical_city"></dd>
+                        <dt>Physical postcode</dt>
+                        <dd><input type="text" class="physical_postcode"></dd>
+                        <dt>State</dt>
+                        <dd><input type="text" class="physical_state"></dd>
+                        <dt>Country</dt>
+                        <dd><select class="physical_country"><option selected disabled>Select a country</option>
+                        <?php foreach($countries as $country) { ?>
+                            <option value="<?=$country['Country']['country_code'];?>"><?=$country['Country']['country_name'];?></option>
+                        <?php } ?>
+                        </select></dd>
+                    </dl>
+                </div>
+                <div class="col-md-6 col-sm-12 col-xs-12">
+                    <div class="line-box-stitle">Postal Address
+                        <span class="clickable same_as_physical pull-right btn btn-default">Same as Physical Address</span>
+                    </div>
+                    <dl>
+                        <dt>Street</dt>
+                        <dd><input type="text" class="postal_street_1"></dd>
+                        <dt>Street</dt>
+                        <dd><input type="text" class="postal_street_2"></dd>
+                        <dt>Suburb</dt>
+                        <dd><input type="text" class="postal_suburb"></dd>
+                        <dt>City</dt>
+                        <dd><input type="text" class="postal_city"></dd>
+                        <dt>Physical postcode</dt>
+                        <dd><input type="text" class="postal_postcode"></dd>
+                        <dt>State</dt>
+                        <dd><input type="text" class="postal_state"></dd>
+                        <dt>Country</dt>
+                        <dd><select class="postal_country"><option selected disabled>Select a country</option>
+                        <?php foreach($countries as $country) { ?>
+                            <option value="<?=$country['Country']['country_code'];?>"><?=$country['Country']['country_name'];?></option>
+                        <?php } ?>
+                        </select></dd>
+                    </dl>
+                </div>
             </div>
             
             <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
-				<button class="btn btn-primary btn-wide pull-right save">Save</button>
-				<button class="btn btn-default btn-wide pull-right margin-right-10 cancel">Cancel</button>
-			</div>
-		
-		</div>
-	</div>
-	<!-- END CONTENT -->
-	<!-- BEGIN QUICK SIDEBAR -->
+                <button class="btn btn-primary btn-wide pull-right save">Save</button>
+                <button class="btn btn-default btn-wide pull-right margin-right-10 cancel">Cancel</button>
+            </div>
+        
+        </div>
+    </div>
+    <!-- END CONTENT -->
+    <!-- BEGIN QUICK SIDEBAR -->
     <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
     <div class="page-quick-sidebar-wrapper">
         <div class="page-quick-sidebar">            
@@ -261,59 +261,59 @@
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script>
 jQuery(document).ready(function() {    
-	Metronic.init(); // init metronic core componets
-	Layout.init(); // init layout
-	QuickSidebar.init() // init quick sidebar
-	Index.init();
-	
-	$(".cancel").click(function(){
-		parent.history.back();
-	});
-	
-	$(".same_as_physical").click(function(){
-		$(".postal_street_1").val($(".physical_street_1").val()),
-		$(".postal_street_2").val($(".physical_street_2").val()),
-		$(".postal_suburb").val($(".physical_suburb").val()),
-		$(".postal_city").val($(".physical_city").val()),
-		$(".postal_state").val($(".physical_state").val()),
-		$(".postal_postcode").val($(".physical_postcode").val()),
-		$(".postal_country").val($(".physical_country").val())
-	});
-	
-	
-	$(".save").click(function(){
-		$.ajax({
-			url: "/supplier/add.json",
-			type: "POST",
-			data: {
-				name: $("#supplier_name").val(),
-				description: $("#supplier_desc").val(),
-				first_name: $("#first_name").val(),
-				last_name: $("#last_name").val(),
-				phone: $("#phone").val(),
-				mobile: $("#mobile").val(),
-				email: $("#email").val(),
-				website: $("#website").val(),
-				company_name: $("#company_name").val(),
-				physical_address1: $(".physical_street_1").val(),
-				physical_address2: $(".physical_street_2").val(),
-				physical_suburb: $(".physical_suburb").val(),
-				physical_city: $(".physical_city").val(),
-				physical_state: $(".physical_state").val(),
-				physical_postcode: $(".physical_postcode").val(),
-				physical_country_id: $(".physical_country").val(),
-				postal_address1: $(".postal_street_1").val(),
-				postal_address2: $(".postal_street_2").val(),
-				postal_suburb: $(".postal_suburb").val(),
-				postal_city: $(".postal_city").val(),
-				postal_state: $(".postal_state").val(),
-				postal_postcode: $(".postal_postcode").val(),
-				postal_country_id: $(".postal_country").val()
-			}
-		}).done(function(result){
-			window.location.href = "/supplier";
-		});
-	});
+    Metronic.init(); // init metronic core componets
+    Layout.init(); // init layout
+    QuickSidebar.init() // init quick sidebar
+    Index.init();
+    
+    $(".cancel").click(function(){
+        parent.history.back();
+    });
+    
+    $(".same_as_physical").click(function(){
+        $(".postal_street_1").val($(".physical_street_1").val()),
+        $(".postal_street_2").val($(".physical_street_2").val()),
+        $(".postal_suburb").val($(".physical_suburb").val()),
+        $(".postal_city").val($(".physical_city").val()),
+        $(".postal_state").val($(".physical_state").val()),
+        $(".postal_postcode").val($(".physical_postcode").val()),
+        $(".postal_country").val($(".physical_country").val())
+    });
+    
+    
+    $(".save").click(function(){
+        $.ajax({
+            url: "/supplier/add.json",
+            type: "POST",
+            data: {
+                name: $("#supplier_name").val(),
+                description: $("#supplier_desc").val(),
+                first_name: $("#first_name").val(),
+                last_name: $("#last_name").val(),
+                phone: $("#phone").val(),
+                mobile: $("#mobile").val(),
+                email: $("#email").val(),
+                website: $("#website").val(),
+                company_name: $("#company_name").val(),
+                physical_address1: $(".physical_street_1").val(),
+                physical_address2: $(".physical_street_2").val(),
+                physical_suburb: $(".physical_suburb").val(),
+                physical_city: $(".physical_city").val(),
+                physical_state: $(".physical_state").val(),
+                physical_postcode: $(".physical_postcode").val(),
+                physical_country_id: $(".physical_country").val(),
+                postal_address1: $(".postal_street_1").val(),
+                postal_address2: $(".postal_street_2").val(),
+                postal_suburb: $(".postal_suburb").val(),
+                postal_city: $(".postal_city").val(),
+                postal_state: $(".postal_state").val(),
+                postal_postcode: $(".postal_postcode").val(),
+                postal_country_id: $(".postal_country").val()
+            }
+        }).done(function(result){
+            window.location.href = "/supplier";
+        });
+    });
 });
 </script>
 <!-- END JAVASCRIPTS -->

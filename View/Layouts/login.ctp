@@ -42,7 +42,7 @@ License: You must have a valid license purchased only from themeforest(the above
 <link id="style_color" href="/theme/metronic/assets/admin/layout/css/themes/default.css" rel="stylesheet" type="text/css"/>
 <link href="/theme/metronic/assets/admin/layout/css/custom.css" rel="stylesheet" type="text/css"/>
 <!-- END THEME STYLES -->
-<link rel="shortcut icon" href="favicon.ico"/>
+<link rel="shortcut icon" href="onzsa.ico"/>
 </head>
 <!-- END HEAD -->
 <!-- BEGIN BODY -->
@@ -58,9 +58,9 @@ License: You must have a valid license purchased only from themeforest(the above
 <body class="login">
 <!-- BEGIN CONTAINER -->
 <div id="container">
-	<div id="content">
-		<?php echo $this->fetch('content'); ?>
-	</div>
+    <div id="content">
+        <?php echo $this->fetch('content'); ?>
+    </div>
 </div>
 <!-- END CONTAINER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
@@ -94,10 +94,10 @@ License: You must have a valid license purchased only from themeforest(the above
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
 jQuery(document).ready(function() {
-	Metronic.init(); // init metronic core components
-	Layout.init(); // init current layout
-	QuickSidebar.init() // init quick sidebar
-	Login.init();
+    Metronic.init(); // init metronic core components
+    Layout.init(); // init current layout
+    QuickSidebar.init() // init quick sidebar
+    Login.init();
 });
 </script>
 <!-- END JAVASCRIPTS -->

@@ -50,7 +50,7 @@ table.dataTable thead td:active {
 table.dataTable thead th:last-child,
 table.dataTable thead td:last-child {
 	border-radius:0 5px 0 0;
-	border-right:0;
+	border-right: 1px solid rgba(0,0,0,0);
 }
 table.dataTable thead th.last-child,
 table.dataTable thead td.last-child {
@@ -91,7 +91,7 @@ table.dataTable tbody tr.selected {
 }
 table.dataTable tbody th,
 table.dataTable tbody td {
-	padding: 12px 10px;
+	padding: 7px 10px;
 }
 
 table.dataTable tbody tr.expandable, table.dataTable tbody tr.expanded {

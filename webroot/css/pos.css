@@ -217,6 +217,9 @@ div.radio, div.checker {
 	width:inherit	
 }
 
+.height-inherit {
+	height:inherit	
+}
 
 
 
@@ -391,9 +394,10 @@ margin: 0 auto;
 }
 .added-null {
 	text-align: center;
-	height: 100%;
 	background: transparent;
-	padding-top: 10%;
+	position: absolute;
+	top: 30%;
+	left: 35%;
 }
 .added-null h3{
 	color:#B0B0B0;
@@ -455,7 +459,11 @@ height: 54px;
 	background: rgb(255, 191, 38);
 }
 
-
+.input-group .form-control:last-child, .input-group-addon:last-child, .input-group-btn:last-child>.btn, .input-group-btn:last-child>.btn-group>.btn, .input-group-btn:last-child>.dropdown-toggle, .input-group-btn:first-child>.btn:not(:first-child), .input-group-btn:first-child>.btn-group:not(:first-child)>.btn
+{
+	border-top-left-radius: inherit;
+  border-bottom-left-radius: inherit;	
+}
 
 
 
@@ -781,12 +789,13 @@ text-align:right;
 	border-radius: 5px;
 	padding: 20px;
 	display:inline-block;
+	z-index: 1;
 }
 .line-box-content{
 	border-radius: 0 0 5px 5px;
 }
 .line-box-content dt, .line-box-content dd {
-	line-height:45px;
+	
 }
 .line-box-stitle{
 	background: #F5F5F5;
@@ -817,6 +826,12 @@ text-align:right;
 	font-size:12px;
 	margin-top:-4px;
 }
+
+.filter-ShowMore {
+	margin-top: -27px;
+}
+
+
 
 /** modal-content **/
 .modal-content{
@@ -1090,7 +1105,12 @@ text-align:right;
 	line-height: 50px;
 	color:#FFFFFF
 }
-
+#historyTable img {
+  max-width: 40px;
+  max-height: 40px;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+ }
 
 
 /** Account **/
@@ -1395,7 +1415,7 @@ table.dataTable thead th, table.dataTable thead td, table.dataTable tbody th, ta
 	font-size:13px;
 }
 
-.scroll-table {
+.scroll-table, .scroll-table-wide {
 	width:100%;
 	overflow-x:scroll;
 	
@@ -1404,10 +1424,13 @@ table.dataTable thead th, table.dataTable thead td, table.dataTable tbody th, ta
 .scroll-table table {
 	width:1500px !important ;
 }
-
-.scroll-table th:first-child {
+.scroll-table th:first-child, .scroll-table-wide th:first-child {
 	  border-radius: 0 !important;	
 }
+.scroll-table-wide table{
+	width:3000px !important ;
+}
+
 .table-result td {
 	border: none !important;
 	background:#FFEEC7;
@@ -1425,7 +1448,12 @@ table.dataTable tbody tr.table-color{
 	background:#F5F5F5 !important; 	
 }
 
-
+.td-color-green {
+	background:#EAF4CD;
+}
+.td-color-pink {
+	background:#FFDFDF;
+}
 /** Loyalty **/
 
 
@@ -1502,12 +1530,16 @@ table.dataTable-sm tfoot th {
 }
 table.dataTable-sm thead th,
 table.dataTable-sm thead td {
-	background: #EDEDED;
-	background: -ms-linear-gradient( 90deg, rgb(240,240,240) 0%, rgb(255,255,255) 100%);
-	box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 0.79);
-	color: #424242;
-	padding: 10px;
-	border: 1px solid rgba(208, 208, 208, 1);
+	background: #E0E0E0;
+  background: -ms-linear-gradient( 90deg, rgb(240,240,240) 0%, rgb(255,255,255) 100%);
+  box-shadow: inset 0px 1px 0px 0px rgba(255, 255, 255, 0.79);
+  color: #424242;
+  padding: 10px;
+  border: 1px solid rgba(0, 0, 0, 0);
+  border-right: 1px solid #D0D0D0;
+  border-bottom: 1px solid #D3D3D3;
+  border-top: 1px solid rgba(0, 0, 0, 0) !important;
+  text-shadow: 1px 1px 0 #ffffff;
 }
 
 table.dataTable-sm tbody tr:last-child td:first-child{
@@ -1526,6 +1558,7 @@ table.dataTable-sm thead td.last-child,
 table.dataTable-sm thead th:last-child,
 table.dataTable-sm thead td:last-child {
 	border-radius:0 5px 0 0 !important;
+	border-right: 1px solid rgba(0,0,0,0);
 }
 table.dataTable-sm thead th.first-child,
 table.dataTable-sm thead td.first-child,
@@ -1542,6 +1575,7 @@ table.dataTable-sm thead td.no-radius{
 table.dataTable-sm tbody th,
 table.dataTable-sm tbody td {
 	padding: 10px;
+	background:#ffffff;
 }
 table.dataTable-sm,
 table.dataTable-sm th,
