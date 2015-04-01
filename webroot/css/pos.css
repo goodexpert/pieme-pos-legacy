@@ -83,6 +83,9 @@ dd.explain{
 }
 
 
+
+
+
 /* BUTTON VIEW / IMAGE VIEW END */
 
 .container
@@ -886,6 +889,11 @@ text-align:right;
 	width: 500px;
 	margin: 100px auto;
 }
+
+.incorrect {
+	height:inherit;	
+}
+
 .incorrect input{
 	border: 1px solid #ED7F7F;
 }
