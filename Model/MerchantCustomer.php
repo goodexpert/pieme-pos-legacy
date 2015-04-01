@@ -14,50 +14,50 @@ class MerchantCustomer extends AppModel {
  *
  * @var string
  */
-	public $useDbConfig = "default";
+    public $useDbConfig = "default";
 
 /**
  * The name of the database table.
  *
  * @var string
  */
-	public $useTable = "merchant_customers";
+    public $useTable = "merchant_customers";
 
 /**
  * Primary key of the database table.
  *
  * @var string
  */
-	public $primaryKey = "id";
+    public $primaryKey = "id";
 
 /**
  * Name of the Model.
  *
  * @var string
  */
-	public $name = "MerchantCustomer";
+    public $name = "MerchantCustomer";
 
 /**
  * belongsTo property
  *
  * @var array
  */
-	public $belongsTo = array();
+    public $belongsTo = array();
 
 /**
  * Validation rules.
  *
  * @var array
  */
-	public $validate = array(
-		'customer_code' => array(
-			'isUnique' => array(
-				'rule' => 'isUnique'
-			),
-			'notEmpty' => array(
-				'rule' => 'notEmpty'
-			),
-		),
-	);
+    public $validate = array(
+        'customer_code' => array(
+            'isUnique' => array(
+                'rule' => 'isUnique'
+            ),
+            'notEmpty' => array(
+                'rule' => 'notEmpty'
+            ),
+        ),
+    );
 
 }

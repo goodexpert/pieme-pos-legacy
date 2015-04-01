@@ -14,47 +14,47 @@ class MerchantSupplier extends AppModel {
  *
  * @var string
  */
-	public $useDbConfig = "default";
+    public $useDbConfig = "default";
 
 /**
  * The name of the database table.
  *
  * @var string
  */
-	public $useTable = "merchant_suppliers";
+    public $useTable = "merchant_suppliers";
 
 /**
  * Primary key of the database table.
  *
  * @var string
  */
-	public $primaryKey = "id";
+    public $primaryKey = "id";
 
 /**
  * Name of the Model.
  *
  * @var string
  */
-	public $name = "MerchantSupplier";
+    public $name = "MerchantSupplier";
 
 /**
  * belongsTo property
  *
  * @var array
  */
-	public $belongsTo = array('Contact');
+    public $belongsTo = array('Contact');
 
 /**
  * Validation rules.
  *
  * @var array
  */
-	public $validate = array(
-		'name' => array(
-			'notEmpty' => array(
-				'rule' => 'notEmpty'
-			),
-		),
-	);
+    public $validate = array(
+        'name' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty'
+            ),
+        ),
+    );
 
 }

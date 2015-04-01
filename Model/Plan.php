@@ -14,43 +14,43 @@ class Plan extends AppModel {
  *
  * @var string
  */
-	public $useDbConfig = "default";
+    public $useDbConfig = "default";
 
 /**
  * The name of the database table.
  *
  * @var string
  */
-	public $useTable = "plans";
+    public $useTable = "plans";
 
 /**
  * Primary key of the database table.
  *
  * @var string
  */
-	public $primaryKey = "id";
+    public $primaryKey = "id";
 
 /**
  * Name of the Model.
  *
  * @var string
  */
-	public $name = "Plan";
+    public $name = "Plan";
 
 /**
  * Validation rules.
  *
  * @var array
  */
-	public $validate = array(
-		'name' => array(
-			'notEmpty' => array(
-				'rule' => 'notEmpty'
-			),
-			'isUnique' => array(
-				'rule' => 'isUnique'
-			),
-		),
-	);
+    public $validate = array(
+        'name' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty'
+            ),
+            'isUnique' => array(
+                'rule' => 'isUnique'
+            ),
+        ),
+    );
 
 }

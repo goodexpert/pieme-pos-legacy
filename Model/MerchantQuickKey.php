@@ -14,42 +14,42 @@ class MerchantQuickKey extends AppModel {
  *
  * @var string
  */
-	public $useDbConfig = "default";
+    public $useDbConfig = "default";
 
 /**
  * The name of the database table.
  *
  * @var string
  */
-	public $useTable = "merchant_quick_keys";
+    public $useTable = "merchant_quick_keys";
 
 /**
  * Primary key of the database table.
  *
  * @var string
  */
-	public $primaryKey = "id";
+    public $primaryKey = "id";
 
 /**
  * Name of the Model.
  *
  * @var string
  */
-	public $name = "MerchantQuickKey";
+    public $name = "MerchantQuickKey";
 
 /**
  * belongsTo property
  *
  * @var array
  */
-	public $belongsTo = array();
+    public $belongsTo = array();
 
 /**
  * Validation rules.
  *
  * @var array
  */
-	public $validate = array(
-	);
+    public $validate = array(
+    );
 
 }

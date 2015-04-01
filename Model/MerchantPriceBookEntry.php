@@ -14,42 +14,35 @@ class MerchantPriceBookEntry extends AppModel {
  *
  * @var string
  */
-	public $useDbConfig = "default";
+    public $useDbConfig = "default";
 
 /**
  * The name of the database table.
  *
  * @var string
  */
-	public $useTable = "merchant_price_book_entries";
+    public $useTable = "merchant_price_book_entries";
 
 /**
  * Primary key of the database table.
  *
  * @var string
  */
-	public $primaryKey = "id";
+    public $primaryKey = "id";
 
 /**
  * Name of the Model.
  *
  * @var string
  */
-	public $name = "MerchantPriceBookEntry";
-
-/**
- * belongsTo property
- *
- * @var array
- */
-	public $belongsTo = array('MerchantPriceBook');
+    public $name = "MerchantPriceBookEntry";
 
 /**
  * Validation rules.
  *
  * @var array
  */
-	public $validate = array(
-	);
+    public $validate = array(
+    );
 
 }

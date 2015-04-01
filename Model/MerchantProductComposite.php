@@ -14,42 +14,42 @@ class MerchantProductComposite extends AppModel {
  *
  * @var string
  */
-	public $useDbConfig = "default";
+    public $useDbConfig = "default";
 
 /**
  * The name of the database table.
  *
  * @var string
  */
-	public $useTable = "merchant_product_composites";
+    public $useTable = "merchant_product_composites";
 
 /**
  * Primary key of the database table.
  *
  * @var string
  */
-	public $primaryKey = "id";
+    public $primaryKey = "id";
 
 /**
  * Name of the Model.
  *
  * @var string
  */
-	public $name = "MerchantProductComposite";
+    public $name = "MerchantProductComposite";
 
 /**
  * belongsTo property
  *
  * @var array
  */
-	public $belongsTo = array();
+    public $belongsTo = array();
 
 /**
  * Validation rules.
  *
  * @var array
  */
-	public $validate = array(
-	);
+    public $validate = array(
+    );
 
 }

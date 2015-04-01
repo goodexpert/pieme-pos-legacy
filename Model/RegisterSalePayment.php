@@ -14,42 +14,42 @@ class RegisterSalePayment extends AppModel {
  *
  * @var string
  */
-	public $useDbConfig = "default";
+    public $useDbConfig = "default";
 
 /**
  * The name of the database table.
  *
  * @var string
  */
-	public $useTable = "register_sale_payments";
+    public $useTable = "register_sale_payments";
 
 /**
  * Primary key of the database table.
  *
  * @var string
  */
-	public $primaryKey = "id";
+    public $primaryKey = "id";
 
 /**
  * Name of the Model.
  *
  * @var string
  */
-	public $name = "RegisterSalePayment";
+    public $name = "RegisterSalePayment";
 
 /**
  * belongsTo property
  *
  * @var array
  */
-	public $belongsTo = array('MerchantPaymentType');
+    public $belongsTo = array('MerchantPaymentType');
 
 /**
  * Validation rules.
  *
  * @var array
  */
-	public $validate = array(
-	);
+    public $validate = array(
+    );
 
 }

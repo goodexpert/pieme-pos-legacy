@@ -11,7 +11,6 @@ class StockController extends AppController {
  */
     public $components = array('RequestHandler');
 
-
 /**
  * Name of layout to use with this View.
  *
@@ -57,18 +56,18 @@ class StockController extends AppController {
         ));
 
         if(!empty($_GET['from']) and $_GET['from'] !== ''){
-        	$orders = $this->MerchantStockOrder->find('all', array(
-	            'conditions' => array(
-	                'MerchantStockOrder.date' > $_GET['from']
-	            ),
-	        ));
+            $orders = $this->MerchantStockOrder->find('all', array(
+                'conditions' => array(
+                    'MerchantStockOrder.date' > $_GET['from']
+                ),
+            ));
         } else {
-	        $orders = $this->MerchantStockOrder->find('all', array(
-	            'conditions' => array(
-	                'MerchantStockOrder.merchant_id' => $this->Auth->user()['merchant_id']
-	            ),
-	        ));
-	    }
+            $orders = $this->MerchantStockOrder->find('all', array(
+                'conditions' => array(
+                    'MerchantStockOrder.merchant_id' => $this->Auth->user()['merchant_id']
+                ),
+            ));
+        }
         $this->set('orders', $orders);
         //debug($orders);
     }

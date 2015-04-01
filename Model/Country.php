@@ -14,35 +14,35 @@ class Country extends AppModel {
  *
  * @var string
  */
-	public $useDbConfig = "default";
+    public $useDbConfig = "default";
 
 /**
  * The name of the database table.
  *
  * @var string
  */
-	public $useTable = "countries";
+    public $useTable = "countries";
 
 /**
  * Primary key of the database table.
  *
  * @var string
  */
-	public $primaryKey = "id";
+    public $primaryKey = "id";
 
 /**
  * Name of the Model.
  *
  * @var string
  */
-	public $name = "Country";
+    public $name = "Country";
 
 /**
  * Validation rules.
  *
  * @var array
  */
-	public $validate = array(
-	);
+    public $validate = array(
+    );
 
 }

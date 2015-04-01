@@ -14,41 +14,41 @@ class MerchantRegisterOpen extends AppModel {
  *
  * @var string
  */
-	public $useDbConfig = "default";
+    public $useDbConfig = "default";
 
 /**
  * The name of the database table.
  *
  * @var string
  */
-	public $useTable = "merchant_register_opens";
+    public $useTable = "merchant_register_opens";
 
 /**
  * Primary key of the database table.
  *
  * @var string
  */
-	public $primaryKey = "id";
+    public $primaryKey = "id";
 
 /**
  * Name of the Model.
  *
  * @var string
  */
-	public $name = "MerchantRegisterOpen";
+    public $name = "MerchantRegisterOpen";
 
 /**
  * belongsTo property
  *
  * @var array
  */
-	public $belongsTo = array();
+    public $belongsTo = array();
 
 /**
  * Validation rules.
  *
  * @var array
  */
-	public $validate = array();
+    public $validate = array();
 
 }

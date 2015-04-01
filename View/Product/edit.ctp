@@ -156,7 +156,7 @@
                     <dd class="col-md-9">
                       <input type="text" class="form-control required" id="product_name" value="<?=$product['MerchantProduct']['name'];?>">
                       <span class="help-block">
-                      <input type="checkbox" id="availability" value="1" checked>
+                      <input type="checkbox" id="availability" value="1" <?php if($product['MerchantProduct']['is_active'] == 1){echo "checked";}?>>
                       This product can be sold </span> </dd>
                   </dl>
                 </div>
@@ -253,10 +253,10 @@
                 <div class="line-box-stitle">Variants allow you to specify the different attributes of your product, such as size or color. You can define up to three attributes for this product (e.g. color), and each attribute can have many values (e.g. black, green, etc).
                 </div>
                 <span class="help-block">
-                  <input type="checkbox" name="variant" id="variant">
+                  <input type="checkbox" name="variant" id="variant" <?php if($product['MerchantProduct']['has_variants'] == 1){echo "checked";}?>>
                   <label for="variant">This product has variants</label>
                 </span>
-                <div id="first_variant_attr" class="col-md-12 col-sm-12 col-xs-12" style="display:none;">
+                <div id="first_variant_attr" class="col-md-12 col-sm-12 col-xs-12" style="display:<?php if($product['MerchantProduct']['has_variants'] == 1){echo "block";} else {echo "none";}?>">
                     <div class="dashed-line-gr"></div>
                     <div class="col-md-12 col-xs-12 col-sm-12">
                         <div class="col-md-3 col-xs-3 col-sm-3">
@@ -309,26 +309,40 @@
                   <dl class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                     <dt class="col-md-2">Stock Tracking</dt>
                     <dd class="col-md-10">
-                      <input type="checkbox" value="1" checked>
+                      <input id="track_inventory" type="checkbox" value="1" <?php if($product['MerchantProduct']['track_inventory'] == 1){echo "checked";}?>>
                       Track stock levels with onzsa
                     </dd>
                   </dl>
                   <div class="dashed-line-gr"></div>
-                  <div class="col-md-4 col-xs-4 col-sm-4">
-                    <h5><strong>Store</strong></h5>
-                     <div class="info">Excluding tax</div>
+                  <div class="col-md-12 col-sm-12 col-xs-12 stock-tracking-header" style="display: <?php if($product['MerchantProduct']['track_inventory'] == 1){echo "block";}else{echo "none";}?>">
+                      <div class="col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
+                        <h5><strong>Store</strong></h5>
+                      </div>
+                      <div class="col-md-2 col-xs-4 col-sm-4">
+                        <h5><strong>Current stock</strong></h5>
+                      </div>
+                      <div class="col-md-3 col-xs-4 col-sm-4">
+                        <h5><strong>Re-order point</strong></h5>
+                      </div>
+                      <div class="col-md-3 col-xs-4 col-sm-4">
+                        <h5><strong>Re-order amount</strong></h5>
+                      </div>
                   </div>
-                  <div class="col-md-2 col-xs-4 col-sm-4">
-                    <h5><strong>Current stock</strong></h5>
-                    <input type="text" class="form-control" id="stock_count">
-                  </div>
-                  <div class="col-md-3 col-xs-4 col-sm-4">
-                    <h5><strong>Re-order point</strong></h5>
-                    <input type="text" class="form-control">
-                  </div>
-                  <div class="col-md-3 col-xs-4 col-sm-4">
-                    <h5><strong>Re-order amount</strong></h5>
-                    <input type="text" class="form-control">
+                  
+                  <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega stock-tracking" style="display: <?php if($product['MerchantProduct']['track_inventory'] == 1){echo "block";}else{echo "none";}?>">
+                        <input type="hidden" class="stock-outlet_id" value="">
+                      <div class="col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
+                        <div class="info">main outlet</div>
+                      </div>
+                      <div class="col-md-2 col-xs-4 col-sm-4">
+                        <input type="text" class="form-control stock_count">
+                      </div>
+                      <div class="col-md-3 col-xs-4 col-sm-4">
+                        <input type="text" class="form-control stock_reorder_point">
+                      </div>
+                      <div class="col-md-3 col-xs-4 col-sm-4">
+                        <input type="text" class="form-control stock_reorder_amount">
+                      </div>
                   </div>
                 </div>
               </div>
@@ -644,7 +658,7 @@ $(document).ready(function(){
     /* DYNAMIC PRODUCT SEARCH END */
 
 
-    /* PRODUCT ADD */
+    /* PRODUCT Edit */
    $(document).on('click','.editProduct',function(){
         $("#loader-wrapper").show();
         var name = $("#product_name").val();
@@ -663,13 +677,13 @@ $(document).ready(function(){
         var supplier_code = $("#supplier_code").val();
         var supply_price = $("#supply_price").val();
         var retail_price = $("#retail_price_exclude").val();
+        var price_include_tax = $("#retail_price_include").val();
         var tax_rate = $("#sales_tax").val();
         var tax = $("#sales_tax_calc").val();
+        var markup = $("#markup").val() / 100;
         var tax_id = $('option:selected',"#sales_tax").attr("tax-id");
-        var price_including_tax = $("#retail_price_include").val();
         var tags = $("input[type=hidden]").val().split(",");
         var stock_type = $("#stock_type").val();
-        var stock_count = $("#stock_count").val();
         
         var variant_option_one_name = $(".variant_value_1").val();
         var variant_option_one_value = $(".variant_default_1").val();
@@ -709,9 +723,25 @@ $(document).ready(function(){
             } else {
                 availability = 0;
             }
+            var track_inventory;
+            if($("#track_inventory").is(':checked')){
+                track_inventory = 1;
+            } else {
+                track_inventory = 0;
+            }
+            var has_variants;
+            if($("#variant").is(":checked")){
+                has_variants = 1;
+            } else {
+                has_variants = 0;
+            }
             var category;
+            var inventories = [];
+            $(".stock-tracking").each(function(){
+               inventories.push({outlet_id: $(this).find(".stock-outlet_id").val(), count: $(this).find(".stock_count").val(), reorder_point: $(this).find(".stock_reorder_point").val(), restock_level: $(this).find(".stock_reorder_amount").val()}) 
+            });
             $.ajax({
-                url: window.location,
+                url: window.location+'.json',
                 type: "PUT",
                 data: {
                     name: name,
@@ -721,23 +751,32 @@ $(document).ready(function(){
                     supplier_id: supplier,
                     supplier_code: supplier_code,
                     supply_price: supply_price,
-                    price: price_including_tax,
+                    price: retail_price,
                     tax: tax,
+                    price_include_tax: price_include_tax,
+                    markup: markup,
                     tax_id: tax_id,
                     description: description,
                     image: image,
                     stock_type: stock_type,
                     sku: sku,
                     is_active: availability,
+                    has_variants: has_variants,
                     variant_option_one_name: variant_option_one_name,
                     variant_option_one_value: variant_option_one_value,
                     variant_option_two_name: variant_option_two_name,
                     variant_option_two_value: variant_option_two_value,
                     variant_option_three_name: variant_option_three_name,
-                    variant_option_three_value: variant_option_three_value
+                    variant_option_three_value: variant_option_three_value,
+                    track_inventory: track_inventory,
+                    inventories: inventories
                 },
-            }).done(function(result){
-                category = result['product_id'];
+                success: function(result){
+                    category = result['product_id'];    
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus, errorThrown);
+                }
             });
             
             var tagId;
@@ -761,9 +800,13 @@ $(document).ready(function(){
                         data: {
                             product_id: category,
                             product_tag_id: result['id']
+                        },
+                        success: function() {
+                            window.location.href = "/product";
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.log(textStatus, errorThrown);
                         }
-                    }).done(function(){
-                        window.location.href = "/product";
                     });
                     
                 });
@@ -841,6 +884,16 @@ $(document).ready(function(){
     
     $(".cancel").click(function(){
         parent.history.back();
+    });
+    
+    $(document).on('click','#track_inventory',function(){
+        if($(this).is(':checked')){
+           $(".stock-tracking").show();
+           $(".stock-tracking-header").show();
+        } else {
+           $(".stock-tracking").hide();
+           $(".stock-tracking-header").hide();
+        }
     });
 
 });

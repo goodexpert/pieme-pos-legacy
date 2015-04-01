@@ -58,10 +58,10 @@ License: You must have a valid license purchased only from themeforest(the above
 <div class="page-lock">
 <!-- BEGIN CONTAINER -->
 <div id="container">
-	<div id="content">
-		<?php echo $this->Session->flash(); ?>
-		<?php echo $this->fetch('content'); ?>
-	</div>
+    <div id="content">
+        <?php echo $this->Session->flash(); ?>
+        <?php echo $this->fetch('content'); ?>
+    </div>
 </div>
 <!-- END CONTAINER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
@@ -93,10 +93,10 @@ License: You must have a valid license purchased only from themeforest(the above
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
 jQuery(document).ready(function() {
-	Metronic.init(); // init metronic core components
-	Layout.init(); // init current layout
-	QuickSidebar.init() // init quick sidebar
-	Lock.init();
+    Metronic.init(); // init metronic core components
+    Layout.init(); // init current layout
+    QuickSidebar.init() // init quick sidebar
+    Lock.init();
 });
 </script>
 <!-- END JAVASCRIPTS -->

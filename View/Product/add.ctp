@@ -755,6 +755,12 @@ $(document).ready(function(){
             } else {
                 track_inventory = 0;
             }
+            var has_variants;
+            if($("#variant").is(":checked")){
+                has_variants = 1;
+            } else {
+                has_variants = 0;
+            }
             
             var category;
             var inventories = [];
@@ -782,7 +788,7 @@ $(document).ready(function(){
                     stock_type: stock_type,
                     sku: sku,
                     is_active: availability,
-                    has_variants: has_variant,
+                    has_variants: has_variants,
                     variant_option_one_name: variant_option_one_name,
                     variant_option_one_value: variant_option_one_value,
                     variant_option_two_name: variant_option_two_name,
@@ -792,12 +798,11 @@ $(document).ready(function(){
                     track_inventory: track_inventory,
                     inventories: inventories
                 },
-                success: function(result){
+                success: function(result) {
                     category = result['product_id'];
-                    window.location.href = "/product";
                 },
-                error: function(msg){
-                    alert(msg);
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.log(textStatus, errorThrown);
                 }
             });
             var tagId;
@@ -812,17 +817,19 @@ $(document).ready(function(){
                     },
                     async: false
                 }).done(function(result){
-                    result['id'];
-                    
                     $.ajax({
                         url: "/product/add_product_category.json",
                         type: "POST",
                         data: {
                             product_id: category,
                             product_tag_id: result['id']
+                        },
+                        success: function() {
+                            window.location.href = "/product";
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            console.log(textStatus, errorThrown);
                         }
-                    }).done(function(){
-                        window.location.href = "/product";
                     });
                     
                 });

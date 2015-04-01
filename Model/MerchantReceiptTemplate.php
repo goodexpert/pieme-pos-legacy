@@ -14,47 +14,47 @@ class MerchantReceiptTemplate extends AppModel {
  *
  * @var string
  */
-	public $useDbConfig = "default";
+    public $useDbConfig = "default";
 
 /**
  * The name of the database table.
  *
  * @var string
  */
-	public $useTable = "merchant_receipt_templates";
+    public $useTable = "merchant_receipt_templates";
 
 /**
  * Primary key of the database table.
  *
  * @var string
  */
-	public $primaryKey = "id";
+    public $primaryKey = "id";
 
 /**
  * Name of the Model.
  *
  * @var string
  */
-	public $name = "MerchantReceiptTemplate";
+    public $name = "MerchantReceiptTemplate";
 
 /**
  * belongsTo property
  *
  * @var array
  */
-	public $belongsTo = array('ReceiptStyle');
+    public $belongsTo = array('ReceiptStyle');
 
 /**
  * Validation rules.
  *
  * @var array
  */
-	public $validate = array(
-		'name' => array(
-			'notEmpty' => array(
-				'rule' => 'notEmpty'
-			),
-		),
-	);
+    public $validate = array(
+        'name' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty'
+            ),
+        ),
+    );
 
 }

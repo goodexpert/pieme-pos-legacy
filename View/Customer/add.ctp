@@ -102,7 +102,8 @@
                         </dl>
                     </div>
                 </div>
-                <div class="line-box col-md-12 col-sm-12 col-xs-12 margin-top-20">
+            <div class="col-md-12 col-sm-12 col-xs-12 margin-top-20">
+                <div class="line-box col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-6 col-sm-6 col-xs-6">
                         <dl>
                             <dt>Phone</dt>
@@ -120,8 +121,10 @@
                         </dl>
                     </div>
                 </div>
+            </div>
             
-                <div class="line-box col-md-12 col-sm-12 col-xs-12 margin-top-20">
+            <div class="col-md-12 col-sm-12 col-xs-12 margin-top-20">
+                <div class="line-box col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-6 col-sm-6 col-xs-6">
                         <div class="line-box-stitle">Physical Address</div>
                         <dl>
@@ -163,8 +166,10 @@
                         </dl>
                     </div>
                 </div>
+            </div>
             
-                <div class="line-box col-md-12 col-sm-12 col-xs-12 margin-top-20">
+            <div class="col-md-12 col-sm-12 col-xs-12 margin-top-20">
+                <div class="line-box col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-6 col-sm-6 col-xs-6">
                         <dl>
                             <dt>Custom Field 1</dt>
@@ -184,6 +189,7 @@
                         </dl>
                     </div>
                 </div>
+            </div>
             <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
                 <button class="btn btn-primary btn-wide save pull-right">Save</button>
                 <button class="btn btn-default btn-wide pull-right margin-right-10">Cancel</button>

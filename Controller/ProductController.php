@@ -230,7 +230,7 @@ class ProductController extends AppController {
                 $priceBookEntry = $this->MerchantPriceBookEntry->find('first', array(
                     'conditions' => array(
                         'price_book_id' => $user['Merchant']['default_price_book_id'],
-                        'product_id' => $this->MerchantProduct->id
+                        'product_id' => $id
                     )
                 ));
                 $priceBookEntry['MerchantPriceBookEntry']['markup'] = $data['markup'];
