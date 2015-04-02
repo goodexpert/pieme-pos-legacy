@@ -102,6 +102,22 @@ dd.explain{
 	vertical-align:middle;	
 }
 
+.sorting_asc span.up {
+    background: url(/img/arrow-up-down.png) no-repeat left -18px;
+    display: inline-block;
+    width: 9px;
+    height: 11px;
+    margin-left: 5px;
+}
+.sorting_asc span.down {
+    background: url(/img/arrow-up-down.png) no-repeat left -2px;
+    display: inline-block;
+    width: 9px;
+    height: 11px;
+    margin-left: 5px;
+}
+
+
 
 /* BUTTON VIEW / IMAGE VIEW END */
 
