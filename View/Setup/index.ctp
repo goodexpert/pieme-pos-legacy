@@ -18,7 +18,7 @@
           <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
             <a href="javascript:;" class="remove"> <i class="icon-close"></i> </a>
             <div class="input-group">
-              <input type="text" class="form-control" placeholder="Search...">
+              <input type="text" placeholder="Search...">
               <span class="input-group-btn">
               <button class="btn submit"><i class="icon-magnifier"></i></button>
               </span> </div>
@@ -48,35 +48,35 @@
                 <dl>
                   <dt>Store name</dt>
                   <dd>
-                    <input type="text" class="form-control" name="merchant[name]" value="<?php echo $merchant['Merchant']['name']; ?>" id="merchant_name">
+                    <input type="text" name="merchant[name]" value="<?php echo $merchant['Merchant']['name']; ?>" id="merchant_name">
                   </dd>
                   <dt>Private URL</dt>
                   <dd>
-                    <input type="text" class="form-control" name="merchant[domain_prefix]" value="<?php echo $merchant['Merchant']['domain_prefix']; ?>" id="merchant_domain_prefix">
+                    <input type="text" name="merchant[domain_prefix]" value="<?php echo $merchant['Merchant']['domain_prefix']; ?>" id="merchant_domain_prefix">
                   </dd>
                   <dt>Default currency</dt>
                   <dd>
-                    <select class="form-control" name="merchant[default_currency]" id="merchant_default_currency">
+                    <select name="merchant[default_currency]" id="merchant_default_currency">
                       <option value="NZD">New Zealand Dollar</option>
                     </select>
                   </dd>
                   <dt>Time zone</dt>
                   <dd>
-                    <select class="form-control" name="merchant[time_zone]" id="merchant_time_zone">
+                    <select name="merchant[time_zone]" id="merchant_time_zone">
                       <option value="Pacific/Auckland">(GMT+13:00) Auckland, Wellington</option>
                       <option value="Pacific/Chatham">(GMT+13:45) Chatham Islands</option>
                     </select>
                   </dd>
                   <dt>Display prices</dt>
                   <dd>
-                    <select class="form-control" name="merchant[display_price_tax_inclusive]" id="merchant_display_price_tax_inclusive">
+                    <select name="merchant[display_price_tax_inclusive]" id="merchant_display_price_tax_inclusive">
                       <option value="0">Tax exclusive</option>
                       <option value="1">Tax inclusive</option>
                     </select>
                   </dd>
                   <dt>Default sales tax</dt>
                   <dd>
-                    <select class="form-control" name="merchant[default_tax_id]" id="merchant_default_tax_id">
+                    <select name="merchant[default_tax_id]" id="merchant_default_tax_id">
                       <?php foreach ($taxes as $tax) : ?>
                       <option value="<?php echo $tax['MerchantTaxRate']['id']; ?>"><?php echo $tax['MerchantTaxRate']['name'] . ' (' . $tax['MerchantTaxRate']['rate'] * 100 . '%)'; ?></option>
                       <?php endforeach; ?>
@@ -90,7 +90,7 @@
                 <dl>
                   <dt>Label printer format</dt>
                   <dd>
-                    <select class="form-control" name="merchant[label_printer_format]" id="merchant_label_printer_format">
+                    <select name="merchant[label_printer_format]" id="merchant_label_printer_format">
                       <option value="" selected="selected"></option>
                       <option value="2x1">Continuous feed</option>
                       <option value="5x1">Continuous feed (wide)</option>
@@ -104,18 +104,18 @@
                   </dd>
                   <dt>SKU generation</dt>
                   <dd>
-                    <select class="form-control" name="merchant[use_sku_sequence]" id="merchant_use_sku_sequence">
+                    <select name="merchant[use_sku_sequence]" id="merchant_use_sku_sequence">
                       <option value="0">Generate by Name</option>
                       <option value="1">Generate by Sequence Number</option>
                     </select>
                   </dd>
                   <dt>Current sequence number</dt>
                   <dd>
-                    <input type="text" class="form-control" name="merchant[sku_sequence]" value="<?php echo $merchant['Merchant']['sku_sequence']; ?>" id="merchant_sku_sequence">
+                    <input type="text" name="merchant[sku_sequence]" value="<?php echo $merchant['Merchant']['sku_sequence']; ?>" id="merchant_sku_sequence">
                   </dd>
                   <dt>User switching security</dt>
                   <dd>
-                    <select class="form-control" name="merchant[switching_security]" id="merchant_switching_security">
+                    <select name="merchant[switching_security]" id="merchant_switching_security">
                       <option value="0">Never require a password when switching between users</option>
                       <option value="1">Require a password when switching to a user with greater privileges</option>
                       <option value="2">Always require a password when switching between users</option>
@@ -147,11 +147,11 @@
                   </dd>
                   <dt>Email</dt>
                   <dd>
-                    <input type="email" class="form-control" name="merchant[contact][email]" value="<?php echo $merchant['Contact']['email']; ?>" id="merchant_contact_email">
+                    <input type="email" name="merchant[contact][email]" value="<?php echo $merchant['Contact']['email']; ?>" id="merchant_contact_email">
                   </dd>
                   <dt>Phone</dt>
                   <dd>
-                    <input type="text" class="form-control" name="merchant[contact][phone]" value="<?php echo $merchant['Contact']['phone']; ?>" id="merchant_contact_phone">
+                    <input type="text" name="merchant[contact][phone]" value="<?php echo $merchant['Contact']['phone']; ?>" id="merchant_contact_phone">
                   </dd>
                 </dl>
               </div>
@@ -159,11 +159,11 @@
                 <dl>
                   <dt>Website</dt>
                   <dd>
-                    <input type="text" class="form-control" name="merchant[contact][website]" value="<?php echo $merchant['Contact']['website']; ?>" id="merchant_contact_website">
+                    <input type="text" name="merchant[contact][website]" value="<?php echo $merchant['Contact']['website']; ?>" id="merchant_contact_website">
                   </dd>
                   <dt>Twitter</dt>
                   <dd>
-                    <input type="text" class="form-control">
+                    <input type="text">
                   </dd>
                 </dl>
               </div>
@@ -175,35 +175,35 @@
           <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12"> 
               <!-- START col-md-6-->
               <div class="col-md-6">
-                <div class="line-box-stitle">Physical Address</div>
+                <div class="line-box-stitle inline-block">Physical Address</div>
                 <dl>
                   <dt>Street</dt>
                   <dd>
-                    <input type="text" class="form-control" name="merchant[contact][physical_address1]" value="<?php echo $merchant['Contact']['physical_address1']; ?>" id="merchant_contact_physical_address1">
+                    <input type="text" name="merchant[contact][physical_address1]" value="<?php echo $merchant['Contact']['physical_address1']; ?>" id="merchant_contact_physical_address1">
                   </dd>
                   <dt>Street</dt>
                   <dd>
-                    <input type="text" class="form-control" name="merchant[contact][physical_address2]" value="<?php echo $merchant['Contact']['physical_address2']; ?>" id="merchant_contact_physical_address2">
+                    <input type="text" name="merchant[contact][physical_address2]" value="<?php echo $merchant['Contact']['physical_address2']; ?>" id="merchant_contact_physical_address2">
                   </dd>
                   <dt>Suburb</dt>
                   <dd>
-                    <input type="text" class="form-control" name="merchant[contact][physical_suburb]" value="<?php echo $merchant['Contact']['physical_suburb']; ?>" id="merchant_contact_physical_suburb">
+                    <input type="text" name="merchant[contact][physical_suburb]" value="<?php echo $merchant['Contact']['physical_suburb']; ?>" id="merchant_contact_physical_suburb">
                   </dd>
                   <dt>City</dt>
                   <dd>
-                    <input type="text" class="form-control" name="merchant[contact][physical_city]" value="<?php echo $merchant['Contact']['physical_city']; ?>"id="merchant_contact_physical_city">
+                    <input type="text" name="merchant[contact][physical_city]" value="<?php echo $merchant['Contact']['physical_city']; ?>"id="merchant_contact_physical_city">
                   </dd>
                   <dt>Physical postcode</dt>
                   <dd>
-                    <input type="text" class="form-control" name="merchant[contact][physical_postcode]" value="<?php echo $merchant['Contact']['physical_postcode']; ?>" id="merchant_contact_physical_postcode">
+                    <input type="text" name="merchant[contact][physical_postcode]" value="<?php echo $merchant['Contact']['physical_postcode']; ?>" id="merchant_contact_physical_postcode">
                   </dd>
                   <dt>State</dt>
                   <dd>
-                    <input type="text" class="form-control" name="merchant[contact][physical_state]" value="<?php echo $merchant['Contact']['physical_state']; ?>" id="merchant_contact_physical_state">
+                    <input type="text" name="merchant[contact][physical_state]" value="<?php echo $merchant['Contact']['physical_state']; ?>" id="merchant_contact_physical_state">
                   </dd>
                   <dt>Country</dt>
                   <dd>
-                    <select class="form-control" name="merchant[contact][physical_country_id]" id="merchant_contact_physical_country_id">
+                    <select name="merchant[contact][physical_country_id]" id="merchant_contact_physical_country_id">
                       <option value="">Select a country</option>
                       <option value="NZ">New Zealand</option>
                     </select>
@@ -211,35 +211,35 @@
                 </dl>
               </div>
               <div class="col-md-6">
-                <div class="line-box-stitle">Postal Address <span class="clickable same_as_physical pull-right btn btn-default">Same as Physical Address </span> </div>
+                <div class="line-box-stitle inline-block">Postal Address <span class="clickable same_as_physical pull-right btn btn-default">Same as Physical Address </span> </div>
                 <dl>
                   <dt>Street</dt>
                   <dd>
-                    <input type="text" class="form-control" name="merchant[contact][postal_address1]" value="<?php echo $merchant['Contact']['postal_address1']; ?>" id="merchant_contact_postal_address1">
+                    <input type="text" name="merchant[contact][postal_address1]" value="<?php echo $merchant['Contact']['postal_address1']; ?>" id="merchant_contact_postal_address1">
                   </dd>
                   <dt>Street</dt>
                   <dd>
-                    <input type="text" class="form-control" name="merchant[contact][postal_address2]" value="<?php echo $merchant['Contact']['postal_address2']; ?>" id="merchant_contact_postal_address2">
+                    <input type="text" name="merchant[contact][postal_address2]" value="<?php echo $merchant['Contact']['postal_address2']; ?>" id="merchant_contact_postal_address2">
                   </dd>
                   <dt>Suburb</dt>
                   <dd>
-                    <input type="text" class="form-control" name="merchant[contact][postal_suburb]" value="<?php echo $merchant['Contact']['postal_suburb']; ?>" id="merchant_contact_postal_suburb">
+                    <input type="text" name="merchant[contact][postal_suburb]" value="<?php echo $merchant['Contact']['postal_suburb']; ?>" id="merchant_contact_postal_suburb">
                   </dd>
                   <dt>City</dt>
                   <dd>
-                    <input type="text" class="form-control" name="merchant[contact][postal_city]" value="<?php echo $merchant['Contact']['postal_city']; ?>" id="merchant_contact_postal_city">
+                    <input type="text" name="merchant[contact][postal_city]" value="<?php echo $merchant['Contact']['postal_city']; ?>" id="merchant_contact_postal_city">
                   </dd>
                   <dt>Postal postcode</dt>
                   <dd>
-                    <input type="text" class="form-control" name="merchant[contact][postal_postcode]" value="<?php echo $merchant['Contact']['postal_postcode']; ?>" id="merchant_contact_postal_postcode">
+                    <input type="text" name="merchant[contact][postal_postcode]" value="<?php echo $merchant['Contact']['postal_postcode']; ?>" id="merchant_contact_postal_postcode">
                   </dd>
                   <dt>State</dt>
                   <dd>
-                    <input type="text" class="form-control" name="merchant[contact][postal_state]" value="<?php echo $merchant['Contact']['postal_state']; ?>" id="merchant_contact_postal_state">
+                    <input type="text" name="merchant[contact][postal_state]" value="<?php echo $merchant['Contact']['postal_state']; ?>" id="merchant_contact_postal_state">
                   </dd>
                   <dt>Country</dt>
                   <dd>
-                    <select class="form-control" name="merchant[contact][postal_country_id]" id="merchant_contact_postal_country_id">
+                    <select name="merchant[contact][postal_country_id]" id="merchant_contact_postal_country_id">
                       <option value="">Select a country</option>
                       <option value="NZ">New Zealand</option>
                     </select>

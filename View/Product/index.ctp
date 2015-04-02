@@ -145,8 +145,8 @@
                 </colgroup>
                 <thead>
                 <tr>
-                    <th class="hidden">id</th>
                     <th>name</th>
+                    <th class="hidden">id</th>
                     <th>created</th>
                     <th>handle</th>
                     <th>type</th>
