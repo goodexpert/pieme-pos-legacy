@@ -28,7 +28,7 @@ class ProductController extends AppController {
  * @var array
  */
     public $uses = array('MerchantProduct', 'MerchantProductType', 'MerchantProductBrand', 'MerchantProductTag',
-        'MerchantTaxRate', 'MerchantSupplier', 'MerchantPriceBookEntry', 'MerchantVariant', 'MerchantProductInventory');
+        'MerchantTaxRate', 'MerchantSupplier', 'MerchantProductCategory', 'MerchantPriceBookEntry', 'MerchantVariant', 'MerchantProductInventory', 'MerchantOutlet');
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -148,7 +148,28 @@ class ProductController extends AppController {
                          $this->MerchantProductInventory->save($inventory);
                      }
                 }
-
+                
+                if(json_decode($data['tags'])[0] !== "") {
+	                // Step 4: Save Tags
+	                $savedTag = array();
+	                
+	                foreach(json_decode($data['tags']) as $tag) {
+				    	$this->MerchantProductTag->create();
+				    	$saveTag['MerchantProductTag']['merchant_id'] = $this->Auth->user()['merchant_id'];
+				    	$saveTag['MerchantProductTag']['name'] = $tag;
+				    	$this->MerchantProductTag->save($saveTag);
+				    	array_push($savedTag, $this->MerchantProductTag->id);
+			    	}
+			    	
+			    	// Setp 5: Save Category
+			    	foreach($savedTag as $category) {
+				    	$this->MerchantProductCategory->create();
+				        $saveCategory['MerchantProductCategory']['product_id'] = $this->MerchantProduct->id;
+				        $saveCategory['MerchantProductCategory']['product_tag_id'] = $category;
+				        $this->MerchantProductCategory->save($saveCategory);
+				    }
+			    }
+			    
                 $result['success'] = true;
                 $result['product_id'] = $this->MerchantProduct->id;
                 $dataSource->commit();
@@ -205,12 +226,19 @@ class ProductController extends AppController {
             ),
         ));
         $this->set("variants", $variants);
+        
+        $items = $this->MerchantProduct->find('all', array(
+        	'conditions' => array (
+        		'MerchantProduct.merchant_id' => $user['merchant_id']
+        	)
+        ));
+        $this->set("items",$items);
     }
 
     public function edit($id) {
         $user = $this->Auth->user();
 
-        if ($this->request->is('ajax') || $this->request->is('post')) {
+        if ($this->request->is('ajax') || $this->request->is('put')) {
             $result = array(
                 'success' => false
             );
@@ -240,18 +268,66 @@ class ProductController extends AppController {
                 $this->MerchantPriceBookEntry->save($priceBookEntry);
 
                 // Step 3: If track_inventory is active, update the stock of product in the inventory of each outlet.
-                if ($data['track_inventory'] == 1) {
-                     $inventories = $data['inventories'];
-                     foreach ($inventories as $inventory) {
-                         $inventory['MerchantProductInventory']['outlet_id'] = $inventory['outlet_id'];
-                         $inventory['MerchantProductInventory']['product_id'] = $this->MerchantProduct->id;
-                         $inventory['MerchantProductInventory']['count'] = $inventory['count'];
-                         $inventory['MerchantProductInventory']['reorder_point'] = $inventory['reorder_point'];
-                         $inventory['MerchantProductInventory']['restock_level'] = $inventory['restock_level'];
-                         $this->MerchantProductInventory->save($inventory);
-                     }
+                if ($data['track_inventory']) {
+					$inventories = $data['inventories'];
+					foreach ($inventories as $inventory) {
+						$notNull = $this->MerchantProductInventory->find('first', array(
+							'conditions' => array (
+								'MerchantProductInventory.outlet_id' => $inventory['outlet_id'],
+								'MerchantProductInventory.product_id' => $id
+							)
+						));
+						$this->MerchantProductInventory->id = $notNull['MerchantProductInventory']['id'];
+						$inventory['MerchantProductInventory']['outlet_id'] = $inventory['outlet_id'];
+						$inventory['MerchantProductInventory']['product_id'] = $id;
+						$inventory['MerchantProductInventory']['count'] = $inventory['count'];
+						$inventory['MerchantProductInventory']['reorder_point'] = $inventory['reorder_point'];
+						$inventory['MerchantProductInventory']['restock_level'] = $inventory['restock_level'];
+						$this->MerchantProductInventory->save($inventory);
+					}
                 } else {
                 }
+
+                // Step 4: Save Tags
+                if(json_decode($data['tags'])[0] !== ""){
+	                $savedTag = array();
+	                foreach(json_decode($data['tags']) as $tag) {
+	                	$tag_exist = $this->MerchantProductTag->find('first', array(
+	                		'conditions' => array(
+	                			'MerchantProductTag.name' => $tag,
+	                			'MerchantProductTag.merchant_id' => $user['merchant_id']
+	                		)
+	                	));
+				    	$this->MerchantProductTag->id = $tag_exist['MerchantProductTag']['id'];
+				    	$saveTag['MerchantProductTag']['merchant_id'] = $user['merchant_id'];
+				    	$saveTag['MerchantProductTag']['name'] = $tag;
+				    	$this->MerchantProductTag->save($saveTag);
+				    	array_push($savedTag, $this->MerchantProductTag->id);
+			    	}
+	
+			    	// Setp 5: Save Category
+			    	foreach($savedTag as $category) {
+			    		$category_exist = $this->MerchantProductCategory->find('first',array(
+			    			'conditions' => array(
+			    				'MerchantProductCategory.product_tag_id' => $category,
+			    				'MerchantProductCategory.product_id' => $id
+			    			)
+			    		));
+				    	$this->MerchantProductCategory->id = $category_exist['MerchantProductCategory']['id'];
+				        $saveCategory['MerchantProductCategory']['product_id'] = $this->MerchantProduct->id;
+				        $saveCategory['MerchantProductCategory']['product_tag_id'] = $category;
+				        $this->MerchantProductCategory->save($saveCategory);
+				    }
+				} else {
+					$category_exist = $this->MerchantProductCategory->find('all',array(
+		    			'conditions' => array(
+		    				'MerchantProductCategory.product_id' => $id
+		    			)
+		    		));
+		    		foreach($category_exist as $toDelete) {
+		    			$this->MerchantProductCategory->delete($toDelete['MerchantProductCategory']['id']);
+		    		}
+				}
 
                 $result['success'] = true;
                 $result['product_id'] = $this->MerchantProduct->id;
@@ -260,10 +336,26 @@ class ProductController extends AppController {
                 $dataSource->rollback();
                 $result['message'] = $e->getMessage();
             }
+            
 
             $this->serialize($result);
             return;
         }
+        
+        $categories = $this->MerchantProductTag->find('all', array(
+            'joins' => array(
+                array(
+                    'table' => 'merchant_product_categories',
+                    'alias' => 'MerchantProductCategory',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'MerchantProductCategory.product_tag_id = MerchantProductTag.id',
+                        'MerchantProductCategory.product_id' => $id
+                    )
+                )
+            )
+        ));
+        $this->set("categories", $categories);
 
         $product = $this->MerchantProduct->findById($id);
         $this->set('product', $product);
@@ -282,6 +374,31 @@ class ProductController extends AppController {
             ),
         ));
         $this->set('types', $types);
+
+        $items = $this->MerchantProduct->find('all', array(
+        	'conditions' => array (
+        		'MerchantProduct.merchant_id' => $user['merchant_id']
+        	)
+        ));
+        $this->set("items",$items);
+
+        $this->MerchantOutlet->bindModel(array(
+            'hasOne' => array(
+                'MerchantProductInventory' => array(
+                    'className' => 'MerchantProductInventory',
+                    'foreignKey' => 'outlet_id',
+                    'conditions' => array (
+                    	'MerchantProductInventory.product_id' => $id
+                    )
+                )
+            )
+        ));
+        $outlets = $this->MerchantOutlet->find('all', array(
+        	'conditions' => array (
+        		'MerchantOutlet.merchant_id' => $user['merchant_id']
+        	)
+        ));
+        $this->set('outlets',$outlets);
 
         $suppliers = $this->MerchantSupplier->find('all', array(
             'conditions' => array(
@@ -313,29 +430,7 @@ class ProductController extends AppController {
             ),
         ));
         $this->set("variants", $variants);
-
-/*
-        $product = $this->MerchantProduct->findById($id);
-        $this->set('product', $product);
-        $this->set('id', $id);
         
-        if($this->request->is('post')) {
-            $data = $this->request->data;
-            $data['merchant_id'] = $this->Auth->user()['merchant_id'];
-            $result = array();
-            try {
-                $this->MerchantProduct->id = $id;
-                $this->MerchantProduct->save(array('MerchantProduct' => $data));
-            } catch (Exception $e) {
-                $result['message'] = $e->getMessage();
-            }
-            $this->serialize($result);
-            var_dump($result);
-            exit();
-            
-        }
-        
-*/
     }
 
     public function view($id) {
@@ -398,6 +493,12 @@ class ProductController extends AppController {
     }
 
     public function delete($id) {
+
+    	$this->MerchantProduct->delete($id);
+
+    	header("Location: /product");
+    	die();
+
     }
 
     public function brand() {
@@ -450,8 +551,56 @@ class ProductController extends AppController {
         $result['name'] = $_POST['product_brand_name'];
         $this->serialize($result);
     }
+    
+    public function type_edit(){
+	 
+	    if($this->request->is('post')) {
+	    	$result = array();
+	    	try {
+			    $this->MerchantProductType->id = $_POST['id'];
+	            $productType['name'] = $_POST['product_type_name'];
+	            $this->MerchantProductType->save($productType);
+	        } catch  (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+            $this->serialize($result);
+	    }
+	    
+    }
+    public function type_delete(){
+    
+    	$result = array();
+    	try {
+		    $this->MerchantProductType->delete($_POST['to_delete']);
+        } catch  (Exception $e) {
+            $result['message'] = $e->getMessage();
+        }
+        $this->serialize($result);
+
+    }
 
     public function type() {
+
+        if ($this->request->is('post') || $this->request->is('ajax')) {
+
+            $this->layout = 'ajax';
+
+            $result = array();
+            try {
+                $this->MerchantProductType->create();
+                $productType['merchant_id'] = $this->Auth->user()['merchant_id'];
+                $productType['name'] = $_POST['product_type_name'];
+                $this->MerchantProductType->save($productType);
+                $result['id'] = $this->MerchantProductType->id;
+                $result['name'] = $_POST['product_type_name'];
+            } catch  (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+                
+            return;
+
+        }
+        
         $this->MerchantProductType->bindModel(array(
             'hasMany' => array(
                 'MerchantProduct' => array(
@@ -467,35 +616,6 @@ class ProductController extends AppController {
             ),
         ));
         $this->set('types',$types);
-
-        if ($this->request->is('post') || $this->request->is('ajax')) {
-
-            $this->layout = 'ajax';
-
-            if(!empty($_POST['id'])){
-                $result = array();
-                try {
-                    $this->MerchantProductType->create();
-                    $productType['merchant_id'] = $this->Auth->user()['merchant_id'];
-                    $productType['name'] = $_POST['product_type_name'];
-                    $this->MerchantProductType->save($productType);
-                    $result['id'] = $this->MerchantProductType->id;
-                    $result['name'] = $_POST['product_type_name'];
-                } catch  (Exception $e) {
-                    $result['message'] = $e->getMessage();
-                }
-                $this->serialize($result);
-            } else {
-                if(count($this->request->data) > 1){
-                    $this->MerchantProductType->id = $_POST['id'];
-                    $productType['name'] = $_POST['product_type_name'];
-                    $this->MerchantProductType->save($productType);
-                } else {
-                    $this->MerchantProductType->delete($_POST['id']);
-                }
-            }
-
-        }
 
     }
 
@@ -521,8 +641,7 @@ class ProductController extends AppController {
     }
 
     public function tag() {
-        $result = array();
-        
+    
         $this->MerchantProductTag->bindModel(array(
             'hasMany' => array(
                 'MerchantProudctCategory' => array(
@@ -537,41 +656,9 @@ class ProductController extends AppController {
             ),
         ));
         $this->set('tags',$tags);
-
-        if($this->request->is('post')) {
-
-            try {
-
-                $data = $this->request->data;
-                $data['merchant_id'] = $this->Auth->user()['merchant_id'];
-                $this->MerchantProductTag->create();
-                $this->MerchantProductTag->save($data);
+        
+    }
     
-            } catch  (Exception $e) {
-                $result['message'] = $e->getMessage();
-            }
-            $result['id'] = $this->MerchantProductTag->id;
-            $this->serialize($result);
-        }
-    }
-
-    public function add_product_category() {
-        $result = array();
-        
-        $this->loadModel('MerchantProductCategory');
-        if($this->request->is('post')) {
-        
-            try {
-            $this->MerchantProductCategory->create();
-            $this->MerchantProductCategory->save($this->request->data);
-            } catch  (Exception $e) {
-                $result['message'] = $e->getMessage();
-            }
-        }
-        $this->serialize($result);
-        
-    }
-
     function addpics() {
         $tempFile = $_FILES['file']['tmp_name'];
         $targetPath = getcwd() . '/test/';

@@ -59,9 +59,11 @@
                 </h2>
                 
                 <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
+                	<a href="<?php echo $_SERVER['REQUEST_URI'];?>/delete">
                     <button class="btn btn-white btn-right pull-right">
                         <span class="glyphicon glyphicon-trash"></span>&nbsp;Delete Product
                     </button>
+                	</a>
                     <button class="btn btn-white pull-right btn-center">
                         <div class="glyphicon glyphicon-print"></div>&nbsp;
                     Print Label</button>
@@ -78,7 +80,9 @@
                   <!-- START col-md-12-->
                   <div class="col-md-12 col-xs-12 col-sm-12">
                       <h5>A cup of Coffee. You can delete this once you have some other products setup.</h5>
-                      <span class="btn btn-sm btn-default">General</span>
+                      <?php foreach($tags as $tag) { ?>
+                      	<span class="btn btn-sm btn-default"><?php echo $tag['MerchantProductTag']['name'];?></span>
+                      <?php } ?>
                   </div>
                   <span class="dashed-line-gr"></span>
                   <div class="col-md-9 col-xs-9 col-sm-9 col-alpha col-omega margin-top-20">

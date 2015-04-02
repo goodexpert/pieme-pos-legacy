@@ -198,7 +198,16 @@
                   <dl class="form-group">
                     <dt class="col-md-2">Product tags</dt>
                     <dd class="col-md-10 col-alpha">
-                      <input type="hidden" class="form-control select2_sample3 product_tag" value="">
+                      <input type="hidden" class="form-control select2_sample3 product_tag" value="<?php 
+                      $i=0;
+                      foreach($categories as $category){
+                      	if($i == 0){
+	                      	echo $category['MerchantProductTag']['name'];
+	                      	$i++;
+                      	} else {
+                      		echo ','.$category['MerchantProductTag']['name'];
+                      	}
+                      }?>">
                     </dd>
                   </dl>
               </div>
@@ -256,6 +265,7 @@
                   <input type="checkbox" name="variant" id="variant" <?php if($product['MerchantProduct']['has_variants'] == 1){echo "checked";}?>>
                   <label for="variant">This product has variants</label>
                 </span>
+                <?php if(empty($product['MerchantProduct']['variant_option_one_name'])){ ?>
                 <div id="first_variant_attr" class="col-md-12 col-sm-12 col-xs-12" style="display:<?php if($product['MerchantProduct']['has_variants'] == 1){echo "block";} else {echo "none";}?>">
                     <div class="dashed-line-gr"></div>
                     <div class="col-md-12 col-xs-12 col-sm-12">
@@ -275,6 +285,75 @@
                     </div>
                     <span class="variant_add">Add Another Attribute</span>
                 </div>
+                <?php }else{ ?>
+	            <div id="first_variant_attr" class="col-md-12 col-sm-12 col-xs-12" style="display:block;">
+                    <div class="dashed-line-gr"></div>
+                    <div class="col-md-12 col-xs-12 col-sm-12">
+                        <div class="col-md-3 col-xs-3 col-sm-3">
+                            <h5><strong>Attribute</strong></h5>
+                            <div class="info"><select class="variant_value_1"><option></option><option value="variant_value_add">+ Add new attribute</option>
+                            <?php foreach($variants as $variant){ ?>
+                            <option value="<?=$variant['MerchantVariant']['name'];?>" <?php if($product['MerchantProduct']['variant_option_one_name'] == $variant['MerchantVariant']['name']){echo "selected";}?>><?=$variant['MerchantVariant']['name'];?></option>
+                            <?php } ?>
+                            
+                            </select></div>
+                        </div>
+                        <div class="col-md-3 col-xs-3 col-sm-3">
+                            <h5><strong>Default value</strong></h5>
+                            <div class="info"><input type="text" class="variant_default_1" value="<?php echo $product['MerchantProduct']['variant_option_one_value'];?>"></div>
+                        </div>
+                    </div>
+                    <span class="variant_add" <?php if(!empty($product['MerchantProduct']['variant_option_two_name'])){echo "style='display:none;'";}?>>Add Another Attribute</span>
+                </div>
+                <?php } ?>
+                <?php if(!empty($product['MerchantProduct']['variant_option_two_name'])){ ?>
+                <div class="col-md-12 col-sm-12 col-xs-12 variant_attr variant_added" style="margin-top:15px;">
+                	<div class="col-md-12 col-xs-12 col-sm-12"><div class="col-md-3 col-xs-3 col-sm-3">
+                		<div class="info">
+                			<select class="variant_value_2">
+                				<option></option>
+                				<option value="variant_value_add">+ Add new attribute</option>
+                				<?php foreach($variants as $variant){ ?>
+                					<option value="<?=$variant['MerchantVariant']['name'];?>" <?php if($product['MerchantProduct']['variant_option_two_name'] == $variant['MerchantVariant']['name']){echo "selected";}?>><?=$variant['MerchantVariant']['name'];?></option>
+                				<?php } ?>
+                			</select>
+                		</div>
+                	</div>
+                	<div class="col-md-3 col-xs-3 col-sm-3">
+                		<div class="info"><input type="text" class="variant_default_2" value="<?php echo $product['MerchantProduct']['variant_option_two_value'];?>"></div>
+                	</div>
+                	<div class="col-md-2 col-xs-2 col-sm-2">
+                		<button class="btn remove remove_variant_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button>
+                	</div>
+                </div>
+                <?php if(empty($product['MerchantProduct']['variant_option_three_name'])){ ?>
+                <div><span class="variant_add">Add Another Attribute</span></div>
+                <?php } ?>
+                </div>
+                <?php } ?>
+                <?php if(!empty($product['MerchantProduct']['variant_option_three_name'])){ ?>
+                <div class="col-md-12 col-sm-12 col-xs-12 variant_attr variant_added" style="margin-top:15px;">
+                	<div class="col-md-12 col-xs-12 col-sm-12"><div class="col-md-3 col-xs-3 col-sm-3">
+                		<div class="info">
+                			<select class="variant_value_3">
+                				<option></option>
+                				<option value="variant_value_add">+ Add new attribute</option>
+                				<?php foreach($variants as $variant){ ?>
+                					<option value="<?=$variant['MerchantVariant']['name'];?>" <?php if($product['MerchantProduct']['variant_option_three_name'] == $variant['MerchantVariant']['name']){echo "selected";}?>><?=$variant['MerchantVariant']['name'];?></option>
+                				<?php } ?>
+                			</select>
+                		</div>
+                	</div>
+                	<div class="col-md-3 col-xs-3 col-sm-3">
+                		<div class="info"><input type="text" class="variant_default_3" value="<?php echo $product['MerchantProduct']['variant_option_three_value'];?>"></div>
+                	</div>
+                	<div class="col-md-2 col-xs-2 col-sm-2">
+                		<button class="btn remove remove_variant_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button>
+                	</div>
+                </div>
+                <div><span class="variant_max">A product has a maximum of three variants.</span></div>
+                </div>
+                <?php } ?>
               </div>
               <!-- END col-md-12-->
             </div>
@@ -329,21 +408,23 @@
                       </div>
                   </div>
                   
+                  <?php foreach($outlets as $outlet) { ?>
                   <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega stock-tracking" style="display: <?php if($product['MerchantProduct']['track_inventory'] == 1){echo "block";}else{echo "none";}?>">
-                        <input type="hidden" class="stock-outlet_id" value="">
+                      <input type="hidden" class="stock-outlet_id" value="<?php echo $outlet['MerchantOutlet']['id'];?>">
                       <div class="col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
-                        <div class="info">main outlet</div>
+                        <div class="info"><?php echo $outlet['MerchantOutlet']['name'];?></div>
                       </div>
                       <div class="col-md-2 col-xs-4 col-sm-4">
-                        <input type="text" class="form-control stock_count">
+                        <input type="text" class="form-control stock_count" value="<?php if(!empty($outlet['MerchantProductInventory'])){echo $outlet['MerchantProductInventory']['count'];}?>">
                       </div>
                       <div class="col-md-3 col-xs-4 col-sm-4">
-                        <input type="text" class="form-control stock_reorder_point">
+                        <input type="text" class="form-control stock_reorder_point" value="<?php if(!empty($outlet['MerchantProductInventory'])){echo $outlet['MerchantProductInventory']['reorder_point'];}?>">
                       </div>
                       <div class="col-md-3 col-xs-4 col-sm-4">
-                        <input type="text" class="form-control stock_reorder_amount">
+                        <input type="text" class="form-control stock_reorder_amount" value="<?php if(!empty($outlet['MerchantProductInventory'])){echo $outlet['MerchantProductInventory']['restock_level'];}?>">
                       </div>
                   </div>
+                  <?php } ?>
                 </div>
               </div>
               <div class="col-md-12 col-xs-12 col-sm-12" id="type_composite" style="display:none;">
@@ -360,15 +441,15 @@
                         <?php foreach($items as $item){ ?>
                     
                         <button type="button" data-id="<?=$item['MerchantProduct']['id'];?>" class="data-found"><?=$item['MerchantProduct']['name'];?></button>
-                        
+
                         <?php } ?>
-                         
+
                     </div>
                   </div>
                   <div class="col-md-2 col-xs-2 col-sm-2">
                     <h5><strong>Quantity:</strong></h5>
                     <div class="input-group">
-                        <input type="number">
+                        <input type="number" id="composite_qty">
                         <span class="input-group-btn">
                             <button type="button" id="composite_attr_add" class="btn btn-default" style="height:29px;padding-top:4px;">Add</button>
                         </span>
@@ -376,24 +457,8 @@
                   </div>
                   <div class="dashed-line-gr"></div>
                   
-                  <div class="col-md-12 col-sm-12 col-xs-12 composite-attr">
-                      <div class="col-md-4 col-sm-4 col-xs-4">
-                      hello
-                      </div>
-                      <div class="col-md-2 col-xs-2 col-sm-2 col-alpha">
-                        <input type="number" class="form-control">
-                        <button type="button" class="btn remove remove_composite_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button>
-                    </div>
-                  </div>
+                  <div id="composite_added_list" class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
                   
-                  <div class="col-md-12 col-sm-12 col-xs-12 composite-attr">
-                      <div class="col-md-4 col-sm-4 col-xs-4">
-                      hello
-                      </div>
-                      <div class="col-md-2 col-xs-2 col-sm-2 col-alpha">
-                        <input type="number" class="form-control">
-                        <button type="button" class="btn remove remove_composite_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button>
-                    </div>
                   </div>
                   
                 </div>
@@ -652,6 +717,7 @@ $(document).ready(function(){
         
         $cells.click(function(){
            $("#composite_search").val($(this).text());
+           $(".search_result").hide();
         });
     });
 
@@ -740,9 +806,13 @@ $(document).ready(function(){
             $(".stock-tracking").each(function(){
                inventories.push({outlet_id: $(this).find(".stock-outlet_id").val(), count: $(this).find(".stock_count").val(), reorder_point: $(this).find(".stock_reorder_point").val(), restock_level: $(this).find(".stock_reorder_amount").val()}) 
             });
+            
+            var tagArray = $("input:hidden.product_tag").val().split(",");
+            tagArray = JSON.stringify(tagArray);
+            
             $.ajax({
                 url: window.location+'.json',
-                type: "PUT",
+                type: "POST",
                 data: {
                     name: name,
                     handle: handle,
@@ -769,49 +839,17 @@ $(document).ready(function(){
                     variant_option_three_name: variant_option_three_name,
                     variant_option_three_value: variant_option_three_value,
                     track_inventory: track_inventory,
-                    inventories: inventories
+                    inventories: inventories,
+                    tags: tagArray
                 },
                 success: function(result){
-                    category = result['product_id'];    
+                    window.location.href = "/product";
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.log(textStatus, errorThrown);
                 }
             });
             
-            var tagId;
-            
-            var tagArray = $("input[type=hidden]").val().split(",");
-            var i = 0;
-            $(tagArray).each(function(){
-                $.ajax({
-                    url: "/product/tag.json",
-                    type: 'POST',
-                    data: {
-                        name: tagArray[i]
-                    },
-                    async: false
-                }).done(function(result){
-                    result['id'];
-                    
-                    $.ajax({
-                        url: "/product/add_product_category.json",
-                        type: "POST",
-                        data: {
-                            product_id: category,
-                            product_tag_id: result['id']
-                        },
-                        success: function() {
-                            window.location.href = "/product";
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            console.log(textStatus, errorThrown);
-                        }
-                    });
-                    
-                });
-                i++;
-            });
         } else {
             $("html, body").animate({ scrollTop: 0 }, "slow");
         }
@@ -894,6 +932,17 @@ $(document).ready(function(){
            $(".stock-tracking").hide();
            $(".stock-tracking-header").hide();
         }
+    });
+
+    $(".cancel").click(function(){
+	    parent.history.back();
+    });
+    
+    $("#composite_attr_add").click(function(){
+	   $("#composite_added_list").prepend('<div class="col-md-12 col-sm-12 col-xs-12 composite-attr"><div class="col-md-4 col-sm-4 col-xs-4">'+$("#composite_search").val()+'</div><div class="col-md-2 col-xs-2 col-sm-2 col-alpha"><input type="number" class="form-control" value="'+$("#composite_qty").val()+'"><button type="button" class="btn remove remove_composite_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button></div></div>');
+	   
+	   $("#composite_search").val('');
+	   $("#composite_qty").val('');
     });
 
 });

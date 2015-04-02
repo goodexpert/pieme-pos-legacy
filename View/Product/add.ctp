@@ -767,6 +767,10 @@ $(document).ready(function(){
             $(".stock-tracking").each(function(){
                inventories.push({outlet_id: $(this).find(".stock-outlet_id").val(), count: $(this).find(".stock_count").val(), reorder_point: $(this).find(".stock_reorder_point").val(), restock_level: $(this).find(".stock_reorder_amount").val()}) 
             });
+            
+            var tagArray = $("input:hidden.product_tag").val().split(",");
+            tagArray = JSON.stringify(tagArray);
+            
             $.ajax({
                 url: "/product/add.json",
                 type: "POST",
@@ -796,44 +800,15 @@ $(document).ready(function(){
                     variant_option_three_name: variant_option_three_name,
                     variant_option_three_value: variant_option_three_value,
                     track_inventory: track_inventory,
-                    inventories: inventories
+                    inventories: inventories,
+                    tags: tagArray
                 },
                 success: function(result) {
-                    category = result['product_id'];
+                    console.log(result);
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.log(textStatus, errorThrown);
                 }
-            });
-            var tagId;
-            var tagArray = $("input:hidden.product_tag").val().split(",");
-            var i = 0;
-            $(tagArray).each(function(){
-                $.ajax({
-                    url: "/product/tag.json",
-                    type: 'POST',
-                    data: {
-                        name: tagArray[i]
-                    },
-                    async: false
-                }).done(function(result){
-                    $.ajax({
-                        url: "/product/add_product_category.json",
-                        type: "POST",
-                        data: {
-                            product_id: category,
-                            product_tag_id: result['id']
-                        },
-                        success: function() {
-                            window.location.href = "/product";
-                        },
-                        error: function(jqXHR, textStatus, errorThrown) {
-                            console.log(textStatus, errorThrown);
-                        }
-                    });
-                    
-                });
-                i++;
             });
         } else {
             $("#loader-wrapper").hide();
@@ -928,6 +903,10 @@ $(document).ready(function(){
            $(".stock-tracking").hide();
            $(".stock-tracking-header").hide();
        }
+    });
+    
+    $(".cancel").click(function(){
+	    parent.history.back();
     });
 
 });

@@ -228,7 +228,7 @@ $(document).ready(function(){
             confirmButton: "Edit",
             confirm: function(button){
                 $.ajax({
-                    url: "/product/type",
+                    url: "/product/type_edit.json",
                     type: "POST",
                     data: {
                         id: id,
@@ -254,16 +254,16 @@ $(document).ready(function(){
             confirmButton: "Delete",
             confirm: function(button){
                 $.ajax({
-                    url: "/product/type",
+                    url: "/product/type_delete.json",
                     type: "POST",
                     data: {
-                        id: id
+                        to_delete: id
                     }
-                }).done(function(){
+                }).done(function(result){
                     location.reload();
                 });
             },
-            confirmButtonClass: "brand-delete pull-right btn-success margin-left-10",
+            confirmButtonClass: "pull-right btn-success margin-left-10",
             cancelButton: "Cancel",
         });
     });

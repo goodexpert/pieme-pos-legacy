@@ -50,7 +50,7 @@ class HomeController extends AppController {
                 'conditions' => array(
                     'MerchantProduct.merchant_id' => $user['merchant_id'],
                     'MerchantProduct.is_active' => 1,
-                    'MerchantProduct.id' => $products_ids
+                    //'MerchantProduct.id' => $products_ids
                 ),
                 'joins' => array(
                     array(
