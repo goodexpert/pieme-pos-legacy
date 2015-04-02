@@ -50,7 +50,7 @@
                 <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">Add Customer</h2>
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12">
-                <div class="line-box col-md-12 col-sm-12 col-xs-12">
+                <div class="line-box col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
                     <div class="col-md-6 col-sm-6 col-xs-6">
                         <dl class="pull-left">
                             <dt>Contact name</dt>
@@ -102,7 +102,7 @@
                         </dl>
                     </div>
                 </div>
-            <div class="col-md-12 col-sm-12 col-xs-12 margin-top-20">
+            <div class="col-md-12 col-sm-12 col-xs-12 margin-top-20 col-alpha col-omega">
                 <div class="line-box col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-6 col-sm-6 col-xs-6">
                         <dl>
@@ -123,7 +123,7 @@
                 </div>
             </div>
             
-            <div class="col-md-12 col-sm-12 col-xs-12 margin-top-20">
+            <div class="col-md-12 col-sm-12 col-xs-12 margin-top-20 col-alpha col-omega">
                 <div class="line-box col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-6 col-sm-6 col-xs-6">
                         <div class="line-box-stitle">Physical Address</div>
@@ -168,7 +168,7 @@
                 </div>
             </div>
             
-            <div class="col-md-12 col-sm-12 col-xs-12 margin-top-20">
+            <div class="col-md-12 col-sm-12 col-xs-12 margin-top-20 col-alpha col-omega">
                 <div class="line-box col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-6 col-sm-6 col-xs-6">
                         <dl>

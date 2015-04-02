@@ -160,15 +160,13 @@
                 </thead>
                 <tbody>
                     <tr class="table-color">
-                        <strong>
-                        <td>TOTAL</td>
+                        <td><strong>TOTAL</strong></td>
                         <td> </td>
                         <td> </td>
-                        <td class="text-right">50</td>
-                        <td class="text-right">$64.35</td>
-                        <td class="text-right">$0.00.35</td>
-                        <td class="text-right">0</td>
-                        </strong>
+                        <td class="text-right"><strong>50</strong></td>
+                        <td class="text-right"><strong>$64.35</strong></td>
+                        <td class="text-right"><strong>$0.00.35</strong></td>
+                        <td class="text-right"><strong>0</strong></td>                        
                     </tr>
                     <tr>
                         <td>Coffee</td>
@@ -216,15 +214,13 @@
                         <td class="text-right">0</td>
                     </tr>
                     <tr class="table-color">
-                        <strong>
-                        <td>TOTAL</td>
+                        <td><strong>TOTAL</strong></td>
                         <td> </td>
                         <td> </td>
-                        <td class="text-right">50</td>
-                        <td class="text-right">$64.35</td>
-                        <td class="text-right">$0.00.35</td>
-                        <td class="text-right">0</td>
-                        </strong>
+                        <td class="text-right"><strong>50</strong></td>
+                        <td class="text-right"><strong>$64.35</strong></td>
+                        <td class="text-right"><strong>$0.00.35</strong></td>
+                        <td class="text-right"><strong>0</strong></td>                        
                     </tr>
                 </tbody>
             </table>

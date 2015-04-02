@@ -180,10 +180,10 @@
         <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega line-box line-box-content portlet solid bordered grey-cararra">
           <ul class="col-md-6 col-xs-12 col-sm-12 dashboard-list">
             <li><a href="/reports/stock/levels">Stock Levels</a></li>
-            <li><a href="/reports/stock/low">Stock On Hand</a></li>
+            <li><a href="/reports/stock/onhand">Stock On Hand</a></li>
           </ul>
           <ul class="col-md-6 col-xs-12 col-sm-12 dashboard-list">
-            <li><a href="/reports/stock/onhand">Low Stock</a></li>
+            <li><a href="/reports/stock/low">Low Stock</a></li>
           </ul>
         </div>
       </div>

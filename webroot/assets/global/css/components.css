@@ -1378,7 +1378,6 @@ System feeds
   list-style: none;
 }
 .feeds li {
-  background-color: #fafafa;
   margin-bottom: 7px;
 }
 .feeds li:before, .feeds li:after {

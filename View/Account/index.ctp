@@ -53,14 +53,18 @@
     <div class="page-content-wrapper">
         <div class="page-content">
             <h2>Account</h2>
-            <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega line-box">
-                <h4 class="col-md-12 col-sm-12 col-xs-12">
+                <div class="inventory-tab">
+                	<li class="active">Retail</li>
+                	<li>Franchise</li>
+                </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
+                <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega line-box">
+                <h4 class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
                     Select a Plan
                 </h4>
-                <h5 class="col-md-12 col-sm-12 col-xs-12 margin-bottom-20">
+                <h5 class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega margin-bottom-20">
                     You have 1 Outlet, 1 Register, 5 Products, 3 Customers and 1 User.<br>
                 </h5>
-                <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
                     <?php foreach($plans as $plan) { ?>
                     <div class="col-md-3 col-sm-6 col-xs-6 margin-bottom-20">
                         <div class="plan-item clickable <?php if($authUser['Merchant']['plan_id'] == $plan['Plan']['id']){echo "selected_plan";}?> line-box">
