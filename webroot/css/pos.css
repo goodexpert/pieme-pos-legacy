@@ -98,6 +98,10 @@ dd.explain{
 	overflow:hidden;	
 }
 
+.table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td {
+	vertical-align:middle;	
+}
+
 
 /* BUTTON VIEW / IMAGE VIEW END */
 
@@ -902,6 +906,11 @@ text-align:right;
 	width: 500px;
 	margin: 100px auto;
 }
+
+.incorrect {
+	height:inherit;	
+}
+
 .incorrect input{
 	border: 1px solid #ED7F7F;
 }
