@@ -373,8 +373,8 @@
                       <?php foreach($payments as $payment){ ?>
                       
                           <li class="col-lg-6 col-md-6 col-sm-6 col-xs-6 col-omega col-alpha btn-left payment_method" payment-id="<?=$payment['MerchantPaymentType']['id'];?>">
-                          <button class="btn btn-left btn-primary col-lg-12 col-md-12 col-sm-12 col-xs-12 col-omega col-alpha">
-                              <span class="co-md-12"><img src="/img/<?php if($payment['MerchantPaymentType']['name'] == 'Credit Card'){echo 'card';}else if($payment['MerchantPaymentType']['name'] == 'Cash'){echo 'cash';}else{echo 'card';}?>.png" alt="cash"></span>
+                          <button class="btn btn-primary col-lg-12 col-md-12 col-sm-12 col-xs-12 col-omega col-alpha">
+                              <span class="co-md-12"><img src="/img/<?php if($payment['PaymentType']['name'] == 'Credit Card'){echo 'card';}else if($payment['PaymentType']['name'] == 'Cheque'){echo 'cheque';}else{echo 'cash';}?>.png" alt="cash"></span>
                               <p class="co-md-12"><?=$payment['MerchantPaymentType']['name'];?></p>
                           </button>
                           </li>
