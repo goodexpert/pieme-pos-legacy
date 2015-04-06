@@ -70,10 +70,28 @@
                         <dd>
                             <?php echo $order['MerchantStockOrder']['name']; ?>
                         </dd>
+                        <?php if ( $order['MerchantStockOrder']['type'] == 'OUTLET' ): ?>
+                        <dt>Source outlet</dt>
+                        <dd>
+                            <?php
+                                foreach ($outlets as $outlet):
+                                    if ( $outlet['MerchantOutlet']['id'] == $order['MerchantStockOrder']['source_outlet_id'] ):
+                                        $source_outlet = $outlet['MerchantOutlet']['name'];
+                                        break;
+                                    endif;
+                                endforeach;
+                                echo $source_outlet;
+                            ?>
+                        </dd>
+                        <?php endif; ?>
+
+                        <?php if ( $this->request->data['MerchantStockOrder']['type'] == 'SUPPLIER' ): ?>
                         <dt>Order from</dt>
                         <dd>
                             <?php echo is_null($order['MerchantSupplier']['name']) ? 'Any' : $order['MerchantSupplier']['name']; ?>
                         </dd>
+                        <?php endif; ?>
+
                         <dt>Deliver to</dt>
                         <dd>
                             <?php echo $order['MerchantOutlet']['name']; ?> 
@@ -136,6 +154,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <input type="hidden" name="data[MerchantStockOrder][id]" value="<?php echo $order['MerchantStockOrder']['id']; ?>">
                             <?php
                                 if ( isset($order['MerchantStockOrderItem']) && count($order['MerchantStockOrderItem']) > 0 ):
                                     foreach ($order['MerchantStockOrderItem'] as $idx => $item):
@@ -147,13 +166,22 @@
                                 <input type="hidden" name="data[MerchantStockOrderItem][<?php echo $idx; ?>][price_include_tax]" value="<?php echo $item['MerchantProduct']['price_include_tax']; ?>" />
                                 <td><?php echo $idx+1; ?></td>
                                 <td><?php echo $item['MerchantProduct']['name']; ?></td>
-                                <td><?php echo $item['MerchantProduct']['MerchantProductInventory'][0]['count']; ?></td>
+                                <td>
+                                    <?php
+                                        if ( isset($item['MerchantProduct']['MerchantProductInventory'][0]['count']) ):
+                                            echo $item['MerchantProduct']['MerchantProductInventory'][0]['count'];
+                                        else:
+                                            echo '0';
+                                        endif;
+                                    ?>
+                                </td>
                                 <td>
                                     <?php
                                         $count = $this->Form->input('MerchantStockOrderItem.' . $idx . '.count', array(
                                             'type' => 'text',
                                             'div'  => false,
-                                            'label' => false
+                                            'label' => false,
+                                            'class' => 'changable'
                                         ));
                                         echo $count;
                                     ?>
@@ -164,6 +192,7 @@
                                             'type' => 'text',
                                             'div'  => false,
                                             'label' => false,
+                                            'class' => 'changable',
                                             'value' => sprintf("%.2f", round($item['MerchantProduct']['supply_price'], 2))
                                         ));
                                         echo $supplyPrice;
@@ -335,6 +364,7 @@ jQuery(document).ready(function() {
 
     $(".datepicker").datepicker({ dateFormat: 'yy-mm-dd' });
 
+    /*
     $(document).on('click','.save',function(){
         $.ajax({
 
@@ -351,6 +381,27 @@ jQuery(document).ready(function() {
         
         }).done(function(result){
             console.log(result);
+        });
+    });
+     */
+    
+    // 'save and send' button click ...
+    $(document).on('click', '.save', function(e) {
+        e.preventDefault();
+        $.ajax({
+            url: "/stock/saveItems.json",
+            method: "POST",
+            data: $('#stock_order_item_form').serialize(),
+            error: function( jqXHR, textStatus, errorThrown ) {
+            },
+            success: function( data, textStatus, jqXHR ) {
+                if (data.success) {
+                    location.href = "/stock/view/<?php echo $order['MerchantStockOrder']['id']; ?>";
+                } else {
+                    alert(data.message);
+                    console.log(data.message);
+                }
+            }
         });
     });
 
@@ -483,7 +534,14 @@ jQuery(document).ready(function() {
         }
     });
     
+    $(document).on("blur", ".changable", function() {
+        var count = $(this).closest('tr').children().find('input[name*=count]').val();
+        var supply_price = $(this).closest('tr').children().find('input[name*=supply_price]').val();
+            supply_price = (Math.round(supply_price*100)/100).toFixed(2);
+        var total = (Math.round(parseFloat(count * supply_price)*100)/100).toFixed(2);
 
+        $(this).closest('tr').find('td:last').text(total);
+    });
     
 });
 </script>

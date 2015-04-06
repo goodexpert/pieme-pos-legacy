@@ -71,8 +71,8 @@
                 </div>
             </div>
             <div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">Details
-                <span class="clickable same_as_physical pull-right btn btn-default btn-right">
-                    <a href="/stock/markSent/<?php echo $order['MerchantStockOrder']['id']; ?>">Mark as sent</a>
+                <span class="clickable same_as_physical pull-right btn btn-default btn-right mark_as_sent">Mark as sent
+                    <!--<a href="/stock/markSent/<?php echo $order['MerchantStockOrder']['id']; ?>">Mark as sent</a>-->
                 </span>
                 <span class="clickable same_as_physical pull-right btn btn-default btn-left">Print labels</span>
             </div>
@@ -166,8 +166,9 @@
                                     </td>
                                     <td><?php echo $item['count']; ?></td>
                                     <td><?php echo is_null($item['received']) ? '0' : $item['received']; ?></td>
-                                    <td><?php echo $item['supply_price']; ?></td>
-                                    <td><?php echo round($item['count'] * $item['supply_price'], 2); ?></td>
+                                    <td><?php echo sprintf("%.2f", $item['supply_price']); ?></td>
+                                    <td><?php echo sprintf("%.2f", round($item['count'] * $item['supply_price'], 2)); ?></td>
+                                    <td></td>
                                     <td></td>
                                 </tr>
                                 <?php
@@ -182,8 +183,8 @@
                                     <td></td>
                                     <td><?php echo $totalOrdered; ?></td>
                                     <td><?php echo $totalReceived; ?></td>
-                                    <td><?php echo sprintf('%.2f', $totalSupplyCost); ?></td>
                                     <td></td>
+                                    <td><?php echo sprintf("%.2f", $totalSupplyCost); ?></td>
                                     <td></td>
                                     <td></td>
                                 </tr>
@@ -194,7 +195,7 @@
                 </div>
                 <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
                     <?php if ( $order['MerchantStockOrder']['status'] == 'SENT' ): ?>
-                    <a href="/stock/receive/<?php echo $order['MerchantStockOrder']['id']; ?>" class="btn btn-primary btn-wide pull-right send">Receive</a>
+                    <a href="/stock/receive/<?php echo $order['MerchantStockOrder']['id']; ?>" class="btn btn-primary btn-wide pull-right">Receive</a>
                     <?php else: ?>
                     <button type="submit" class="btn btn-primary btn-wide pull-right send">Send</button>
                     <?php endif; ?>
@@ -217,6 +218,8 @@
                     </button>
                     <h4 class="modal-title">Send order</h4>
                 </div>
+                <form id="confirmation-email-form">
+                <input type="hidden" name="data[order_id]" value="<?php echo $order['MerchantStockOrder']['id']; ?>" />
                 <div class="modal-body margin-bottom-20">
                     <dl>
                         <dt>Recipient name</dt>
@@ -235,6 +238,7 @@
                     <button class="close-pop btn btn-primary btn-wide" type="button" data-dismiss="modal">Cancel</button>
                     <button class="confirm btn btn-success btn-wide" type="button" data-dismiss="modal">Send</button>
                 </div>
+                </form>
             </div>
         </div>
     </div>
@@ -390,13 +394,54 @@ jQuery(document).ready(function() {
     $(".close-pop").click(function(){
         $(".confirmation-modal").hide();
     });
-    /*
+
+    $(".confirm").click(function(e) {
+        e.preventDefault();
+
+        $.ajax({
+            url: "/stock/sentEmail.json",
+            method: "POST",
+            data: $('#confirmation-email-form').serialize(),
+            error: function( jqXHR, textStatus, errorThrown ) {
+            },
+            success: function( data, textStatus, jqXHR ) {
+                if (data.success) {
+                    window.location.href = "/stock/receive/<?php echo $order['MerchantStockOrder']['id']; ?>";
+                } else {
+                    $('.save_send').hide();
+                    alert(data.message);
+                }
+            }
+        });
+    });
+
     $(".send").click(function(){
         $(".save_send").show();
     });
-     */
+
     $(".cancel-order").click(function(){
         $(".cancel-confirm").show();
+    });
+
+    $(".mark_as_sent").click(function(e) {
+        e.preventDefault();
+
+        var order_id = "<?php echo $order['MerchantStockOrder']['id']; ?>";
+
+        $.ajax({
+            url: "/stock/send.json",
+            method: "POST",
+            data: {MerchantStockOrder:{id: order_id}},
+            error: function( jqXHR, textStatus, errorThrown ) {
+            },
+            success: function( data, textStatus, jqXHR ) {
+                if ( data.success ) {
+                    window.location.href = "/stock/view/<?php echo $order['MerchantStockOrder']['id']; ?>";
+                } else {
+                    alert(data.message);
+                }
+            } 
+        });
     });
 });
 </script>

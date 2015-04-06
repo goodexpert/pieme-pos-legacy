@@ -90,53 +90,70 @@
                     <dl>
                         <dt>Show</dt> 
                         <dd>
-                            <select class="status">
-                            <option value="active" class="active_product_count">active</option>
-                            <option value="inactive" class="inactive_product_count">inactive</option>
-                            <option value="all" class="product_count">all</option>
-                               </select>
+                            <select class="status" name="status" id="status">
+                                <option value="ALL" <?php echo $status == 'ALL' ? 'selected="selected"' : ''; ?>>All orders</option>
+                                <option value="OPEN" <?php echo $status == 'OPEN' ? 'selected="selected"' : ''; ?>>Open orders</option>
+                                <option value="SENT" <?php echo $status == 'SENT' ? 'selected="selected"' : ''; ?>>Sent orders</option>
+                                <option value="RECEIVED" <?php echo $status == 'RECEIVED' ? 'selected="selected"' : ''; ?>>Received orders</option>
+                                <option value="OVERDUE" <?php echo $status == 'OVERDUE' ? 'selected="selected"' : ''; ?>>Overdue orders</option>
+                                <option value="CANCELLED" <?php echo $status == 'RECEIVED' ? 'selected="selected"' : ''; ?>>Cancelled orders</option>
+                                <option value="RECEIVE_FAIL" <?php echo $status == 'RECEIVE_FAIL' ? 'selected="selected"' : ''; ?>>Failed orders</option>
+                            </select>
                         </dd>
-
                         <dt>Date from</dt>
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="date_from">
+                            <input type="text" name="date_from" id="date_from" value="<?php echo $date_from; ?>">
                         </dd>
                         <dt>Due date from</dt>
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="due_date_from">
+                            <input type="text" name="due_date_from" id="due_date_from" value="<?php echo $due_date_from; ?>">
                         </dd>
                     </dl> 
                 </div>
                 <div class="col-md-4 col-xs-4 col-sm-4">
                     <dl>
                         <dt>Name / Has product</dt>
-                        <dd><input type="text" id=""></dd>
-                           <dt>Date to</dt>
                         <dd>
-                            <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="date_to">
+                            <input type="text" name="name" id="name" value="<?php echo $name; ?>">
                         </dd>
-                           <dt>Due date to</dt>
+                        <dt>Date to</dt>
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="due_date_to">
+                            <input type="text" name="date_to" id="date_to" value="<?php echo $date_to; ?>">
+                        </dd>
+                        <dt>Due date to</dt>
+                        <dd>
+                            <span class="glyphicon glyphicon-calendar icon-calendar"></span>
+                            <input type="text" name="due_date_to" id="due_date_to" value="<?php echo $due_date_to; ?>">
                         </dd>
                     </dl>
                  </div>
                 <div class="col-md-4 col-xs-4 col-sm-4">
                     <dl>
                         <dt>Supplier invoice</dt>
-                        <dd><input type="text" id=""></dd>
+                        <dd>
+                            <input type="text" name="supplier_invoice" id="supplier_invoice" value="<?php echo $supplier_invoice; ?>">
+                        </dd>
                         <dt>Outlet</dt>
-                        <dd><select id="filter-outlet">
-                        <option></option>
-                        </select></dd>
+                        <dd>
+                            <select name="outlet_id" id="outlet_id">
+                                <option></option>
+                            <?php foreach ($outlets as $key => $value) : ?>
+                                <option value="<?php echo $key; ?>" <?php echo $key == $outlet_id ? 'selected="selected"' : ''; ?>><?php echo $value; ?></option>
+                            <?php endforeach; ?>
+                            </select>
+                        </dd>
                         <dt>Supplier</dt>
-                        <dd><select id="filter-supplier">
-                        <option></option>
-                        </select></dd>
+                        <dd>
+                            <select name="supplier_id" id="supplier_id">
+                                <option></option>
+                            <?php foreach ($suppliers as $key => $value) : ?>
+                                <option value="<?php echo $key; ?>" <?php echo $key == $supplier_id ? 'selected="selected"' : ''; ?>><?php echo $value; ?></option>
+                            <?php endforeach; ?>
+                            </select>
+                        </dd>
                     </dl>
                  </div>
                  <div class="col-md-12 col-xs-12 col-sm-12">
@@ -171,12 +188,29 @@
                 </thead>
                 <tbody>
                     <?php
+                        $orderStatusDisp = array(
+                            'OPEN' => 'Open',
+                            'SEND' => 'Sent',
+                            'RECEIVED' => 'Received',
+                            'RECEIVE_FAIL' => 'Failed',
+                            'OVERDUE' => 'Overdue',
+                            'CANCELLED' => 'Cancelled'
+                        );
+
                         foreach ($orders as $order) :
                             $orderType = $order['MerchantStockOrder']['type'];
+                            $orderStatus = $order['MerchantStockOrder']['status'];
+                            $sourceName = '';
+
                             if ($orderType === 'SUPPLIER') {
                                 $orderType = 'Supplier order';
+                                $sourceName = $order['MerchantSupplier']['name'];
                             } elseif ($orderType === 'OUTLET') {
                                 $orderType = 'Outlet transfer';
+                                $sourceName = $order['SourceOutlet']['name'];
+                            }
+                            if (empty($sourceName)) {
+                                $sourceName = 'No Name';
                             }
                     ?>
                     <tr>
@@ -197,12 +231,17 @@
                             ?>
                         </td>
                         <td><?php echo $order['MerchantOutlet']['name']; ?></td>
-                        <td><?php echo $order['MerchantSupplier']['name']; ?></td>
-                        <td><?php echo count($order['MerchantStockOrderItem']); ?></td>
-                        <td><?php echo $order['MerchantStockOrder']['status']; ?></td>
+                        <td><?php echo $sourceName; ?></td>
+                        <!-- <td><?php echo count($order['MerchantStockOrderItem']); ?></td> -->
+                        <td><?php echo $order[0]['items']; ?></td>
+                        <td><?php echo $orderStatusDisp[$orderStatus]; ?></td>
                         <td>
                             <a href="/stock/view/<?php echo $order['MerchantStockOrder']['id']; ?>">View</a> |
+                            <?php if ( in_array($orderStatus, array('SENT', 'RECEIVED', 'RECEIVE_FAIL')) ): ?>
+                            <a href="/stock/receive/<?php echo $order['MerchantStockOrder']['id']; ?>">Edit</a> 
+                            <?php else: ?>
                             <a href="/stock/edit/<?php echo $order['MerchantStockOrder']['id']; ?>">Edit</a> 
+                            <?php endif; ?>
                         </td>
                     </tr>                
                     <?php
@@ -320,12 +359,27 @@ jQuery(document).ready(function() {
     });
     $("#stockTable_length").hide();
     $("#date_from").datepicker({ dateFormat: 'yy-mm-dd' });
-    $("#due_date_from").datepicker();
     $("#date_to").datepicker();
+    $("#due_date_from").datepicker();
     $("#due_date_to").datepicker();
 
     $("#apply_filter").click(function(){
-        window.location.href = '/stock?status='+$(".status").val()+'&outlet='+$("#filter-outlet").val()+'&supplier='+$("#filter-supplier").val()+'&from='+$("#date_from").val()+'&to='+$("#date_to").val()+'&duefrom='+$("#due_date_from").val()+'&dueto='+$("#due_date_to").val();
+        var status = $('#status').val();
+        var name = $('#name').val();
+        var date_from = $('#date_from').val();
+        var date_to = $('#date_to').val();
+        var due_date_from = $('#due_date_from').val();
+        var due_date_to = $('#due_date_to').val();
+        var outlet_id = $('#outlet_id').val();
+        var supplier_id = $('#supplier_id').val();
+        var supplier_invoice = $('#supplier_invoice').val();
+
+        uri = 'status=' + status + '&name=' + name
+            + '&date_from=' + date_from + '&date_to=' + date_to
+            + '&due_date_from=' + due_date_from + '&due_date_to=' + due_date_to
+            + '&outlet_id=' + outlet_id + '&supplier_id=' + supplier_id
+            + '&supplier_invoice=' + supplier_invoice;
+        window.location.href = '/stock?' + encodeURI(uri);
     });
 });
 </script>

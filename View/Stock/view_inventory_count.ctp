@@ -57,27 +57,35 @@
                     <h2>
                         Perform Inventory Count
                     </h2>
-                    <h4 class="col-lg-5 col-md-6 col-xs-12 col-sm-7 col-alpha">Main Outlet 25-03-2015 3:00 PM</h4>
-                    <h5 class="col-lg-7 col-md-6 col-xs-12 col-sm-5 col-alpha col-omega">Full Count</h5>
+                    <h4 class="col-lg-5 col-md-6 col-xs-12 col-sm-7 col-alpha"><?php echo $take['MerchantStockTake']['name']; ?></h4>
+                    <h5 class="col-lg-7 col-md-6 col-xs-12 col-sm-5 col-alpha col-omega"><?php echo $take['MerchantStockTake']['full_count'] == '1' ? 'Full Count' : 'Partial Count'; ?></h5>
                     <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                         <h5 class="col-lg-4 col-md-5 col-xs-12 col-sm-6 col-alpha col-omega">
                             <span class="glyphicon glyphicon-calendar"></span>&nbsp;
-                            Start: 25 Mar 2015, 2:37 PM
+                            Start: <?php echo date('d F Y, g:i A', strtotime($take['MerchantStockTake']['start_date'])); ?>
                         </h5>
                         <h5 class="col-lg-8 col-md-7 col-xs-12 col-sm-6 col-alpha col-omega">
                             <span class="glyphicon glyphicon-map-marker"></span>&nbsp;
-                            Main Outlet
+                            <?php echo $take['MerchantOutlet']['name']; ?>
                         </h5>
                     </div>
                     <div class="col-md-12 col-xs-12 col-sm-12 col-alpha count-input">
-                        <div class="col-md-6 col-xs-6 col-sm-6 col-alpha"><input type="text"></div>
+                        <div class="col-md-6 col-xs-6 col-sm-6 col-alpha">
+                            <input type="text" placeholder="Search Products" id="product_search">
                         <div class="col-md-3 col-xs-3 col-sm-3 col-alpha">
-                            <input type="text" class="btn-left" style="width:50%;">
+                            <input type="text" class="btn-left"></div>
                             <button class="btn btn-success btn-right" style="width:50%;">Count</button>
                         </div>
                         <div class="col-md-3 col-xs-3 col-sm-3 col-alpha">
                             <input type="checkbox" value="1" checked="">
                             <label>Quick-scan mode</label>
+                        </div>
+                        <div class="search_result" style="display:none;">
+                            <span class="search-tri"></span>
+                            <div class="search-default"> No Result </div>
+                            <?php foreach ($products as $product) : ?>
+                            <button type="button" class="data-found" data-stock-take-id="<?php echo $take['MerchantStockTake']['id']; ?>" data-name="<?php echo $product['MerchantProduct']['name']; ?>" data-id="<?php echo $take['MerchantProduct']['id']; ?>"><?php echo $product['MerchantProduct']['name'] . '(' . $product['MerchantProduct']['sku'] . ')'; ?></button>
+                            <?php endforeach; ?>
                         </div>
                     </div>
                     <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
@@ -100,10 +108,11 @@
                                         <tr role="row">
                                             <th>PRODUCT</th>
                                             <th>EXPECTED</th>
-                                            <th>UNEXPECTED</th>
+                                            <th>COUNTED</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        <!--
                                         <tr role="row" class="odd">
                                             <td>Coffee
                                                 <h6 class="inline-block-z margin-left-10">Black coffee</h6>
@@ -118,6 +127,28 @@
                                             <td>-65</td>
                                             <td>1</td>
                                         </tr>
+                                        -->
+                                        <?php
+                                            if ( count($take['MerchantStockTakeItem']) > 0 ):
+                                                foreach ($take['MerchantStockTakeItem'] as $item):
+                                        ?>
+                                        <tr>
+                                            <td><?php echo $item['MerchantProduct']['name']; ?> 
+                                                <h6 class="inline-block-z margin-left-10"><?php echo $item['MerchantProduct']['sku']; ?></h6>
+                                            </td>
+                                            <td><?php echo $item['expected']; ?></td>
+                                            <td><?php echo $item['counted']; ?></td>
+                                        </tr>
+                                        <?php
+                                                endforeach;
+                                            else:
+                                        ?>
+                                        <tr>
+                                            <td colspan="3">There is no items ...</td>
+                                        </tr>
+                                        <?php
+                                            endif;
+                                        ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -128,6 +159,7 @@
                     <div class="last-counted">
                         <h4>Your last counted items</h4>
                         <div class="last-counted-list">
+                            <!--
                             <ul>
                                 <li class="pull-left">1 T-shirt (Demo)</li>
                                 <li class="pull-right"><span class="remove inline-block"><span class="glyphicon glyphicon-remove"></span></span></li>
@@ -136,6 +168,17 @@
                                 <li class="pull-left">1 T-shirt (Demo)</li>
                                 <li class="pull-right"><span class="remove inline-block"><span class="glyphicon glyphicon-remove"></span></span></li>
                             </ul>
+                            -->
+                            <?php
+                                foreach ($take['MerchantStockTakeCount'] as $count):
+                            ?>
+                            <ul>
+                                <li class="pull-left"><?php echo $count['MerchantProduct']['name']; ?></li>
+                                <li class="pull-right"><span class="remove inline-block"><span class="glyphicon glyphicon-remove"></span></span></li>
+                            </ul>
+                            <?php
+                                endforeach;
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -244,6 +287,38 @@ jQuery(document).ready(function() {
     Layout.init(); // init layout
     QuickSidebar.init() // init quick sidebar
     Index.init();
+
+
+
+   /* DYNAMIC PROUCT SEARCH START */
+    
+    var $cells = $(".data-found");
+    $(".search_result").hide();
+
+    $(document).on("keyup","#product_search",function() {
+        console.log($(this).val());
+        var val = $.trim(this.value).toUpperCase();
+        if (val === "")
+            $(".search_result").hide();
+        else {
+            $cells.hide();
+            $(".search_result").show();
+            $(".search-default").hide();
+            $cells.filter(function() {
+                return -1 != $(this).text().toUpperCase().indexOf(val);
+            }).show();
+            if($(".search_result").height() <= 20){
+                $(".search-default").show();
+            }
+            console.log($(".search_result").height());
+        }
+        $cells.click(function(){
+           $("#search").val($(this).text());
+        });
+    });
+
+    /* DYNAMIC PRODUCT SEARCH END */
+  
 });
 </script>
 <!-- END JAVASCRIPTS -->
