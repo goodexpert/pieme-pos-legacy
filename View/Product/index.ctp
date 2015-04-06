@@ -1,6 +1,5 @@
 <link href="/css/dataTable.css" rel="stylesheet" type="text/css">
 
-
 <div class="clearfix">
 </div>
 <!-- BEGIN CONTAINER -->
@@ -85,10 +84,10 @@
                         <dt>Show</dt> 
                         <dd>
                             <select class="status">
-                            <option value="active" class="active_product_count">active</option>
-                            <option value="inactive" class="inactive_product_count">inactive</option>
-                            <option value="all" class="product_count">all</option>
-                               </select>
+                                <option value="active" class="active_product_count">Active products</option>
+                                <option value="inactive" class="inactive_product_count">Inactive products</option>
+                                <option value="all" class="product_count">All products</option>
+                            </select>
                         </dd>
 
                         <dt>Name / SKU / Handle</dt>
@@ -179,8 +178,8 @@
                 <tbody>
                     <?php foreach($items as $item){?>
                     <tr>
-                        <td class="hidden"><?=$item['MerchantProduct']['id'];?></td>
                         <td><?=$item['MerchantProduct']['name'];?></td>
+                        <td class="hidden"><?=$item['MerchantProduct']['id'];?></td>
                         <td><?=date("d M Y",strtotime($item['MerchantProduct']['created']));?></td>
                         <td><?=$item['MerchantProduct']['handle'];?></td>
                         <td><?=$item['MerchantProductType']['name'];?></td>

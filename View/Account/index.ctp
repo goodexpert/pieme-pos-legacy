@@ -54,8 +54,8 @@
         <div class="page-content">
             <h2>Account</h2>
                 <div class="inventory-tab">
-                	<li class="active">Retail</li>
-                	<li>Franchise</li>
+                    <li class="active">Retail</li>
+                    <li>Franchise</li>
                 </div>
             <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
                 <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega line-box">

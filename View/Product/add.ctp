@@ -358,6 +358,7 @@
                   <div class="col-md-4 col-xs-4 col-sm-4">
                     <h5><strong>Product:</strong></h5>
                     <input type="search" id="composite_search" placeholder="Search Products">
+                    <input type="hidden" id="selected_composite_id">
                     <div class="search_result">
                         <span class="search-tri"></span>
                         <div class="search-default"> No Result </div>
@@ -372,7 +373,7 @@
                   <div class="col-md-2 col-xs-2 col-sm-2">
                     <h5><strong>Quantity:</strong></h5>
                     <div class="input-group">
-                        <input type="number">
+                        <input type="number" id="composite_qty">
                         <span class="input-group-btn">
                             <button type="button" id="composite_attr_add" class="btn btn-default" style="height:29px;padding-top:4px;">Add</button>
                         </span>
@@ -380,24 +381,8 @@
                   </div>
                   <div class="dashed-line-gr"></div>
                   
-                  <div class="col-md-12 col-sm-12 col-xs-12 composite-attr">
-                      <div class="col-md-4 col-sm-4 col-xs-4">
-                      hello
-                      </div>
-                      <div class="col-md-2 col-xs-2 col-sm-2 col-alpha">
-                        <input type="number" class="form-control">
-                        <button type="button" class="btn remove remove_composite_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button>
-                    </div>
-                  </div>
+                  <div id="composite_added_list" class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
                   
-                  <div class="col-md-12 col-sm-12 col-xs-12 composite-attr">
-                      <div class="col-md-4 col-sm-4 col-xs-4">
-                      hello
-                      </div>
-                      <div class="col-md-2 col-xs-2 col-sm-2 col-alpha">
-                        <input type="number" class="form-control">
-                        <button type="button" class="btn remove remove_composite_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button>
-                    </div>
                   </div>
                   
                 </div>
@@ -674,6 +659,8 @@ $(document).ready(function(){
         
         $cells.click(function(){
            $("#composite_search").val($(this).text());
+           $("#selected_composite_id").val($(this).attr('data-id'));
+           $(".search_result").hide();
         });
     });
 
@@ -751,7 +738,11 @@ $(document).ready(function(){
             }
             var track_inventory;
             if($("#track_inventory").is(':checked')){
-                track_inventory = 1;
+                if($(".composite-attr").length == 0){
+                    track_inventory = 1;
+                } else {
+                    track_inventory = 0;
+                }
             } else {
                 track_inventory = 0;
             }
@@ -766,6 +757,11 @@ $(document).ready(function(){
             var inventories = [];
             $(".stock-tracking").each(function(){
                inventories.push({outlet_id: $(this).find(".stock-outlet_id").val(), count: $(this).find(".stock_count").val(), reorder_point: $(this).find(".stock_reorder_point").val(), restock_level: $(this).find(".stock_reorder_amount").val()}) 
+            });
+            
+            var composite = [];
+            $(".composite-attr").each(function(){
+                composite.push({product_id: $(this).attr("data-id"), quantity: $(this).find(".composite_quantity").val()});
             });
             
             var tagArray = $("input:hidden.product_tag").val().split(",");
@@ -801,10 +797,11 @@ $(document).ready(function(){
                     variant_option_three_value: variant_option_three_value,
                     track_inventory: track_inventory,
                     inventories: inventories,
-                    tags: tagArray
+                    tags: tagArray,
+                    composite: composite
                 },
                 success: function(result) {
-                    console.log(result);
+                    window.location.href = "/product";
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.log(textStatus, errorThrown);
@@ -909,7 +906,14 @@ $(document).ready(function(){
     });
     
     $(".cancel").click(function(){
-	    parent.history.back();
+        parent.history.back();
+    });
+    
+    $("#composite_attr_add").click(function(){
+        $("#composite_added_list").prepend('<div class="col-md-12 col-sm-12 col-xs-12 composite-attr" data-id="'+$("#selected_composite_id").val()+'"><div class="col-md-4 col-sm-4 col-xs-4">'+$("#composite_search").val()+'</div><div class="col-md-2 col-xs-2 col-sm-2 col-alpha"><input type="number" class="form-control composite_quantity" value="'+$("#composite_qty").val()+'"><button type="button" class="btn remove remove_composite_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button></div></div>');
+        
+        $("#composite_search").val('');
+        $("#composite_qty").val('');
     });
 
 });
