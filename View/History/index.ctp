@@ -63,7 +63,7 @@
                         <dt>Date from</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="">
+                            <input type="text" id="Date_from">
                         </dd>
                         <dt>Register</dt>
                         <dd><input type="text" id=""></dd>
@@ -76,7 +76,7 @@
                         <dt>Date to</dt>
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="">
+                            <input type="text" id="Date_to">
                         </dd>
                         <dt>Receipt number</dt>
                         <dd><input type="text" id=""></dd>
@@ -423,8 +423,8 @@ $(".void-history").click(function(){
             status: 'VOIDED',
         }
     });
-    
+    $("#Date_from").datepicker();
+    $("#Date_to").datepicker();
 });
-
 </script>
 <!-- END JAVASCRIPTS -->

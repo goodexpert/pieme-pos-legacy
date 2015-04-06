@@ -822,12 +822,13 @@ $(document).ready(function(){
             $.confirm({
                 title:'Add Product Type',
                 text:'<input type="text" class="type-name" placeholder="Type Name">',
-                confirmButton: "Add",
                 cancelButton: "Cancel",
+                confirmButton: "Add",
                 cancel: function(button){
                     $("#product_type").val('');
                 },
-                confirmButtonClass: "type-add"
+                confirmButtonClass: "type-add btn btn-success pull-right",
+                cancelButtonClass: "type-add btn btn-primary margin-right-5"
             });
         }
         
@@ -840,7 +841,8 @@ $(document).ready(function(){
                 cancel: function(button){
                     $("#product_brand").val('');
                 },
-                confirmButtonClass: "brand-add"
+                confirmButtonClass: "type-add btn btn-success pull-right",
+                cancelButtonClass: "type-add btn btn-primary margin-right-5"
             });
         }
         
@@ -853,7 +855,8 @@ $(document).ready(function(){
                 cancel: function(button){
                     $("#product_supplier").val('');
                 },
-                confirmButtonClass: "supplier-add"
+                confirmButtonClass: "type-add btn btn-success pull-right",
+                cancelButtonClass: "type-add btn btn-primary margin-right-5"
             });
         }
         

@@ -105,7 +105,7 @@
   <div class="page-content-wrapper">
     <div class="page-content sell-index">
       <div class="maximum">
-          <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-top-10">
+          <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-top-30">
              <button class="btn btn-white maxi pull-right"><i class="icon-size-fullscreen"></i></button>
            <button class="btn btn-white mini pull-right" style="display:none;"><i class="icon-size-actual"></i></button>
              <a href="#current"><button class="btn btn-white pull-right btn-right margin-right-5">CURRENT SALE</button></a>
@@ -222,7 +222,7 @@
         </div>
         </div>
         <div id="block-right" class="col-md-6 col-xs-6 col-sm-6">
-          <div class="col-md-12 col-xs-12 col-sm-12">
+          <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
             <div class="col-lg-9 col-md-9 col-xs-9 col-sm-9 col-alpha col-omega">
                 <input type="search" id="product_search" class="search" placeholder="Product Search" autocomplete="off">
             </div>
@@ -576,7 +576,28 @@
       </div>
   </div>
   <!-- SELECT REGISTER POPUP BOX END -->
-  
+
+  <!-- STATUS POPUP BOX -->
+  <div class="confirmation-modal modal fade in" id="register_box" tabindex="-1" role="dialog" aria-hidden="false" >
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="confirm-close cancel" data-dismiss="modal" aria-hidden="true">
+                  <i class="glyphicon glyphicon-remove"></i>
+                  </button>
+                  <h4 class="modal-title">Status</h4>
+              </div>
+              <div class="modal-body">
+			  	<p>Please wait while your offline data is updated</p>
+              </div>
+              <div class="modal-footer col-md-12 col-sm-12 col-xs-12">
+                  <button class="btn add_customer-submit" type="button" data-dismiss="modal">Go to the Dashboard</button>
+                  <button class="cancel btn" type="button" data-dismiss="modal">Cancel</button>
+              </div>
+          </div>
+      </div>
+  </div>
+  <!-- STATUS POPUP BOX END -->
   
   <!-- END CONTENT --> 
   <!-- BEGIN QUICK SIDEBAR --> 
