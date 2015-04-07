@@ -61,7 +61,7 @@
             
             <div class="portlet-body form">
                 <!-- BEGIN FORM-->
-                <div class="form-horizontal col-md-12 col-xs-12 col-sm-12">
+                <div class="form-horizontal col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                     <div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">Details</div>
                     <input type="hidden" id="sale_id" value="<?=$_GET['r'];?>">
                     <!-- START col-md-12-->
@@ -71,11 +71,11 @@
                             <dl>
                                 <dt>Sale date</dt>
                                 <dd>
-                                    <input type="text" class="form-control" value="<?=$sales[0]['RegisterSale']['sale_date'];?>">
+                                    <input type="text" value="<?=$sales[0]['RegisterSale']['sale_date'];?>">
                                 </dd>
                                 <dt>Register</dt>
                                 <dd>
-                                    <select class="form-control" id="sale_register">
+                                    <select id="sale_register">
                                         <?php foreach($registers as $register){ ?>
                                             <option value="<?=$register['MerchantRegister']['id'];?>" <?php if($register['MerchantRegister']['id'] == $sales[0]['RegisterSale']['register_id']){echo "selected";}?>><?=$register['MerchantRegister']['name'];?></option>
                                         <?php } ?>
@@ -83,13 +83,13 @@
                                 </dd>
                                 <dt>Status</dt>
                                 <dd>
-                                    <select class="form-control" id="sale_status">
+                                    <select id="sale_status">
                                         <option value="<?=$sales[0]['RegisterSale']['status'];?>"><?=$sales[0]['RegisterSale']['status'];?></option>
                                     </select>
                                 </dd>
                                 <dt>Note</dt>
                                 <dd>
-                                    <textarea id="sale_note" class="form-control"><?=$sales[0]['RegisterSale']['note'];?></textarea>
+                                    <textarea id="sale_note"><?=$sales[0]['RegisterSale']['note'];?></textarea>
                                 </dd>
                             </dl>
                         </div>
@@ -98,7 +98,7 @@
                             <dl>
                                 <dt>Customer name</dt>
                                 <dd>
-                                    <input type="search" id="customer_search" class="form-control">
+                                    <input type="search" id="customer_search">
                                     <div class="search_result" class="display:none;">
                                         <span class="search-tri"></span>
                                         <div class="search-default"> No Result </div>

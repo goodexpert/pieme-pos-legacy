@@ -38,7 +38,7 @@
     
     <div class="page-content-wrapper">
         <div class="page-content">
-            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-bottom-20">
                 <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">Customer</h2>
                 <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
                     <button id="import" class="btn btn-white pull-right btn-right" style="color:black">

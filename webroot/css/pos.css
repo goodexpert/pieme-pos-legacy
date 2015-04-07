@@ -1043,7 +1043,26 @@ text-align:right;
 	float: left;
 }
 
+/** Close **/
 
+
+#close-register-wrapper {
+    float: left;
+    width: 700px;
+    border-radius: 8px;
+    margin-left: 21%;
+    margin-right: 21%;
+}
+#close-register-details, #close-register-sales, #close-register-payments {
+    margin: 10px 0;
+}
+#close-register-details span {
+    font-weight: bold;
+}
+.sales-table th, .sales-table td {
+    border-bottom: 1px dashed black;
+    padding: 5px;
+}
 
 /** Users **/
 
@@ -1626,6 +1645,18 @@ table.dataTable-sm td {
   box-sizing: content-box;
 }
 
+
+/** Setup **/
+
+.notify-content {
+  padding: 8px;
+  text-align: center;
+  background: #EAF5E1;
+  border: 1px solid #C9E0BA;
+  border-radius: 5px;
+  box-shadow: 0 2px 3px rgba(0,0,0,0.1);	
+}
+.notify-content p { margin:0}
 
 /** footer **/
 

@@ -1,27 +1,3 @@
-<style>
-#close-register-wrapper {
-    float: left;
-    width: 700px;
-    border: 1px solid black;
-    border-radius: 8px;
-    margin-left: 21%;
-    margin-right: 21%;
-}
-#close-register-details, #close-register-sales, #close-register-payments {
-    margin: 10px 0;
-}
-#close-register-details span {
-    font-weight: bold;
-}
-.sales-table th, .sales-table td {
-    border-bottom: 1px dashed black;
-    padding: 5px;
-}
-h4 {
-    font-weight: 500;
-}
-</style>
-
 <div class="clearfix">
 </div>
 <!-- BEGIN CONTAINER -->
@@ -77,7 +53,7 @@ h4 {
     <div class="page-content-wrapper">
         <div class="page-content">
             
-            <div id="close-register-wrapper">
+            <div id="close-register-wrapper" class="line-box">
                 <div id="close-register-header" class="col-md-12 col-sm-12 col-xs-12">
                 
                     <h3><strong>Closing totals to verify</strong></h3>

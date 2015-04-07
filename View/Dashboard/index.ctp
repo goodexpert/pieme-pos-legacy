@@ -57,7 +57,7 @@
       <!-- /.modal --> 
       <!-- END SAMPLE PORTLET CONFIGURATION MODAL FORM--> 
       <!-- BEGIN PAGE HEADER-->
-      <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+      <div class="col-md-12 col-xs-12 col-sm-12">
         <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega"> Dashboard </h2>
         <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
           <a href="/product/add">

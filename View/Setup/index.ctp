@@ -1,8 +1,7 @@
 <div class="clearfix"> </div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
-  <div id="notify"></div>
-  <!-- BEGIN SIDEBAR -->
+   <!-- BEGIN SIDEBAR -->
   <div class="page-sidebar-wrapper"> 
     <!-- BEGIN HORIZONTAL RESPONSIVE MENU --> 
     <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing --> 
@@ -36,7 +35,10 @@
   <!-- BEGIN CONTENT -->
   <div class="page-content-wrapper">
     <div class="page-content">
-      <h3>General Setup</h3>
+    	<div id="notify" class="col-lg-12 col-md-12 col-sm-12">
+        	<div class="notify-content"><p>Changed information well!!!!!!</p></div>
+        </div>
+      <div class="col-md-12 col-xs-12 col-sm-12"><h3>General Setup</h3></div>
       <div class="portlet-body form"> 
         <!-- BEGIN FORM-->
         <div class="form-horizontal col-md-12 col-xs-12 col-sm-12">
