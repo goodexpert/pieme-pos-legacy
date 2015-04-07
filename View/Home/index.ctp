@@ -103,13 +103,13 @@
   <!-- END SIDEBAR --> 
   <!-- BEGIN CONTENT -->
   <div class="page-content-wrapper">
-    <div class="page-content sell-index">
+    <div class="page-content" id="sell-index">
       <div class="maximum">
           <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-top-10">
              <button class="btn btn-white maxi pull-right"><i class="icon-size-fullscreen"></i></button>
            <button class="btn btn-white mini pull-right" style="display:none;"><i class="icon-size-actual"></i></button>
-             <a href="#current"><button class="btn btn-white pull-right btn-right margin-right-5">CURRENT SALE</button></a>
-             <a href="#retrieve"><button class="btn btn-white pull-right btn-left">RETRIEVE SALE</button></a>
+             <button class="btn btn-white pull-right btn-right margin-right-5 current_open">CURRENT SALE</button>
+             <button class="btn btn-white pull-right btn-left retrieve_open">RETRIEVE SALE</button>
         </div>
         <div id="block-left" class="col-md-6 col-xs-6">
           <div id="table-wrapper" class="col-md-12 col-sm-12 col-alpha col-omega">
@@ -294,13 +294,13 @@
       </div>
     </div>
     
-    <div class="page-content retrieve-sale hidden">
+    <div id="retrieve-sale" class="page-content hidden">
         
         <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
             <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">Select a Sale to Open</h2>
             <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
-                <a href="#current"><button class="btn btn-white pull-right btn-right margin-right-5">CURRENT SALE</button></a>
-                <a href="#retrieve"><button class="btn btn-white pull-right btn-left">RETRIEVE SALE</button></a>
+                <button class="btn btn-white pull-right btn-right margin-right-5 current_open">CURRENT SALE</button>
+                <button class="btn btn-white pull-right btn-left retrieve_open">RETRIEVE SALE</button>
             </div>
         </div>
         <table id="retrieveTable" class="table-bordered">
@@ -772,20 +772,21 @@ jQuery(document).ready(function() {
     });
     $("#retrieveTable_length").hide();
     
-    $(document).on("click","a[href=#current]",function(){
-        $(".retrieve-sale").addClass("hidden");
-        $(".sell-index").removeClass("hidden");
+    $(document).on("click",".current_open",function(){
+        $("#retrieve-sale").addClass("hidden");
+        $("#sell-index").removeClass("hidden");
     });
-    $(document).on("click","a[href=#retrieve]",function(){
-        $(".retrieve-sale").removeClass("hidden");
-        $(".sell-index").addClass("hidden");
+    $(document).on("click",".retrieve_open",function(){
+    	//$("#retrieve-sale").load(location.pathname +'#retrieve-sale');
+        $("#retrieve-sale").removeClass("hidden");
+        $("#sell-index").addClass("hidden");
     });
     $(document).on('click',".retrieve_sale",function(){
     	var customer_name = $(this).attr("data-customer-name");
     	var customer_id = $(this).attr("data-customer-id");
     	var customer_balance = parseFloat($(this).attr("data-customer-balance")).toFixed(2);
-        $(".retrieve-sale").addClass("hidden");
-        $(".sell-index").removeClass("hidden");
+        $("#retrieve-sale").addClass("hidden");
+        $("#sell-index").removeClass("hidden");
         if($(".order-product").length !== 0){
             $(".retrieve-popup").show();
             $(".modal-backdrop").show();
@@ -1050,7 +1051,7 @@ jQuery(document).ready(function() {
         $(".order-product").remove();
         //$(".retrieve-sale").load(location.href +'.retrieve-sale');
     });
-    
+
     // Layby
     $(document).on("click",".layby-sale",function(){
         
@@ -1064,7 +1065,7 @@ jQuery(document).ready(function() {
         
         $(".fade").hide();
     });
-    
+
     // Onaccount
     $(document).on("click",".onaccount-sale",function(){
         
