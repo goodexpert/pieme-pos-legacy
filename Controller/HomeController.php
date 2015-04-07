@@ -46,10 +46,7 @@ class HomeController extends AppController {
                 'hasMany' => array(
                     'MerchantProductInventory' => array(
                         'className' => 'MerchantProductInventory',
-                        'foreignKey' => 'product_id',
-                        'conditions' => array(
-                            'MerchantProductInventory.outlet_id' => $user['outlet_id']
-                        )
+                        'foreignKey' => 'product_id'
                     )
                 )
             ));
