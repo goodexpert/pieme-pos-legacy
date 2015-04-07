@@ -29,6 +29,7 @@ class HomeController extends AppController {
         $this->loadModel('MerchantQuickKey');
         $this->loadModel('MerchantOutlet');
         $this->loadModel('MerchantRegister');
+        $this->loadModel('MerchantProductInventory');
         
         if(!empty($this->Auth->user()['outlet_id'])) {
             $key_id = $this->MerchantRegister->findById($this->Auth->user()['MerchantRegister']['id'])['MerchantRegister']['quick_key_id'];
@@ -40,6 +41,18 @@ class HomeController extends AppController {
                     array_push($products_ids, $product['product_id']);
                 }
             }
+            
+            $this->MerchantProduct->bindModel(array(
+            	'hasMany' => array(
+	                'MerchantProductInventory' => array(
+	                    'className' => 'MerchantProductInventory',
+	                    'foreignKey' => 'product_id',
+	                    'conditions' => array(
+	                    	'MerchantProductInventory.outlet_id' => $user['outlet_id']
+	                    )
+	                )
+	            )
+            ));
     
             $items = $this->MerchantProduct->find('all', array(
                 'fields' => array(
@@ -125,6 +138,8 @@ class HomeController extends AppController {
             $countries = $this->Country->find('all');
             $this->set('countries',$countries);
             
+            $this->loadModel('MerchantCustomer');
+            
             $this->RegisterSaleItem->bindModel(array(
                 'belongsTo' => array(
                     'MerchantProduct' => array(
@@ -148,7 +163,8 @@ class HomeController extends AppController {
             $retrieves = $this->RegisterSale->find('all', array(
                 'fields' => array(
                     'MerchantUser.*',
-                    'RegisterSale.*'
+                    'RegisterSale.*',
+                    'MerchantCustomer.*'
                 ),
                 'conditions' => array(
                     'RegisterSale.register_id' => $this->Auth->user()['MerchantRegister']['id'],
@@ -161,6 +177,14 @@ class HomeController extends AppController {
                         'type' => 'INNER',
                         'conditions' => array(
                             'RegisterSale.user_id = MerchantUser.id'
+                        )
+                    ),
+                    array(
+                        'table' => 'merchant_customers',
+                        'alias' => 'MerchantCustomer',
+                        'type' => 'INNER',
+                        'conditions' => array(
+                            'RegisterSale.customer_id = MerchantCustomer.id'
                         )
                     )
                 )
@@ -257,7 +281,7 @@ class HomeController extends AppController {
                 $this->RegisterSalePayment->create();
                 $payment['sale_id'] = $this->RegisterSale->id;
                 $payment['merchant_payment_type_id'] = $this->request->data['merchant_payment_type_id'];
-                $payment['amount'] = $this->RegisterSale->total_price;
+                $payment['amount'] = $data['amount'];
                 $this->RegisterSalePayment->save($payment);
 
                 $array = json_decode($_POST['items']);
@@ -324,6 +348,10 @@ class HomeController extends AppController {
                             'MerchantCustomer.merchant_id' => $this->Auth->user()['merchant_id']
                         )
                     ));
+                    
+                    $this->MerchantCustomer->id = $data['customer_id'];
+                    $balance->MerchantCustomer['balance'] = $this->MerchantCustomer->findById($data['customer_id'])['MerchantCustomer']['balance'] - $data['actual_amount'];
+                    $this->MerchantCustomer->save($balance);
                     
                     if(count($registerOpen) == 0){
                         $this->MerchantRegisterOpen->create();

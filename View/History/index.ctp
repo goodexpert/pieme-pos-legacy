@@ -63,7 +63,7 @@
                         <dt>Date from</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="">
+                            <input type="text" id="date_from">
                         </dd>
                         <dt>Register</dt>
                         <dd><input type="text" id=""></dd>
@@ -76,7 +76,7 @@
                         <dt>Date to</dt>
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="">
+                            <input type="text" id="date_to">
                         </dd>
                         <dt>Receipt number</dt>
                         <dd><input type="text" id=""></dd>
@@ -121,7 +121,7 @@
                     <tr class="expandable" data-id="<?=$sale['RegisterSale']['id'];?>">
                         <td>ID</td>
                         <td>PERSON</td>
-                        <td>CUSTOMER</td>
+                        <td><?php echo $sale['MerchantCustomer']['name'];?></td>
                         <td><?=$sale['RegisterSale']['note'];?></td>
                         <td class="history_status"><?=$sale['RegisterSale']['status'];?></td>
                         <td class="tdTotal">$<?=number_format($sale['RegisterSale']['total_price'],2,'.','');?></td>
@@ -317,6 +317,10 @@ jQuery(document).ready(function() {
     Layout.init(); // init layout
     QuickSidebar.init() // init quick sidebar
     Index.init();
+    
+    $("#date_from").datepicker();
+    $("#date_to").datepicker();
+    
     var count = 0;
     var page = 1;
     var currentPage = 1;

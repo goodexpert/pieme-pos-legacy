@@ -123,7 +123,7 @@
                   </dd>
                   <dt>Cashier discounts and returns</dt>
                   <dd class="form-group">
-                    <input type="checkbox" name="merchant[allow_cashier_discount]" <?php echo $merchant['Merchant']['allow_cashier_discount'] ? 'checked' : ''; ?> id="merchant_allow_cashier_discount">
+                    <input type="checkbox" name="merchant[allow_cashier_discount]" id="merchant_allow_cashier_discount" <?php if($merchant['Merchant']['allow_cashier_discount'] == 1){echo "checked";}?>>
                     Allow Cashires to apply discounts and perform returns on sales</dd>
                 </dl>
               </div>
@@ -160,10 +160,6 @@
                   <dt>Website</dt>
                   <dd>
                     <input type="text" name="merchant[contact][website]" value="<?php echo $merchant['Contact']['website']; ?>" id="merchant_contact_website">
-                  </dd>
-                  <dt>Twitter</dt>
-                  <dd>
-                    <input type="text">
                   </dd>
                 </dl>
               </div>
@@ -204,8 +200,10 @@
                   <dt>Country</dt>
                   <dd>
                     <select name="merchant[contact][physical_country_id]" id="merchant_contact_physical_country_id">
-                      <option value="">Select a country</option>
-                      <option value="NZ">New Zealand</option>
+                      <option disabled>Select a country</option>
+                      <?php foreach($countries as $country) {?>
+                      <option value="<?php echo $country['Country']['country_code'];?>" <?php if($merchant['Contact']['physical_country_id'] == $country['Country']['country_code']){echo "selected";}?>><?php echo $country['Country']['country_name'];?></option>
+                      <?php } ?>
                     </select>
                   </dd>
                 </dl>
@@ -240,8 +238,10 @@
                   <dt>Country</dt>
                   <dd>
                     <select name="merchant[contact][postal_country_id]" id="merchant_contact_postal_country_id">
-                      <option value="">Select a country</option>
-                      <option value="NZ">New Zealand</option>
+                      <option disabled>Select a country</option>
+                      <?php foreach($countries as $country) {?>
+                      <option value="<?php echo $country['Country']['country_code'];?>" <?php if($merchant['Contact']['postal_country_id'] == $country['Country']['country_code']){echo "selected";}?>><?php echo $country['Country']['country_name'];?></option>
+                      <?php } ?>
                     </select>
                   </dd>
                 </dl>
@@ -396,9 +396,16 @@ jQuery(document).ready(function() {
    });
    
    $(".save").click(function(){
+       var allow_cashier_discount;
+       if($("#merchant_allow_cashier_discount").is(':checked')) {
+	       allow_cashier_discount = 1;
+       } else {
+	       allow_cashier_discount = 0;
+       }
+   
        $.ajax({
-          url: '/setup/edit.json',
-          type: 'PUT',
+          url: '/setup.json',
+          type: 'POST',
           data: {
               name: $("#merchant_name").val(),
               domain_prefix: $("#merchant_domain_prefix").val(),
@@ -410,7 +417,7 @@ jQuery(document).ready(function() {
               use_sku_sequence: $("#merchant_use_sku_sequence").val(),
               sku_sequence: $("#merchant_sku_sequence").val(),
               switching_security: $("#merchant_switching_security").val(),
-              allow_cashier_discount: $("#merchant_allow_cashier_discount").val(),
+              allow_cashier_discount: allow_cashier_discount,
               first_name: $("#merchant_contact_first_name").val(),
               last_name: $("#merchant_contact_last_name").val(),
               email: $("#merchant_contact_email").val(),
@@ -430,11 +437,11 @@ jQuery(document).ready(function() {
               postal_postcode: $("#merchant_contact_postal_postcode").val(),
               postal_state: $("#merchant_contact_postal_state").val(),
               postal_country_id: $("#merchant_contact_postal_country_id").val(),
-          } 
-       }).done(function(msg){
-           console.log(msg);
+          },
+          success: function(){
+	          location.reload();
+          }
        });
-       console.log("clicked");
    });
 });
 

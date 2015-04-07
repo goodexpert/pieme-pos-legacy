@@ -74,7 +74,7 @@
                             <dd>
                                 <select class="register_quick_key">
                                 <?php foreach($quick_keys as $qkey) : ?>
-                                    <option value="<?php echo $qkey['id'];?>"><?php echo $qkey['name'];?></option>
+                                    <option value="<?php echo $qkey['id'];?>" <?php if($register['quick_key_id'] == $qkey['id']){echo "selected";}?>><?php echo $qkey['name'];?></option>
                                 <?php endforeach; ?>
                                 </select>
                             </dd>

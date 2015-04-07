@@ -23,7 +23,7 @@ class HistoryController extends AppController {
  *
  * @var array
  */
-    public $uses = array('MerchantProduct', 'RegisterSale', 'RegisterSaleItem');
+    public $uses = array('MerchantProduct', 'RegisterSale', 'RegisterSaleItem', 'MerchantCustomer');
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -56,8 +56,22 @@ class HistoryController extends AppController {
 
         $this->RegisterSale->recursive = 2;
         $sales = $this->RegisterSale->find('all', array(
+        	'fields' => array(
+        		'RegisterSale.*',
+        		'MerchantCustomer.*'
+        	),
             'conditions' => array(
-            'RegisterSale.register_id' => $this->Auth->user()['MerchantRegister']['id']
+            	'RegisterSale.register_id' => $this->Auth->user()['MerchantRegister']['id']
+            ),
+            'joins' => array(
+            	array(
+                    'table' => 'merchant_customers',
+                    'alias' => 'MerchantCustomer',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'MerchantCustomer.id = RegisterSale.customer_id'
+                    )
+                )
             )
         ));
         $this->set('sales', $sales);

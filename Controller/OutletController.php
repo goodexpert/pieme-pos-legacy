@@ -23,7 +23,7 @@ class OutletController extends AppController {
  *
  * @var array
  */
-    public $uses = array('MerchantRegister', 'MerchantOutlet');
+    public $uses = array('MerchantRegister', 'MerchantOutlet', 'MerchantQuickKey');
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -36,6 +36,24 @@ class OutletController extends AppController {
 
     public function index() {
         $user = $this->Auth->user();
+        
+        $this->MerchantRegister->bindModel(array(
+        	'belongsTo' => array(
+                'MerchantQuickKey' => array(
+                    'className' => 'MerchantQuickKey',
+                    'foreignKey' => 'quick_key_id'
+                )
+            )
+        ));
+        
+        $this->MerchantRegister->bindModel(array(
+        	'belongsTo' => array(
+        		'MerchantReceiptTemplate' => array(
+                    'className' => 'MerchantReceiptTemplate',
+                    'foreignKey' => 'receipt_template_id'
+                )
+        	)
+        ));
 
         $this->MerchantOutlet->bindModel(array(
             'hasMany' => array(
@@ -45,6 +63,8 @@ class OutletController extends AppController {
                 )
             ),
         ));
+        
+        $this->MerchantOutlet->recursive = 2;
 
         $outlets = $this->MerchantOutlet->find('all', array(
             'conditions' => array(
@@ -113,6 +133,12 @@ class OutletController extends AppController {
             }
 
             $this->set("outlet", $outlet['MerchantOutlet']);
+            
+            $this->loadModel('Country');
+            $countries = $this->Country->find('all');
+            $this->set('countries',$countries);
+            
+            
         }
     }
 

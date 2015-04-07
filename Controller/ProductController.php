@@ -122,7 +122,6 @@ class ProductController extends AppController {
                 // Step 1: add a new product.
                 $data = $this->request->data;
                 $data['merchant_id'] = $user['merchant_id'];
-                if($data[''])
 
                 $this->MerchantProduct->create();
                 $this->MerchantProduct->save(array('MerchantProduct' => $data));

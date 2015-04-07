@@ -1,6 +1,5 @@
 <link href="/css/dataTable.css" rel="stylesheet" type="text/css">
 
-
 <div class="clearfix">
 </div>
 <!-- BEGIN CONTAINER -->
@@ -179,8 +178,8 @@
                 <tbody>
                     <?php foreach($items as $item){?>
                     <tr>
-                        <td class="hidden"><?=$item['MerchantProduct']['id'];?></td>
                         <td><?=$item['MerchantProduct']['name'];?></td>
+                        <td class="hidden"><?=$item['MerchantProduct']['id'];?></td>
                         <td><?=date("d M Y",strtotime($item['MerchantProduct']['created']));?></td>
                         <td><?=$item['MerchantProduct']['handle'];?></td>
                         <td><?=$item['MerchantProductType']['name'];?></td>

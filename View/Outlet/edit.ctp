@@ -102,8 +102,10 @@
                             <dt>Country</dt>
                             <dd>
                                 <select class="outlet_country" name="outlet[physical_country_id]" id="outlet_physical_country_id">
-                                    <option disabled selected>Select a country</option>
-                                    <option value="NZ" <?php if($outlet['physical_country_id'] == "NZ"){echo "selected";}?>>New Zealand</option>
+                                    <option selected disabled>Select a country</option>
+                                    <?php foreach($countries as $country) { ?>
+                                    <option value="<?php echo $country['Country']['country_code'];?>" <?php if($outlet['physical_country_id'] == $country['Country']['country_code']){echo "selected";}?>><?php echo $country['Country']['country_name'];?></option>
+                                    <?php } ?>
                                 </select>
                             </dd>
                         </dl>

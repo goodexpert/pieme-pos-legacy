@@ -85,8 +85,8 @@
                         <dt>Start Date</dt>
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <!--<input type="text" class="hasDatepicker">-->
-                            <?php
+                            <input name="data[MerchantStockOrder][start_date]" type="text" id="MerchantStockOrderStartDate">
+                            <?/*php
                                 $startDate = $this->Form->input('MerchantStockOrder.start_date', array(
                                     'type' => 'text',
                                     'div' => false,
@@ -94,7 +94,7 @@
                                     'class' => 'hasDatepicker',
                                 ));
                                 echo $startDate;
-                            ?>
+                            */?>
                         </dd>
                     </dl> 
                 </div>
@@ -107,7 +107,8 @@
                                 $startTime = $this->Form->input('MerchantStockOrder.start_time', array(
                                     'type' => 'text',
                                     'div' => false,
-                                    'label' => false
+                                    'label' => false,
+                                    'value' => date('h:i A')
                                 ));
                                 echo $startTime;
                             ?>
@@ -282,7 +283,14 @@ jQuery(document).ready(function() {
     Layout.init(); // init layout
     QuickSidebar.init() // init quick sidebar
     Index.init();
-
+    
+    $("#MerchantStockOrderStartDate").datepicker({dateFormat: 'dd-mm-yy'});
+    
+    $(document).on('change',function() {
+	    if($("#MerchantStockOrderOutletId").val() !== "" && $("#MerchantStockOrderStartDate").val() !== "" && $("#MerchantStockOrderStartTime").val() !== ""){
+		    $("#MerchantStockOrderName").val($("#MerchantStockOrderOutletId").val()+' '+$("#MerchantStockOrderStartDate").val()+' '+$("#MerchantStockOrderStartTime").val());
+	   }
+    });
 
 });
 </script>

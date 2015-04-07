@@ -38,35 +38,11 @@ class SetupController extends AppController {
         $user = $this->Auth->user();
 
         $this->loadModel('Contact');
+        $this->loadModel('Country');
         $this->loadModel('Merchant');
         $this->loadModel('MerchantTaxRate');
 
         if ($this->request->is('ajax') || $this->request->is('post')) {
-            //General save here
-        } else if ($this->request->is('get')){
-            $merchant = $this->Merchant->find('first', array(
-                'conditions' => array(
-                    'Merchant.id' => $user['merchant_id']
-                )
-            ));
-            $this->set('merchant', $merchant);
-
-            $taxes = $this->MerchantTaxRate->find('all', array(
-                'conditions' => array(
-                    'MerchantTaxRate.merchant_id' => $user['merchant_id']
-                )
-            ));
-            $this->set('taxes', $taxes);
-        }
-    }
-    
-    public function edit() {
-        $user = $this->Auth->user();
-        
-        $this->loadModel("Merchant");
-        $this->loadModel("Contact");
-        
-        if($this->request->is('put')) {
             $data = $this->request->data;
             
             $result = array();
@@ -77,12 +53,26 @@ class SetupController extends AppController {
                 $this->Contact->id = $user['Merchant']['contact_id'];
                 $this->Contact->save($data);
             } catch (Exception $e) {
-                $dataSource->rollback();
                 $result['message'] = $e->getMessage();
             }
             $this->serialize($result);
-            var_dump($result);
-            exit();
+        } else if ($this->request->is('get')){
+            $merchant = $this->Merchant->find('first', array(
+                'conditions' => array(
+                    'Merchant.id' => $user['merchant_id']
+                )
+            ));
+            $this->set('merchant', $merchant);
+
+            $countries = $this->Country->find('all');
+            $this->set('countries',$countries);
+
+            $taxes = $this->MerchantTaxRate->find('all', array(
+                'conditions' => array(
+                    'MerchantTaxRate.merchant_id' => $user['merchant_id']
+                )
+            ));
+            $this->set('taxes', $taxes);
         }
     }
 
@@ -103,9 +93,31 @@ class SetupController extends AppController {
     }
 
     public function outlets_and_registers() {
+    	$this->loadModel('MerchantRegister');
+    	$this->loadModel('MerchantQuickKey');
+    	$this->loadModel('MerchantReceiptTemplate');
+    	$this->loadModel('MerchantOutlet');
+    
         $user = $this->Auth->user();
+        
+        $this->MerchantRegister->bindModel(array(
+        	'belongsTo' => array(
+                'MerchantQuickKey' => array(
+                    'className' => 'MerchantQuickKey',
+                    'foreignKey' => 'quick_key_id'
+                )
+            )
+        ));
+        
+        $this->MerchantRegister->bindModel(array(
+        	'belongsTo' => array(
+        		'MerchantReceiptTemplate' => array(
+                    'className' => 'MerchantReceiptTemplate',
+                    'foreignKey' => 'receipt_template_id'
+                )
+        	)
+        ));
 
-        $this->loadModel('MerchantOutlet');
         $this->MerchantOutlet->bindModel(array(
             'hasMany' => array(
                 'MerchantRegister' => array(
@@ -114,12 +126,15 @@ class SetupController extends AppController {
                 )
             ),
         ));
+        
+        $this->MerchantOutlet->recursive = 2;
 
         $outlets = $this->MerchantOutlet->find('all', array(
             'conditions' => array(
                 'MerchantOutlet.merchant_id' => $user['merchant_id']
             )
         ));
+
         $this->set("outlets", $outlets);
     }
 

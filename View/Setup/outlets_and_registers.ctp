@@ -3,6 +3,8 @@
     list-style: square;
     margin-left: 1em;
 }
+
+
 </style>
 
 <div class="clearfix">
@@ -88,7 +90,10 @@
                     <tr>
                         <td><?=$outlet['MerchantOutlet']['name'];?></td>
                         <td colspan="3"></td>
-                        <td><a href="/outlet/<?=$outlet['MerchantOutlet']['id'];?>/edit">Edit Outlet</a> | <a href="/register/add?outlet=<?=$outlet['MerchantOutlet']['id'];?>">Add a Register</a></td>
+                        <td>
+                        <a href="/outlet/<?=$outlet['MerchantOutlet']['id'];?>/edit">Edit Outlet</a> | 
+                        <a href="/register/add?outlet=<?=$outlet['MerchantOutlet']['id'];?>">Add a Register</a>
+                        </td>
                     </tr>
                     <?php foreach($outlet['MerchantRegister'] as $register){ ?>
                         <tr>
@@ -97,10 +102,20 @@
                             <td>Open</td>
                             <td>
                                 <ul>
-                                    <li>Default Quick Keys</li>
-                                    <li>Standard Receipt</li>
-                                    <li>Invoice 44</li>
-                                    <a><li style="list-style: none">More Details</li></a>
+                                    <li><?php echo $register['MerchantQuickKey']['name'];?></li>
+                                    <li><?php echo $register['MerchantReceiptTemplate']['name'];?></li>
+                                    <li>Invoice <?php echo $register['invoice_sequence']+1;?></li>
+                                    <a class="clickable more_details"><li style="list-style: none">More Details</li></a>
+                                    <?php if($register['email_receipt'] == 1){ ?>
+                                    <li class="hidden_li" style="display:none;">Email receipt</li>
+                                    <?php }
+                                    if($register['print_receipt'] == 1){ ?>
+                                    <li class="hidden_li" style="display:none;">Print receipt</li>
+                                    <?php }
+                                    if($register['ask_for_note_on_save'] !== 0) { ?>
+                                    <li class="hidden_li" style="display:none;">Ask for note on <?php if($register['ask_for_note_on_save'] == 1){echo 'Save/Layby/Account/Return';}else{echo "all sales";}?></li>
+                                    <?php } ?>
+                                    <a class="clickable fewer_details" style="display:none;"><li style="list-style: none">Fewer Details</li></a>
                                 </ul>
                             </td>
                             <td><a href="/register/<?=$register['id'];?>/edit">Edit register</a></td>
@@ -113,52 +128,6 @@
         </div>
     </div>
     <!-- END CONTENT -->
-    <!-- BEGIN QUICK SIDEBAR -->
-    <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
-    <div class="page-quick-sidebar-wrapper">
-        <div class="page-quick-sidebar">            
-            <div class="nav-justified">
-                <ul class="nav nav-tabs nav-justified">
-                    <li class="active">
-                        <a href="#quick_sidebar_tab_1" data-toggle="tab">
-                        Users <span class="badge badge-danger">2</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#quick_sidebar_tab_2" data-toggle="tab">
-                        Alerts <span class="badge badge-success">7</span>
-                        </a>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        More<i class="fa fa-angle-down"></i>
-                        </a>
-                        <ul class="dropdown-menu pull-right" role="menu">
-                            <li>
-                                <a href="#quick_sidebar_tab_3" data-toggle="tab">
-                                <i class="icon-bell"></i> Alerts </a>
-                            </li>
-                            <li>
-                                <a href="#quick_sidebar_tab_3" data-toggle="tab">
-                                <i class="icon-info"></i> Notifications </a>
-                            </li>
-                            <li>
-                                <a href="#quick_sidebar_tab_3" data-toggle="tab">
-                                <i class="icon-speech"></i> Activities </a>
-                            </li>
-                            <li class="divider">
-                            </li>
-                            <li>
-                                <a href="#quick_sidebar_tab_3" data-toggle="tab">
-                                <i class="icon-settings"></i> Settings </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-<!-- END QUICK SIDEBAR -->
 </div>
 <!-- END CONTAINER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
@@ -210,10 +179,20 @@
 <script src="/js/notify.js" type="text/javascript"></script>
 <script>
 jQuery(document).ready(function() {    
-   Metronic.init(); // init metronic core componets
-   Layout.init(); // init layout
-   QuickSidebar.init() // init quick sidebar
-   Index.init();
+	Metronic.init(); // init metronic core componets
+	Layout.init(); // init layout
+	Index.init();
+	
+	$(".more_details").click(function(){
+		$(this).hide();
+		$(this).parent('ul').find(".hidden_li").show();
+		$(this).parent().children(".fewer_details").show();
+	});
+	$(".fewer_details").click(function(){
+		$(this).hide();
+		$(this).parent('ul').find(".hidden_li").hide();
+		$(this).parent().children(".more_details").show();
+	});
 });
 </script>
 <!-- END JAVASCRIPTS -->

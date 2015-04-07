@@ -405,8 +405,11 @@ margin: 0 auto;
 .selected {
 	color: red;
 }
-.added-qty {
+.added-qty-head {
 	text-align: center;
+}
+.added-qty {
+	text-align: right;
 }
 .qty-control, .price-control {
 	text-align: center;

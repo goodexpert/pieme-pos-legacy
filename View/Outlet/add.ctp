@@ -102,7 +102,7 @@
                             <dt>Country</dt>
                             <dd>
                                 <select class="outlet_country" name="outlet[physical_country_id]" id="outlet_physical_country_id">
-                                    <option value="">Select a country</option>
+                                    <option selected disabled>Select a country</option>
                                     <option value="NZ">New Zealand</option>
                                 </select>
                             </dd>
@@ -251,7 +251,10 @@ function saveData() {
     var physical_city = $(".outlet_city").val();
     var physical_state = $(".outlet_state").val();
     var physical_postcode = $(".outlet_postcode").val();
-    var physical_country_id = $(".outlet_country").val();
+    var physical_country_id;
+    if(!$(".outlet_country").val() == ''){
+    	physical_country_id = $(".outlet_country").val();
+    }
 
     $.ajax({
         url: "/outlet/add.json",
