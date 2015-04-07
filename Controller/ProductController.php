@@ -138,8 +138,8 @@ class ProductController extends AppController {
 
                 // Step 3: If track_inventory is active, add the stock of product to the inventory of each outlet.
                 if ($data['track_inventory'] == 1) {
-                     $inventories = $data['inventories'];
-                     foreach ($inventories as $inventory) {
+                     //$inventories = $data['inventories'];
+                     foreach ($data['inventories'] as $inventory) {
                          if($inventory['count'] == null) {
                              $inventory['count'] = 0;
                          }
@@ -149,12 +149,18 @@ class ProductController extends AppController {
                          if($inventory['restock_level'] == null) {
                              $inventory['restock_level'] = 0;
                          }
+
+                         /*
                          $inventory['MerchantProductInventory']['outlet_id'] = $inventory['outlet_id'];
                          $inventory['MerchantProductInventory']['product_id'] = $this->MerchantProduct->id;
                          $inventory['MerchantProductInventory']['count'] = $inventory['count'];
                          $inventory['MerchantProductInventory']['reorder_point'] = $inventory['reorder_point'];
                          $inventory['MerchantProductInventory']['restock_level'] = $inventory['restock_level'];
-                         $this->MerchantProductInventory->save($inventory);
+                          */
+                         $inventory['product_id'] = $this->MerchantProduct->id;
+
+                         $this->MerchantProductInventory->create();
+                         $this->MerchantProductInventory->save(array('MerchantProductInventory' => $inventory));
                      }
                 }
                 
@@ -184,8 +190,9 @@ class ProductController extends AppController {
                         $this->MerchantProductCategory->save($saveCategory);
                     }
                 }
+
                 //Step 6: Save Composite Attributes
-                if($data['stock_type'] == 'composite') {
+                if ($data['stock_type'] == 'composite') {
                     foreach($data['composite'] as $composite) {
                         $this->MerchantProductComposite->create();
                         $saveComposite['MerchantProductComposite']['parent_id'] = $this->MerchantProduct->id;
@@ -194,10 +201,11 @@ class ProductController extends AppController {
                         $this->MerchantProductComposite->save($saveComposite);
                     }
                 }
+
+                $dataSource->commit();
                 
                 $result['success'] = true;
                 $result['product_id'] = $this->MerchantProduct->id;
-                $dataSource->commit();
             } catch (Exception $e) {
                 $dataSource->rollback();
                 $result['message'] = $e->getMessage();
@@ -353,6 +361,7 @@ class ProductController extends AppController {
                         $this->MerchantProductCategory->delete($toDelete['MerchantProductCategory']['id']);
                     }
                 }
+
                 //Step 6: Save Composite Attributes
                 if($data['stock_type'] == 'composite') {
                     foreach($data['composite'] as $composite) {
@@ -370,10 +379,11 @@ class ProductController extends AppController {
                     }
                 }
 
+                $dataSource->commit();
+
                 $result['success'] = true;
                 $result['data'] = $data['composite'];
                 $result['product_id'] = $this->MerchantProduct->id;
-                $dataSource->commit();
             } catch (Exception $e) {
                 $dataSource->rollback();
                 $result['message'] = $e->getMessage();

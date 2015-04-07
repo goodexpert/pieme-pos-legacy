@@ -207,7 +207,7 @@
                                 $sourceName = $order['MerchantSupplier']['name'];
                             } elseif ($orderType === 'OUTLET') {
                                 $orderType = 'Outlet transfer';
-                                $sourceName = $order['SourceOutlet']['name'];
+                                $sourceName = $order['MerchantSourceOutlet']['name'];
                             }
                             if (empty($sourceName)) {
                                 $sourceName = 'No Name';
@@ -236,12 +236,22 @@
                         <td><?php echo $order[0]['items']; ?></td>
                         <td><?php echo $orderStatusDisp[$orderStatus]; ?></td>
                         <td>
+                            <a href="/stock/view/<?php echo $order['MerchantStockOrder']['id']; ?>">View</a>
+                            <?php if ($orderStatus == 'OPEN') : ?>
+                            | <a href="/stock/edit/<?php echo $order['MerchantStockOrder']['id']; ?>">Edit</a> 
+                            <?php elseif ($orderStatus == 'SENT') : ?>
+                            | <a href="/stock/receive/<?php echo $order['MerchantStockOrder']['id']; ?>">Receive</a> 
+                            <?php elseif ( in_array($orderStatus, array('OVERDUE', 'RECEIVED', 'RECEIVE_FAIL'))) : ?>
+                            <?php endif; ?>
+
+                            <!--
                             <a href="/stock/view/<?php echo $order['MerchantStockOrder']['id']; ?>">View</a> |
                             <?php if ( in_array($orderStatus, array('SENT', 'RECEIVED', 'RECEIVE_FAIL')) ): ?>
                             <a href="/stock/receive/<?php echo $order['MerchantStockOrder']['id']; ?>">Edit</a> 
                             <?php else: ?>
                             <a href="/stock/edit/<?php echo $order['MerchantStockOrder']['id']; ?>">Edit</a> 
                             <?php endif; ?>
+                            -->
                         </td>
                     </tr>                
                     <?php

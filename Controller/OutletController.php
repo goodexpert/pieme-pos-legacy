@@ -19,11 +19,17 @@ class OutletController extends AppController {
     public $layout = 'home';
 
 /**
- * This controller uses MerchantRegister and MerchantOutlet models.
+ * This controller uses the following models.
  *
  * @var array
  */
-    public $uses = array('MerchantRegister', 'MerchantOutlet', 'MerchantQuickKey');
+    public $uses = array(
+        'MerchantRegister',
+        'MerchantQuickKey',
+        'MerchantProduct',
+        'MerchantProductInventory',
+        'MerchantOutlet'
+    );
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -83,6 +89,9 @@ class OutletController extends AppController {
                 'success' => false
             );
 
+            $dataSource = $this->MerchantOutlet->getDataSource();
+            $dataSource->begin();
+
             try {
                 $data = $this->request->data;
                 $data['merchant_id'] = $user['merchant_id'];
@@ -90,9 +99,27 @@ class OutletController extends AppController {
                 $this->MerchantOutlet->create();
                 $this->MerchantOutlet->save(array('MerchantOutlet' => $data));
 
+                $products = $this->MerchantProduct->find('all', array(
+                    'conditions' => array(
+                        'MerchantProduct.merchant_id' => $user['merchant_id'],
+                        'MerchantProduct.track_inventory' => 1
+                    )
+                ));
+
+                foreach ($products as $product) {
+                    $inventory = array();
+                    $inventory['outlet_id'] = $this->MerchantOutlet->id;
+                    $inventory['product_id'] = $product['MerchantProduct']['id'];
+
+                    $this->MerchantProductInventory->create();
+                    $this->MerchantProductInventory->save(array('MerchantProductInventory' => $inventory));
+                }
+                $dataSource->commit();
+
                 $result['success'] = true;
                 $result['outlet_id'] = $this->MerchantOutlet->id;
             } catch (Exception $e) {
+                $dataSource->rollback();
                 $result['message'] = $e->getMessage();
             }
 

@@ -123,11 +123,11 @@
                         <div class="search-default"> No Result </div>
                         <?php foreach($products as $product){ ?>
                         <?php
-                            if ( isset($product['MerchantProductInventory']['count']) ):
-                                if ( is_null($product['MerchantProductInventory']['count']) ):
+                            if ( isset($product['MerchantProductInventory'][0]['count']) ):
+                                if ( is_null($product['MerchantProductInventory'][0]['count']) ):
                                     $inventoryCount = '0';
                                 else:
-                                    $inventoryCount = $product['MerchantProductInventory']['count'];
+                                    $inventoryCount = $product['MerchantProductInventory'][0]['count'];
                                 endif;
                             else:
                                 $inventoryCount = '0';

@@ -63,10 +63,10 @@ class StockController extends AppController {
             ),
             array(
                 'table' => 'merchant_outlets',
-                'alias' => 'SourceOutlet',
+                'alias' => 'MerchantSourceOutlet',
                 'type' => 'LEFT',
                 'conditions' => array(
-                    'MerchantOutlet.id = MerchantStockOrder.source_outlet_id'
+                    'MerchantSourceOutlet.id = MerchantStockOrder.source_outlet_id'
                 )
             ),
             array(
@@ -177,14 +177,17 @@ class StockController extends AppController {
                 'MerchantStockOrder.date',
                 'MerchantStockOrder.due_date',
                 'MerchantOutlet.name',
-                'SourceOutlet.name',
+                'MerchantSourceOutlet.name',
                 'MerchantSupplier.name',
                 'COUNT(*) AS items',
                 'MerchantStockOrder.status'
             ),
             'conditions' => $conditions,
             'joins' => $joins,
-            'group' => 'MerchantStockOrder.id'
+            'group' => 'MerchantStockOrder.id',
+            'order' => array(
+                'MerchantStockOrder.created' => 'DESC'
+            )
         ));
         $this->set('orders', $orders);
 
@@ -274,7 +277,6 @@ class StockController extends AppController {
             } catch (Exception $e) {
                 $dataSource->rollback();
                 $this->Session->setFlash($e->getMessage());
-                debug($e->getMessage());
             }
         }
     
@@ -305,7 +307,7 @@ class StockController extends AppController {
                 $order_id = $this->MerchantStockOrder->id;
                 
                 // check 'auto_fill'
-                if ( !is_null($data['order-auto'] && $data['order-auto'] == '1') ) {
+                if ( !is_null($data['order-auto']) && $data['order-auto'] == '1' ) {
                     $autoFillProducts = $this->__autoFillProducts($data['MerchantStockOrder']['outlet_id']);
                     $items = array();
                     foreach ($autoFillProducts as $p) {
@@ -994,13 +996,21 @@ class StockController extends AppController {
 
         $product_logs = array();
         foreach ($order['MerchantStockOrderItem'] as $idx => $item) {
+            if ( $action_type == 'order_placed' ) {
+                $change = $item['count'];
+            } elseif ( $action_type == 'order_received' ) {
+                $change = $item['received'];
+            } else {
+                $change = '0';
+            }
+
             $product_logs[$idx]['MerchantProductLog'] = array(
                 'product_id'        => $item['product_id'],
                 'user_id'           => $this->Auth->user()['id'],
                 'outlet_id'         => $order['MerchantStockOrder']['outlet_id'],
                 'quantity'          => '0',
                 'outlet_quantity'   => '0',
-                'change'            => '0',
+                'change'            => $change,
                 'action_type'       => $action_type,
                 'refer_url'         => '/stock/view/' . $order['MerchantStockOrder']['id']
             );
@@ -1056,9 +1066,9 @@ class StockController extends AppController {
             }
         }
 
-        $stockOrder = $this->MerchantStockOrder->findById($id);
         
         // get the merchant stock order
+        /*
         $this->loadModel('MerchantStockOrder');
 
         $this->MerchantStockOrder->bindModel(array(
@@ -1129,6 +1139,16 @@ class StockController extends AppController {
                 'MerchantProduct.merchant_id' => $order['MerchantStockOrder']['merchant_id']
             )
         ));
+        $this->set('products', $products);
+         */
+
+        $stockOrder = $this->MerchantStockOrder->findById($id);
+
+        $order = $this->__stockOrder($id, $stockOrder['MerchantStockOrder']['outlet_id']);
+        $this->set('order', $order);
+
+        // get the list of products
+        $products = $this->__merchantProducts($this->Auth->user()['merchant_id'], $stockOrder['MerchantStockOrder']['outlet_id']);
         $this->set('products', $products);
 
         if ( !$this->request->data ) {
@@ -1280,17 +1300,19 @@ class StockController extends AppController {
             } catch (Exception $e) {
                 $dataSource->rollback();
                 $this->Session->setFlash($e->getMessage());
-                debug($e->getMessage());
             }
         }
 
         // get the list of merchant outlets
+        /*
         $this->loadModel('MerchantOutlet');
         $outlets = $this->MerchantOutlet->find('list', array(
             'fields' => array('MerchantOutlet.id', 'MerchantOutlet.name'),
             'conditions' => array('MerchantOutlet.merchant_id' => $this->Auth->user()['merchant_id']),
             'recursive' => 0
         ));
+         */
+        $outlets = $this->__listMerchantOutlets($this->Auth->user()['merchant_id']);
         $this->set('outlets', $outlets);
     }
 
@@ -1299,6 +1321,7 @@ class StockController extends AppController {
 
         $stockTake = $this->MerchantStockTake->findById($id);
 
+        /*
         $this->MerchantStockTake->bindModel(array(
             'belongsTo' => array(
                 'MerchantOutlet' => array(
@@ -1357,9 +1380,13 @@ class StockController extends AppController {
                 'MerchantStockTake.id' => $id
             )
         ));
+         */
+
+        $take = $this->__stockTake($stockTake['MerchantStockTake']['id'], $stockTake['MerchantStockTake']['outlet_id']);
         $this->set('take', $take);
 
         // get the list of products
+        /*
         $products = $this->MerchantProduct->find('all', array(
             'fields' => array('MerchantProduct.*', 'MerchantProductInventory.*'),
             'joins' => array(
@@ -1377,6 +1404,8 @@ class StockController extends AppController {
                 'MerchantProduct.merchant_id' => $take['MerchantStockTake']['merchant_id']
             )
         ));
+         */
+        $products = $this->__merchantProducts($this->Auth->user()['merchant_id'], $stockTake['MerchantStockTake']['outlet_id']);
         $this->set('products', $products);
     }
 
@@ -1573,6 +1602,75 @@ $result = $this->Project->find('all', array(
     }
 
     /**
+     * get the selected stock take order
+     *
+     * @param string stock take id
+     * @param string outlet id
+     * @return array the stock take
+     */
+    private function __stockTake($take_id, $outlet_id) {
+        $this->loadModel('MerchantStockTake');
+        $this->MerchantStockTake->bindModel(array(
+            'belongsTo' => array(
+                'MerchantOutlet' => array(
+                    'className' => 'MerchantOutlet',
+                    'foreignKey' => 'outlet_id'
+                )
+            ),
+            'hasMany' => array(
+                'MerchantStockTakeItem' => array(
+                    'className' => 'MerchantStockTakeItem',
+                    'foreignKey' => 'stocktake_id'
+                ),
+                'MerchantStockTakeCount' => array(
+                    'className' => 'MerchantStockTakeCount',
+                    'foreignKey' => 'stocktake_id'
+                )
+            )
+        ));
+
+        $this->loadModel('MerchantStockTakeItem');
+        $this->MerchantStockTakeItem->bindModel(array(
+            'belongsTo' => array(
+                'MerchantProduct' => array(
+                    'className' => 'MerchantProduct',
+                    'foreignKey' => 'product_id'
+                )
+            )
+        ));
+
+        $this->loadModel('MerchantStockTakeCount');
+        $this->MerchantStockTakeCount->findModel(array(
+            'belongsTo' => array(
+                'className' => 'MerchantProduct',
+                'foreignKey' => 'product_id'
+            )
+        ));
+
+        $this->loadModel('MerchantProduct');
+        $this->MerchantProduct->bindModel(array(
+            'hasMany' => array(
+                'MerchantProductInventory' => array(
+                    'className' => 'MerchantProductInventory',
+                    'foreignKey' => 'product_id',
+                    'conditions' => array(
+                        'MerchantProductInventory.outlet_id' => $outlet_id
+                    )
+                )
+            )
+        ));
+
+        $take = $this->MerchantStockTake->find('first', array(
+            'recursive' => 3,
+            'conditions' => array(
+                'MerchantStockTake.id' => $take_id
+            )
+        ));
+
+        return $take;
+    }
+
+    /**
      * get the merchant products
      *
      * @param string merchant id
@@ -1756,6 +1854,23 @@ $result = $this->Project->find('all', array(
         }
 
         debug($inventory); exit;
+    }
+
+    public function jase3() {
+        $id = '5523acc8-07b4-4319-be08-e389c0a801cd';
+
+        $order = $this->MerchantStockOrder->findById($id);
+
+        $items = $this->MerchantStockOrderItem->find('all', array(
+            'conditions' => array(
+                'MerchantStockOrderItem.order_id' => $order['MerchantStockOrder']['id']
+            )
+        ));
+
+        $inventory = $this->__inventory($order['MerchantStockOrder']['merchant_id'], $order['MerchantStockOrder']['outlet_id'], $items, '+');
+
+        debug($inventory);
+        exit;
     }
 
 }

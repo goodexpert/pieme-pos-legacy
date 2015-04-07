@@ -72,7 +72,13 @@
                         </dd>
                         <dt>Order from</dt>
                         <dd>
-                            <?php echo is_null($order['MerchantSupplier']['name']) ? 'Any' : $order['MerchantSupplier']['name']; ?>
+                            <?php
+                                if ($order['MerchantStockOrder']['type'] == 'SUPPLIER') {
+                                    echo is_null($order['MerchantSupplier']['name']) ? 'Any' : $order['MerchantSupplier']['name'];
+                                } elseif ($order['MerchantStockOrder']['type'] == 'OUTLET') {
+                                    echo is_null($order['MerchantSourceOutlet']['name']) ? 'Any' : $order['MerchantSourceOutlet']['name'];
+                                }
+                             ?>
                         </dd>
                         <dt>Deliver to</dt>
                         <dd>
@@ -110,8 +116,19 @@
                         <span class="search-tri"></span>
                         <div class="search-default"> No Result </div>
                         <?php foreach($products as $product){ ?>
+                        <?php
+                            if ( isset($product['MerchantProductInventory'][0]['count']) ):
+                                if ( is_null($product['MerchantProductInventory'][0]['count']) ):
+                                    $inventoryCount = '0';
+                                else:
+                                    $inventoryCount = $product['MerchantProductInventory']['count'];
+                                endif;
+                            else:
+                                $inventoryCount = '0';
+                            endif;
+                        ?>
                         <!--<button type="button" data-stock="0" data-order-id="<?=$order['MerchantStockOrder']['id'];?>" data-name="<?=$product['MerchantProduct']['name'];?>" data-sku="<?=$product['MerchantProduct']['sku'];?>" data-id="<?=$product['MerchantProduct']['id'];?>" data-price-include-tax="<?=$product['MerchantProduct']['price_include_tax'];?>" class="data-found"><?=$product['MerchantProduct']['name']." (".$product['MerchantProduct']['sku'].")";?></button>-->
-                        <button type="button" data-stock="0" data-order-id="<?=$order['MerchantStockOrder']['id'];?>" data-name="<?=$product['MerchantProduct']['name'];?>" data-sku="<?=$product['MerchantProduct']['sku'];?>" data-id="<?=$product['MerchantProduct']['id'];?>" data-price-include-tax="<?=$product['MerchantProduct']['price_include_tax'];?>" data-inventory-count="<?php echo is_null($product['MerchantProductInventory']['count']) ? '0' : $product['MerchantProductInventory']['count']; ?>" data-supply-price="<?php echo $product['MerchantProduct']['supply_price']; ?>" class="data-found"><?=$product['MerchantProduct']['name']." (".$product['MerchantProduct']['sku'].")";?></button>
+                        <button type="button" data-stock="0" data-order-id="<?=$order['MerchantStockOrder']['id'];?>" data-name="<?=$product['MerchantProduct']['name'];?>" data-sku="<?=$product['MerchantProduct']['sku'];?>" data-id="<?=$product['MerchantProduct']['id'];?>" data-price-include-tax="<?=$product['MerchantProduct']['price_include_tax'];?>" data-inventory-count="<?php echo $inventoryCount; ?>" data-supply-price="<?php echo $product['MerchantProduct']['supply_price']; ?>" class="data-found"><?=$product['MerchantProduct']['name']." (".$product['MerchantProduct']['sku'].")";?></button>
                         <?php } ?> 
                     </div>
                 </div>
@@ -416,7 +433,8 @@ jQuery(document).ready(function() {
                     window.location.href = "/stock/view/<?php echo $order['MerchantStockOrder']['id']; ?>";
                 } else {
                     $('.save_receive').hide();
-                    alert(data.message);
+                    //alert(data.message);
+                    console.log(data.message);
                 }
             }
         });

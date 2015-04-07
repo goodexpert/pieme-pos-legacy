@@ -801,7 +801,11 @@ $(document).ready(function(){
                     composite: composite
                 },
                 success: function(result) {
-                    window.location.href = "/product";
+                    if (result.success) {
+                        window.location.href = "/product";
+                    } else {
+                        alert(result.message);
+                    }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
                     console.log(textStatus, errorThrown);
