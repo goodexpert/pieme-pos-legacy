@@ -738,10 +738,17 @@ $(document).ready(function(){
             }
             var track_inventory;
             if($("#track_inventory").is(':checked')){
+<<<<<<< HEAD
             	if($(".composite-attr").length == 0){
 	            	track_inventory = 1;
             	} else {
             		track_inventory = 0;
+=======
+                if($(".composite-attr").length == 0){
+                    track_inventory = 1;
+                } else {
+                    track_inventory = 0;
+>>>>>>> 6d9a57d0f984195f75204f3525e378d07c32fa47
                 }
             } else {
                 track_inventory = 0;
@@ -761,7 +768,11 @@ $(document).ready(function(){
             
             var composite = [];
             $(".composite-attr").each(function(){
+<<<<<<< HEAD
 	            composite.push({product_id: $(this).attr("data-id"), quantity: $(this).find(".composite_quantity").val()});
+=======
+                composite.push({product_id: $(this).attr("data-id"), quantity: $(this).find(".composite_quantity").val()});
+>>>>>>> 6d9a57d0f984195f75204f3525e378d07c32fa47
             });
             
             var tagArray = $("input:hidden.product_tag").val().split(",");
@@ -819,12 +830,13 @@ $(document).ready(function(){
             $.confirm({
                 title:'Add Product Type',
                 text:'<input type="text" class="type-name" placeholder="Type Name">',
-                confirmButton: "Add",
                 cancelButton: "Cancel",
+                confirmButton: "Add",
                 cancel: function(button){
                     $("#product_type").val('');
                 },
-                confirmButtonClass: "type-add"
+                confirmButtonClass: "type-add btn btn-success pull-right",
+                cancelButtonClass: "type-add btn btn-primary margin-right-5"
             });
         }
         
@@ -837,7 +849,8 @@ $(document).ready(function(){
                 cancel: function(button){
                     $("#product_brand").val('');
                 },
-                confirmButtonClass: "brand-add"
+                confirmButtonClass: "type-add btn btn-success pull-right",
+                cancelButtonClass: "type-add btn btn-primary margin-right-5"
             });
         }
         
@@ -850,7 +863,8 @@ $(document).ready(function(){
                 cancel: function(button){
                     $("#product_supplier").val('');
                 },
-                confirmButtonClass: "supplier-add"
+                confirmButtonClass: "type-add btn btn-success pull-right",
+                cancelButtonClass: "type-add btn btn-primary margin-right-5"
             });
         }
         
@@ -903,7 +917,14 @@ $(document).ready(function(){
     });
     
     $(".cancel").click(function(){
-	    parent.history.back();
+        parent.history.back();
+    });
+    
+    $("#composite_attr_add").click(function(){
+        $("#composite_added_list").prepend('<div class="col-md-12 col-sm-12 col-xs-12 composite-attr" data-id="'+$("#selected_composite_id").val()+'"><div class="col-md-4 col-sm-4 col-xs-4">'+$("#composite_search").val()+'</div><div class="col-md-2 col-xs-2 col-sm-2 col-alpha"><input type="number" class="form-control composite_quantity" value="'+$("#composite_qty").val()+'"><button type="button" class="btn remove remove_composite_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button></div></div>');
+        
+        $("#composite_search").val('');
+        $("#composite_qty").val('');
     });
     
     $("#composite_attr_add").click(function(){

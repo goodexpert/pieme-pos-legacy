@@ -138,6 +138,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <input type="hidden" name="data[MerchantStockOrder][id]" value="<?php echo $order['MerchantStockOrder']['id']; ?>">
                             <?php
                                 if ( count($order['MerchantStockOrderItem']) > 0 ):
                                     foreach ($order['MerchantStockOrderItem'] as $idx => $item):
@@ -152,7 +153,15 @@
                                 <input type="hidden" name="data[MerchantStockOrderItem][<?php echo $idx; ?>][price_include_tax]" value="<?php echo $item['MerchantProduct']['price_include_tax']; ?>" />
                                 <td><?php echo $idx+1; ?></td>
                                 <td><?php echo $item['MerchantProduct']['name']; ?></td>
-                                <td><?php echo $item['MerchantProduct']['MerchantProductInventory'][0]['count']; ?></td>
+                                <td>
+                                    <?php
+                                        if ( isset($item['MerchantProduct']['MerchantProductInventory'][0]['count']) ):
+                                            echo $item['MerchantProduct']['MerchantProductInventory'][0]['count'];
+                                        else:
+                                            echo '0';
+                                        endif;
+                                    ?>
+                                </td>
                                 <td><?php echo $item['count']; ?></td>
                                 <td>
                                     <?php
@@ -161,6 +170,7 @@
                                             'type' => 'text',
                                             'div'  => false,
                                             'label' => false,
+                                            'class' => 'changable',
                                             'value' => $default
                                         ));
                                         echo $received;
@@ -172,6 +182,7 @@
                                             'type' => 'text',
                                             'div'  => 'false',
                                             'label' => false,
+                                            'class' => 'changable',
                                             'value' => sprintf("%.2f", round($this->request->data['MerchantStockOrderItem'][$idx]
                                             ['supply_price'], 2))
                                         ));     
@@ -376,8 +387,10 @@ jQuery(document).ready(function() {
             success: function( data, textStatus, jqXHR ) {
                 if (data.success) {
                     $('.save_receive').show();
+                    console.log(data.message);
                 } else {
                     alert(data.message);
+                    console.log(data.message);
                 }
             }
         });
@@ -480,6 +493,14 @@ jQuery(document).ready(function() {
         }
     });
 
+    $(document).on("blur", ".changable", function() {
+        var received = $(this).closest('tr').children().find('input[name*=received]').val();
+        var supply_price = $(this).closest('tr').children().find('input[name*=supply_price]').val();
+            supply_price = (Math.round(supply_price*100)/100).toFixed(2);
+        var total = (Math.round(parseFloat(received * supply_price)*100)/100).toFixed(2);
+
+        $(this).closest('tr').find('td:last').text(total);
+    });
 
     /* DYNAMIC PRODUCT SEARCH END */
 });

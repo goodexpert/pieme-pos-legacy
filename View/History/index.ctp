@@ -53,7 +53,7 @@
     <!-- BEGIN CONTENT -->
     <div class="page-content-wrapper">
         <div class="page-content">
-            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-bottom-20">
                 <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">History</h2>
             </div>
             <!-- FILTER -->
@@ -63,7 +63,11 @@
                         <dt>Date from</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
+<<<<<<< HEAD
                             <input type="text" id="date_from">
+=======
+                            <input type="text" id="Date_from">
+>>>>>>> 6d9a57d0f984195f75204f3525e378d07c32fa47
                         </dd>
                         <dt>Register</dt>
                         <dd><input type="text" id=""></dd>
@@ -76,7 +80,11 @@
                         <dt>Date to</dt>
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
+<<<<<<< HEAD
                             <input type="text" id="date_to">
+=======
+                            <input type="text" id="Date_to">
+>>>>>>> 6d9a57d0f984195f75204f3525e378d07c32fa47
                         </dd>
                         <dt>Receipt number</dt>
                         <dd><input type="text" id=""></dd>
@@ -427,8 +435,8 @@ $(".void-history").click(function(){
             status: 'VOIDED',
         }
     });
-    
+    $("#Date_from").datepicker();
+    $("#Date_to").datepicker();
 });
-
 </script>
 <!-- END JAVASCRIPTS -->

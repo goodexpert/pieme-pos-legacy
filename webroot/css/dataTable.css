@@ -82,7 +82,27 @@ table.dataTable thead .sorting_desc,
 table.dataTable thead .sorting {
   cursor: pointer;
   *cursor: hand;
+
 }
+table.dataTable thead .sorting_asc {
+	background:#1E1E1E;
+}
+
+.sorting_asc span.up {
+    background: url(/img/arrow-up-down.png) no-repeat left -18px;
+    display: inline-block;
+    width: 9px;
+    height: 11px;
+    margin-left: 5px;
+}
+.sorting_asc span.down {
+    background: url(/img/arrow-up-down.png) no-repeat left -2px;
+    display: inline-block;
+    width: 9px;
+    height: 11px;
+    margin-left: 5px;
+}
+
 table.dataTable tbody tr {
   background-color: white;
 }

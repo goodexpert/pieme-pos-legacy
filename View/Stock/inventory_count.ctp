@@ -126,21 +126,21 @@
                                 </tr>
                                 -->
                                 <?php
-                                    if ( count($orders) > 0 ):
-                                        foreach ($orders as $order):
+                                    if ( count($takes) > 0 ):
+                                        foreach ($takes as $take):
                                 ?>
-                                <tr>
+                                <tr class="clickable" data-href="/inventory_count/<?php echo $take['MerchantStockTake']['id']; ?>">
                                     <td></td>
                                     <td>
                                         <p>
-                                            <?php echo $order['MerchantStockOrder']['name']; ?>
-                                            <?php if ( $order['MerchantStockOrder']['status'] == 'STOCKTAKE' ): ?>
+                                            <?php echo $take['MerchantStockTake']['name']; ?>
+                                            <?php if ( $take['MerchantStockTake']['status'] == 'STOCKTAKE_IN_PROGRESS_PROCESSED' ): ?>
                                             <span class="text-bg-blue">In progress</span>
                                             <?php endif; ?>
                                         </p>
                                     </td>
-                                    <td><?php echo $order['MerchantOutlet']['name']; ?></td>
-                                    <td></td>
+                                    <td><?php echo $take['MerchantOutlet']['name']; ?></td>
+                                    <td><?php echo ($take['MerchantStockTake']['full_count'] == '0') ? 'Partial' : 'Full'; ?></td>
                                 </tr>
                                 <?php
                                         endforeach;
@@ -261,6 +261,12 @@ jQuery(document).ready(function() {
     Layout.init(); // init layout
     QuickSidebar.init() // init quick sidebar
     Index.init();
+
+
+
+    $(".clickable").click(function() {
+        window.document.location = $(this).data("href");
+    });
 });
 </script>
 <!-- END JAVASCRIPTS -->

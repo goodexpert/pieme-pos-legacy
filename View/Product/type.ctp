@@ -48,7 +48,7 @@
     <!-- BEGIN CONTENT -->
     <div class="page-content-wrapper">
         <div class="page-content">
-            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-bottom-20">
                 <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
                     Types
                 </h2>

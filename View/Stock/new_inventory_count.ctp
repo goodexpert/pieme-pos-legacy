@@ -67,11 +67,11 @@
                         <dt>Outlet</dt> 
                         <dd>
                             <?php
-                                $merchantOutlets = $this->Form->input('MerchantStockOrder.outlet_id', array(
+                                $merchantOutlets = $this->Form->input('MerchantStockTake.outlet_id', array(
                                     'type' => 'select',
                                     'div' => false,
                                     'label' => false,
-                                    'class' => 'status',
+                                    'class' => 'status outlet',
                                     'optoins' => $outlets,
                                     'empty' => ''
                                 ));
@@ -85,9 +85,15 @@
                         <dt>Start Date</dt>
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
+<<<<<<< HEAD
                             <input name="data[MerchantStockOrder][start_date]" type="text" id="MerchantStockOrderStartDate">
                             <?/*php
                                 $startDate = $this->Form->input('MerchantStockOrder.start_date', array(
+=======
+                            <!--<input type="text" class="hasDatepicker">-->
+                            <?php
+                                $startDate = $this->Form->input('MerchantStockTake.start_date', array(
+>>>>>>> 6d9a57d0f984195f75204f3525e378d07c32fa47
                                     'type' => 'text',
                                     'div' => false,
                                     'label' => false,
@@ -104,7 +110,7 @@
                         <dd>
                             <!--<input type="text">-->
                             <?php
-                                $startTime = $this->Form->input('MerchantStockOrder.start_time', array(
+                                $startTime = $this->Form->input('MerchantStockTake.start_time', array(
                                     'type' => 'text',
                                     'div' => false,
                                     'label' => false,
@@ -121,7 +127,7 @@
                         <dd style="width: 81%;">
                             <!--<input type="text">-->
                             <?php
-                                $name = $this->Form->input('MerchantStockOrder.name', array(
+                                $name = $this->Form->input('MerchantStockTake.name', array(
                                     'type' => 'text',
                                     'div' => false,
                                     'label' => false
@@ -132,16 +138,16 @@
                     </dl>
                  </div>
                 <div class="col-md-4 col-xs-4 col-sm-4 margin-top-20">
-                    <input type="checkbox">
+                    <input type="checkbox" name="data[MerchantStockTake][show_inactive]" value="1">
                     <label>Include inactive products</label>
                  </div>
                  <div class="solid-line-gr"></div>
                 <div class="col-md-12 col-xs-12 col-sm-12">
                      <div class="col-md-3 col-xs-3 col-sm-3">
-                        <input type="radio"><label>Partial Count</label>
+                        <input type="radio" name="data[MerchantStockTake][full_count]" value="0"><label>Partial Count</label>
                     </div>
                      <div class="col-md-3 col-xs-3 col-sm-3">
-                        <input type="radio"><label>Full Count</label>
+                        <input type="radio" name="data[MerchantStockTake][full_count]" value="1" ><label>Full Count</label>
                     </div>
                  </div>
                  <div class="line-box-stitle col-md-12 col-xs-12 col-sm-12 margin-top-20">
@@ -292,6 +298,14 @@ jQuery(document).ready(function() {
 	   }
     });
 
+    $(document).on('change', '.outlet', function() {
+        var outlet = $('option:selected', $(this)).text();
+        var count_name = '';
+
+        if ( outlet != '' ) {
+            //count_name = outlet + 
+        }
+    });
 });
 </script>
 <!-- END JAVASCRIPTS -->

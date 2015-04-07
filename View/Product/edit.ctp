@@ -201,12 +201,12 @@
                       <input type="hidden" class="form-control select2_sample3 product_tag" value="<?php 
                       $i=0;
                       foreach($categories as $category){
-                      	if($i == 0){
-	                      	echo $category['MerchantProductTag']['name'];
-	                      	$i++;
-                      	} else {
-                      		echo ','.$category['MerchantProductTag']['name'];
-                      	}
+                          if($i == 0){
+                              echo $category['MerchantProductTag']['name'];
+                              $i++;
+                          } else {
+                              echo ','.$category['MerchantProductTag']['name'];
+                          }
                       }?>">
                     </dd>
                   </dl>
@@ -286,7 +286,7 @@
                     <span class="variant_add">Add Another Attribute</span>
                 </div>
                 <?php }else{ ?>
-	            <div id="first_variant_attr" class="col-md-12 col-sm-12 col-xs-12" style="display:block;">
+                <div id="first_variant_attr" class="col-md-12 col-sm-12 col-xs-12" style="display:block;">
                     <div class="dashed-line-gr"></div>
                     <div class="col-md-12 col-xs-12 col-sm-12">
                         <div class="col-md-3 col-xs-3 col-sm-3">
@@ -308,23 +308,23 @@
                 <?php } ?>
                 <?php if(!empty($product['MerchantProduct']['variant_option_two_name'])){ ?>
                 <div class="col-md-12 col-sm-12 col-xs-12 variant_attr variant_added" style="margin-top:15px;">
-                	<div class="col-md-12 col-xs-12 col-sm-12"><div class="col-md-3 col-xs-3 col-sm-3">
-                		<div class="info">
-                			<select class="variant_value_2">
-                				<option></option>
-                				<option value="variant_value_add">+ Add new attribute</option>
-                				<?php foreach($variants as $variant){ ?>
-                					<option value="<?=$variant['MerchantVariant']['name'];?>" <?php if($product['MerchantProduct']['variant_option_two_name'] == $variant['MerchantVariant']['name']){echo "selected";}?>><?=$variant['MerchantVariant']['name'];?></option>
-                				<?php } ?>
-                			</select>
-                		</div>
-                	</div>
-                	<div class="col-md-3 col-xs-3 col-sm-3">
-                		<div class="info"><input type="text" class="variant_default_2" value="<?php echo $product['MerchantProduct']['variant_option_two_value'];?>"></div>
-                	</div>
-                	<div class="col-md-2 col-xs-2 col-sm-2">
-                		<button class="btn remove remove_variant_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button>
-                	</div>
+                    <div class="col-md-12 col-xs-12 col-sm-12"><div class="col-md-3 col-xs-3 col-sm-3">
+                        <div class="info">
+                            <select class="variant_value_2">
+                                <option></option>
+                                <option value="variant_value_add">+ Add new attribute</option>
+                                <?php foreach($variants as $variant){ ?>
+                                    <option value="<?=$variant['MerchantVariant']['name'];?>" <?php if($product['MerchantProduct']['variant_option_two_name'] == $variant['MerchantVariant']['name']){echo "selected";}?>><?=$variant['MerchantVariant']['name'];?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-xs-3 col-sm-3">
+                        <div class="info"><input type="text" class="variant_default_2" value="<?php echo $product['MerchantProduct']['variant_option_two_value'];?>"></div>
+                    </div>
+                    <div class="col-md-2 col-xs-2 col-sm-2">
+                        <button class="btn remove remove_variant_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button>
+                    </div>
                 </div>
                 <?php if(empty($product['MerchantProduct']['variant_option_three_name'])){ ?>
                 <div><span class="variant_add">Add Another Attribute</span></div>
@@ -333,23 +333,23 @@
                 <?php } ?>
                 <?php if(!empty($product['MerchantProduct']['variant_option_three_name'])){ ?>
                 <div class="col-md-12 col-sm-12 col-xs-12 variant_attr variant_added" style="margin-top:15px;">
-                	<div class="col-md-12 col-xs-12 col-sm-12"><div class="col-md-3 col-xs-3 col-sm-3">
-                		<div class="info">
-                			<select class="variant_value_3">
-                				<option></option>
-                				<option value="variant_value_add">+ Add new attribute</option>
-                				<?php foreach($variants as $variant){ ?>
-                					<option value="<?=$variant['MerchantVariant']['name'];?>" <?php if($product['MerchantProduct']['variant_option_three_name'] == $variant['MerchantVariant']['name']){echo "selected";}?>><?=$variant['MerchantVariant']['name'];?></option>
-                				<?php } ?>
-                			</select>
-                		</div>
-                	</div>
-                	<div class="col-md-3 col-xs-3 col-sm-3">
-                		<div class="info"><input type="text" class="variant_default_3" value="<?php echo $product['MerchantProduct']['variant_option_three_value'];?>"></div>
-                	</div>
-                	<div class="col-md-2 col-xs-2 col-sm-2">
-                		<button class="btn remove remove_variant_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button>
-                	</div>
+                    <div class="col-md-12 col-xs-12 col-sm-12"><div class="col-md-3 col-xs-3 col-sm-3">
+                        <div class="info">
+                            <select class="variant_value_3">
+                                <option></option>
+                                <option value="variant_value_add">+ Add new attribute</option>
+                                <?php foreach($variants as $variant){ ?>
+                                    <option value="<?=$variant['MerchantVariant']['name'];?>" <?php if($product['MerchantProduct']['variant_option_three_name'] == $variant['MerchantVariant']['name']){echo "selected";}?>><?=$variant['MerchantVariant']['name'];?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-xs-3 col-sm-3">
+                        <div class="info"><input type="text" class="variant_default_3" value="<?php echo $product['MerchantProduct']['variant_option_three_value'];?>"></div>
+                    </div>
+                    <div class="col-md-2 col-xs-2 col-sm-2">
+                        <button class="btn remove remove_variant_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button>
+                    </div>
                 </div>
                 <div><span class="variant_max">A product has a maximum of three variants.</span></div>
                 </div>
@@ -461,6 +461,7 @@
                   <?php foreach($composites as $composite) { ?>
                   <div id="composite_added_list" class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
                         <div class="col-md-12 col-sm-12 col-xs-12 composite-attr" data-id="<?php echo $composite['MerchantProductComposite']['product_id'];?>">
+<<<<<<< HEAD
                         	<div class="col-md-4 col-sm-4 col-xs-4"><?php echo $composite['MerchantProduct']['name'];?></div>
                     		<div class="col-md-2 col-xs-2 col-sm-2 col-alpha"><input type="number" class="form-control composite_quantity" value="<?php echo $composite['MerchantProductComposite']['quantity'];?>">
                     			<button type="button" class="btn remove remove_composite_attr" style="padding:0">
@@ -468,6 +469,15 @@
                     			</button>
                     		</div>
                     	</div>
+=======
+                            <div class="col-md-4 col-sm-4 col-xs-4"><?php echo $composite['MerchantProduct']['name'];?></div>
+                            <div class="col-md-2 col-xs-2 col-sm-2 col-alpha"><input type="number" class="form-control composite_quantity" value="<?php echo $composite['MerchantProductComposite']['quantity'];?>">
+                                <button type="button" class="btn remove remove_composite_attr" style="padding:0">
+                                    <i class="glyphicon glyphicon-remove"></i>
+                                </button>
+                            </div>
+                        </div>
+>>>>>>> 6d9a57d0f984195f75204f3525e378d07c32fa47
                   </div>
                   <?php } ?>
                   
@@ -802,10 +812,17 @@ $(document).ready(function(){
             }
             var track_inventory;
             if($("#track_inventory").is(':checked')){
+<<<<<<< HEAD
             	if($(".composite-attr").length == 0){
 	            	track_inventory = 1;
             	} else {
             		track_inventory = 0;
+=======
+                if($(".composite-attr").length == 0){
+                    track_inventory = 1;
+                } else {
+                    track_inventory = 0;
+>>>>>>> 6d9a57d0f984195f75204f3525e378d07c32fa47
                 }
             } else {
                 track_inventory = 0;
@@ -824,7 +841,11 @@ $(document).ready(function(){
             
             var composite = [];
             $(".composite-attr").each(function(){
+<<<<<<< HEAD
 	            composite.push({product_id: $(this).attr("data-id"), quantity: $(this).find(".composite_quantity").val()});
+=======
+                composite.push({product_id: $(this).attr("data-id"), quantity: $(this).find(".composite_quantity").val()});
+>>>>>>> 6d9a57d0f984195f75204f3525e378d07c32fa47
             });
             
             var tagArray = $("input:hidden.product_tag").val().split(",");
@@ -956,15 +977,23 @@ $(document).ready(function(){
     });
 
     $(".cancel").click(function(){
-	    parent.history.back();
+        parent.history.back();
     });
     
     $("#composite_attr_add").click(function(){
+<<<<<<< HEAD
     	if($("#composite_search").val() !== ''){
 	   $("#composite_added_list").prepend('<div class="col-md-12 col-sm-12 col-xs-12 composite-attr" data-id="'+$("#selected_composite_id").val()+'"><div class="col-md-4 col-sm-4 col-xs-4">'+$("#composite_search").val()+'</div><div class="col-md-2 col-xs-2 col-sm-2 col-alpha"><input type="number" class="form-control composite_quantity" value="'+$("#composite_qty").val()+'"><button type="button" class="btn remove remove_composite_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button></div></div>');
 	   }
 	   $("#composite_search").val('');
 	   $("#composite_qty").val('');
+=======
+        if($("#composite_search").val() !== ''){
+       $("#composite_added_list").prepend('<div class="col-md-12 col-sm-12 col-xs-12 composite-attr" data-id="'+$("#selected_composite_id").val()+'"><div class="col-md-4 col-sm-4 col-xs-4">'+$("#composite_search").val()+'</div><div class="col-md-2 col-xs-2 col-sm-2 col-alpha"><input type="number" class="form-control composite_quantity" value="'+$("#composite_qty").val()+'"><button type="button" class="btn remove remove_composite_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button></div></div>');
+       }
+       $("#composite_search").val('');
+       $("#composite_qty").val('');
+>>>>>>> 6d9a57d0f984195f75204f3525e378d07c32fa47
     });
 
 });

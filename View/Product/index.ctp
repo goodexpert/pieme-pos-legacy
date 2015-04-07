@@ -56,7 +56,7 @@
         <div class="page-content">
         
         
-            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-bottom-20">
                 <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
                     Product
                 </h2>
@@ -84,10 +84,10 @@
                         <dt>Show</dt> 
                         <dd>
                             <select class="status">
-                            <option value="active" class="active_product_count">active</option>
-                            <option value="inactive" class="inactive_product_count">inactive</option>
-                            <option value="all" class="product_count">all</option>
-                               </select>
+                                <option value="active" class="active_product_count">Active products</option>
+                                <option value="inactive" class="inactive_product_count">Inactive products</option>
+                                <option value="all" class="product_count">All products</option>
+                            </select>
                         </dd>
 
                         <dt>Name / SKU / Handle</dt>

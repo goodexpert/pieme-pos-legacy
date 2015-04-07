@@ -102,6 +102,22 @@ dd.explain{
 	vertical-align:middle;	
 }
 
+.sorting_asc span.up {
+    background: url(/img/arrow-up-down.png) no-repeat left -18px;
+    display: inline-block;
+    width: 9px;
+    height: 11px;
+    margin-left: 5px;
+}
+.sorting_asc span.down {
+    background: url(/img/arrow-up-down.png) no-repeat left -2px;
+    display: inline-block;
+    width: 9px;
+    height: 11px;
+    margin-left: 5px;
+}
+
+
 
 /* BUTTON VIEW / IMAGE VIEW END */
 
@@ -631,7 +647,7 @@ margin-bottom: -1px;
 }
 .product-container{
 	border: 1px solid #b8b8b8;
-	margin: 0 5px 10px 5px;
+	margin: 0 5px 10px 0;
 	display: inline-block;
 	border-radius: 3px;
 	box-shadow: 0 3px 3px rgba(0,0,0,0.1);
@@ -1030,7 +1046,26 @@ text-align:right;
 	float: left;
 }
 
+/** Close **/
 
+
+#close-register-wrapper {
+    float: left;
+    width: 700px;
+    border-radius: 8px;
+    margin-left: 21%;
+    margin-right: 21%;
+}
+#close-register-details, #close-register-sales, #close-register-payments {
+    margin: 10px 0;
+}
+#close-register-details span {
+    font-weight: bold;
+}
+.sales-table th, .sales-table td {
+    border-bottom: 1px dashed black;
+    padding: 5px;
+}
 
 /** Users **/
 
@@ -1613,6 +1648,18 @@ table.dataTable-sm td {
   box-sizing: content-box;
 }
 
+
+/** Setup **/
+
+.notify-content {
+  padding: 8px;
+  text-align: center;
+  background: #EAF5E1;
+  border: 1px solid #C9E0BA;
+  border-radius: 5px;
+  box-shadow: 0 2px 3px rgba(0,0,0,0.1);	
+}
+.notify-content p { margin:0}
 
 /** footer **/
 

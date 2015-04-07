@@ -24,7 +24,7 @@
                         <a href="/franchise">
                         Franchise </a>
                     </li>
-					<!--
+                    <!--
                     <li>
                         <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
                         Sell <i class="fa fa-angle-down"></i></a>
@@ -42,7 +42,7 @@
                         <a href="/history">
                         History </a>
                     </li>
-					-->
+                    -->
                     <li>
                         <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
                         Product <i class="fa fa-angle-down"></i></a>
