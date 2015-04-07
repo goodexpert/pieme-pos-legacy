@@ -35,8 +35,8 @@
   <!-- BEGIN CONTENT -->
   <div class="page-content-wrapper">
     <div class="page-content">
-    	<div id="notify" class="col-lg-12 col-md-12 col-sm-12">
-        	<div class="notify-content"><p>Changed information well!!!!!!</p></div>
+        <div id="notify" class="col-lg-12 col-md-12 col-sm-12">
+            <div class="notify-content"><p>Changed information well!!!!!!</p></div>
         </div>
       <div class="col-md-12 col-xs-12 col-sm-12"><h3>General Setup</h3></div>
       <div class="portlet-body form"> 
@@ -400,9 +400,9 @@ jQuery(document).ready(function() {
    $(".save").click(function(){
        var allow_cashier_discount;
        if($("#merchant_allow_cashier_discount").is(':checked')) {
-	       allow_cashier_discount = 1;
+           allow_cashier_discount = 1;
        } else {
-	       allow_cashier_discount = 0;
+           allow_cashier_discount = 0;
        }
    
        $.ajax({
@@ -441,7 +441,7 @@ jQuery(document).ready(function() {
               postal_country_id: $("#merchant_contact_postal_country_id").val(),
           },
           success: function(){
-	          location.reload();
+              location.reload();
           }
        });
    });

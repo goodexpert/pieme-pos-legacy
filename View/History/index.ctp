@@ -63,11 +63,7 @@
                         <dt>Date from</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-<<<<<<< HEAD
                             <input type="text" id="date_from">
-=======
-                            <input type="text" id="Date_from">
->>>>>>> 6d9a57d0f984195f75204f3525e378d07c32fa47
                         </dd>
                         <dt>Register</dt>
                         <dd><input type="text" id=""></dd>
@@ -80,11 +76,7 @@
                         <dt>Date to</dt>
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-<<<<<<< HEAD
                             <input type="text" id="date_to">
-=======
-                            <input type="text" id="Date_to">
->>>>>>> 6d9a57d0f984195f75204f3525e378d07c32fa47
                         </dd>
                         <dt>Receipt number</dt>
                         <dd><input type="text" id=""></dd>

@@ -101,64 +101,64 @@ class CustomerController extends AppController {
     }
     
     public function group() {
-    	$user = $this->Auth->user();
-    	
-	    $groups = $this->MerchantCustomerGroup->find('all', array(
-	    	'conditions' => array(
-	    		'MerchantCustomerGroup.merchant_id' => $user['merchant_id']
-	    	)
-	    ));
-	    $this->set('groups',$groups);
+        $user = $this->Auth->user();
+        
+        $groups = $this->MerchantCustomerGroup->find('all', array(
+            'conditions' => array(
+                'MerchantCustomerGroup.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('groups',$groups);
     }
     
     public function add_group() {
-	    $user = $this->Auth->user();
-	    
-	    if($this->request->is('post')) {
-		    $data = $this->request->data;
-		    $data['merchant_id'] = $user['merchant_id'];
-		    
-		    $result = array();
-		    try {
-			    $this->MerchantCustomerGroup->create();
-			    $this->MerchantCustomerGroup->save($data);
-			} catch (Exception $e) {
+        $user = $this->Auth->user();
+        
+        if($this->request->is('post')) {
+            $data = $this->request->data;
+            $data['merchant_id'] = $user['merchant_id'];
+            
+            $result = array();
+            try {
+                $this->MerchantCustomerGroup->create();
+                $this->MerchantCustomerGroup->save($data);
+            } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
             }
             $this->serialize($result);
-	    }
+        }
     }
     
     public function edit_group() {
-	    $user = $this->Auth->user();
-	    
-	    if($this->request->is('post')) {
-		    $data = $this->request->data;
-		    $data['merchant_id'] = $user['merchant_id'];
-		    
-		    $result = array();
-		    try {
-			    $this->MerchantCustomerGroup->id = $data['id'];
-			    $this->MerchantCustomerGroup->save($data);
-			} catch (Exception $e) {
+        $user = $this->Auth->user();
+        
+        if($this->request->is('post')) {
+            $data = $this->request->data;
+            $data['merchant_id'] = $user['merchant_id'];
+            
+            $result = array();
+            try {
+                $this->MerchantCustomerGroup->id = $data['id'];
+                $this->MerchantCustomerGroup->save($data);
+            } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
             }
             $this->serialize($result);
-	    }
+        }
     }
 
     public function delete_group(){
-	    if($this->request->is('post')) {
-		    $data = $this->request->data;
-		    
-		    $result = array();
-		    try {
-			    $this->MerchantCustomerGroup->delete($data['id']);
-			} catch (Exception $e) {
+        if($this->request->is('post')) {
+            $data = $this->request->data;
+            
+            $result = array();
+            try {
+                $this->MerchantCustomerGroup->delete($data['id']);
+            } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
             }
             $this->serialize($result);
-	    }
+        }
     }
 
     public function customer_quick_add() {

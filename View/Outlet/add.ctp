@@ -253,7 +253,7 @@ function saveData() {
     var physical_postcode = $(".outlet_postcode").val();
     var physical_country_id;
     if(!$(".outlet_country").val() == ''){
-    	physical_country_id = $(".outlet_country").val();
+        physical_country_id = $(".outlet_country").val();
     }
 
     $.ajax({

@@ -38,7 +38,7 @@ class OutletController extends AppController {
         $user = $this->Auth->user();
         
         $this->MerchantRegister->bindModel(array(
-        	'belongsTo' => array(
+            'belongsTo' => array(
                 'MerchantQuickKey' => array(
                     'className' => 'MerchantQuickKey',
                     'foreignKey' => 'quick_key_id'
@@ -47,12 +47,12 @@ class OutletController extends AppController {
         ));
         
         $this->MerchantRegister->bindModel(array(
-        	'belongsTo' => array(
-        		'MerchantReceiptTemplate' => array(
+            'belongsTo' => array(
+                'MerchantReceiptTemplate' => array(
                     'className' => 'MerchantReceiptTemplate',
                     'foreignKey' => 'receipt_template_id'
                 )
-        	)
+            )
         ));
 
         $this->MerchantOutlet->bindModel(array(

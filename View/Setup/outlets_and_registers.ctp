@@ -179,20 +179,20 @@
 <script src="/js/notify.js" type="text/javascript"></script>
 <script>
 jQuery(document).ready(function() {    
-	Metronic.init(); // init metronic core componets
-	Layout.init(); // init layout
-	Index.init();
-	
-	$(".more_details").click(function(){
-		$(this).hide();
-		$(this).parent('ul').find(".hidden_li").show();
-		$(this).parent().children(".fewer_details").show();
-	});
-	$(".fewer_details").click(function(){
-		$(this).hide();
-		$(this).parent('ul').find(".hidden_li").hide();
-		$(this).parent().children(".more_details").show();
-	});
+    Metronic.init(); // init metronic core componets
+    Layout.init(); // init layout
+    Index.init();
+    
+    $(".more_details").click(function(){
+        $(this).hide();
+        $(this).parent('ul').find(".hidden_li").show();
+        $(this).parent().children(".fewer_details").show();
+    });
+    $(".fewer_details").click(function(){
+        $(this).hide();
+        $(this).parent('ul').find(".hidden_li").hide();
+        $(this).parent().children(".more_details").show();
+    });
 });
 </script>
 <!-- END JAVASCRIPTS -->

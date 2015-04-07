@@ -56,15 +56,15 @@ class HistoryController extends AppController {
 
         $this->RegisterSale->recursive = 2;
         $sales = $this->RegisterSale->find('all', array(
-        	'fields' => array(
-        		'RegisterSale.*',
-        		'MerchantCustomer.*'
-        	),
+            'fields' => array(
+                'RegisterSale.*',
+                'MerchantCustomer.*'
+            ),
             'conditions' => array(
-            	'RegisterSale.register_id' => $this->Auth->user()['MerchantRegister']['id']
+                'RegisterSale.register_id' => $this->Auth->user()['MerchantRegister']['id']
             ),
             'joins' => array(
-            	array(
+                array(
                     'table' => 'merchant_customers',
                     'alias' => 'MerchantCustomer',
                     'type' => 'INNER',

@@ -93,15 +93,15 @@ class SetupController extends AppController {
     }
 
     public function outlets_and_registers() {
-    	$this->loadModel('MerchantRegister');
-    	$this->loadModel('MerchantQuickKey');
-    	$this->loadModel('MerchantReceiptTemplate');
-    	$this->loadModel('MerchantOutlet');
+        $this->loadModel('MerchantRegister');
+        $this->loadModel('MerchantQuickKey');
+        $this->loadModel('MerchantReceiptTemplate');
+        $this->loadModel('MerchantOutlet');
     
         $user = $this->Auth->user();
         
         $this->MerchantRegister->bindModel(array(
-        	'belongsTo' => array(
+            'belongsTo' => array(
                 'MerchantQuickKey' => array(
                     'className' => 'MerchantQuickKey',
                     'foreignKey' => 'quick_key_id'
@@ -110,12 +110,12 @@ class SetupController extends AppController {
         ));
         
         $this->MerchantRegister->bindModel(array(
-        	'belongsTo' => array(
-        		'MerchantReceiptTemplate' => array(
+            'belongsTo' => array(
+                'MerchantReceiptTemplate' => array(
                     'className' => 'MerchantReceiptTemplate',
                     'foreignKey' => 'receipt_template_id'
                 )
-        	)
+            )
         ));
 
         $this->MerchantOutlet->bindModel(array(

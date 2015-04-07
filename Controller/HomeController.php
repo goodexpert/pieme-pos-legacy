@@ -43,15 +43,15 @@ class HomeController extends AppController {
             }
             
             $this->MerchantProduct->bindModel(array(
-            	'hasMany' => array(
-	                'MerchantProductInventory' => array(
-	                    'className' => 'MerchantProductInventory',
-	                    'foreignKey' => 'product_id',
-	                    'conditions' => array(
-	                    	'MerchantProductInventory.outlet_id' => $user['outlet_id']
-	                    )
-	                )
-	            )
+                'hasMany' => array(
+                    'MerchantProductInventory' => array(
+                        'className' => 'MerchantProductInventory',
+                        'foreignKey' => 'product_id',
+                        'conditions' => array(
+                            'MerchantProductInventory.outlet_id' => $user['outlet_id']
+                        )
+                    )
+                )
             ));
     
             $items = $this->MerchantProduct->find('all', array(

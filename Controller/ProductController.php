@@ -141,15 +141,6 @@ class ProductController extends AppController {
                      $inventories = $data['inventories'];
                      foreach ($inventories as $inventory) {
                          if($inventory['count'] == null) {
-<<<<<<< HEAD
-	                         $inventory['count'] = 0;
-                         }
-                         if($inventory['reorder_point'] == null) {
-	                         $inventory['reorder_point'] = 0;
-                         }
-                         if($inventory['restock_level'] == null) {
-	                         $inventory['restock_level'] = 0;
-=======
                              $inventory['count'] = 0;
                          }
                          if($inventory['reorder_point'] == null) {
@@ -157,7 +148,6 @@ class ProductController extends AppController {
                          }
                          if($inventory['restock_level'] == null) {
                              $inventory['restock_level'] = 0;
->>>>>>> 6d9a57d0f984195f75204f3525e378d07c32fa47
                          }
                          $inventory['MerchantProductInventory']['outlet_id'] = $inventory['outlet_id'];
                          $inventory['MerchantProductInventory']['product_id'] = $this->MerchantProduct->id;
@@ -169,44 +159,6 @@ class ProductController extends AppController {
                 }
                 
                 if(json_decode($data['tags'])[0] !== "") {
-<<<<<<< HEAD
-	                // Step 4: Save Tags
-	                $savedTag = array();
-	                
-	                foreach(json_decode($data['tags']) as $tag) {
-	                	$tag_exist = $this->MerchantProductTag->find('first', array(
-	                		'conditions' => array(
-	                			'MerchantProductTag.name' => $tag,
-	                			'MerchantProductTag.merchant_id' => $user['merchant_id']
-	                		)
-	                	));
-				    	$this->MerchantProductTag->id = $tag_exist['MerchantProductTag']['id'];
-				    	$saveTag['MerchantProductTag']['merchant_id'] = $this->Auth->user()['merchant_id'];
-				    	$saveTag['MerchantProductTag']['name'] = $tag;
-				    	$this->MerchantProductTag->save($saveTag);
-				    	array_push($savedTag, $this->MerchantProductTag->id);
-			    	}
-			    	
-			    	// Step 5: Save Category
-			    	foreach($savedTag as $category) {
-				    	$this->MerchantProductCategory->create();
-				        $saveCategory['MerchantProductCategory']['product_id'] = $this->MerchantProduct->id;
-				        $saveCategory['MerchantProductCategory']['product_tag_id'] = $category;
-				        $this->MerchantProductCategory->save($saveCategory);
-				    }
-			    }
-			    //Step 6: Save Composite Attributes
-			    if($data['stock_type'] == 'composite') {
-			    	foreach($data['composite'] as $composite) {
-					    $this->MerchantProductComposite->create();
-					    $saveComposite['MerchantProductComposite']['parent_id'] = $this->MerchantProduct->id;
-					    $saveComposite['MerchantProductComposite']['product_id'] = $composite['product_id'];
-					    $saveComposite['MerchantProductComposite']['quantity'] = $composite['quantity'];
-					    $this->MerchantProductComposite->save($saveComposite);
-					}
-				}
-			    
-=======
                     // Step 4: Save Tags
                     $savedTag = array();
                     
@@ -243,7 +195,6 @@ class ProductController extends AppController {
                     }
                 }
                 
->>>>>>> 6d9a57d0f984195f75204f3525e378d07c32fa47
                 $result['success'] = true;
                 $result['product_id'] = $this->MerchantProduct->id;
                 $dataSource->commit();
@@ -364,62 +315,6 @@ class ProductController extends AppController {
 
                 // Step 4: Save Tags
                 if(json_decode($data['tags'])[0] !== ""){
-<<<<<<< HEAD
-	                $savedTag = array();
-	                foreach(json_decode($data['tags']) as $tag) {
-	                	$tag_exist = $this->MerchantProductTag->find('first', array(
-	                		'conditions' => array(
-	                			'MerchantProductTag.name' => $tag,
-	                			'MerchantProductTag.merchant_id' => $user['merchant_id']
-	                		)
-	                	));
-				    	$this->MerchantProductTag->id = $tag_exist['MerchantProductTag']['id'];
-				    	$saveTag['MerchantProductTag']['merchant_id'] = $user['merchant_id'];
-				    	$saveTag['MerchantProductTag']['name'] = $tag;
-				    	$this->MerchantProductTag->save($saveTag);
-				    	array_push($savedTag, $this->MerchantProductTag->id);
-			    	}
-	
-			    	// Setp 5: Save Category
-			    	foreach($savedTag as $category) {
-			    		$category_exist = $this->MerchantProductCategory->find('first',array(
-			    			'conditions' => array(
-			    				'MerchantProductCategory.product_tag_id' => $category,
-			    				'MerchantProductCategory.product_id' => $id
-			    			)
-			    		));
-				    	$this->MerchantProductCategory->id = $category_exist['MerchantProductCategory']['id'];
-				        $saveCategory['MerchantProductCategory']['product_id'] = $this->MerchantProduct->id;
-				        $saveCategory['MerchantProductCategory']['product_tag_id'] = $category;
-				        $this->MerchantProductCategory->save($saveCategory);
-				    }
-				} else {
-					$category_exist = $this->MerchantProductCategory->find('all',array(
-		    			'conditions' => array(
-		    				'MerchantProductCategory.product_id' => $id
-		    			)
-		    		));
-		    		foreach($category_exist as $toDelete) {
-		    			$this->MerchantProductCategory->delete($toDelete['MerchantProductCategory']['id']);
-		    		}
-				}
-				//Step 6: Save Composite Attributes
-			    if($data['stock_type'] == 'composite') {
-			    	foreach($data['composite'] as $composite) {
-			    		$composite_exist = $this->MerchantProductComposite->find('first', array(
-			    			'conditions' => array(
-			    				'MerchantProductComposite.product_id' => $composite['product_id'],
-			    				'MerchantProductComposite.parent_id' => $id
-			    			)
-			    		));
-					    $this->MerchantProductComposite->id = $composite_exist['MerchantProductComposite']['id'];
-					    $saveComposite['MerchantProductComposite']['parent_id'] = $this->MerchantProduct->id;
-					    $saveComposite['MerchantProductComposite']['product_id'] = $composite['product_id'];
-					    $saveComposite['MerchantProductComposite']['quantity'] = $composite['quantity'];
-					    $this->MerchantProductComposite->save($saveComposite);
-					}
-				}
-=======
                     $savedTag = array();
                     foreach(json_decode($data['tags']) as $tag) {
                         $tag_exist = $this->MerchantProductTag->find('first', array(
@@ -474,7 +369,6 @@ class ProductController extends AppController {
                         $this->MerchantProductComposite->save($saveComposite);
                     }
                 }
->>>>>>> 6d9a57d0f984195f75204f3525e378d07c32fa47
 
                 $result['success'] = true;
                 $result['data'] = $data['composite'];
@@ -506,17 +400,6 @@ class ProductController extends AppController {
         $this->set("categories", $categories);
 
         $composites = $this->MerchantProductComposite->find('all', array(
-<<<<<<< HEAD
-        	'fields' => array(
-        		'MerchantProduct.*',
-        		'MerchantProductComposite.*'
-        	),
-        	'conditions' => array(
-        		'MerchantProductComposite.parent_id' => $id
-        	),
-        	'joins' => array(
-        		array(
-=======
             'fields' => array(
                 'MerchantProduct.*',
                 'MerchantProductComposite.*'
@@ -526,7 +409,6 @@ class ProductController extends AppController {
             ),
             'joins' => array(
                 array(
->>>>>>> 6d9a57d0f984195f75204f3525e378d07c32fa47
                     'table' => 'merchant_products',
                     'alias' => 'MerchantProduct',
                     'type' => 'INNER',
@@ -534,11 +416,7 @@ class ProductController extends AppController {
                         'MerchantProduct.id = MerchantProductComposite.product_id'
                     )
                 )
-<<<<<<< HEAD
-        	)
-=======
             )
->>>>>>> 6d9a57d0f984195f75204f3525e378d07c32fa47
         ));
         $this->set('composites',$composites);
 

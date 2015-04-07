@@ -590,7 +590,7 @@
                   <h4 class="modal-title">Status</h4>
               </div>
               <div class="modal-body">
-			  	<p>Please wait while your offline data is updated</p>
+                  <p>Please wait while your offline data is updated</p>
               </div>
               <div class="modal-footer col-md-12 col-sm-12 col-xs-12">
                   <button class="btn add_customer-submit" type="button" data-dismiss="modal">Go to the Dashboard</button>
@@ -798,14 +798,14 @@ jQuery(document).ready(function() {
         $("#sell-index").removeClass("hidden");
     });
     $(document).on("click",".retrieve_open",function(){
-    	//$("#retrieve-sale").load(location.pathname +'#retrieve-sale');
+        //$("#retrieve-sale").load(location.pathname +'#retrieve-sale');
         $("#retrieve-sale").removeClass("hidden");
         $("#sell-index").addClass("hidden");
     });
     $(document).on('click',".retrieve_sale",function(){
-    	var customer_name = $(this).attr("data-customer-name");
-    	var customer_id = $(this).attr("data-customer-id");
-    	var customer_balance = parseFloat($(this).attr("data-customer-balance")).toFixed(2);
+        var customer_name = $(this).attr("data-customer-name");
+        var customer_id = $(this).attr("data-customer-id");
+        var customer_balance = parseFloat($(this).attr("data-customer-balance")).toFixed(2);
         $("#retrieve-sale").addClass("hidden");
         $("#sell-index").removeClass("hidden");
         if($(".order-product").length !== 0){
@@ -829,13 +829,13 @@ jQuery(document).ready(function() {
                     retCount++;
                 });
                 if(customer_name == ''){
-	                
+                    
                 } else {
-	                $("#customer-result-name").text(customer_name);
-	                $("#customer-selected-id").val(customer_id);
-	                $("#customer-result-balance").text(customer_balance);
-	                $(".customer-search-result").children("dl").show();
-	            }
+                    $("#customer-result-name").text(customer_name);
+                    $("#customer-selected-id").val(customer_id);
+                    $("#customer-result-balance").text(customer_balance);
+                    $(".customer-search-result").children("dl").show();
+                }
             });
             
         } else {
@@ -851,7 +851,7 @@ jQuery(document).ready(function() {
                 retCount++;
             });
             if(customer_name == ''){
-	                
+                    
             } else {
                 $("#customer-result-name").text(customer_name);
                 $("#customer-selected-id").val(customer_id);
@@ -994,7 +994,7 @@ jQuery(document).ready(function() {
                 amount: amount
             },
             success: function(result){
-	            console.log(result);
+                console.log(result);
             }
         });
     }
@@ -1036,26 +1036,26 @@ jQuery(document).ready(function() {
 
         if(to_pay == paying){
 
-	        save_register_sale(paying);
+            save_register_sale(paying);
 
-	        $(".fade").hide();
-	        $(".receipt-product-table").children("tbody").text('');
-	        $(".order-product").each(function(){
-	            $(".receipt-product-table").children("tbody").append('<tr><td class="receipt-product-qty">'+$(this).children(".added-qty").children("a").text()+'</td><td class="receipt-product-name">'+$(this).children(".added-product").text().split("$")[0]+'</td><td class="receipt-price pull-right">$'+$(this).children(".added-amount").text()+'</td></tr>');
-	        });
-	        $(".order-product").remove();
-	        $(".receipt-parent").show('blind');
-	        $(".modal-backdrop").show();
-	        $(".receipt-customer-name").text($("#customer-result-name").text());
-	        $(".receipt-subtotal").text('$'+ $(".subTotal").text());
-	        $(".receipt-tax").text('$'+ $(".gst").text());
-	        $(".receipt-total").text('$'+ $(".toPay").text());
-	        $(".customer-search-result").children().hide();
-	        $("#customer-result-name").val('');
-	        $("#customer-selected-id").val($("#customer-null").val());
+            $(".fade").hide();
+            $(".receipt-product-table").children("tbody").text('');
+            $(".order-product").each(function(){
+                $(".receipt-product-table").children("tbody").append('<tr><td class="receipt-product-qty">'+$(this).children(".added-qty").children("a").text()+'</td><td class="receipt-product-name">'+$(this).children(".added-product").text().split("$")[0]+'</td><td class="receipt-price pull-right">$'+$(this).children(".added-amount").text()+'</td></tr>');
+            });
+            $(".order-product").remove();
+            $(".receipt-parent").show('blind');
+            $(".modal-backdrop").show();
+            $(".receipt-customer-name").text($("#customer-result-name").text());
+            $(".receipt-subtotal").text('$'+ $(".subTotal").text());
+            $(".receipt-tax").text('$'+ $(".gst").text());
+            $(".receipt-total").text('$'+ $(".toPay").text());
+            $(".customer-search-result").children().hide();
+            $("#customer-result-name").val('');
+            $("#customer-selected-id").val($("#customer-null").val());
         } else {
-	        to_pay = to_pay - paying;
-	        $("#set-pay-amount").val(to_pay);
+            to_pay = to_pay - paying;
+            $("#set-pay-amount").val(to_pay);
         }
 
         var now = new Date(Date.now());

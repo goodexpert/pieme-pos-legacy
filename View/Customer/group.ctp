@@ -57,14 +57,14 @@
                 </tr>
                 </thead>
                 <tbody>
-                	<?php foreach($groups as $group){ ?>
+                    <?php foreach($groups as $group){ ?>
                     <tr data-id="<?php echo $group['MerchantCustomerGroup']['id'];?>">
                         <td class="group_name"><?php echo $group['MerchantCustomerGroup']['name'];?></td>
                         <td class="group_code"><?php echo $group['MerchantCustomerGroup']['group_code'];?></td>
                         <td><?php echo $group['MerchantCustomerGroup']['created'];?></td>
                         <td><?php if($group['MerchantCustomerGroup']['name'] !== 'All Customers'){;?>
-                        	<span class="clickable edit">Edit</span> |
-                        	<span class="clickable delete">Delete</span>
+                            <span class="clickable edit">Edit</span> |
+                            <span class="clickable delete">Delete</span>
                         <?php } ?></td>
                     </tr>
                     <?php } ?>
@@ -175,9 +175,9 @@ jQuery(document).ready(function() {
         $(".modal-backdrop").show();
     });
     $(".edit").click(function(){
-    	$("#group_name_edit").val($(this).parents("tr").find('.group_name').text());
-    	$("#group_code_edit").val($(this).parents("tr").find('.group_code').text());
-    	$("#group_id_edit").val($(this).parents("tr").attr('data-id'));
+        $("#group_name_edit").val($(this).parents("tr").find('.group_name').text());
+        $("#group_code_edit").val($(this).parents("tr").find('.group_code').text());
+        $("#group_id_edit").val($(this).parents("tr").attr('data-id'));
         $("#popup-edit_group").show();
         $(".modal-backdrop").show();
     });
@@ -190,51 +190,51 @@ jQuery(document).ready(function() {
     $(".add_submit").click(function(){
         $.ajax({
             url: '/customer/add_group.json',
-	        type: 'POST', 
-	        data: {
-		        name: $("#group_name").val(),
-		        group_code: $("#group_code").val()
-	        },
-	        success: function(){
-		        location.reload();
-	        },
-	        error: function(jqXHR, textStatus, errorThrown) {
+            type: 'POST', 
+            data: {
+                name: $("#group_name").val(),
+                group_code: $("#group_code").val()
+            },
+            success: function(){
+                location.reload();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
                 alert(textStatus, errorThrown);
             }
         });
     });
     $(".edit_submit").click(function(){
         $.ajax({
-	        url: '/customer/edit_group.json',
-	        type: 'POST',
-	        data: {
-		        id: $("#group_id_edit").val(),
-		        name: $("#group_name_edit").val(),
-		        group_code: $("#group_code_edit").val()
-	        },
-	        success: function(){
-		        location.reload();
-	        },
-	        error: function(jqXHR, textStatus, errorThrown) {
+            url: '/customer/edit_group.json',
+            type: 'POST',
+            data: {
+                id: $("#group_id_edit").val(),
+                name: $("#group_name_edit").val(),
+                group_code: $("#group_code_edit").val()
+            },
+            success: function(){
+                location.reload();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
                 alert(textStatus, errorThrown);
             }
         });
     });
     $(".delete").click(function(){
-	    var target_id = $(this).parents('tr').attr('data-id');
-	    $.ajax({
-		    url: '/customer/delete_group.json',
-		    type: 'POST',
-		    data: {
-			    id: target_id
-		    },
-		    success: function(){
-		        location.reload();
-	        },
-	        error: function(jqXHR, textStatus, errorThrown) {
+        var target_id = $(this).parents('tr').attr('data-id');
+        $.ajax({
+            url: '/customer/delete_group.json',
+            type: 'POST',
+            data: {
+                id: target_id
+            },
+            success: function(){
+                location.reload();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
                 alert(textStatus, errorThrown);
             }
-	    });
+        });
     });
 });
 </script>
