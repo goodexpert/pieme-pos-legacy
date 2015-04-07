@@ -94,9 +94,8 @@
                 </div>
             </div>
             <div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">Order Products</div>
-                <form action="/stock/receive/<?php echo $order['MerchantStockOrder']['id']; ?>" method="post" id="stock_order_item_form">
-                <input type="hidden" name="data[MerchantStockOrder][id]" value="<?php echo $order['MerchantStockOrder']['id']; ?>
-" />            <div class="line-box line-box-content col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
+                <form id="stock_order_item_form">
+                <div class="line-box line-box-content col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
                 <div class="col-md-12 col-sm-12 col-xs-12 order-product-header col-alpha col-omega">
                     <div class="col-md-7 col-alpha">
                         <input type="search" placeholder="Search Products" id="product_search" autocomplete="off">
@@ -226,7 +225,7 @@
                     <h4 class="modal-title">Send order</h4>
                 </div>
                 <form id="confirmation-email-form">
-                <input type="hidden" name="data[order_id]" value="<?php echo $order['MerchantStockOrder']['id']; ?>" />
+                <input type="hidden" name="data[MerchantStockOrder][id]" value="<?php echo $order['MerchantStockOrder']['id']; ?>" />
                 <div class="modal-body margin-bottom-20">
                     <dl>
                         <dt>Recipient name</dt>
@@ -356,22 +355,23 @@ jQuery(document).ready(function() {
 
     $(".datepicker").datepicker({ dateFormat: 'yy-mm-dd' });
 
-    $(document).on('click','.save',function(){
+    $(document).on('click','.save',function(e){
+        e.preventDefault();
         $.ajax({
-
-            url: '/stock/receive.json',
-            type: 'POST',
-            data: {
-                name: $("#order-name").val(),
-                supplier_id: $("#order-supplier").val(),
-                outlet_id: $("#order-outlet").val(),
-                type: 'SUPPLIER',
-                status: 'OPEN',
-                due_date: $("#order-due").val()
+            //url: '/stock/receive.json',
+            url: "/stock/saveItems.json",
+            method: "POST",
+            data: $('#stock_order_item_form').serialize(),
+            error: function ( jqXHR, textStatus, errorThrown ) {
+            },
+            success: function( data, textStatus, jqXHR ) {
+                if (data.success) {
+                    location.href = "/stock/receive/<?php echo $order['MerchantStockOrder']['id']; ?>";
+                } else {
+                    alert(data.message);
+                    console.log(data.message);
+                }
             }
-        
-        }).done(function(result){
-            console.log(result);
         });
     });
 
@@ -379,7 +379,8 @@ jQuery(document).ready(function() {
     $(document).on('click', '.save-and-receive', function(e) {
         e.preventDefault();
         $.ajax({
-            url: "/stock/saveReceivedItems.json",
+            //url: "/stock/saveReceivedItems.json",
+            url: "/stock/saveItems.json",
             method: "POST",
             data: $('#stock_order_item_form').serialize(),
             error: function( jqXHR, textStatus, errorThrown ) {
@@ -387,13 +388,14 @@ jQuery(document).ready(function() {
             success: function( data, textStatus, jqXHR ) {
                 if (data.success) {
                     $('.save_receive').show();
-                    console.log(data.message);
                 } else {
                     alert(data.message);
                     console.log(data.message);
                 }
             }
         });
+
+        return false;
     });
 
     // modal ...
@@ -404,7 +406,7 @@ jQuery(document).ready(function() {
         e.preventDefault();
 
         $.ajax({
-            url: "/stock/receivedEmail.json",
+            url: "/stock/sendReceive.json",
             method: "POST",
             data: $('#confirmation-email-form').serialize(),
             error: function( jqXHR, textStatus, errorThrown ) {
@@ -418,6 +420,8 @@ jQuery(document).ready(function() {
                 }
             }
         });
+
+        return false;
     });
    
     $(".cancel").click(function(){

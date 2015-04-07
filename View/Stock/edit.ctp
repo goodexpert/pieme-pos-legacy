@@ -73,15 +73,7 @@
                         <?php if ( $order['MerchantStockOrder']['type'] == 'OUTLET' ): ?>
                         <dt>Source outlet</dt>
                         <dd>
-                            <?php
-                                foreach ($outlets as $outlet):
-                                    if ( $outlet['MerchantOutlet']['id'] == $order['MerchantStockOrder']['source_outlet_id'] ):
-                                        $source_outlet = $outlet['MerchantOutlet']['name'];
-                                        break;
-                                    endif;
-                                endforeach;
-                                echo $source_outlet;
-                            ?>
+                            <?php echo $order['MerchantSourceOutlet']['name']; ?>
                         </dd>
                         <?php endif; ?>
 
@@ -112,7 +104,8 @@
                 </div>
             </div>
             <div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">Order Products</div>
-                <form action="/stock/edit/<?php echo $order['MerchantStockOrder']['id']; ?>" method="post" id="stock_order_item_form">
+                <!--<form action="/stock/edit/<?php echo $order['MerchantStockOrder']['id']; ?>" method="post" id="stock_order_item_form">-->
+                <form id="stock_order_item_form">
                 <input type="hidden" name="data[MerchantStockOrder][id]" value="<?php echo $order['MerchantStockOrder']['id']; ?>
 " />            <div class="line-box line-box-content col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
                 <div class="col-md-12 col-sm-12 col-xs-12 order-product-header col-alpha col-omega">
@@ -129,7 +122,18 @@
                         <span class="search-tri"></span>
                         <div class="search-default"> No Result </div>
                         <?php foreach($products as $product){ ?>
-                        <button type="button" data-stock="0" data-order-id="<?=$order['MerchantStockOrder']['id'];?>" data-name="<?=$product['MerchantProduct']['name'];?>" data-sku="<?=$product['MerchantProduct']['sku'];?>" data-id="<?=$product['MerchantProduct']['id'];?>" data-price-include-tax="<?=$product['MerchantProduct']['price_include_tax'];?>" data-inventory-count="<?php echo is_null($product['MerchantProductInventory']['count']) ? '0' : $product['MerchantProductInventory']['count']; ?>" data-supply-price="<?php echo $product['MerchantProduct']['supply_price']; ?>" class="data-found"><?=$product['MerchantProduct']['name']." (".$product['MerchantProduct']['sku'].")";?></button>
+                        <?php
+                            if ( isset($product['MerchantProductInventory']['count']) ):
+                                if ( is_null($product['MerchantProductInventory']['count']) ):
+                                    $inventoryCount = '0';
+                                else:
+                                    $inventoryCount = $product['MerchantProductInventory']['count'];
+                                endif;
+                            else:
+                                $inventoryCount = '0';
+                            endif;
+                        ?>
+                        <button type="button" data-stock="0" data-order-id="<?=$order['MerchantStockOrder']['id'];?>" data-name="<?=$product['MerchantProduct']['name'];?>" data-sku="<?=$product['MerchantProduct']['sku'];?>" data-id="<?=$product['MerchantProduct']['id'];?>" data-price-include-tax="<?=$product['MerchantProduct']['price_include_tax'];?>" data-inventory-count="<?php echo $inventoryCount; ?>" data-supply-price="<?php echo $product['MerchantProduct']['supply_price']; ?>" class="data-found"><?=$product['MerchantProduct']['name']." (".$product['MerchantProduct']['sku'].")";?></button>
                         <?php } ?> 
                     </div>
                 </div>
@@ -215,7 +219,7 @@
                 </div>
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
-                <button class="btn btn-primary save-and-send pull-right">Save and Send</button>
+                <button class="btn btn-primary save_and_send pull-right">Save and Send</button>
                 <button class="btn btn-primary btn-wide pull-right save margin-right-10">Save</button>
                 <button class="btn btn-default btn-wide pull-right margin-right-10 cancel">Cancel</button>
             </div>
@@ -235,19 +239,19 @@
                     <h4 class="modal-title">Send order</h4>
                 </div>
                 <form id="confirmation-email-form">
-                <input type="hidden" name="data[order_id]" value="<?php echo $order['MerchantStockOrder']['id']; ?>" />
+                <input type="hidden" name="data[MerchantStockOrder][id]" value="<?php echo $order['MerchantStockOrder']['id']; ?>" />
                 <div class="modal-body margin-bottom-20">
                     <dl>
                         <dt>Recipient name</dt>
-                        <dd><input type="text" name="data[recipient_name]"></dd>
+                        <dd><input type="text" name="data[Email][recipient_name]"></dd>
                         <dt>Email</dt>
-                        <dd><input type="text" name="data[email]"></dd>
+                        <dd><input type="text" name="data[Email][email]"></dd>
                         <dt>CC</dt>
-                        <dd><input type="text" name="data[cc]"></dd>
+                        <dd><input type="text" name="data[Email][cc]"></dd>
                         <dt>Subject</dt>
-                        <dd><input type="text" name="data[subject]"></dd>
+                        <dd><input type="text" name="data[Email][subject]"></dd>
                         <dt>Message</dt>
-                        <dd><textarea col="2" name="data[message]"></textarea></dd>
+                        <dd><textarea col="2" name="data[Email][message]"></textarea></dd>
                     </dl>
                 </div>
                 <div class="modal-footer">
@@ -387,7 +391,6 @@ jQuery(document).ready(function() {
     
     // 'save and send' button click ...
     $(document).on('click', '.save', function(e) {
-        e.preventDefault();
         $.ajax({
             url: "/stock/saveItems.json",
             method: "POST",
@@ -403,13 +406,14 @@ jQuery(document).ready(function() {
                 }
             }
         });
+        e.preventDefault();
+        return false;
     });
 
     // 'save and send' button click ...
-    $(document).on('click', '.save-and-send', function(e) {
-        e.preventDefault();
+    $(document).on('click', '.save_and_send', function(e) {
         $.ajax({
-            url: "/stock/saveSentItems.json",
+            url: "/stock/saveItems.json",
             method: "POST",
             data: $('#stock_order_item_form').serialize(),
             error: function( jqXHR, textStatus, errorThrown ) {
@@ -422,6 +426,7 @@ jQuery(document).ready(function() {
                 }
             }
         });
+        return false;
     });
 
     // modal ...
@@ -432,7 +437,7 @@ jQuery(document).ready(function() {
         e.preventDefault();
 
         $.ajax({
-            url: "/stock/sentEmail.json",
+            url: "/stock/send.json",
             method: "POST",
             data: $('#confirmation-email-form').serialize(),
             error: function( jqXHR, textStatus, errorThrown ) {
@@ -446,6 +451,8 @@ jQuery(document).ready(function() {
                 }
             }
         });
+
+        return false;
     });
     /*
     $(document).on('click', '.modal-send', function(e) {

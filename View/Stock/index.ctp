@@ -190,7 +190,7 @@
                     <?php
                         $orderStatusDisp = array(
                             'OPEN' => 'Open',
-                            'SEND' => 'Sent',
+                            'SENT' => 'Sent',
                             'RECEIVED' => 'Received',
                             'RECEIVE_FAIL' => 'Failed',
                             'OVERDUE' => 'Overdue',

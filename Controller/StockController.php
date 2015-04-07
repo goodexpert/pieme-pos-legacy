@@ -245,7 +245,7 @@ class StockController extends AppController {
                 $order_id = $this->MerchantStockOrder->id;
      
                 // check 'auto_fill'
-                if ( !is_null($data['order-auto'] && $data['order-auto'] == '1') ) {
+                if ( !is_null($data['order-auto']) && $data['order-auto'] == '1' ) {
                     $autoFillProducts = $this->__autoFillProducts($data['MerchantStockOrder']['outlet_id']);
                     $items = array();
                     foreach ($autoFillProducts as $p) {
@@ -406,7 +406,8 @@ class StockController extends AppController {
                 ? $this->request->data['MerchantStockOrderItem'] 
                 : array();
 
-            $items = $this->__saveItems($data);
+            $mode = ($order['MerchantStockOrder']['status'] == 'OPEN') ? 'send' : 'receive';
+            $items = $this->__saveItems($data, $mode);
 
             if ( $items ) {
                 $dataSource = $this->MerchantStockOrderItem->getDataSource();
@@ -690,112 +691,6 @@ class StockController extends AppController {
         $this->serialize($result);
     }
 
-    /**
-     * edit a merchant stock order & merchant stock order item
-     *
-     * @param string merchant stock order id
-     */
-    public function edit1($id, $auto_fill = null) {
-        if ( $this->request->is('post') ) {
-            $data = $this->request->data['MerchantStockOrderItem'];
-
-            // for total_cost, total_price_incl_tax
-            foreach ($data as $i => &$d) {
-                $total_cost = round($d['count'] * $d['supply_price'], 2);
-                $data[$i]['total_cost'] = $total_cost;
-                $data[$i]['total_price_incl_tax'] = round($d['count'] * $d['price_include_tax'], 2);
-            }
-
-            $dataSource = $this->MerchantStockOrderItem->getDataSource();
-            $dataSource->begin();
-
-            try {
-                $this->MerchantStockOrderItem->saveMany($data);
-                //$this->MerchantStockOrderItem->saveMany($this->request->data);
-/*
-                $this->MerchantStockOrderItem->saveMany(array(
-                    array('MerchantStockOrderItem' => $data[0])
-                ));
-*/
-
-                $dataSource->commit();
-
-                $this->redirect('/stock/view/' . $id);
-            } catch (Exception $e) {
-                $dataSource->rollback();
-                $this->Session->setFlash($e->getMessage());
-                debug($e->getMessage());
-            }
-        }
-
-        // get the merchant stock order
-        $this->loadModel('MerchantStockOrder');
-
-        $this->MerchantStockOrder->bindModel(array(
-            'belongsTo' => array(
-                'MerchantOutlet' => array(
-                    'className' => 'MerchantOutlet',
-                    'foreignKey' => 'outlet_id'
-                ),
-                'MerchantSupplier' => array(
-                    'className' => 'MerchantSupplier',
-                    'foreignKey' => 'supplier_id'
-                )
-            ),
-            'hasMany' => array(
-                'MerchantStockOrderItem' => array(
-                    'className' => 'MerchantStockOrderItem',
-                    'foreignKey' => 'order_id'
-                )
-            )
-        ));
-
-        $this->MerchantStockOrderItem->bindModel(array(
-            'belongsTo' => array(
-                'MerchantProduct' => array(
-                    'className' => 'MerchantProduct',
-                    'foreignKey' => 'product_id'
-                )
-            )
-        ));
-
-        $merchantStockOrder = $this->MerchantStockOrder->find('first', array(
-            'recursive' => 4,
-            'conditions' => array(
-                'MerchantStockOrder.id' => $id
-            )
-        ));
-        $this->set('order', $merchantStockOrder);
-        //debug($merchantStockOrder); exit;
-
-        // handle auto fill ...
-        if ( !is_null($auto_fill) || $auto_fill == '0' ) {
-            $auto_fill_products = $this->__autoFill($merchantStockOrder['MerchantStockOrder']['outlet_id']);
-            $nextIdx = count($merchantStockOrder['MerchantStockOrderItem']);
-            foreach ($auto_fill_products as $p) {
-                $merchantStockOrder['MerchantStockOrderItem'][$nextIdx]['id'] = null;
-                $merchantStockOrder['MerchantStockOrderItem'][$nextIdx]['order_id'] = $merchantStockOrder['MerchantStockOrder']['id'];
-                $merchantStockOrder['MerchantStockOrderItem'][$nextIdx]['product_id'] = $p['MerchantProduct']['id'];
-                $merchantStockOrder['MerchantStockOrderItem'][$nextIdx]['product_id'] = $p['MerchantProduct']['id'];
-            }
-        }
-
-
-        $this->loadModel('MerchantProduct');
-        $products = $this->MerchantProduct->find('all', array(
-            'conditions' => array(
-                'MerchantProduct.merchant_id' => $merchantStockOrder['MerchantStockOrder']['merchant_id']
-            )
-        ));
-        $this->set('products', $products);
-
-
-        if ( !$this->request->data ) {
-            $this->request->data = $merchantStockOrder;
-        }
-
-    }
-
     private function __autoFillProducts($outlet_id) {
         $this->loadModel('MerchantProductInventory');
 
@@ -912,7 +807,6 @@ class StockController extends AppController {
         if ( !$this->request->data ) {
             $this->request->data = $merchantStockOrder;
         }
-        
     }
 
     /**
@@ -1241,6 +1135,77 @@ class StockController extends AppController {
             $this->request->data = $order;
         }
 
+    }
+
+    /**
+     * 1) update the merchant order status to 'RECEIVED' &
+     * 2) log into 'merchant_product_logs'
+     * 3) handle inventory
+     * 4) send email, optional, if form data passed
+     */
+    public function sendReceive() {
+        if ( !$this->request->is('ajax') || !$this->request->is('post') ) {
+            $this->redirect('/stock');
+        }
+
+        $result = array(
+            'success' => false
+        );
+
+        $id = $this->request->data['MerchantStockOrder']['id'];
+
+        $order = $this->MerchantStockOrder->findById($id);
+
+        $items = $this->MerchantStockOrderItem->find('all', array(
+            'conditions' => array(
+                'MerchantStockOrderItem.order_id' => $order['MerchantStockOrder']['id']
+            )
+        ));
+
+        $inventory = $this->__inventory($order['MerchantStockOrder']['merchant_id'], $order['MerchantStockOrder']['outlet_id'], $items, '+');
+
+        $dataSource = $this->MerchantStockOrder->getDataSource();
+        $dataSource->begin();
+
+        try {
+            // 1)
+            $data['MerchantStockOrder']['status'] = 'RECEIVED';
+            $this->MerchantStockOrder->id = $id;
+            $this->MerchantStockOrder->save($data);
+
+            // 2)
+            if ( $order['MerchantStockOrder']['type'] == 'OUTLET' ) {
+                $product_action_type = 'transfer_received';
+            } else {
+                $product_action_type = 'order_received';
+            }
+
+            $logs = $this->__makeProductLogs($id, $product_action_type);
+            if ( $logs ) {
+                $this->loadModel('MerchantProductLog');
+                $this->MerchantProductLog->saveMany($logs);
+            }
+
+            // 3)
+            if ( $inventory ) {
+                $this->loadModel('MerchantProductInventory');
+                $this->MerchantProductInventory->saveMany($inventory);
+            }
+
+            // 4)
+            if ( isset($this->request->data['Email']) ) {
+
+            }
+
+            $dataSource->commit();
+
+            $result['success'] = true;
+        } catch (Exception $e) {
+            $dataSource->rollback();
+            $reuslt['message'] = $e->getMessage();
+        }
+
+        $this->serialize($result);
     }
 
     public function inventoryCount() {
@@ -1687,18 +1652,20 @@ $result = $this->Project->find('all', array(
      * save order items 
      *
      * @param array request form data
+     * @param string mode (send | receive)
      * @return array the items formatted for 'saveMany'
      */
-    private function __saveItems($data) {
+    private function __saveItems($data, $mode) {
         if ( !$data ) {
             return $data;
         }
 
         // total_cost, total_price_incl_tax
         foreach ($data as $i => $d) {
-            $total_cost = round($d['count'] * $d['supply_price'], 2);
+            $count = ($mode == 'send') ? $d['count'] : $d['received'];
+            $total_cost = round($count * $d['supply_price'], 2);
             $data[$i]['total_cost'] = $total_cost;
-            $data[$i]['total_price_incl_tax'] = round($d['count'] * $d['price_include_tax'], 2);
+            $data[$i]['total_price_incl_tax'] = round($count * $d['price_include_tax'], 2);
         }
 
         $items = array();

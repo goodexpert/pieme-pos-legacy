@@ -118,7 +118,7 @@
                             <?php if ( $this->request->data['MerchantStockOrder']['type'] == 'SUPPLIER' ): ?>
                             <dt>Supplier</dt>
                             <dd>
-                                <?php echo is_null($this->request->data['MerchantSupplier']['name']) ? 'Any' : $order['MerchantSupplier']['name']; ?>
+                                <?php echo is_null($this->request->data['MerchantSupplier']['name']) ? 'Any' : $this->request->data['MerchantSupplier']['name']; ?>
                             </dd>
                             <?php endif; ?>
 
