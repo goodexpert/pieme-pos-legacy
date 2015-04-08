@@ -1239,13 +1239,34 @@ class StockController extends AppController {
                 )
             )
         ));
+
         $takes = $this->MerchantStockTake->find('all', array(
             'conditions' => array(
                 'MerchantStockTake.type' => 'STOCKTAKE'
             )
         ));
-        $this->set('takes', $takes);
 
+        $inventoryCounts = array();
+        foreach ($takes as $take) {
+            $count = array(
+                'id' => $take['MerchantStockTake']['id'],
+                'name' => $take['MerchantStockTake']['name'],
+                'status' => $take['MerchantStockTake']['status'],
+                'outlet' => $take['MerchantOutlet']['name'],
+                'count' => ($take['MerchantStockTake']['full_count'] == '1') ? 'Full' : 'Partial',
+            );
+
+            if ( $take['MerchantStockTake']['status'] == 'STOCKTAKE_SCHEDULED' || $take['MerchantStockTake']['status'] == 'STOCKTAKE_IN_PROGRESS_PROCESSED' ) {
+                $inventoryCounts['Due'][] = $count;
+            } elseif ( $take['MerchantStockTake']['status'] == 'STOCKTAKE_COMPLETE' ) {
+                $inventoryCounts['Completed'][] = $count;
+            } elseif ( $take['MerchantStockTake']['status'] == 'STOCKTAKE_CANCELLED' ) {
+                $inventoryCounts['Cancelled'][] = $count;
+            }
+        }
+        $this->set('inventoryCounts', $inventoryCounts);
+
+        $this->set('takes', $takes);
     }
 
     public function newInventoryCount() { 
@@ -1413,6 +1434,21 @@ class StockController extends AppController {
     }
 
     public function reviewInventoryCount() {
+    }
+
+    public function merchantProducts() {
+        if ( !$this->request->is('ajax') ) {
+            $this->redirect('/stock');
+        }
+
+        $this->loadModel('MerchantProduct');
+        $products = $this->MerchantProduct->find('all', array(
+            'conditions' => array(
+                'MerchantProduct.merchant_id' => $this->Auth->user()['merchant_id']
+            )
+        ));
+
+        $this->serialize($products);
     }
 
     public function test() {
@@ -1871,6 +1907,10 @@ $result = $this->Project->find('all', array(
 
         debug($inventory);
         exit;
+    }
+
+    public function jase4() {
+        $this->layout = 'default';
     }
 
 }

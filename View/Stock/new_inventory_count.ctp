@@ -1,3 +1,8 @@
+<style>
+/*
+.ui-helper-hidden-accessible { position: absolute; left:-999em; }
+*/
+</style>
 
 <div class="clearfix">
 </div>
@@ -147,7 +152,7 @@
                   <div class="col-md-12 col-xs-12 col-sm-12">
                     <h5><strong>Partial Count List</strong></h5>
                     <h5>Create your list of items to count using suppliers, brands, types, tags, or SKUs. Combine multiple filters to narrow down your list.</h5>
-                    <input type="text" class="margin-top-20" placeholder="Search for suppliers, brands, types, tags, or SKUs.">
+                    <input type="text" id="search-items" class="margin-top-20" placeholder="Search for suppliers, brands, types, tags, or SKUs.">
                   </div>
                   <div class="col-md-12 col-xs-12 col-sm-12 margin-top-20">
                         <table id="productTable" class="table-bordered dataTable">
@@ -160,9 +165,11 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <!--
                                 <tr>
                                     <td>T-shirt (Demo)<h6>tshirt-white</h6></td>
                                 </tr>
+                                -->
                             </tbody>
                         </table>
                   </div>
@@ -275,6 +282,7 @@
 <script src="/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"> 
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script>
 jQuery(document).ready(function() {    
@@ -283,7 +291,6 @@ jQuery(document).ready(function() {
     QuickSidebar.init() // init quick sidebar
     Index.init();
 
-
     $(document).on('change', '.outlet', function() {
         var outlet = $('option:selected', $(this)).text();
         var count_name = '';
@@ -291,6 +298,56 @@ jQuery(document).ready(function() {
         if ( outlet != '' ) {
             //count_name = outlet + 
         }
+    });
+});
+
+$(function() {
+    // jquery ui autocomplete
+    /*
+    var items = ["Coffee", "Apple", "Banana"];
+    $("#search-items").autocomplete({
+        source: items
+    });
+     */
+    $("#search-items").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/stock/merchantProducts.json",
+                dataType: "json",
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return {
+                            label: item.MerchantProduct.name,
+                            value: item.MerchantProduct.id,
+                            sku: item.MerchantProduct.sku
+                        }
+                    }));
+                }
+            });
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+            event.preventDefault();
+
+            $(this).val('');
+
+            $('#productTable tbody').append('<tr><td>'+ui.item.label+'<h6>'+ui.item.sku+'</h6></td></tr>');
+
+            return false;
+            
+        },
+        focus: function( event, ui ) {
+            event.preventDefault();
+        }
+    });
+});
+
+$(function() {
+    //var items = [{"name":"Coffee", "value":"111"},{"name":"Shirt", "value":"222"}];
+    var items = ["Coffee", "Shirt", "Baseball"];
+
+    $("#search-items1").autocomplete({
+        source: items
     });
 });
 </script>

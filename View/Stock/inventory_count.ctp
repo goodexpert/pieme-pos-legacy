@@ -105,42 +105,22 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <!--
-                                <tr role="row" class="odd">
-                                    <td> </td>
-                                    <td>
-                                        <p>Main Outlet 25-03-2015 3:00 PM <span class="text-bg-blue">In progress</span></p>
-                                        <h6>25 Mar 2015</h6>
-                                    </td>
-                                    <td>Main Outlet</td>
-                                    <td>Full</td>
-                                </tr>
-                                <tr role="row" class="even">
-                                    <td> </td>
-                                    <td>
-                                        <p>Main Outlet 25-03-2015 3:00 PM <span class="text-bg-blue">In progress</span></p>
-                                        <h6>25 Mar 2015</h6>
-                                    </td>
-                                    <td>Main Outlet</td>
-                                    <td>Full</td>
-                                </tr>
-                                -->
                                 <?php
-                                    if ( count($takes) > 0 ):
-                                        foreach ($takes as $take):
+                                    if ( count($inventoryCounts) > 0 ):
+                                        foreach ($inventoryCounts['Due'] as $count):
                                 ?>
-                                <tr class="clickable" data-href="/inventory_count/<?php echo $take['MerchantStockTake']['id']; ?>">
+                                <tr class="clickable" data-href="/inventory_count/<?php echo $count['id']; ?>">
                                     <td></td>
                                     <td>
                                         <p>
-                                            <?php echo $take['MerchantStockTake']['name']; ?>
-                                            <?php if ( $take['MerchantStockTake']['status'] == 'STOCKTAKE_IN_PROGRESS_PROCESSED' ): ?>
+                                            <?php echo $count['name']; ?>
+                                            <?php if ( $count['status'] == 'STOCKTAKE_IN_PROGRESS_PROCESSED' ): ?>
                                             <span class="text-bg-blue">In progress</span>
                                             <?php endif; ?>
                                         </p>
                                     </td>
-                                    <td><?php echo $take['MerchantOutlet']['name']; ?></td>
-                                    <td><?php echo ($take['MerchantStockTake']['full_count'] == '0') ? 'Partial' : 'Full'; ?></td>
+                                    <td><?php echo $count['outlet']; ?></td>
+                                    <td><?php echo $count['count']; ?></td>
                                 </tr>
                                 <?php
                                         endforeach;
