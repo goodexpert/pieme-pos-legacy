@@ -112,8 +112,14 @@
                                     if($register['print_receipt'] == 1){ ?>
                                     <li class="hidden_li" style="display:none;">Print receipt</li>
                                     <?php }
-                                    if($register['ask_for_note_on_save'] !== 0) { ?>
+                                    if(!$register['ask_for_note_on_save'] == 0) { ?>
                                     <li class="hidden_li" style="display:none;">Ask for note on <?php if($register['ask_for_note_on_save'] == 1){echo 'Save/Layby/Account/Return';}else{echo "all sales";}?></li>
+                                    <?php }
+                                    if($register['print_note_on_receipt'] == 1){ ?>
+                                    <li class="hidden_li" style="display:none;">Print note on receipt</li>
+                                    <?php }
+                                    if($register['show_discounts'] == 1){ ?>
+                                    <li class="hidden_li" style="display:none;">Show discounts on receipt</li>
                                     <?php } ?>
                                     <a class="clickable fewer_details" style="display:none;"><li style="list-style: none">Fewer Details</li></a>
                                 </ul>

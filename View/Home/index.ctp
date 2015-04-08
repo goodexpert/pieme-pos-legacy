@@ -9,6 +9,12 @@
     position: absolute;
     z-index: 50;
 }
+.payment-display li ul li {
+    display: inline;
+}
+.payment-display .total_cost {
+    border-top: 1px solid white;
+}
 </style>
 
 <div class="clearfix"></div>
@@ -37,9 +43,9 @@
                     Receipt / Tax Invoice
                 </h4>
                 <div class="receipt-body-info">
-                    Invoice #: <span class="invoice-id">13jf93-o3p2f2930</span><br>
+                    Invoice #<span class="invoice-id">3</span><br>
                     <span class="invoice-date">2015-03-10 15:23:49</span><br>
-                    Served by: sales person on register: Register
+                    Served by: <?php echo $authUser['display_name'].' on '.$authUser['MerchantRegister']['name'];?>
                 </div>
                 <div class="dashed-line-gr"></div>
                 <div class="col-md-12 col-xs-12 col-sm-12 col-omega col-alpha receipt-body-sales">
@@ -56,11 +62,11 @@
                         </tr>
                         <tr>
                             <th>Tax (GST)</th>
-                            <td class="total-amount receipt-tax pull-right">$2.40</td>
+                            <td class="total-amount receipt-tax pull-right">$10.00</td>
                         </tr>
-                        <tr>
+                        <tr class="receipt_total">
                             <th>TOTAL</th>
-                            <td class="total-amount receipt-total pull-right">$12.40</td>
+                            <td class="total-amount receipt-total pull-right">$20.00</td>
                         </tr>
                     </table>
                 </div>
@@ -107,10 +113,11 @@
       <div class="maximum">
           <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-top-30">
              <button class="btn btn-white maxi pull-right"><i class="icon-size-fullscreen"></i></button>
-           <button class="btn btn-white mini pull-right" style="display:none;"><i class="icon-size-actual"></i></button>
+             <button class="btn btn-white mini pull-right" style="display:none;"><i class="icon-size-actual"></i></button>
              <button class="btn btn-white pull-right btn-right margin-right-5 current_open">CURRENT SALE</button>
              <button class="btn btn-white pull-right btn-left retrieve_open">RETRIEVE SALE</button>
         </div>
+        <input type="hidden" id="retrieve_sale_id">
         <div id="block-left" class="col-md-6 col-xs-6">
           <div id="table-wrapper" class="col-md-12 col-sm-12 col-alpha col-omega">
             <div class="box col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
@@ -357,11 +364,20 @@
           <div class="modal-content col-md-12 col-sm-12 col-xs-12">
               <div class="modal-header col-md-12 col-sm-12 col-xs-12">
                   <button type="button" class="confirm-close cancel" data-dismiss="modal" aria-hidden="true">
-                  <i class="glyphicon glyphicon-remove"></i>
+                    <i class="glyphicon glyphicon-remove"></i>
                   </button>
                   <h4 class="modal-title">Select a payment method</h4>
               </div>
               <div class="modal-body col-md-12 col-sm-12 col-xs-12">
+                  <div class="col-lg-12 col-omega col-alpha">
+                    <ul class="payment-display">
+                        <li>
+                            <ul class="total_cost">
+                                <li>TO PAY</li><li class="pull-right">$123.45</li>
+                            </ul>
+                        </li>
+                    </ul>
+                  </div>
                   <div class="col-lg-12 col-omega col-alpha">
                       <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 col-omega col-alpha">
                           <input type="text" id="set-pay-amount">
@@ -580,53 +596,28 @@
   <!-- SELECT REGISTER POPUP BOX END -->
 
   <!-- STATUS POPUP BOX -->
-  <div class="confirmation-modal modal fade in" id="register_box" tabindex="-1" role="dialog" aria-hidden="false" >
+  <div class="confirmation-modal modal fade in" id="status_box" tabindex="-1" role="dialog" aria-hidden="false" style="display:none;">
       <div class="modal-dialog">
           <div class="modal-content">
               <div class="modal-header">
-                  <button type="button" class="confirm-close cancel" data-dismiss="modal" aria-hidden="true">
-                  <i class="glyphicon glyphicon-remove"></i>
-                  </button>
                   <h4 class="modal-title">Status</h4>
               </div>
               <div class="modal-body">
                   <p>Please wait while your offline data is updated</p>
               </div>
-              <div class="modal-footer col-md-12 col-sm-12 col-xs-12">
-                  <button class="btn add_customer-submit" type="button" data-dismiss="modal">Go to the Dashboard</button>
-                  <button class="cancel btn" type="button" data-dismiss="modal">Cancel</button>
+              <div class="modal-footer">
+                  <a href="/dashboard">
+                  <button class="btn btn-success" type="button" data-dismiss="modal">Go to the Dashboard</button></a>
               </div>
           </div>
       </div>
   </div>
   <!-- STATUS POPUP BOX END -->
-  
+
   <!-- END CONTENT --> 
-  <!-- BEGIN QUICK SIDEBAR --> 
-  <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
-  <div class="page-quick-sidebar-wrapper">
-    <div class="page-quick-sidebar">
-      <div class="nav-justified">
-        <ul class="nav nav-tabs nav-justified">
-          <li class="active"> <a href="#quick_sidebar_tab_1" data-toggle="tab"> Users <span class="badge badge-danger">2</span> </a> </li>
-          <li> <a href="#quick_sidebar_tab_2" data-toggle="tab"> Alerts <span class="badge badge-success">7</span> </a> </li>
-          <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown"> More<i class="fa fa-angle-down"></i> </a>
-            <ul class="dropdown-menu pull-right" role="menu">
-              <li> <a href="#quick_sidebar_tab_3" data-toggle="tab"> <i class="icon-bell"></i> Alerts </a> </li>
-              <li> <a href="#quick_sidebar_tab_3" data-toggle="tab"> <i class="icon-info"></i> Notifications </a> </li>
-              <li> <a href="#quick_sidebar_tab_3" data-toggle="tab"> <i class="icon-speech"></i> Activities </a> </li>
-              <li class="divider"> </li>
-              <li> <a href="#quick_sidebar_tab_3" data-toggle="tab"> <i class="icon-settings"></i> Settings </a> </li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-  <!-- END QUICK SIDEBAR --> 
 </div>
 <div class="qty_block">
-            
+
     <form action="#" novalidate class="qty-form">
 
         <div class="main_panel col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
@@ -806,41 +797,48 @@ jQuery(document).ready(function() {
         var customer_name = $(this).attr("data-customer-name");
         var customer_id = $(this).attr("data-customer-id");
         var customer_balance = parseFloat($(this).attr("data-customer-balance")).toFixed(2);
+        var retrieve_sale_id = $(this).attr("data-id");
         $("#retrieve-sale").addClass("hidden");
         $("#sell-index").removeClass("hidden");
         if($(".order-product").length !== 0){
-            $(".retrieve-popup").show();
-            $(".modal-backdrop").show();
-            $("#current_order_count").text($(".order-product").length);
-            $("#retrieve_order_count").text($(this).attr("data-count"));
             
             var targetSale = $(this)
-            
-            $(document).on("click",".retrieve-a",function(){
-                $(".added-null").hide();
-                $(".order-product").remove();
-                var retCount = 0;
-                targetSale.find(".retrieve-child-products").each(function(){
-                    var comp_1 = $(this).children(".retrieve-child-price").text();
-                    var comp_2 = $(this).children(".retrieve-child-tax").text();
-                    var price_including_tax = parseFloat(comp_1) + parseFloat(comp_2);
+            if($("#retrieve_sale_id").val() == $(this).attr('data-id')){
+                $("#retrieve-sale").addClass("hidden");
+                $("#sell-index").removeClass("hidden");
+            } else {
+                $(".retrieve-popup").show();
+                $(".modal-backdrop").show();
+                $("#current_order_count").text($(".order-product").length);
+                $("#retrieve_order_count").text($(this).attr("data-count"));
+                $(document).on("click",".retrieve-a",function(){
+                    $(".added-null").hide();
+                    $(".order-product").remove();
+                    var retCount = 0;
+                    $("#retrieve_sale_id").val(retrieve_sale_id);
+                    targetSale.find(".retrieve-child-products").each(function(){
+                        var comp_1 = $(this).children(".retrieve-child-price").text();
+                        var comp_2 = $(this).children(".retrieve-child-tax").text();
+                        var price_including_tax = parseFloat(comp_1) + parseFloat(comp_2);
+        
+                        $(".added-body").prepend('<tr class="order-product"><input type="hidden" class="added-code" value="'+$(this).children(".retrieve-child-id").text()+'"><td class="added-product">'+$(this).children(".retrieve-child-name").text()+'<br><span class="added-price">$'+parseFloat($(this).children(".retrieve-child-price").text()).toFixed(2)+'</span></td><td class="added-qty"><a qty-id="'+retCount+'" class="qty-control btn btn-white">1</a></td><td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="'+retCount+'">@'+price_including_tax.toFixed(2)+'</a></td><td class="added-amount"></td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');
+                        retCount++;
+                    });
+                    if(customer_name == ''){
     
-                    $(".added-body").prepend('<tr class="order-product"><input type="hidden" class="added-code" value="'+$(this).children(".retrieve-child-id").text()+'"><td class="added-product">'+$(this).children(".retrieve-child-name").text()+'<br><span class="added-price">$'+parseFloat($(this).children(".retrieve-child-price").text()).toFixed(2)+'</span></td><td class="added-qty"><a qty-id="'+retCount+'" class="qty-control btn btn-white">1</a></td><td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="'+retCount+'">@'+price_including_tax.toFixed(2)+'</a></td><td class="added-amount"></td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');
-                    retCount++;
+                    } else {
+                        $("#customer-result-name").text(customer_name);
+                        $("#customer-selected-id").val(customer_id);
+                        $("#customer-result-balance").text(customer_balance);
+                        $(".customer-search-result").children("dl").show();
+                    }
                 });
-                if(customer_name == ''){
-                    
-                } else {
-                    $("#customer-result-name").text(customer_name);
-                    $("#customer-selected-id").val(customer_id);
-                    $("#customer-result-balance").text(customer_balance);
-                    $(".customer-search-result").children("dl").show();
-                }
-            });
-            
+            }
+
         } else {
             $(".added-null").hide();
             var retCount = 0;
+            $("#retrieve_sale_id").val($(this).attr("data-id"));
             $(this).find(".retrieve-child-products").each(function(){
 
                 var comp_1 = $(this).children(".retrieve-child-price").text();
@@ -880,6 +878,8 @@ jQuery(document).ready(function() {
         $(".modal-backdrop").show();
         $("#set-pay-amount").val($(".toPay").text());
         to_pay = $(".toPay").text();
+        $(".split_attr").remove();
+        $(".payment-display").find(".total_cost").children(".pull-right").text('$'+$(".toPay").text());
         payments = [];
     });
     $("#park").click(function(){
@@ -975,68 +975,122 @@ jQuery(document).ready(function() {
     }
     var sale_id;
     function save_register_sale(amount) {
-        save_line_order();
-        
-        line_array = JSON.stringify(line_array);
-        $.ajax({
-            url: "/home/pay.json",
-            type: "POST",
-            data: {
-                customer_id: $("#customer-selected-id").val(),
-                receipt_number: '323232',
-                total_price: $(".subTotal").text(),
-                total_cost: $(".toPay").text(),
-                total_discount: '',
-                total_tax: $(".gst").text(),
-                note: '',
-                merchant_payment_type_id: payment_id,
-                items: line_array,
-                amount: amount
-            },
-            success: function(result){
-                console.log(result);
-            }
-        });
+        if(!$("#retrieve_sale_id").val() == ''){
+            save_line_order();
+    
+            line_array = JSON.stringify(line_array);
+            $.ajax({
+                url: "/home/pay.json",
+                type: "POST",
+                data: {
+                    sale_id: $("#retrieve_sale_id").val(),
+                    customer_id: $("#customer-selected-id").val(),
+                    receipt_number: '1',
+                    total_price: $(".subTotal").text(),
+                    total_cost: $(".toPay").text(),
+                    total_discount: '',
+                    total_tax: $(".gst").text(),
+                    note: '',
+                    merchant_payment_type_id: payment_id,
+                    items: line_array,
+                    amount: JSON.stringify(amount)
+                },
+                success: function(result){
+                    console.log(result);
+                }
+            });
+        } else {
+            save_line_order();
+    
+            line_array = JSON.stringify(line_array);
+            $.ajax({
+                url: "/home/pay.json",
+                type: "POST",
+                data: {
+                    customer_id: $("#customer-selected-id").val(),
+                    receipt_number: '1',
+                    total_price: $(".subTotal").text(),
+                    total_cost: $(".toPay").text(),
+                    total_discount: '',
+                    total_tax: $(".gst").text(),
+                    note: '',
+                    merchant_payment_type_id: payment_id,
+                    items: line_array,
+                    amount: JSON.stringify(amount)
+                },
+                success: function(result){
+                    console.log(result);
+                }
+            });
+        }
     }
 
-    function park_register_sale(status,amount) {
-        save_line_order();
-
-        line_array = JSON.stringify(line_array);
-        $.ajax({
-            url: "/home/park.json",
-            type: "POST",
-            data: {
-                customer_id: $("#customer-selected-id").val(),
-                receipt_number: '323232',
-                total_price: $(".subTotal").text(),
-                total_cost: $(".toPay").text(),
-                total_discount: '',
-                total_tax: $(".gst").text(),
-                note: $("#leave_note").val(),
-                status: status,
-                items: line_array,
-                actual_amount: amount
-            }
-        });
-
-        $(".customer-search-result").children().hide();
-        $("#customer-result-name").text('');
-        $("#customer-selected-id").val($("#customer-null").val());
+    function park_register_sale(status,amount,pays) {
+        if(!$("#retrieve_sale_id").val() == ''){
+            save_line_order();
+    
+            line_array = JSON.stringify(line_array);
+            $.ajax({
+                url: "/home/park.json",
+                type: "POST",
+                data: {
+                    sale_id: $("#retrieve_sale_id").val(),
+                    customer_id: $("#customer-selected-id").val(),
+                    receipt_number: '323232',
+                    total_price: $(".subTotal").text(),
+                    total_cost: $(".toPay").text(),
+                    total_discount: '',
+                    total_tax: $(".gst").text(),
+                    note: $("#leave_note").val(),
+                    status: status,
+                    items: line_array,
+                    actual_amount: amount,
+                    payments: JSON.stringify(pays)
+                }
+            });
+    
+            $(".customer-search-result").children().hide();
+            $("#customer-result-name").text('');
+            $("#customer-selected-id").val($("#customer-null").val());
+        } else {
+            save_line_order();
+    
+            line_array = JSON.stringify(line_array);
+            $.ajax({
+                url: "/home/park.json",
+                type: "POST",
+                data: {
+                    customer_id: $("#customer-selected-id").val(),
+                    receipt_number: '323232',
+                    total_price: $(".subTotal").text(),
+                    total_cost: $(".toPay").text(),
+                    total_discount: '',
+                    total_tax: $(".gst").text(),
+                    note: $("#leave_note").val(),
+                    status: status,
+                    items: line_array,
+                    actual_amount: amount,
+                    payments: JSON.stringify(pays)
+                }
+            });
+    
+            $(".customer-search-result").children().hide();
+            $("#customer-result-name").text('');
+            $("#customer-selected-id").val($("#customer-null").val());
+        }
     }
-    var payments = [];
+    var payments = {};
     // Pay
     $(document).on("click",".payment_method",function(){
         payment_id = $(this).attr("payment-id");
-        
-        var paying = $("#set-pay-amount").val();
-        
-        payments.push({amount: paying});
+        payment_name = $(this).find("p").text()
 
+        var paying = parseFloat($("#set-pay-amount").val()).toFixed(2);
 
-        if(to_pay == paying){
+        payments.push([payment_id, paying]);
 
-            save_register_sale(paying);
+        if(parseFloat(to_pay).toFixed(2) == parseFloat(paying).toFixed(2)){
+            save_register_sale(payments);
 
             $(".fade").hide();
             $(".receipt-product-table").children("tbody").text('');
@@ -1046,6 +1100,7 @@ jQuery(document).ready(function() {
             $(".order-product").remove();
             $(".receipt-parent").show('blind');
             $(".modal-backdrop").show();
+            $('<tr class="split_attr"><td>'+payment_name+'</td><td class="pull-right">$'+paying+'</td></tr>').insertBefore('.receipt_total');
             $(".receipt-customer-name").text($("#customer-result-name").text());
             $(".receipt-subtotal").text('$'+ $(".subTotal").text());
             $(".receipt-tax").text('$'+ $(".gst").text());
@@ -1055,7 +1110,10 @@ jQuery(document).ready(function() {
             $("#customer-selected-id").val($("#customer-null").val());
         } else {
             to_pay = to_pay - paying;
-            $("#set-pay-amount").val(to_pay);
+            $("#set-pay-amount").val(to_pay.toFixed(2));
+            $(".payment-display").children("li").prepend('<ul class="split_attr"><li>'+payment_name+'</li><li class="pull-right">$'+paying+'</li></ul>');
+            $(".payment-display").find(".total_cost").children(".pull-right").text('$'+to_pay.toFixed(2));
+            $('<tr class="split_attr"><td>'+payment_name+'</td><td class="pull-right">$'+paying+'</td></tr>').insertBefore('.receipt_total');
         }
 
         var now = new Date(Date.now());
@@ -1065,25 +1123,19 @@ jQuery(document).ready(function() {
 
     // Park
     $(document).on("click",".park-sale",function(){
-        
         park_register_sale('saved');
-        
         $(".fade").hide();
         $(".order-product").remove();
-        //$(".retrieve-sale").load(location.href +'.retrieve-sale');
     });
 
     // Layby
     $(document).on("click",".layby-sale",function(){
-        
         if($("#customer-result-name").text() == ""){
             alert("Customer not selected");
         } else {
-            park_register_sale('layby',$("#set-pay-amount").val());
+            park_register_sale('layby',$("#set-pay-amount").val(),payments);
             $(".order-product").remove();
-            //$(".retrieve-sale").load(location.href +'.retrieve-sale');
         }
-        
         $(".fade").hide();
     });
 
@@ -1093,9 +1145,8 @@ jQuery(document).ready(function() {
         if($("#customer-result-name").text() == ""){
             alert("Customer not selected");
         } else {
-            park_register_sale('onaccount',$("#set-pay-amount").val());
+            park_register_sale('onaccount',$("#set-pay-amount").val(),payments);
             $(".order-product").remove();
-            //$(".retrieve-sale").load(location.href +'.retrieve-sale');
         }
         
         $(".fade").hide();
@@ -1349,6 +1400,10 @@ function handleWindowResize() {
     var height = $(window).height() - $(".page-header").height() - $("#footer").height();
     var table = height - $(".commands").height() - $(".page-header").height() - $("#footer").height();
     var productTable = height - $(".commands").height() - $(".page-header").height() - $("#footer").height() + 90;
+    var mq = window.matchMedia( "(min-width: 1280px)" );
+    if(mq.matches){
+        productTable = productTable + 50;
+    }
     $("#block-right").css({
         "height": height - 60
     });
@@ -1420,7 +1475,7 @@ function priceCalculator() {
         linePriceS += linePrice + lineTax;
 
         $(this).children(".added-amount").text((setPrice * qty).toFixed(2));
-        
+
         toPay += setPrice * qty;
     });
 
@@ -1437,7 +1492,7 @@ function priceCalculator() {
 <script>
 var listCount = 0;
 $(document).on('click', '.product', function(){
-    $(".added-body").prepend('<tr class="order-product"><input type="hidden" class="added-code" value="'+$(this).attr("data-id")+'"><input type="hidden" class="hidden-retail_price" value="'+$(this).children().children(".product-retail_price").val()+'"><input type="hidden" class="hidden-tax" value="'+$(this).children().children(".product-tax").val()+'"><td class="added-product">'+$(this).children(".product-container").children(".product-info").children(".product-name").text()+'<br><span class="added-price">$'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</span></td><td class="added-qty"><a qty-id="'+listCount+'" class="qty-control btn btn-white">1</a></td><td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="'+listCount+'">@'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</a></td><td class="added-amount">'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');
+    $(".added-body").prepend('<tr class="order-product"><input type="hidden" class="added-code" value="'+$(this).attr("data-id")+'"><input type="hidden" class="hidden-retail_price" value="'+$(this).children().children(".product-retail_price").val()+'"><input type="hidden" class="hidden-tax" value="'+$(this).children().children(".product-tax").val()+'"><td class="added-product">'+$(this).children(".product-container").children(".product-info").children(".product-name").text()+'<br><span class="added-price">$'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</span></td><td class="added-qty"><a qty-id="'+listCount+'" class="qty-control btn btn-white">1</a></td><td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="'+listCount+'">@'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</a></td><td class="added-amount" style="text-align:right;">'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');
     listCount++;
     $(".added-null").hide();
 });

@@ -50,6 +50,10 @@ class HistoryController extends AppController {
                 'RegisterSaleItem' => array(
                     'className' => 'RegisterSaleItem',
                     'foreignKey' => 'sale_id'
+                ),
+                'RegisterSalePayment' => array(
+                    'className' => 'RegisterSalePayment',
+                    'foreignKey' => 'sale_id'
                 )
             ),
         ));
@@ -72,7 +76,8 @@ class HistoryController extends AppController {
                         'MerchantCustomer.id = RegisterSale.customer_id'
                     )
                 )
-            )
+            ),
+            'order' => array('RegisterSale.created' => 'DESC')
         ));
         $this->set('sales', $sales);
     }

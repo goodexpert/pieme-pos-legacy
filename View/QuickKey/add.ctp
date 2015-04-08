@@ -77,7 +77,7 @@
                         </div>
                     </div>
                     <div class="col-md-12 col-xs-12 col-sm-12 text-align-center">
-                        <button class="btn btn-default">Cancel</button>
+                        <button class="btn btn-default cancel">Cancel</button>
                         <button class="btn btn-primary save">Save Layout</button>
                     </div>
                 </div>
@@ -358,12 +358,16 @@ jQuery(document).ready(function() {
                 key_layouts: key_layouts,
             },
         }).done(function(){
-            window.location.href = "/quickkey";
+            window.location.href = "/setup/quick_keys";
         });
         
     });
 
     /* SAVE TRIGGER END */
+    
+    $(".cancel").click(function(){
+        window.history.back();
+    });
 
 });
 </script>

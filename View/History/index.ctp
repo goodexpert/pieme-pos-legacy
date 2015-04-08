@@ -124,7 +124,7 @@
                         <td><?php echo $sale['MerchantCustomer']['name'];?></td>
                         <td><?=$sale['RegisterSale']['note'];?></td>
                         <td class="history_status"><?=$sale['RegisterSale']['status'];?></td>
-                        <td class="tdTotal">$<?=number_format($sale['RegisterSale']['total_price'],2,'.','');?></td>
+                        <td class="tdTotal">$<?=number_format($sale['RegisterSale']['total_cost'],2,'.','');?></td>
                         <td><?=$sale['RegisterSale']['sale_date'];?></td>
                     </tr>
                     <tr class="expandable-child" data-parent-id="<?=$sale['RegisterSale']['id'];?>">
@@ -157,8 +157,8 @@
                                                 <span class="col-md-4 col-xs-4 col-sm-4 col-alpha col-omega row-product">
                                                     <b><?=$item['quantity'];?> x</b> <?=$item['MerchantProduct']['name'];?></span>
                                                 <span class="col-md-4 col-xs-4 col-sm-4 col-alpha col-omega row-product-pice">
-                                                    <b>@ $<?=number_format($item['price'],2,'.','');?></b>
-                                                    <small>+ $0.00 Tax (GST)</small>
+                                                    <b>@ $<?=number_format($item['MerchantProduct']['price_include_tax'] - $item['MerchantProduct']['tax'],2,'.','');?></b>
+                                                    <small>+ $<?=number_format($item['MerchantProduct']['tax'],2,'.','');?> Tax (GST)</small>
                                                 </span>
                                                 <span class="col-md-4 col-xs-4 col-sm-4 col-alpha col-omega row-amount">
                                                     $<?=number_format($item['price'],2,'.','');?>
@@ -179,7 +179,7 @@
                                     <div class="col-md-12 col-xs-12 col-sm-12 show-amount">
                                         <ul class="receipt-text">
                                             <li class="pull-left">Subtotal</li>
-                                            <li class="pull-right"><text class="subTotal">$<?=number_format($sale['RegisterSale']['total_price'],2,'.','') - number_format($sale['RegisterSale']['total_tax'],2,'.','');?></text></li>
+                                            <li class="pull-right"><text class="subTotal">$<?=number_format($sale['RegisterSale']['total_price'],2,'.','');?></text></li>
                                         </ul>
                                         <ul class="receipt-text">
                                             <li class="pull-left">Tax (GST)</li>
@@ -193,17 +193,22 @@
                                                 <strong>TOTAL</strong>
                                             </li>
                                             <li class="pull-right h4">
-                                                <text class="total"><strong>$<?=number_format($sale['RegisterSale']['total_price'],2,'.','');?></strong></text>
+                                                <text class="total"><strong>$<?=number_format($sale['RegisterSale']['total_cost'],2,'.','');?></strong></text>
                                             </li>
                                         </ul>
                                         <div class="solid-line"></div>
                                         <ul class="receipt-text">
-                                            <li class="pull-left col-md-10 col-xs-10 col-sm-10 col-alpha col-omega">Cash – Wed, 11 Feb 2015, 12:00 am– Main Register</li>
-                                            <li class="pull-right col-md-2 col-xs-2 col-sm-2 col-omega">
-                                                <div class="remove clickable">
-                                                    <div class="glyphicon glyphicon-remove"></div>
+                                            <?php foreach($sale['RegisterSalePayment'] as $payment) { ?>
+                                            <li class="col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
+                                                <?php echo $payment['MerchantPaymentType']['name'];?>
+                                            </li>
+                                            <li class="pull-right col-md-5 col-xs-5 col-sm-5 col-omega" style="text-align:right;">
+                                                <div>
+                                                    <?='$'.number_format($payment['amount'],2,'.','');?>
+                                                    <div class="glyphicon glyphicon-remove clickable"></div>
                                                 </div>
                                             </li>
+                                            <?php } ?>
                                         </ul>
                                         <div class="dashed-line-gr"></div>
                                         <button class="btn btn-default pull-right">Apply payment / refund</button>
@@ -233,52 +238,6 @@
         </div>
     </div>
     <!-- END CONTENT -->
-    <!-- BEGIN QUICK SIDEBAR -->
-    <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
-    <div class="page-quick-sidebar-wrapper">
-        <div class="page-quick-sidebar">            
-            <div class="nav-justified">
-                <ul class="nav nav-tabs nav-justified">
-                    <li class="active">
-                        <a href="#quick_sidebar_tab_1" data-toggle="tab">
-                        Users <span class="badge badge-danger">2</span>
-                        </a>
-                    </li>
-                    <li> 
-                        <a href="#quick_sidebar_tab_2" data-toggle="tab">
-                        Alerts <span class="badge badge-success">7</span>
-                        </a>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        More<i class="fa fa-angle-down"></i>
-                        </a>
-                        <ul class="dropdown-menu pull-right" role="menu">
-                            <li>
-                                <a href="#quick_sidebar_tab_3" data-toggle="tab">
-                                <i class="icon-bell"></i> Alerts </a>
-                            </li>
-                            <li>
-                                <a href="#quick_sidebar_tab_3" data-toggle="tab">
-                                <i class="icon-info"></i> Notifications </a>
-                            </li>
-                            <li>
-                                <a href="#quick_sidebar_tab_3" data-toggle="tab">
-                                <i class="icon-speech"></i> Activities </a>
-                            </li>
-                            <li class="divider">
-                            </li>
-                            <li>
-                                <a href="#quick_sidebar_tab_3" data-toggle="tab">
-                                <i class="icon-settings"></i> Settings </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-<!-- END QUICK SIDEBAR -->
 </div>
 
 <!-- END CONTAINER -->

@@ -124,8 +124,8 @@
                             <dt>Select user for next sale</dt>
                             <dd>
                                 <div class="col-md-6 col-sm-6 col-xs-6">
-                                <input type="radio" id="ns_yes" name="next_sale" value="1" > <label for="ns_yes">Yes</label> </div>
-                                <div class="col-md-6 col-sm-6 col-xs-6"><input type="radio" id="ns_no" name="next_sale" value="0" checked> <label for="ns_no">No</label></div>
+                                <input type="radio" id="ns_yes" name="next_sale" value="1" <?php if($register['ask_for_user_on_sale'] == 1){echo "checked";}?>> <label for="ns_yes">Yes</label> </div>
+                                <div class="col-md-6 col-sm-6 col-xs-6"><input type="radio" id="ns_no" name="next_sale" value="0" <?php if($register['ask_for_user_on_sale'] == 0){echo "checked";}?>> <label for="ns_no">No</label></div>
                             </dd>
                             <dt>Email receipt</dt>
                             <dd>
@@ -329,7 +329,7 @@ function saveData() {
         },
         success: function( data, textStatus, jqXHR ) {
             if (data.success) {
-                window.location.href = "/outlet";
+                window.location.href = "/setup/outlets_and_registers";
             } else {
                 alert(data.message);
             }

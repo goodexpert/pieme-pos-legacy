@@ -276,7 +276,7 @@ function saveData() {
         },
         success: function( data, textStatus, jqXHR ) {
             if (data.success) {
-                window.location.href = "/outlet";
+                window.location.href = "/register/add?outlet="+data.outlet_id;
             } else {
                 alert(data.message);
             }

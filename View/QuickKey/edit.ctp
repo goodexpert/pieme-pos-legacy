@@ -57,7 +57,7 @@
                 <div class="col-md-6 col-xs-6 col-sm-6 col-alpha col-omega">
                     <div id="block-right" class="col-md-12 col-xs-12 col-sm-12">
                         <div class="col-lg-8 col-md-7 col-xs-7 col-sm-7">
-                           <input type="text" id="layout_name" value="New Quick Key Layout">
+                           <input type="text" id="layout_name" value="<?=$keys['MerchantQuickKey']['name'];?>">
                         </div>
                         <div class="col-lg-4 col-md-5 col-xs-5 col-sm-5">
                             <span class="page-add">Pages</span>
@@ -67,7 +67,15 @@
                     <div class="dashed-line"></div>
                        <div class="col-md-12 col-xs-12 col-sm-12 product-list" style="height: 300px;">
                            <ul id="sortable">
-                           
+                               <?php $keyArray = json_decode($keys['MerchantQuickKey']['key_layouts'], true);
+                               foreach($keyArray['pages'] as $key){
+                                foreach($key['keys'] as $attr) {?>
+                                    <li class="col-md-3 col-xs-3 col-sm-3 product clickable col-alpha col-omega button-view qKey" data-id="<?php echo $attr['product_id'];?>" page="<?php echo $key['page'];?>">
+                                <span class="button-remove"><i class="glyphicon glyphicon-remove"></i></span>
+                                Product Name
+                            </li>
+                                <?php }
+                               } ?>
                            </ul>
                         </div>
                         <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega product-list-footer">
@@ -77,7 +85,7 @@
                         </div>
                     </div>
                     <div class="col-md-12 col-xs-12 col-sm-12 text-align-center">
-                        <button class="btn btn-default">Cancel</button>
+                        <button class="btn btn-default cancel">Cancel</button>
                         <button class="btn btn-primary save">Save Layout</button>
                     </div>
                 </div>
@@ -299,18 +307,22 @@ jQuery(document).ready(function() {
         var layouts = JSON.stringify(quick);
         
         $.ajax({
-            url: "/quickkey/add",
+            url: "/quickkey/edit.json",
             type: "POST",
             data: {
                 name: $("#layout_name").val(),
                 key_layouts: layouts,
             },
         }).done(function(){
-            window.location.href = "/quickkey";
+            window.location.href = "/setup/quick_keys";
         });
     });
 
     /* SAVE TRIGGER END */
+    
+    $(".cancel").click(function(){
+        window.history.back();
+    });
 
 });
 </script>

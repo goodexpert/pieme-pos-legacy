@@ -271,18 +271,28 @@ class HomeController extends AppController {
                     $open->MerchantRegisterOpen['total_payments'] = $registerOpen[0]['MerchantRegisterOpen']['total_payments'] + $data['total_price'] + $data['total_tax'];
                     $this->MerchantRegisterOpen->save($open);
                 }
-
-                $this->RegisterSale->create();
+                
+                if($_POST['sale_id']){
+                    $this->RegisterSaleItem->deleteAll(array('RegisterSaleItem.sale_id' => $data['sale_id']), false);
+                    $this->RegisterSale->id = $data['sale_id'];
+                } else {
+                    $this->RegisterSale->create();
+                }
                 $this->RegisterSale->save($data);
 
-                $this->RegisterSalePayment->create();
-                $payment['sale_id'] = $this->RegisterSale->id;
-                $payment['merchant_payment_type_id'] = $this->request->data['merchant_payment_type_id'];
-                $payment['amount'] = $data['amount'];
-                $this->RegisterSalePayment->save($payment);
+                $paymentArray = json_decode($data['amount']);
+
+                foreach($paymentArray as $pay) {
+
+                    $this->RegisterSalePayment->create();
+                    $payment['sale_id'] = $this->RegisterSale->id;
+                    $payment['merchant_payment_type_id'] = $pay[0];
+                    $payment['amount'] = $pay[1];
+                    $this->RegisterSalePayment->save($payment);
+
+                }
 
                 $array = json_decode($_POST['items']);
-
                 foreach($array as $item) {
                     $this->RegisterSaleItem->create();
                     $line->RegisterSaleItem['sale_id'] = $this->RegisterSale->id;
@@ -310,7 +320,12 @@ class HomeController extends AppController {
                 $data['register_id'] = $this->Auth->user()['MerchantRegister']['id'];
                 $data['user_id'] = $this->Auth->user()['id'];
 
-                $this->RegisterSale->create();
+                if($_POST['sale_id']){
+                    $this->RegisterSaleItem->deleteAll(array('RegisterSaleItem.sale_id' => $data['sale_id']), false);
+                    $this->RegisterSale->id = $data['sale_id'];
+                } else {
+                    $this->RegisterSale->create();
+                }
                 $this->RegisterSale->save($data);
                 
                 $array = json_decode($_POST['items']);
@@ -324,6 +339,18 @@ class HomeController extends AppController {
                     $line->RegisterSaleItem['sequence'] = $item[3];
                     $line->RegisterSaleItem['status'] = 'VALID';
                     $this->RegisterSaleItem->save($line);
+                }
+                
+                $paymentArray = json_decode($data['payments']);
+
+                foreach($paymentArray as $pay) {
+
+                    $this->RegisterSalePayment->create();
+                    $payment['sale_id'] = $this->RegisterSale->id;
+                    $payment['merchant_payment_type_id'] = $pay[0];
+                    $payment['amount'] = $pay[1];
+                    $this->RegisterSalePayment->save($payment);
+
                 }
                 
                 if($data['status'] !== 'saved') {
@@ -390,19 +417,17 @@ class HomeController extends AppController {
                         $this->MerchantRegisterOpen->save($open);
                     }
                 }
-
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
             }
         }
         $this->serialize($result);
-        
     }
-    
+
     public function close() {
         $user = $this->Auth->user();
         $this->set("user",$user);
-        
+
         $this->loadModel('MerchantRegisterOpen');
         $opens = $this->MerchantRegisterOpen->find('all',array(
             'conditions' => array(
@@ -418,7 +443,6 @@ class HomeController extends AppController {
             $this->MerchantRegisterOpen->save($close);
         }
     }
-    
     public function select_register() {
         if($this->request->is('post')) {
             $this->loadModel("MerchantRegister");
@@ -426,11 +450,17 @@ class HomeController extends AppController {
             $data = $this->request->data;
             
             $_SESSION["Auth"]["User"]["outlet_id"] = $data['outlet_id'];
-            $_SESSION["Auth"]["User"]["MerchantOutlet"]["id"] = $data['outlet_id'];
-            $_SESSION["Auth"]["User"]["MerchantRegister"]["id"] = $data['register_id'];
+            
+            $outlet = $this->MerchantOutlet->findById($data['outlet_id']);
+            $_SESSION["Auth"]["User"]["MerchantOutlet"] = $outlet['MerchantOutlet'];
             
             $register = $this->MerchantRegister->findById($data['register_id']);
             $_SESSION["Auth"]["User"]["MerchantRegister"] = $register['MerchantRegister'];
+            
+        }
+    }
+    public function edit_sale() {
+        if($this->request->is('post')) {
             
         }
     }

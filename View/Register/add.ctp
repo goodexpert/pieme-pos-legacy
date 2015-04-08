@@ -328,7 +328,7 @@ function saveData() {
         },
         success: function( data, textStatus, jqXHR ) {
             if (data.success) {
-                window.location.href = "/outlet";
+                window.location.href = "/setup/outlets_and_registers";
             } else {
                 alert(data.message);
             }

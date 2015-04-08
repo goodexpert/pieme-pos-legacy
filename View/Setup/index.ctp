@@ -22,7 +22,7 @@
               <button class="btn submit"><i class="icon-magnifier"></i></button>
               </span> </div>
           </form>
-          <!-- END RESPONSIVE QUICK SEARCH FORM --> 
+          <!-- END RESPONSIVE QUICK SEARCH FORM -->
         </li>
         <li> <a href="index"> Sell </a> </li>
         <li> <a href="history"> History </a> </li>
@@ -35,7 +35,7 @@
   <!-- BEGIN CONTENT -->
   <div class="page-content-wrapper">
     <div class="page-content">
-        <div id="notify" class="col-lg-12 col-md-12 col-sm-12">
+        <div id="notify" class="hidden col-lg-12 col-md-12 col-sm-12">
             <div class="notify-content"><p>Changed information well!!!!!!</p></div>
         </div>
       <div class="col-md-12 col-xs-12 col-sm-12"><h3>General Setup</h3></div>
@@ -107,8 +107,8 @@
                   <dt>SKU generation</dt>
                   <dd>
                     <select name="merchant[use_sku_sequence]" id="merchant_use_sku_sequence">
-                      <option value="0">Generate by Name</option>
-                      <option value="1">Generate by Sequence Number</option>
+                      <option value="0" <?php if($merchant['Merchant']['use_sku_sequence'] == 0){echo "selected";}?>>Generate by Name</option>
+                      <option value="1" <?php if($merchant['Merchant']['use_sku_sequence'] == 1){echo "selected";}?>>Generate by Sequence Number</option>
                     </select>
                   </dd>
                   <dt>Current sequence number</dt>
@@ -441,7 +441,8 @@ jQuery(document).ready(function() {
               postal_country_id: $("#merchant_contact_postal_country_id").val(),
           },
           success: function(){
-              location.reload();
+              $("#notify").removeClass('hidden');
+              $('html, body').animate({ scrollTop: 0 }, 0);
           }
        });
    });
