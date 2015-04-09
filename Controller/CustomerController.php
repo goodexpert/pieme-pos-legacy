@@ -183,5 +183,7 @@ class CustomerController extends AppController {
             $this->serialize($result);
         }
     }
+	
+	public function view(){}
 
 }
