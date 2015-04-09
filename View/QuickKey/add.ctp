@@ -201,12 +201,6 @@ jQuery(document).ready(function() {
     Layout.init(); // init layout
     QuickSidebar.init() // init quick sidebar
     Index.init();
-    
-    var j = 0;
-    $("#sortable li").each(function(){
-        $(this).attr({'order':j});
-        j++;
-    });
 
     $( "#sortable" ).sortable({
         revert: true
@@ -275,8 +269,6 @@ jQuery(document).ready(function() {
     /* DATA FOUNDED CLICK EVENT */
 
     $(".data-found").click(function(){
-    
-    
         $("#sortable").append('<li class="col-lg-3 col-md-4 col-xs-6 col-sm-6 product clickable col-alpha col-omega button-view qKey" data-id="'+$(this).attr("data-id")+'" page="'+$(".product-list-footer").find(".selected").text()+'"><span class="button-remove"><i class="glyphicon glyphicon-remove"></i></span><p>'+$(this).text()+'</p></li>');
     });
 
@@ -315,6 +307,7 @@ jQuery(document).ready(function() {
                 
                 products.product_id = $(this).attr("data-id");
                 products.position = i;
+                products.label = $(this).find("p").text();
                 
                 keys.push(products);
                 
@@ -337,6 +330,7 @@ jQuery(document).ready(function() {
 
                 products.product_id = $(this).attr("data-id");
                 products.position = i;
+                products.label = $(this).find("p").text();
 
                 keys.push(products);
 

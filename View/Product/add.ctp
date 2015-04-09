@@ -291,7 +291,7 @@
                   <dl>
                     <dt class="col-md-4">Stock keeping unit</dt>
                     <dd class="col-md-8">
-                        <input type="text" class="required" id="sku">
+                        <input type="text" class="required" id="sku" value="<?php if($merchant['Merchant']['use_sku_sequence'] == 1){echo $merchant['Merchant']['sku_sequence'];}?>">
                     </dd>
                   </dl>
                   <dl>

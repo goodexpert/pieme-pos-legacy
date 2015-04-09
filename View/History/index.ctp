@@ -151,9 +151,10 @@
                             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                                 <div class="col-md-8 col-xs-8 col-sm-8 col-alpha history-detail">
                                     <ul class="row-display">
-                                        <?php foreach($sale['RegisterSaleItem'] as $item) { ?>
+                                        <?php $itemCount = 0;
+                                        foreach($sale['RegisterSaleItem'] as $item) { ?>
                                         
-                                            <li class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                                            <li class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega <?php if($itemCount > 4){echo 'hidden_product';}?>" <?php if($itemCount > 4){echo 'style="display:none;"';}?>>
                                                 <span class="col-md-4 col-xs-4 col-sm-4 col-alpha col-omega row-product">
                                                     <b><?=$item['quantity'];?> x</b> <?=$item['MerchantProduct']['name'];?></span>
                                                 <span class="col-md-4 col-xs-4 col-sm-4 col-alpha col-omega row-product-pice">
@@ -165,14 +166,15 @@
                                                 </span>
                                             </li>
                                         
-                                        <?php } ?>
+                                        <?php $itemCount++;
+                                        } ?>
                                     </ul>
                                     <div class="solid-line"></div>
+                                    <?php if($itemCount > 5) { ?>
                                     <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega text-align-center">
-                                        <button class="ShowMore btn btn-default">
-                                            Show More<span class="glyphicon glyphicon-chevron-down"></span>
-                                        </button>
+                                        <button class="ShowMore btn btn-default">Show More<span class="glyphicon glyphicon-chevron-down"></span></button>
                                     </div>
+                                    <?php } ?>
                                 </div>
                                 <div class="col-md-4 col-xs-4 col-sm-4 col-alpha col-omega receipt-container">
                                     <div class="receipt"></div>
@@ -280,6 +282,15 @@ jQuery(document).ready(function() {
     $("#date_from").datepicker();
     $("#date_to").datepicker();
     
+    $(".ShowMore").click(function(){
+        $(this).parents(".history-detail").find(".hidden_product").toggle();
+        if($(this).parents(".history-detail").find(".hidden_product").is(':visible')){
+            $(this).html('Show Less <span class="glyphicon glyphicon-chevron-up"></span>');
+        } else {
+            $(this).html('Show More <span class="glyphicon glyphicon-chevron-down"></span>');
+        }
+    });
+
     var count = 0;
     var page = 1;
     var currentPage = 1;

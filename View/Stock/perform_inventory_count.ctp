@@ -70,23 +70,25 @@
                         </h5>
                     </div>
                     <div class="col-md-12 col-xs-12 col-sm-12 col-alpha count-input">
-                        <div class="col-md-6 col-xs-6 col-sm-6 col-alpha"><input type="text"></div>
-                        <div class="col-md-3 col-xs-3 col-sm-3 col-alpha">
-                            <input type="text" class="btn-left" style="width:50%;">
-                            <button class="btn btn-success btn-right" style="width:50%;">Count</button>
+                        <div id="search-items-wrapper" class="col-md-6 col-xs-6 col-sm-6 col-alpha">
+                            <input type="text" id="search-items" placeholder="Search for suppliers, brands, types, tags, or SKUs.">
+                        </div>
+                        <div id="item-qty-wrapper" class="col-md-3 col-xs-3 col-sm-3 col-alpha">
+                            <input type="text" id="item-qty" class="btn-left" value="1" style="width:50%;">
+                            <button id="count-inventory" class="btn btn-success btn-right" style="width:50%;" disabled>Count</button>
                         </div>
                         <div class="col-md-3 col-xs-3 col-sm-3 col-alpha">
-                            <input type="checkbox" value="1" checked="">
-                            <label>Quick-scan mode</label>
+                            <input type="checkbox" value="1" id="quick-scan-mode">
+                            <label for="quick-scan-mode">Quick-scan mode</label>
                         </div>
                     </div>
                     <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                         <div class="inventory-content">
                             <div class="inventory-tab">
                                 <ul>
-                                    <li class="active">All</li>
-                                    <li>Counted</li>
-                                    <li>Uncounted</li>
+                                    <li id="inventory-tab-all" class="active">All</li>
+                                    <li id="inventory-tab-counted">Counted (<span class="counted-no">0</span>)</li>
+                                    <li id="inventory-tab-uncounted">Uncounted (<span class="uncounted-no">0</span>)</li>
                                 </ul>
                             </div>
                             <div class="inventory-Due">
@@ -100,24 +102,19 @@
                                         <tr role="row">
                                             <th>PRODUCT</th>
                                             <th>EXPECTED</th>
-                                            <th>UNEXPECTED</th>
+                                            <th>COUNT</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr role="row" class="odd">
-                                            <td>Coffee
-                                                <h6 class="inline-block-z margin-left-10">Black coffee</h6>
+                                        <?php foreach($products as $product) { ?>
+                                        <tr role="row" class="odd product-list" data-id="<?php echo $product['MerchantProduct']['id'];?>">
+                                            <td><?php echo $product['MerchantProduct']['name'];?>
+                                                <h6 class="inline-block-z margin-left-10"><?php echo $product['MerchantProduct']['sku'];?></h6>
                                             </td>
-                                            <td>-65</td>
-                                            <td>1</td>
+                                            <td>11</td>
+                                            <td class="product-list-count">0</td>
                                         </tr>
-                                        <tr role="row" class="even">
-                                            <td>Coffee
-                                                <h6 class="inline-block-z margin-left-10">Black coffee</h6>
-                                            </td>
-                                            <td>-65</td>
-                                            <td>1</td>
-                                        </tr>
+                                        <?php } ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -128,14 +125,6 @@
                     <div class="last-counted">
                         <h4>Your last counted items</h4>
                         <div class="last-counted-list">
-                            <ul>
-                                <li class="pull-left">1 T-shirt (Demo)</li>
-                                <li class="pull-right"><span class="remove inline-block"><span class="glyphicon glyphicon-remove"></span></span></li>
-                            </ul>
-                            <ul>
-                                <li class="pull-left">1 T-shirt (Demo)</li>
-                                <li class="pull-right"><span class="remove inline-block"><span class="glyphicon glyphicon-remove"></span></span></li>
-                            </ul>
                         </div>
                     </div>
                 </div>
@@ -236,7 +225,7 @@
 <script src="/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
 <script src="/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
-
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"> 
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script>
 jQuery(document).ready(function() {    
@@ -244,6 +233,140 @@ jQuery(document).ready(function() {
     Layout.init(); // init layout
     QuickSidebar.init() // init quick sidebar
     Index.init();
+    update_product_status();
+
+    $("#search-items").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/stock/performInventoryCount.json",
+                dataType: "json",
+                success: function (data) {
+                    response($.map(data, function (item) {
+                        return {
+                            label: item.MerchantProduct.name,
+                            value: item.MerchantProduct.id,
+                            sku: item.MerchantProduct.sku
+                        }
+                    }));
+                }
+            });
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+            event.preventDefault();
+
+            $(this).val(ui.item.label);
+            $(this).attr('data-id', ui.item.value);
+            //$('#productTable tbody').append('<tr><td>'+ui.item.label+'<h6>'+ui.item.sku+'</h6></td></tr>');
+
+            return false;
+            
+        },
+        focus: function( event, ui ) {
+            event.preventDefault();
+        }
+    });
+    $(document).on("keyup","#search-items",function(event){
+        var key = event.keyCode || event.which;
+        if (key === 13) {
+            if($(this).attr("data-id") && !$("#item-qty-wrapper").is(':visible')) {
+                $(".last-counted-list").prepend('<ul class="added-item" data-id="'+$("#search-items").attr("data-id")+'"><li class="pull-left"><span class="added-item-qty">'+1+'</span> '+$("#search-items").val()+'</li><li class="pull-right"><span class="remove inline-block"><span class="glyphicon glyphicon-remove"></span></span></li></ul>');
+            }
+        } else {
+            $(this).removeAttr("data-id");
+        }
+    });
+    $("#inventory-tab-all").click(function(){
+        $(".inventory-tab").find(".active").removeClass("active");
+        $(this).addClass("active");
+        $(".product-list").show();
+    });
+    $("#inventory-tab-counted").click(function(){
+        $(".inventory-tab").find(".active").removeClass("active");
+        $(this).addClass("active");
+        $(".product-list").hide();
+        $(".counted-product").show();
+    });
+    $("#inventory-tab-uncounted").click(function(){
+        $(".inventory-tab").find(".active").removeClass("active");
+        $(this).addClass("active");
+        $(".product-list").hide();
+        $(".uncounted-product").show();
+    });
+    var item_qty = 1;
+    $("#count-inventory").click(function(){
+        if($("#item-qty-wrapper").is(':visible')){
+            item_qty = $("#item-qty").val();
+        }
+        $(".last-counted-list").prepend('<ul class="added-item" data-id="'+$("#search-items").attr("data-id")+'"><li class="pull-left"><span class="added-item-qty">'+item_qty+'</span> '+$("#search-items").val()+'</li><li class="pull-right"><span class="remove inline-block"><span class="glyphicon glyphicon-remove"></span></span></li></ul>');
+    });
+    $("#quick-scan-mode").change(function(){
+        $("#item-qty-wrapper").toggle();
+        if($("#item-qty-wrapper").is(':visible')) {
+            $("#search-items-wrapper").attr('class','col-md-6 col-xs-6 col-sm-6 col-alpha');
+        } else {
+            $("#search-items-wrapper").attr('class','col-md-9 col-xs-9 col-sm-9 col-alpha');
+        }
+    });
+
+    $(document).on("click", ".remove", function(){
+        $(this).parents('ul').remove();
+    });
 });
+$(document).on("click", function(){
+    $(".product-list-count").text('0');
+    $(".added-item").each(function(){
+        var current_count = $("tbody").find("tr[data-id="+$(this).attr("data-id")+"]").find(".product-list-count").text();
+        var to_add = $(this).find(".added-item-qty").text();
+        $("tbody").find("tr[data-id="+$(this).attr("data-id")+"]").find(".product-list-count").text(parseInt(current_count) + parseInt(to_add));
+    });
+    update_product_status();
+    validate();
+});
+$(document).on("keyup", function(){
+    validate();
+    update_product_status();
+});
+
+function update_product_status() {
+    var count_counted = 0;
+    var count_uncounted = 0;
+    $(".product-list-count").each(function(){
+        if($(this).text() == 0){
+            $(this).parent().addClass("uncounted-product");
+            count_uncounted++;
+        } else {
+            $(this).parent().addClass("counted-product");
+            count_counted++;
+        }
+    });
+    $(".counted-no").text(count_counted);
+    $(".uncounted-no").text(count_uncounted);
+    
+    if($(".inventory-tab").find(".active").attr("id") == 'inventory-tab-counted') {
+        $(".product-list").hide();
+        $(".counted-product").show();
+    } else if ($(".inventory-tab").find(".active").attr("id") == 'inventory-tab-uncounted') {
+        $(".product-list").hide();
+        $(".uncounted-product").show();
+    } else {
+        $(".product-list").show();
+    }
+}
+
+function validate() {
+    if($("#search-items").attr("data-id") && $("#item-qty").val().length > 0 && $.isNumeric($("#item-qty").val())){
+        $("#count-inventory").removeAttr("disabled");
+    } else {
+        $("#count-inventory").attr("disabled","disabled");
+    }
+}
+
+function merge_array() {
+    var stockTakeItems = [];
+    $(".added-item").each(function(){
+        stockTakeItems.push({'qty':$(this).find(".added-item-qty").text(),'product_id':$(this).attr("data-id")});
+    });
+}
 </script>
 <!-- END JAVASCRIPTS -->

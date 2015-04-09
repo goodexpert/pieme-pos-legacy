@@ -70,10 +70,10 @@
                                <?php $keyArray = json_decode($keys['MerchantQuickKey']['key_layouts'], true);
                                foreach($keyArray['pages'] as $key){
                                 foreach($key['keys'] as $attr) {?>
-                                    <li class="col-md-3 col-xs-3 col-sm-3 product clickable col-alpha col-omega button-view qKey" data-id="<?php echo $attr['product_id'];?>" page="<?php echo $key['page'];?>">
-                                <span class="button-remove"><i class="glyphicon glyphicon-remove"></i></span>
-                                Product Name
-                            </li>
+                                    <li class="col-md-3 col-xs-3 col-sm-3 product clickable col-alpha col-omega button-view qKey" data-id="<?php echo $attr['product_id'];?>" page="<?php echo $key['page'];?>" <?php if($key['page'] !== 1){echo 'style="display:none;"';}?>>
+                                        <span class="button-remove"><i class="glyphicon glyphicon-remove"></i></span>
+                                        <p><?php echo $attr['label'];?></p>
+                                    </li>
                                 <?php }
                                } ?>
                            </ul>
@@ -81,7 +81,10 @@
                         <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega product-list-footer">
                             <span class="pull-left clickable prev"><i class="glyphicon glyphicon-chevron-left"></i></span>
                             <span class="pull-right clickable next"><i class="glyphicon glyphicon-chevron-right"></i></span>
-                            <span rel="1" class="page clickable selected">1</span>
+                            <?php $keyArray = json_decode($keys['MerchantQuickKey']['key_layouts'], true);
+                               foreach($keyArray['pages'] as $key){ ?>
+                            <span rel="<?php echo $key['page'];?>" class="page clickable <?php if($key['page'] == 1){echo "selected";}?>"><?php echo $key['page'];?></span>
+                            <?php } ?>
                         </div>
                     </div>
                     <div class="col-md-12 col-xs-12 col-sm-12 text-align-center">
@@ -209,12 +212,6 @@ jQuery(document).ready(function() {
     Layout.init(); // init layout
     QuickSidebar.init() // init quick sidebar
     Index.init();
-    
-    var j = 0;
-    $("#sortable li").each(function(){
-        $(this).attr({'order':j});
-        j++;
-    });
 
     $( "#sortable" ).sortable({
         revert: true
@@ -257,7 +254,7 @@ jQuery(document).ready(function() {
         $(this).addClass("selected");
     });
     
-    var pageCount = 1;
+    var pageCount = $(".page").length;
     $("#add-page").click(function(){
         pageCount++;
         $(".product-list-footer").append('<span rel="'+pageCount+'" class="page clickable">'+pageCount+'</span>');
@@ -281,7 +278,7 @@ jQuery(document).ready(function() {
     /* DATA FOUNDED CLICK EVENT */
 
     $(".data-found").click(function(){
-        $("#sortable").append('<li class="col-md-3 col-xs-3 col-sm-3 product clickable col-alpha col-omega button-view qKey" data-id="'+$(this).attr("data-id")+'" page="'+$(".product-list-footer").find(".selected").text()+'"><span class="button-remove"><i class="glyphicon glyphicon-remove"></i></span>'+$(this).text()+'</li>');
+        $("#sortable").append('<li class="col-lg-3 col-md-4 col-xs-6 col-sm-6 product clickable col-alpha col-omega button-view qKey" data-id="'+$(this).attr("data-id")+'" page="'+$(".product-list-footer").find(".selected").text()+'"><span class="button-remove"><i class="glyphicon glyphicon-remove"></i></span><p>'+$(this).text()+'</p></li>');
     });
 
     /* DATA FOUNDED CLICK EVENT END */
@@ -293,29 +290,77 @@ jQuery(document).ready(function() {
     /* SAVE TRIGGER */
 
     $(document).on("click",".save",function(){
-        var quick = [];
         
+        var layouts = {};
+
+        var layout = [];
+
+        var pages = {};
+        var keys = [];
+        var products = {};
+        var page_count = 1;
         var i = 0;
-        $("#sortable li").each(function(){
-            $(this).attr({'order':i});
-            i++;
+        var sortable_length = $("#sortable li").length;
+        $("#sortable li").each(function(index, element){
+            if($(this).attr("page") == page_count){
+                if(index == sortable_length-1) {
+                    layout.push(pages);
+                    
+                    layouts.pages = layout;
+                }
+                pages.page = page_count;
+                
+                products.product_id = $(this).attr("data-id");
+                products.position = i;
+                products.label = $(this).find("p").text();
+                
+                keys.push(products);
+                
+                pages.keys = keys;
+                
+                products = {};
+                i++;
+
+            } else {
+
+                page_count++;
+                i = 0;
+
+                layout.push(pages);
+
+                keys = [];
+                products = {};
+                pages = {};
+                pages.page = page_count;
+
+                products.product_id = $(this).attr("data-id");
+                products.position = i;
+                products.label = $(this).find("p").text();
+
+                keys.push(products);
+
+                pages.keys = keys;
+
+                products = {};
+                i++;
+
+            }
         });
-        $("#sortable li").each(function(){
-            quick.push([$(this).attr("data-id"), $(this).attr("order"), $(this).attr("page")]);
-        });
-        
-        var layouts = JSON.stringify(quick);
-        
+
+        var key_layouts = JSON.stringify(layouts);
+
         $.ajax({
-            url: "/quickkey/edit.json",
+            url: location.href,
             type: "POST",
             data: {
                 name: $("#layout_name").val(),
-                key_layouts: layouts,
+                key_layouts: key_layouts,
             },
-        }).done(function(){
-            window.location.href = "/setup/quick_keys";
+            success: function() {
+                window.location.href = "/setup/quick_keys";
+            }
         });
+        
     });
 
     /* SAVE TRIGGER END */

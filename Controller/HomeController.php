@@ -84,6 +84,9 @@ class HomeController extends AppController {
     
             $this->set('items', $items);
         }
+        $merchant = $this->MerchantRegister->findById($user['MerchantRegister']['id']);
+        $this->set('merchant',$merchant);
+        
         $this->MerchantOutlet->bindModel(array(
             'hasMany' => array(
                 'MerchantRegister' => array(
@@ -206,6 +209,8 @@ class HomeController extends AppController {
 
     public function pay() {
         $this->loadModel('MerchantRegisterOpen');
+        $this->loadModel("MerchantRegister");
+        $user = $this->Auth->user();
         $result = array();
 
 
@@ -303,6 +308,10 @@ class HomeController extends AppController {
                     $line->RegisterSaleItem['status'] = 'VALID';
                     $this->RegisterSaleItem->save($line);
                 }
+                $this->MerchantRegister->id = $user['MerchantRegister']['id'];
+                $increase->MerchantRegister['invoice_sequence'] = $this->MerchantRegister->findById($user['MerchantRegister']['id'])['MerchantRegister']['invoice_sequence'] + 1;
+                $this->MerchantRegister->save($increase);
+                
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
             }

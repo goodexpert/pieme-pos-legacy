@@ -27,7 +27,7 @@ class ProductController extends AppController {
  *
  * @var array
  */
-    public $uses = array('MerchantProduct', 'MerchantProductType', 'MerchantProductBrand', 'MerchantProductTag',
+    public $uses = array('Merchant', 'MerchantProduct', 'MerchantProductType', 'MerchantProductBrand', 'MerchantProductTag',
         'MerchantTaxRate', 'MerchantSupplier', 'MerchantProductCategory', 'MerchantPriceBookEntry', 'MerchantVariant', 'MerchantProductInventory', 'MerchantOutlet', 'MerchantProductComposite');
 
 /**
@@ -201,6 +201,11 @@ class ProductController extends AppController {
                         $this->MerchantProductComposite->save($saveComposite);
                     }
                 }
+                
+                //Step 7: Increase SKU Sequence Number
+                $this->Merchant->id = $user['merchant_id'];
+                $increase->Merchant['sku_sequence'] = $this->Merchant->findById($user['merchant_id'])['Merchant']['sku_sequence'] + 1;
+                $this->Merchant->save($increase);
 
                 $dataSource->commit();
                 
@@ -266,6 +271,9 @@ class ProductController extends AppController {
             )
         ));
         $this->set("items",$items);
+        
+        $merchant = $this->Merchant->findById($user['merchant_id']);
+        $this->set('merchant',$merchant);
     }
 
     public function edit($id) {

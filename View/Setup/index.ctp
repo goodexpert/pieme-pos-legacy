@@ -111,8 +111,8 @@
                       <option value="1" <?php if($merchant['Merchant']['use_sku_sequence'] == 1){echo "selected";}?>>Generate by Sequence Number</option>
                     </select>
                   </dd>
-                  <dt>Current sequence number</dt>
-                  <dd>
+                  <dt <?php if($merchant['Merchant']['use_sku_sequence'] == 0){echo "style='display:none;'";}?>>Current sequence number</dt>
+                  <dd <?php if($merchant['Merchant']['use_sku_sequence'] == 0){echo "style='display:none;'";}?>>
                     <input type="text" name="merchant[sku_sequence]" value="<?php echo $merchant['Merchant']['sku_sequence']; ?>" id="merchant_sku_sequence">
                   </dd>
                   <dt>User switching security</dt>
@@ -392,7 +392,15 @@ jQuery(document).ready(function() {
             $(".modal-backdrop").hide();
         });
     });
-
+    $(document).on('change','#merchant_use_sku_sequence',function(){
+        if($(this).val() == 0){
+            $("#merchant_sku_sequence").parent().prev().hide();
+            $("#merchant_sku_sequence").parent().hide();
+        } else {
+            $("#merchant_sku_sequence").parent().prev().show();
+            $("#merchant_sku_sequence").parent().show();
+        }
+    });
    $('.same_as_physical').on('click', function(e) {
        same_as_physical();
    });

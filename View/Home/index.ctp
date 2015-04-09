@@ -43,7 +43,7 @@
                     Receipt / Tax Invoice
                 </h4>
                 <div class="receipt-body-info">
-                    Invoice #<span class="invoice-id">3</span><br>
+                    Invoice #<span class="invoice-id"><?php echo $merchant['MerchantRegister']['invoice_sequence'];?></span><br>
                     <span class="invoice-date">2015-03-10 15:23:49</span><br>
                     Served by: <?php echo $authUser['display_name'].' on '.$authUser['MerchantRegister']['name'];?>
                 </div>
@@ -133,7 +133,6 @@
                 </thead>
               </table>
               <div class="portlet-body col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                  <div class="discount_tag" style="display:none;">50% DISCOUNT</div>
                   <div class="added-null">
                     <img src="img/no-order.png" alt="no-order">
                     <h3>NO ORDER FOUND</h3>
@@ -333,7 +332,7 @@
                         <td><?=$sale['MerchantUser']['username'];?></td>
                         <td><?=$sale['MerchantCustomer']['name'];?></td>
                         <td></td>
-                        <td><?=$sale['RegisterSale']['total_price'];?></td>
+                        <td><?=number_format($sale['RegisterSale']['total_price'],2,'.','');?></td>
                         <td><?=$sale['RegisterSale']['note'];?></td>
                         <td>
                             <?php foreach($sale['RegisterSaleItem'] as $get) { ?>
@@ -622,13 +621,12 @@
 
         <div class="main_panel col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
             <p class="col-md-12 col-alpha col-omega">Quantity</p>
-            
-            
+
             <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
                 <input id="item-qty" class="qty_field numpad_text col-md-10" type="text" name="num" placeholder="">
                 <button type="button" class="btn btn-primary col-md-2 show_numpad"><i class="glyphicon glyphicon-th"></i></button>
             </div>
-            
+
             <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega numpad" style="display: none;">
                 <div id="numpad-main" class="col-md-9 col-sm-9 col-xs-9">
                     <div class="number_button" onclick="qty_write(1);">1</div>
@@ -651,12 +649,12 @@
                 </div>
             </div>
         </div>
-    
+
     </form>
-    
+
 </div>
 <div class="price_block">
-            
+
     <form action="#" novalidate class="price-form">
 
         <div class="main_panel col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
@@ -665,14 +663,13 @@
                 <input type="button" id="set-unit-price" class="col-md-6 btn btn-primary btn-right" value="Unit Price">
             </div>
             <p id="text-top" class="margin-top-20 col-md-12 col-alpha col-omega">Apply discount percentage</p>
-            
-            
+
             <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
                 <input id="item-discount" class="price_field numpad_text col-md-10" type="text" name="num" placeholder="E.g. 20% or 20" pattern="([0-9]{0,}[.]{1}[0-9]{1,}|[0-9]{1,}[.]{0,1}[0-9]{0,})[%]{0,1}">
                 <button type="button" class="btn btn-primary col-md-2 show_numpad"><i class="glyphicon glyphicon-th"></i></button>
                 <span id="text-bottom">some text</span>
             </div>
-            
+
             <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega numpad" style="display: none;">
                 <div id="numpad-main" class="col-md-9 col-sm-9 col-xs-9">
                     <div class="number_button" onclick="number_write(1);">1</div>
@@ -695,12 +692,12 @@
                 </div>
             </div>
         </div>
-    
+
     </form>
-    
+
 </div>
 <div class="discount_block">
-            
+
     <form action="#" novalidate class="discount-form">
 
         <div class="main_panel col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
@@ -729,17 +726,16 @@
                 <input type="button" id="set-discount-all" class="col-md-6 btn btn-primary btn-left active" value="Percentage">
                 <input type="button" id="set-unit-price-all" class="col-md-6 btn btn-primary btn-right" value="Amount">
             </div>
-            
-            
+
             <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
-                <input id="item-discount" class="discount_field numpad_text col-md-10" type="text" name="num" placeholder="E.g. 20% or 20" pattern="([0-9]{0,}[.]{1}[0-9]{1,}|[0-9]{1,}[.]{0,1}[0-9]{0,})[%]{0,1}">
+                <input id="item-discount" class="discount_field numpad_text col-md-10" type="text" name="num" placeholder="E.g. 20% or 20">
                 <button type="button" class="btn btn-primary col-md-2 show_numpad"><i class="glyphicon glyphicon-th"></i></button>
             </div>
-            
+
         </div>
-    
+
     </form>
-    
+
 </div>
 <div class="modal-backdrop fade in" style="display:<?php if(empty($authUser['MerchantRegister'])){echo "block";}else{echo "none";};?>"></div>
 <!-- END CONTAINER --> 
@@ -772,9 +768,7 @@
 jQuery(document).ready(function() {
     Metronic.init(); // init metronic core componets
     Layout.init(); // init layout
-    
-    
-    
+
     /**
      *    Retrieve Sale
      **/
@@ -801,8 +795,7 @@ jQuery(document).ready(function() {
         $("#retrieve-sale").addClass("hidden");
         $("#sell-index").removeClass("hidden");
         if($(".order-product").length !== 0){
-            
-            var targetSale = $(this)
+            var targetSale = $(this);
             if($("#retrieve_sale_id").val() == $(this).attr('data-id')){
                 $("#retrieve-sale").addClass("hidden");
                 $("#sell-index").removeClass("hidden");
@@ -814,6 +807,7 @@ jQuery(document).ready(function() {
                 $(document).on("click",".retrieve-a",function(){
                     $(".added-null").hide();
                     $(".order-product").remove();
+                    $(".order-discount").remove();
                     var retCount = 0;
                     $("#retrieve_sale_id").val(retrieve_sale_id);
                     targetSale.find(".retrieve-child-products").each(function(){
@@ -974,10 +968,11 @@ jQuery(document).ready(function() {
         });
     }
     var sale_id;
+    var invoice_sequence = $(".invoice-id").text();
     function save_register_sale(amount) {
         if(!$("#retrieve_sale_id").val() == ''){
             save_line_order();
-    
+
             line_array = JSON.stringify(line_array);
             $.ajax({
                 url: "/home/pay.json",
@@ -985,7 +980,6 @@ jQuery(document).ready(function() {
                 data: {
                     sale_id: $("#retrieve_sale_id").val(),
                     customer_id: $("#customer-selected-id").val(),
-                    receipt_number: '1',
                     total_price: $(".subTotal").text(),
                     total_cost: $(".toPay").text(),
                     total_discount: '',
@@ -996,7 +990,7 @@ jQuery(document).ready(function() {
                     amount: JSON.stringify(amount)
                 },
                 success: function(result){
-                    console.log(result);
+                    $("#retrieve_sale_id").val('');
                 }
             });
         } else {
@@ -1008,7 +1002,7 @@ jQuery(document).ready(function() {
                 type: "POST",
                 data: {
                     customer_id: $("#customer-selected-id").val(),
-                    receipt_number: '1',
+                    receipt_number: invoice_sequence,
                     total_price: $(".subTotal").text(),
                     total_cost: $(".toPay").text(),
                     total_discount: '',
@@ -1020,6 +1014,7 @@ jQuery(document).ready(function() {
                 },
                 success: function(result){
                     console.log(result);
+                    invoice_sequence++;
                 }
             });
         }
@@ -1046,15 +1041,17 @@ jQuery(document).ready(function() {
                     items: line_array,
                     actual_amount: amount,
                     payments: JSON.stringify(pays)
+                },
+                success: function() {
+                    $("#retrieve_sale_id").val('');
                 }
             });
-    
             $(".customer-search-result").children().hide();
             $("#customer-result-name").text('');
             $("#customer-selected-id").val($("#customer-null").val());
         } else {
             save_line_order();
-    
+
             line_array = JSON.stringify(line_array);
             $.ajax({
                 url: "/home/park.json",
@@ -1097,7 +1094,11 @@ jQuery(document).ready(function() {
             $(".order-product").each(function(){
                 $(".receipt-product-table").children("tbody").append('<tr><td class="receipt-product-qty">'+$(this).children(".added-qty").children("a").text()+'</td><td class="receipt-product-name">'+$(this).children(".added-product").text().split("$")[0]+'</td><td class="receipt-price pull-right">$'+$(this).children(".added-amount").text()+'</td></tr>');
             });
+            $(".order-discount").each(function(){
+                $(".receipt-product-table").append('<tr><td class="receipt-product-qty"></td><td class="receipt-product-name">Discount</td><td class="receipt-price pull-right">- $'+$(this).find(".amount").text()+'</td></tr>'); 
+            });
             $(".order-product").remove();
+            $(".order-discount").remove();
             $(".receipt-parent").show('blind');
             $(".modal-backdrop").show();
             $('<tr class="split_attr"><td>'+payment_name+'</td><td class="pull-right">$'+paying+'</td></tr>').insertBefore('.receipt_total');
@@ -1126,6 +1127,7 @@ jQuery(document).ready(function() {
         park_register_sale('saved');
         $(".fade").hide();
         $(".order-product").remove();
+        $(".order-discount").remove();
     });
 
     // Layby
@@ -1135,35 +1137,36 @@ jQuery(document).ready(function() {
         } else {
             park_register_sale('layby',$("#set-pay-amount").val(),payments);
             $(".order-product").remove();
+            $(".order-discount").remove();
         }
         $(".fade").hide();
     });
 
     // Onaccount
     $(document).on("click",".onaccount-sale",function(){
-        
+
         if($("#customer-result-name").text() == ""){
             alert("Customer not selected");
         } else {
             park_register_sale('onaccount',$("#set-pay-amount").val(),payments);
             $(".order-product").remove();
+            $(".order-discount").remove();
         }
         
         $(".fade").hide();
     });
-    
+
     // Void
     $(document).on("click",".void-sale",function(){
         $(".order-product").remove();
+        $(".order-discount").remove();
         $(".added-null").show();
         $(".fade").hide();
     });
 
-
     /**
      *Customer add & apply
      **/
-     
 
     $(document).on("click",".add_customer-submit",function(){
         $.ajax({
@@ -1313,7 +1316,7 @@ jQuery(document).ready(function() {
        $(".page").each(function(){
            if(p == 0)
                $(this).addClass("selected");
-               
+
            p++;
        });
        $(".page").show();
@@ -1478,6 +1481,11 @@ function priceCalculator() {
 
         toPay += setPrice * qty;
     });
+    if($(".order-discount").length > 0){
+        $(".order-discount").each(function(){
+            toPay -= parseFloat($(this).find('.amount').text());
+        });
+    }
 
     $(".gst").text(parseFloat(toPay - toPay/1.15).toFixed(2));
     $(".total").text(parseFloat(toPay).toFixed(2));
@@ -1732,9 +1740,9 @@ $(document).on("click",".price-control",function(event){
         $(".numpad_text").val("");
         $(".price_block").addClass("price_block_active");
         if($(".price_block").hasClass("numpad_active")){
-        
+
             if($(this).position().top < 120){
-                
+
                 $(".price_block").position({
                     my: "left+70 bottom+61",
                     of: $(this),
@@ -1742,9 +1750,9 @@ $(document).on("click",".price-control",function(event){
                         $( this ).animate( position );
                     }
                 });
-                
+
             } else {
-            
+
                 $(".price_block").position({
                     my: "left+70 bottom+325",
                     of: $(this),
@@ -1752,7 +1760,7 @@ $(document).on("click",".price-control",function(event){
                         $( this ).animate( position );
                     }
                 });
-                
+
             }
         } else {
             $(".price_block").position({
@@ -1764,7 +1772,6 @@ $(document).on("click",".price-control",function(event){
             });
         }
     }
-
 });
 $(document).on('submit',".price-form",function(){
     if(priceEdit == 'price') {
@@ -1779,19 +1786,14 @@ $(document).on('submit',".price-form",function(){
 });
 
 $(document).on('submit',".discount-form",function(){
+    var discounted_amount = 0;
     if(priceEditAll == 'price') {
-        $(".price-control").each(function(){
-            var currentPrice = $(this).text().replace(/@/,'');
-            var toDiscount = $(".discount_field").val();
-            $(this).text('@'+parseFloat(currentPrice - toDiscount).toFixed(2));
-        });
+        discounted_amount = parseFloat($(".discount_field").val());
     } else {
-        $(".price-control").each(function(){
-            var currentPrice = $(this).text().replace(/@/,'');
-            var toDiscount = currentPrice * $(".discount_field").val().replace(/%/,"") / 100;
-            $(this).text('@'+parseFloat(currentPrice - toDiscount).toFixed(2));
-        });
+        var toDiscount = $(".toPay").text() * $(".discount_field").val().replace(/%/,"") / 100;
+        discounted_amount = toDiscount;
     }
+    $(".added-body").prepend('<tr class="order-discount"><td>Discount</td><td></td><td></td><td class="amount" style="text-align:right;">'+ discounted_amount.toFixed(2) +'</td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');
     $(".discount_block").hide();
     return false;
 });

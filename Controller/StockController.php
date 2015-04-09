@@ -1431,6 +1431,19 @@ class StockController extends AppController {
     }
 
     public function performInventoryCount() {
+    	$user = $this->Auth->user();
+    	$this->loadModel('MerchantProduct');
+    	$products = $this->MerchantProduct->find('all', array(
+    		'conditions' => array(
+    			'MerchantProduct.merchant_id' => $user['merchant_id'],
+    			'MerchantProduct.track_inventory = 1'
+    		)
+    	));
+    	$this->set('products',$products);
+    	
+    	if($this->request->is('ajax')) {
+	    	$this->serialize($products);
+    	}
     }
 
     public function reviewInventoryCount() {
