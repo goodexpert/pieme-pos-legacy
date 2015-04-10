@@ -158,6 +158,7 @@ ul, ol, li
 	padding:0;
 	margin:0;
 }
+a { cursor:pointer;}
 
 .hor-menu ul li a {
 	color: black;	font-weight: bold !important;
@@ -946,6 +947,8 @@ text-align:right;
 .customer_add div.modal-dialog {
 	margin: 188px auto;
 }
+.font-big { font-weight:bold; font-size:18px}
+
 /** product View receipt **/
 
 .receipt-parent {

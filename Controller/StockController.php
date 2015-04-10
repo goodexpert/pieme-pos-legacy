@@ -1229,6 +1229,54 @@ class StockController extends AppController {
     }
 
     public function inventoryCount() {
+        $user = $this->Auth->user();
+
+        // get the stock take list
+        $stockTakes = $this->MerchantStockTake->find('all', array(
+            'fields' => array(
+                'MerchantStockTake.*',
+                'MerchantOutlet.*'
+            ),
+            'joins' => array(
+                array(
+                    'table' => 'merchant_outlets',
+                    'alias' => 'MerchantOutlet',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'MerchantOutlet.id = MerchantStockTake.outlet_id'
+                    )
+                )
+            ),
+            'conditions' => array(
+                'MerchantStockTake.type' => 'STOCKTAKE',
+                'MerchantStockTake.merchant_id' => $user['merchant_id']
+            ),
+            'order' => array(
+                'MerchantStockTake.created DESC'
+            )
+        ));
+
+        $inventoryCounts = array();
+        foreach ($stockTakes as $stockTake) {
+            $count['id'] = $stockTake['MerchantStockTake']['id'];
+            $count['name'] = $stockTake['MerchantStockTake']['name'];
+            $count['status'] = $stockTake['MerchantStockTake']['status'];
+            $count['start_date'] = $stockTake['MerchantStockTake']['start_date'];
+            $count['outlet'] = $stockTake['MerchantOutlet']['name'];
+            $count['count'] = $stockTake['MerchantStockTake']['full_count'] == 1 ? 'Full' : 'Partial';
+
+            if ($count['status'] == 'STOCKTAKE_CANCELLED') {
+                $inventoryCounts['cancelled'][] = $count;
+            } elseif ($count['status'] == 'STOCKTAKE_COMPLETE') {
+                $inventoryCounts['completed'][] = $count;
+            } else {
+                $inventoryCounts['due'][] = $count;
+            }
+        }
+        $this->set('inventoryCounts', $inventoryCounts);
+        /*
+        debug($inventoryCounts);
+
         // get the list 
         $this->loadModel('MerchantStockTake');
         $this->MerchantStockTake->bindModel(array(
@@ -1267,6 +1315,7 @@ class StockController extends AppController {
         $this->set('inventoryCounts', $inventoryCounts);
 
         $this->set('takes', $takes);
+        */
     }
 
     public function newInventoryCount() { 
@@ -1297,7 +1346,7 @@ class StockController extends AppController {
                     $items = array();
                     foreach ($products as $p) {
                         $items[]['MerchantStockTakeItem'] = array(
-                            'stocktake_id'          => $take_id,
+                            'stock_take_id'         => $take_id,
                             'product_id'            => $p['MerchantProduct']['id'],
                             'name'                  => $p['MerchantProduct']['name'],
                             'sku'                   => $p['MerchantProduct']['sku'],
@@ -1337,6 +1386,143 @@ class StockController extends AppController {
         $this->set('outlets', $outlets);
     }
 
+    public function editInventoryCount($id) {
+        $this->loadModel('MerchantStockTake');
+
+        $take = $this->MerchantStockTake->findById($id);
+
+        $take['MerchantStockTakeItem'] = $this->__extractFilters($take['MerchantStockTake']['filters'], $this->Auth->user()['merchant_id']);
+
+        $outlets = $this->__listMerchantOutlets($this->Auth->user()['merchant_id']);
+        $this->set('outlets', $outlets);
+
+        if ( !$this->request->data ) {
+            $this->request->data = $take;
+            $this->request->data['MerchantStockTake']['start_date'] = date('Y-m-d', strtotime($take['MerchantStockTake']['start_date']));
+            $this->request->data['MerchantStockTake']['start_time'] = date('h:i A', strtotime($take['MerchantStockTake']['start_date']));
+        }
+    }
+
+    public function saveInventoryCount() {
+        if ( !$this->request->is('ajax') || !$this->request->is('post')) {
+            $this->redirect('/inventory_count');
+        }
+
+        $result = array(
+            'success' => false
+        );
+
+        $data = $this->request->data;
+        $data = $this->__saveInventoryCount($data, 'STOCKTAKE_SCHEDULED');
+
+        /*
+        $data['MerchantStockTake']['show_inactive'] = isset($data['MerchantStockTake']['show_inactive']) ? '1' : '0';
+        $data['MerchantStockTake']['merchant_id'] = $this->Auth->user()['merchant_id'];
+        $data['MerchantStockTake']['type'] = 'STOCKTAKE';
+        $data['MerchantStockTake']['status'] = 'STOCKTAKE_SCHEDULED';
+        $data['MerchantStockTake']['start_date'] = date('Y-m-d h:i:s', strtotime($data['MerchantStockTake']['start_date'] . ' ' . $data['MerchantStockTake']['start_time']));
+        if ( $data['MerchantStockTake']['full_count'] == '0' && isset($data['MerchantStockTakeItem']) ) {
+            $data['MerchantStockTake']['filters'] = json_encode($data['MerchantStockTakeItem']);
+        }
+         */
+
+        $this->loadModel('MerchantStockTake');
+        $dataSource = $this->MerchantStockTake->getDataSource();
+        $dataSource->begin();
+
+        try {
+            if ( isset($data['MerchantStockTake']['id']) ) {
+                $this->MerchantStockTake->id = $data['MerchantStockTake']['id'];
+            } else {
+                $this->MerchantStockTake->create();
+            }
+            $this->MerchantStockTake->save($data);
+
+            //$take_id = $this->MerchantStockTake->id;
+
+            // check 'full count'
+            /*
+            if ( $data['MerchantStockTake']['full_count'] == '1' ) {
+                $products = $this->__fullCount($data['MerchantStockTake']['outlet_id'], $data['MerchantStockTake']['show_inactive']);
+                $items = array();
+                foreach ($products as $p) {
+                    $items[]['MerchantStockTakeItem'] = array(
+                        'stock_take_id'         => $take_id,
+                        'product_id'            => $p['MerchantProduct']['id'],
+                        'name'                  => $p['MerchantProduct']['name'],
+                        'sku'                   => $p['MerchantProduct']['sku'],
+                        'expected'              => $p['MerchantProductInventory']['count'],
+                        'counted'               => '0',
+                        'supply_price'          => $p['MerchantProduct']['supply_price'],
+                        'total_cost'            => '0.00000',
+                        'price_include_tax'     => $p['MerchantProduct']['price_include_tax'],
+                        'total_price_incl_tax'  => '0.00000'
+                    );
+                }
+
+                // save stock take items...
+                $this->MerchantStockTakeItem->saveMany($items);
+            } else {
+
+            }
+             */
+
+
+            $dataSource->commit();
+
+            $result['success'] = true;
+        } catch (Exception $e) {
+            $dataSource->rollback();
+            $result['message'] = $e->getMessage();
+        }
+
+        $this->serialize($result);
+    }
+
+    public function startInventoryCount() {
+        if ( !$this->request->is('ajax') || !$this->request->is('post') ) {
+            $this->redirect('/inventory_count');
+        }
+
+        $result = array(
+            'success' => false
+        );
+
+        $user = $this->Auth->user();
+
+        $dataSource = $this->MerchantStockTake->getDataSource();
+        $dataSource->begin();
+
+        try {
+            $data = $this->request->data;
+            $data = $this->__saveInventoryCount($data, 'STOCKTAKE_IN_PROGRESS_PROCESSED');
+
+            if ( isset($data['MerchantStockTake']['id']) ) {
+                $this->MerchantStockTake->id = $data['MerchantStockTake']['id'];
+            } else {
+                $this->MerchantStockTake->create();
+            }
+            $this->MerchantStockTake->save($data);
+
+            if (!isset($data['MerchantStockTake']['id']) || empty($data['MerchantStockTake']['id'])) {
+                $data['MerchantStockTake']['id'] = $this->MerchantStockTake->id;
+            }
+
+            $items = $this->__saveStockTakeItems($data['MerchantStockTake']);
+            $this->MerchantStockTakeItem->saveMany($items);
+
+            $dataSource->commit();
+
+            $result['success'] = true;
+            $result['id'] = $data['MerchantStockTake']['id'];
+        } catch (Exception $e) {
+            $dataSource->rollback();
+            $result['message'] = $e->getMessage();
+        }
+
+        $this->serialize($result);
+    }
+
     public function viewInventoryCount($id) {
         $this->loadModel('MerchantStockTake');
 
@@ -1353,11 +1539,11 @@ class StockController extends AppController {
             'hasMany' => array(
                 'MerchantStockTakeItem' => array(
                     'className' => 'MerchantStockTakeItem',
-                    'foreignKey' => 'stocktake_id'
+                    'foreignKey' => 'stock_take_id'
                 ),
                 'MerchantStockTakeCount' => array(
                     'className' => 'MerchantStockTakeCount',
-                    'foreignKey' => 'stocktake_id'
+                    'foreignKey' => 'stock_take_id'
                 )
             )
         ));
@@ -1430,23 +1616,199 @@ class StockController extends AppController {
         $this->set('products', $products);
     }
 
-    public function performInventoryCount() {
+    public function performInventoryCount($id) {
     	$user = $this->Auth->user();
-    	$this->loadModel('MerchantProduct');
-    	$products = $this->MerchantProduct->find('all', array(
-    		'conditions' => array(
-    			'MerchantProduct.merchant_id' => $user['merchant_id'],
-    			'MerchantProduct.track_inventory = 1'
-    		)
-    	));
-    	$this->set('products',$products);
-    	
-    	if($this->request->is('ajax')) {
-	    	$this->serialize($products);
-    	}
+
+        $stockTake = $this->MerchantStockTake->find('first', array(
+            'fields' => array(
+                'MerchantStockTake.*',
+                'MerchantOutlet.*'
+            ),
+            'joins' => array(
+                array(
+                    'table' => 'merchant_outlets',
+                    'alias' => 'MerchantOutlet',
+                    'type' => 'INNER',
+                    'foreignKey' => 'outlet_id'
+                )
+            ),
+        	'conditions' => array(
+            	'MerchantStockTake.id' => $id
+        	)
+        ));
+
+        /*
+        $stockTakeItems = $this->MerchantStockTakeItem->find('all', array(
+            'fields' => array(
+                'MerchantStockTakeItem.*',
+                'MerchantProductInventory.*'
+            ),
+            'joins' => array(
+                array(
+                    'table' => 'merchant_product_inventories',
+                    'alias' => 'MerchantProductInventory',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'MerchantProductInventory.product_id = MerchantStockTakeItem.product_id',
+                        'MerchantProductInventory.outlet_id' => $stockTake['MerchantStockTake']['outlet_id']
+                    )
+                )
+            ),
+        	'conditions' => array(
+            	'MerchantStockTakeItem.stock_take_id' => $id
+        	)
+        ));
+
+        //call the noop function callback on every element of $data
+        $stockTakeItems = Hash::map($stockTakeItems, "{n}", function($array) {
+            $newArray = $array['MerchantStockTakeItem'];
+            $newArray['MerchantProductInventory'] = $array['MerchantProductInventory'];
+            return $newArray;
+        });
+        $stockTake['MerchantStockTakeItem'] = $stockTakeItems;
+        */
+
+        $this->set('stockTake', $stockTake);
+
+        /*
+        $this->loadModel('MerchantProduct');
+        $this->loadModel('MerchantProductInventory');
+        $this->loadModel('MerchantStockTake');
+        $this->loadModel('MerchantStockTakeItem');
+
+        $this->MerchantStockTake->bindModel(array(
+            'belongsTo' => array(
+                'MerchantOutlet' => array(
+                    'className' => 'MerchantOutlet',
+                    'foreignKey' => 'outlet_id'
+                )
+            ),
+            'hasMany' => array(
+                'MerchantStockTakeItem' => array(
+                    'className' => 'MerchantStockTakeItem',
+                    'foreignKey' => 'stock_take_id'
+                )
+            )
+        ));
+
+        $this->MerchantStockTakeItem->bindModel(array(
+            'belongsTo' => array(
+                'MerchantProduct' => array(
+                    'className' => 'MerchantProduct',
+                    'foreignKey' => 'product_id'
+                )
+            )
+        ));
+
+        $this->MerchantProduct->bindModel(array(
+            'hasMany' => array(
+                'MerchantProductInventory' => array(
+                    'className' => 'MerchantProductInventory',
+                    'foreignKey' => 'product_id',
+                    'conditions' => array(
+                        'MerchantProductInventory.outlet_id' => $user['outlet_id']
+                    )
+                )
+            )
+        ));
+
+        $take = $this->MerchantStockTake->find('first', array(
+            'conditions' => array(
+                'MerchantStockTake.id' => $id
+            ),
+            'recursive' => 3
+        ));
+        $this->set('take', $take);
+        */
     }
 
     public function reviewInventoryCount() {
+    }
+
+    public function getStockTakeItems($id) {
+    	$result = array(
+        	'success' => false
+    	);
+    	$user = $this->Auth->user();
+
+    	if ($this->request->is('ajax')) {
+        	try {
+                $stockTake = $this->MerchantStockTake->find('first', array(
+                    'fields' => array(
+                        'MerchantStockTake.*',
+                        'MerchantOutlet.*'
+                    ),
+                    'joins' => array(
+                        array(
+                            'table' => 'merchant_outlets',
+                            'alias' => 'MerchantOutlet',
+                            'type' => 'INNER',
+                            'foreignKey' => 'outlet_id'
+                        )
+                    ),
+                	'conditions' => array(
+                    	'MerchantStockTake.id' => $id
+                	)
+                ));
+
+                $stockTakeItems = $this->MerchantStockTakeItem->find('all', array(
+                    'fields' => array(
+                        'MerchantStockTakeItem.*',
+                        'MerchantProductInventory.*'
+                    ),
+                    'joins' => array(
+                        array(
+                            'table' => 'merchant_product_inventories',
+                            'alias' => 'MerchantProductInventory',
+                            'type' => 'INNER',
+                            'conditions' => array(
+                                'MerchantProductInventory.product_id = MerchantStockTakeItem.product_id',
+                                'MerchantProductInventory.outlet_id' => $stockTake['MerchantStockTake']['outlet_id']
+                            )
+                        )
+                    ),
+                	'conditions' => array(
+                    	'MerchantStockTakeItem.stock_take_id' => $id
+                	)
+                ));
+
+                //call the noop function callback on every element of $data
+                $stockTakeItems = Hash::map($stockTakeItems, "{n}", function($array) {
+                    $newArray = $array['MerchantStockTakeItem'];
+                    $newArray['MerchantProductInventory'] = $array['MerchantProductInventory'];
+                    return $newArray;
+                });
+
+            	$result['items'] = $stockTakeItems;
+            	$result['success'] = true;
+            } catch (Exception $e) {
+                $result['message'] = $e.getMessage();
+            }
+    	}
+    	$this->serialize($result);
+    }
+
+    public function searchProduct() {
+    	$result = array(
+        	'success' => false
+    	);
+    	$user = $this->Auth->user();
+
+    	if ($this->request->is('ajax')) {
+        	$data = $this->request->data;
+
+        	$products = $this->MerchantProduct->find('all', array(
+        		'conditions' => array(
+        			'MerchantProduct.merchant_id' => $user['merchant_id'],
+        			'MerchantProduct.track_inventory = 1',
+        			'MerchantProduct.name LIKE' => '%' .$data['q'] . '%'
+        		)
+        	));
+
+        	$result['products'] = $products;
+        	$result['success'] = true;
+    	}
+    	$this->serialize($result);
     }
 
     public function merchantProducts() {
@@ -1454,10 +1816,13 @@ class StockController extends AppController {
             $this->redirect('/stock');
         }
 
+        $search_str = $_GET['search_str'];
+
         $this->loadModel('MerchantProduct');
         $products = $this->MerchantProduct->find('all', array(
             'conditions' => array(
-                'MerchantProduct.merchant_id' => $this->Auth->user()['merchant_id']
+                'MerchantProduct.merchant_id' => $this->Auth->user()['merchant_id'],
+                'MerchantProduct.name LIKE' => "%$search_str%"
             )
         ));
 
@@ -1669,11 +2034,11 @@ $result = $this->Project->find('all', array(
             'hasMany' => array(
                 'MerchantStockTakeItem' => array(
                     'className' => 'MerchantStockTakeItem',
-                    'foreignKey' => 'stocktake_id'
+                    'foreignKey' => 'stock_take_id'
                 ),
                 'MerchantStockTakeCount' => array(
                     'className' => 'MerchantStockTakeCount',
-                    'foreignKey' => 'stocktake_id'
+                    'foreignKey' => 'stock_take_id'
                 )
             )
         ));
@@ -1869,61 +2234,92 @@ $result = $this->Project->find('all', array(
         return $inventory;
     }
 
-    public function jase() {
-        $data = array(
-            array(
-                'id' => '551d53b1-b488-43b5-85e9-400dc0a801cd',
-                'order_id' => '551d4cca-d790-4375-b32a-47b6c0a801cd',
-                'product_id' => '551d3b8d-86d8-472b-8ff1-4f4cc0a801cd',
-                'price_include_tax' => '4.41600',
-                'count' => '10',
-                'supply_price' => '3.20'
-            )
-        );
+    private function __extractFilters($data, $merchant_id) {
+        $this->loadModel('MerchantProduct');
 
-        $items = $this->__saveItems($data);
-        debug($items); exit;
+        $extracted = json_decode($data, true);
+
+        $items = array();
+        foreach ($extracted as $item) {
+            $product = $this->MerchantProduct->findById($item['id']);
+            $items[] = array(
+                'id' => $product['MerchantProduct']['id'],
+                'name' => $product['MerchantProduct']['name'],
+                'sku' => $product['MerchantProduct']['sku']
+            );
+        }
+
+        return $items;
     }
 
-    public function jase2() {
-        $id = '5521f0f6-5180-4ccf-a46d-bb0dc0a801cd';
+    private function __saveInventoryCount($data, $status) {
+        $data['MerchantStockTake']['show_inactive'] = isset($data['MerchantStockTake']['show_inactive']) ? '1' : '0';
+        $data['MerchantStockTake']['merchant_id'] = $this->Auth->user()['merchant_id'];
+        $data['MerchantStockTake']['type'] = 'STOCKTAKE';
+        $data['MerchantStockTake']['status'] = $status;
+        $data['MerchantStockTake']['start_date'] = date('Y-m-d h:i:s', strtotime($data['MerchantStockTake']['start_date'] . ' ' . $data['MerchantStockTake']['start_time']));
+        if ( $data['MerchantStockTake']['full_count'] == '0' && isset($data['MerchantStockTakeItem']) ) {
+            $data['MerchantStockTake']['filters'] = json_encode($data['MerchantStockTakeItem']);
+        } else {
+            $data['MerchantStockTake']['filters'] = 'jase';
+        }
 
-        $order = $this->MerchantStockOrder->findById($id);
+        return $data;
+    }
 
+    private function __saveStockTakeItems($stockTake) {
+        $items = array();
 
-        $inventory = array();
-        if ( $order['MerchantStockOrder']['type'] == 'OUTLET' ) {
-            $items = $this->MerchantStockOrderItem->find('all', array(
-                'conditions' => array(
-                    'MerchantStockOrderItem.order_id' => $order['MerchantStockOrder']['id']
+        if ( $stockTake['full_count'] == '1' ) {
+            $products = $this->__fullCount($stockTake['outlet_id'], $stockTake['show_inactive']);
+            foreach ($products as $p) {
+                $items[]['MerchantStockTakeItem'] = array(
+                    'stock_take_id'         => $stockTake['id'],
+                    'product_id'            => $p['MerchantProduct']['id'],
+                    'name'                  => $p['MerchantProduct']['name'],
+                    'sku'                   => $p['MerchantProduct']['sku'],
+                    'expected'              => $p['MerchantProductInventory']['count'],
+                    'counted'               => '0',
+                    'supply_price'          => $p['MerchantProduct']['supply_price'],
+                    'total_cost'            => '0.00000',
+                    'price_include_tax'     => $p['MerchantProduct']['price_include_tax'],
+                    'total_price_incl_tax'  => '0.00000'
+                );
+            }
+        } else {
+            $extracted = json_decode($stockTake['filters'], true);
+
+            $this->loadModel('MerchantProduct');
+            $this->MerchantProduct->bindModel(array(
+                'hasMany' => array(
+                    'MerchantProductInventory' => array(
+                        'className' => 'MerchantProductInventory',
+                        'foreignKey' => 'product_id',
+                        'conditions' => array(
+                            'MerchantProductInventory.outlet_id' => $stockTake['outlet_id']
+                        )
+                    )
                 )
             ));
 
-            $inventory = $this->__inventory($order['MerchantStockOrder']['merchant_id'], $order['MerchantStockOrder']['source_outlet_id'], $items, '-');
+            foreach ($extracted as $item) {
+                $product = $this->MerchantProduct->findById($item['id']);
+                $items[]['MerchantStockTakeItem'] = array(
+                    'stock_take_id'         => $stockTake['outlet_id']['id'],
+                    'product_id'            => $product['MerchantProduct']['id'],
+                    'name'                  => $product['MerchantProduct']['name'],
+                    'sku'                   => $product['MerchantProduct']['sku'],
+                    'expected'              => isset($product['MerchantProductInventory'][0]['count']) ? $product['MerchantProductInventory'][0]['count'] : '0',
+                    'counted'               => '0',
+                    'supply_price'          => $product['MerchantProduct']['supply_price'],
+                    'total_cost'            => '0.00000',
+                    'price_include_tax'     => $product['MerchantProduct']['price_include_tax'],
+                    'total_price_incl_tax'  => '0.00000'
+                );
+            }
         }
 
-        debug($inventory); exit;
-    }
-
-    public function jase3() {
-        $id = '5523acc8-07b4-4319-be08-e389c0a801cd';
-
-        $order = $this->MerchantStockOrder->findById($id);
-
-        $items = $this->MerchantStockOrderItem->find('all', array(
-            'conditions' => array(
-                'MerchantStockOrderItem.order_id' => $order['MerchantStockOrder']['id']
-            )
-        ));
-
-        $inventory = $this->__inventory($order['MerchantStockOrder']['merchant_id'], $order['MerchantStockOrder']['outlet_id'], $items, '+');
-
-        debug($inventory);
-        exit;
-    }
-
-    public function jase4() {
-        $this->layout = 'default';
+        return $items;
     }
 
 }

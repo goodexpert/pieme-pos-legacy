@@ -61,12 +61,13 @@
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                 <div class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
                     <h2>
-                        New Inventory Count
+                        Edit Inventory Count
                     </h2>
                 </div>
             </div>
             <!--<form action="/inventory_count/create" method="post" id="inventory_count_form">-->
             <form id="inventory_count_form">
+            <input type="hidden" name="data[MerchantStockTake][id]" value="<?php echo $this->request->data['MerchantStockTake']['id']; ?>">
             <div class="col-md-12 col-xs-12 col-sm-12 line-box filter-box new-inventory margin-top-20">
                 <div class="col-md-4 col-xs-4 col-sm-4">
                     <dl>
@@ -98,7 +99,7 @@
                                     'div' => false,
                                     'label' => false,
                                     'class' => 'hasDatepicker',
-                                    'value' => date('Y-m-d')
+                                    'default' => date('Y-m-d')
                                 ));
                                 echo $startDate;
                             ?>
@@ -115,7 +116,7 @@
                                     'type' => 'text',
                                     'div' => false,
                                     'label' => false,
-                                    'value' => date('h:i A')
+                                    'default' => date('h:i A')
                                 ));
                                 echo $startTime;
                             ?>
@@ -139,16 +140,28 @@
                     </dl>
                  </div>
                 <div class="col-md-4 col-xs-4 col-sm-4 margin-top-20">
+                    <?php if ( $this->request->data['MerchantStockTake']['show_inactive'] == '1' ): ?>
+                    <input type="checkbox" name="data[MerchantStockTake][show_inactive]" value="1" checked>
+                    <?php else: ?>
                     <input type="checkbox" name="data[MerchantStockTake][show_inactive]" value="1">
+                    <?php endif; ?>
                     <label>Include inactive products</label>
                  </div>
                  <div class="solid-line-gr"></div>
                 <div class="col-md-12 col-xs-12 col-sm-12">
                      <div class="col-md-3 col-xs-3 col-sm-3">
+                        <?php if ( $this->request->data['MerchantStockTake']['full_count'] == '0' ): ?>
+                        <input type="radio" name="data[MerchantStockTake][full_count]" value="0" checked><label>Partial Count</label>
+                        <?php else: ?>
                         <input type="radio" name="data[MerchantStockTake][full_count]" value="0"><label>Partial Count</label>
+                        <?php endif; ?>
                     </div>
                      <div class="col-md-3 col-xs-3 col-sm-3">
-                        <input type="radio" name="data[MerchantStockTake][full_count]" value="1" ><label>Full Count</label>
+                        <?php if ( $this->request->data['MerchantStockTake']['full_count'] == '1' ): ?>
+                        <input type="radio" name="data[MerchantStockTake][full_count]" value="1" checked><label>Full Count</label>
+                        <?php else: ?>
+                        <input type="radio" name="data[MerchantStockTake][full_count]" value="1"><label>Full Count</label>
+                        <?php endif; ?>
                     </div>
                  </div>
                  <div class="line-box-stitle col-md-12 col-xs-12 col-sm-12 margin-top-20">
@@ -173,12 +186,14 @@
                                     <td>T-shirt (Demo)<h6>tshirt-white</h6></td>
                                 </tr>
                                 -->
+                                <?php foreach ($this->request->data['MerchantStockTakeItem'] as $idx => $item): ?>
+                                <input type="hidden" name="data[MerchantStockTakeItem][<?php echo $idx; ?>][id]" value="<?php echo $item['id']; ?>">
+                                <tr>
+                                    <td><?php echo $item['name']; ?><h6><?php echo $item['sku']; ?></h6></td> 
+                                </tr>
+                                <?php endforeach; ?>
                             </tbody>
                         </table>
-                        <div class="no-list text-center">
-                            <div class="margin-top-20"><img src="../img/stock.png"></div>
-                            <h5 class="margin-top-30">Categorising your products makes partial inventory counts easy. <a>Learn how</a></h5>
-                        </div>
                   </div>
                 </div>
             </div>
@@ -298,6 +313,7 @@ jQuery(document).ready(function() {
     QuickSidebar.init() // init quick sidebar
     Index.init();
 
+
     $(document).on('change', '.outlet', function() {
         var outlet = $('option:selected', $(this)).text();
         var count_name = '';
@@ -309,6 +325,13 @@ jQuery(document).ready(function() {
 });
 
 $(function() {
+    // jquery ui autocomplete
+    /*
+    var items = ["Coffee", "Apple", "Banana"];
+    $("#search-items").autocomplete({
+        source: items
+    });
+     */
     $("#search-items").autocomplete({
         source: function (request, response) {
             $.ajax({
@@ -392,11 +415,14 @@ $(function() {
                     alert(data.message);
                     console.log(data.message);
                 }
+
             }
         });
 
         return false;
     });
+
 });
+
 </script>
 <!-- END JAVASCRIPTS -->

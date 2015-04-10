@@ -57,21 +57,21 @@
                     <h2>
                         Perform Inventory Count
                     </h2>
-                    <h4 class="col-lg-5 col-md-6 col-xs-12 col-sm-7 col-alpha">Main Outlet 25-03-2015 3:00 PM</h4>
-                    <h5 class="col-lg-7 col-md-6 col-xs-12 col-sm-5 col-alpha col-omega">Full Count</h5>
+                    <h4 class="col-lg-5 col-md-6 col-xs-12 col-sm-7 col-alpha"><?php echo $stockTake['MerchantStockTake']['name']; ?></h4>
+                    <h5 class="col-lg-7 col-md-6 col-xs-12 col-sm-5 col-alpha col-omega"><?php echo ($stockTake['MerchantStockTake']['full_count'] == '1') ? 'Full Count' : 'Partial Count'; ?></h5>
                     <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                         <h5 class="col-lg-4 col-md-5 col-xs-12 col-sm-6 col-alpha col-omega">
                             <span class="glyphicon glyphicon-calendar"></span>&nbsp;
-                            Start: 25 Mar 2015, 2:37 PM
+                            Start: <?php echo date('d M Y, g:m A', strtotime($stockTake['MerchantStockTake']['start_date'])); ?>
                         </h5>
                         <h5 class="col-lg-8 col-md-7 col-xs-12 col-sm-6 col-alpha col-omega">
                             <span class="glyphicon glyphicon-map-marker"></span>&nbsp;
-                            Main Outlet
+                            <?php echo $stockTake['MerchantOutlet']['name']; ?>
                         </h5>
                     </div>
                     <div class="col-md-12 col-xs-12 col-sm-12 col-alpha count-input">
                         <div id="search-items-wrapper" class="col-md-6 col-xs-6 col-sm-6 col-alpha">
-                            <input type="text" id="search-items" placeholder="Search for suppliers, brands, types, tags, or SKUs.">
+                            <input type="text" id="search-items" placeholder="Type to search for products">
                         </div>
                         <div id="item-qty-wrapper" class="col-md-3 col-xs-3 col-sm-3 col-alpha">
                             <input type="text" id="item-qty" class="btn-left" value="1" style="width:50%;">
@@ -106,19 +106,31 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach($products as $product) { ?>
-                                        <tr role="row" class="odd product-list" data-id="<?php echo $product['MerchantProduct']['id'];?>">
-                                            <td><?php echo $product['MerchantProduct']['name'];?>
-                                                <h6 class="inline-block-z margin-left-10"><?php echo $product['MerchantProduct']['sku'];?></h6>
+                                        <!--
+                                        <?php foreach ($stockTake['MerchantStockTakeItem'] as $item): ?>
+                                        <tr role="row" class="odd product-list" data-id="<?php echo $item['product_id']; ?>">
+                                            <td><?php echo $item['name']; ?>
+                                                <h6 class="inline-block-z margin-left-10"><?php echo $item['sku']; ?></h6>
                                             </td>
-                                            <td>11</td>
+                                            <td>
+                                                <?php
+                                                    echo isset($item['MerchantProduct']['MerchantProductInventory'][0]['count'])
+                                                        ? $item['MerchantProduct']['MerchantProductInventory'][0]['count']
+                                                        : '0';
+                                                ?>
+                                            </td>
                                             <td class="product-list-count">0</td>
                                         </tr>
-                                        <?php } ?>
+                                        <?php endforeach; ?>
+                                        -->
                                     </tbody>
                                 </table>
                             </div>
                         </div>
+                    </div>
+                    <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
+                        <button class="btn btn-primary pull-right">Review Count</button>
+                        <button class="btn btn-default pull-right margin-right-10">Pause Count</button>
                     </div>
                 </div>
                 <div class="pull-right col-md-3 col-xs-3 col-sm-3 col-omega margin-top-20">
@@ -228,26 +240,37 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"> 
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script>
+var quickScanMode = false;
+var stockTakeCounts = [];
+var stockTakeItems = [];
+var selectedTab = 'all';
+
 jQuery(document).ready(function() {    
     Metronic.init(); // init metronic core componets
     Layout.init(); // init layout
     QuickSidebar.init() // init quick sidebar
     Index.init();
-    update_product_status();
+    getStockTakeItems();
 
     $("#search-items").autocomplete({
         source: function (request, response) {
             $.ajax({
-                url: "/stock/performInventoryCount.json",
+                url: "/stock/searchProduct.json",
+                method: "POST",
                 dataType: "json",
+                data: {
+                    q: request.term
+                },
                 success: function (data) {
-                    response($.map(data, function (item) {
-                        return {
-                            label: item.MerchantProduct.name,
-                            value: item.MerchantProduct.id,
-                            sku: item.MerchantProduct.sku
-                        }
-                    }));
+                        response($.map(data.products, function (item) {
+                            if (!item.MerchantProduct.is_active)
+                                return;
+                            return {
+                                label: item.MerchantProduct.name,
+                                value: item.MerchantProduct.id,
+                                sku: item.MerchantProduct.sku
+                            }
+                        }));
                 }
             });
         },
@@ -257,6 +280,7 @@ jQuery(document).ready(function() {
 
             $(this).val(ui.item.label);
             $(this).attr('data-id', ui.item.value);
+            $('#count-inventory').removeAttr("disabled");
             //$('#productTable tbody').append('<tr><td>'+ui.item.label+'<h6>'+ui.item.sku+'</h6></td></tr>');
 
             return false;
@@ -266,6 +290,58 @@ jQuery(document).ready(function() {
             event.preventDefault();
         }
     });
+
+    $("#quick-scan-mode").change(function() {
+        $("#item-qty-wrapper").toggle();
+
+        if ($("#item-qty-wrapper").is(':visible')) {
+            $("#search-items-wrapper").attr('class','col-md-6 col-xs-6 col-sm-6 col-alpha');
+        } else {
+            $("#search-items-wrapper").attr('class','col-md-9 col-xs-9 col-sm-9 col-alpha');
+        }
+        $("#search-items").removeAttr("data-id");
+        $("#search-items").val('');
+
+        quickScanMode = $("#quick-scan-mode").attr('checked') == 'checked';
+    });
+
+    $("#search-items").keypress(function(e) {
+        var key = event.keyCode || event.which;
+
+        if (key == 13 && quickScanMode && $(this).attr("data-id")) {
+        } else {
+            $('#count-inventory').attr("disabled", "disabled");
+        }
+    });
+
+    $("#count-inventory").click(function(e) {
+    });
+
+    $("#inventory-tab-all").click(function(){
+        $(".inventory-tab").find(".active").removeClass("active");
+        $(this).addClass("active");
+
+        selectedTab = 'all';
+        updateView();
+    });
+
+    $("#inventory-tab-counted").click(function(){
+        $(".inventory-tab").find(".active").removeClass("active");
+        $(this).addClass("active");
+
+        selectedTab = 'counted';
+        updateView();
+    });
+
+    $("#inventory-tab-uncounted").click(function(){
+        $(".inventory-tab").find(".active").removeClass("active");
+        $(this).addClass("active");
+
+        selectedTab = 'uncounted';
+        updateView();
+    });
+
+    /*
     $(document).on("keyup","#search-items",function(event){
         var key = event.keyCode || event.which;
         if (key === 13) {
@@ -276,23 +352,7 @@ jQuery(document).ready(function() {
             $(this).removeAttr("data-id");
         }
     });
-    $("#inventory-tab-all").click(function(){
-        $(".inventory-tab").find(".active").removeClass("active");
-        $(this).addClass("active");
-        $(".product-list").show();
-    });
-    $("#inventory-tab-counted").click(function(){
-        $(".inventory-tab").find(".active").removeClass("active");
-        $(this).addClass("active");
-        $(".product-list").hide();
-        $(".counted-product").show();
-    });
-    $("#inventory-tab-uncounted").click(function(){
-        $(".inventory-tab").find(".active").removeClass("active");
-        $(this).addClass("active");
-        $(".product-list").hide();
-        $(".uncounted-product").show();
-    });
+
     var item_qty = 1;
     $("#count-inventory").click(function(){
         if($("#item-qty-wrapper").is(':visible')){
@@ -300,19 +360,68 @@ jQuery(document).ready(function() {
         }
         $(".last-counted-list").prepend('<ul class="added-item" data-id="'+$("#search-items").attr("data-id")+'"><li class="pull-left"><span class="added-item-qty">'+item_qty+'</span> '+$("#search-items").val()+'</li><li class="pull-right"><span class="remove inline-block"><span class="glyphicon glyphicon-remove"></span></span></li></ul>');
     });
-    $("#quick-scan-mode").change(function(){
-        $("#item-qty-wrapper").toggle();
-        if($("#item-qty-wrapper").is(':visible')) {
-            $("#search-items-wrapper").attr('class','col-md-6 col-xs-6 col-sm-6 col-alpha');
-        } else {
-            $("#search-items-wrapper").attr('class','col-md-9 col-xs-9 col-sm-9 col-alpha');
-        }
-    });
 
     $(document).on("click", ".remove", function(){
         $(this).parents('ul').remove();
     });
+    */
 });
+
+function getStockTakeItems() {
+    $.ajax({
+        url: "/inventory_count/<?php echo $stockTake['MerchantStockTake']['id']; ?>/items.json",
+        method: "POST",
+        dataType: "json",
+        success: function (data) {
+            if (data.success) {
+                stockTakeItems = data.items;
+                updateView();
+            } else {
+                alert(data.message);
+                console.log(data.message);
+            }
+        }
+    });
+}
+
+function updateData(product) {
+}
+
+function updateView() {
+    var counted = 0;
+    var uncounted = 0;
+
+    $("#productTable").find('tbody').empty();
+
+    for (var key in stockTakeItems) {
+        if (stockTakeItems[key]['counted'] > 0) {
+            counted++;
+
+            if (selectedTab == 'uncounted') {
+                continue;
+            }
+        } else {
+            uncounted++;
+
+            if (selectedTab == 'counted') {
+                continue;
+            }
+        }
+
+        var appendString = '';
+        appendString = '<tr role="row" class="odd product-list" data-id="' + stockTakeItems[key]['id'] + '">';
+        appendString += '<td>' + stockTakeItems[key]['name'];
+        appendString += '<h6 class="inline-block-z margin-left-10">' + stockTakeItems[key]['sku'] + '</h6></td>';
+        appendString += '<td class="product-list-expected">' + stockTakeItems[key]['expected'] + '</td>';
+        appendString += '<td class="product-list-count">' + stockTakeItems[key]['counted'] + '</td>';
+        appendString += '</tr>';
+        $("#productTable").find('tbody').append(appendString);
+    }
+    $(".counted-no").text(counted);
+    $(".uncounted-no").text(uncounted);
+}
+
+/*
 $(document).on("click", function(){
     $(".product-list-count").text('0');
     $(".added-item").each(function(){
@@ -323,6 +432,7 @@ $(document).on("click", function(){
     update_product_status();
     validate();
 });
+
 $(document).on("keyup", function(){
     validate();
     update_product_status();
@@ -368,5 +478,6 @@ function merge_array() {
         stockTakeItems.push({'qty':$(this).find(".added-item-qty").text(),'product_id':$(this).attr("data-id")});
     });
 }
+*/
 </script>
 <!-- END JAVASCRIPTS -->

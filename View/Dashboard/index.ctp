@@ -146,14 +146,14 @@
         <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega line-box line-box-content portlet solid bordered grey-cararra">
           <ul class="col-md-6 col-xs-12 col-sm-12 dashboard-list">
             <li><a href="/reports/sales/sales_by_period">Sales Totals by Period</a></li>
-            <li><a href="/reports/sales/sales_by_month">Sales Totals by Month</a></li>
             <li><a href="/reports/sales/sales_by_day">Sales Totals by Day</a></li>
-            <li><a href="/reports/sales/sales_by_hour">Sales Activity by Hour</a></li>
+            <li><a href="/reports/sales/sales_by_category">Sales by Tag</a></li>
+            <li><a href="/reports/sales/payments_by_month">Payment Types by Month</a></li>
           </ul>
           <ul class="col-md-6 col-xs-12 col-sm-12 dashboard-list">
-            <li><a href="/reports/sales/sales_by_category">Sales by Tag</a></li>
+            <li><a href="/reports/sales/sales_by_month">Sales Totals by Month</a></li>
+            <li><a href="/reports/sales/sales_by_hour">Sales Activity by Hour</a></li>
             <li><a href="/reports/sales/register_sales_detail">Register Sales Detail</a></li>
-            <li><a href="/reports/sales/payments_by_month">Payment Types by Month</a></li>
           </ul>
         </div>
       </div>
@@ -163,14 +163,14 @@
         <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega line-box line-box-content portlet solid bordered grey-cararra">
           <ul class="col-md-6 col-xs-12 col-sm-12 dashboard-list">
             <li><a href="/reports/sales/popular_products">Popular Products</a></li>
-            <li><a href="/reports/sales/products_by_user">Product Sales by User</a></li>
             <li><a href="/reports/sales/products_by_type">Product Sales by Type</a></li>
-            <li><a href="/reports/sales/products_by_customer">Product Sales by Customer</a></li>
+            <li><a href="/reports/sales/products_by_oulet">Product Sales by Outlet</a></li>
+            <li><a href="/reports/sales/products_by_supplier">Product Sales by Supplier</a></li>
           </ul>
           <ul class="col-md-6 col-xs-12 col-sm-12 dashboard-list">
-            <li><a href="/reports/sales/products_by_oulet">Product Sales by Outlet</a></li>
+            <li><a href="/reports/sales/products_by_user">Product Sales by User</a></li>
+            <li><a href="/reports/sales/products_by_customer">Product Sales by Customer</a></li>
             <li><a href="/reports/sales/products_by_customer_group">Product Sales by Customer Group</a></li>
-            <li><a href="/reports/sales/products_by_supplier">Product Sales by Supplier</a></li>
           </ul>
         </div>
       </div>
@@ -180,10 +180,10 @@
         <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega line-box line-box-content portlet solid bordered grey-cararra">
           <ul class="col-md-6 col-xs-12 col-sm-12 dashboard-list">
             <li><a href="/reports/stock/levels">Stock Levels</a></li>
-            <li><a href="/reports/stock/onhand">Stock On Hand</a></li>
+            <li><a href="/reports/stock/low">Low Stock</a></li>
           </ul>
           <ul class="col-md-6 col-xs-12 col-sm-12 dashboard-list">
-            <li><a href="/reports/stock/low">Low Stock</a></li>
+            <li><a href="/reports/stock/onhand">Stock On Hand</a></li>
           </ul>
         </div>
       </div>

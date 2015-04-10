@@ -63,8 +63,18 @@
     Router::connect('/inventory_count/create',
         array('controller' => 'stock', 'action' => 'newInventoryCount'));
 
+    Router::connect('/inventory_count/save',
+        array('controller' => 'stock', 'action' => 'saveInventoryCount'));
+
+    Router::connect('/inventory_count/start',
+        array('controller' => 'stock', 'action' => 'startInventoryCount'));
+
     Router::connect('/inventory_count/:id',
         array('controller' => 'stock', 'action' => 'viewInventoryCount'),
+        array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
+
+    Router::connect('/inventory_count/:id/edit',
+        array('controller' => 'stock', 'action' => 'editInventoryCount'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
     Router::connect('/inventory_count/:id/perform',
@@ -73,6 +83,10 @@
 
     Router::connect('/inventory_count/:id/review',
         array('controller' => 'stock', 'action' => 'reviewInventoryCount'),
+        array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
+
+    Router::connect('/inventory_count/:id/items',
+        array('controller' => 'stock', 'action' => 'getStockTakeItems'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
     Router::connect('/outlet/:id/edit',

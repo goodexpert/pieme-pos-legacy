@@ -82,13 +82,13 @@
                 <div class="inventory-content">
                     <div class="inventory-tab">
                         <ul>
-                            <li class="active">Due</li>
-                            <li>Upcoming</li>
-                            <li>Completed</li>
-                            <li>Cancelled</li>
+                            <li id="inventory-tab-due" class="active">Due</li>
+                            <li id="inventory-tab-upcoming">Upcoming</li>
+                            <li id="inventory-tab-completed">Completed</li>
+                            <li id="inventory-tab-cancelled">Cancelled</li>
                         </ul>
                     </div>
-                    <div class="inventory-Due">
+                    <div class="inventory-table" style="display:none;">
                         <table id="productTable" class="table-bordered dataTable">
                             <colgroup>
                                 <col width="5%">
@@ -98,18 +98,23 @@
                             </colgroup>
                             <thead>
                                 <tr role="row">
-                                    <th><input type="checkbox" value="1" checked=""></th>
+                                    <th><input type="checkbox" value="1" id="select-all"></th>
                                     <th>INVENTORY COUNT</th>
                                     <th>OUTLET</th>
                                     <th>COUNT</th>
                                 </tr>
                             </thead>
                             <tbody>
+                                <!--
                                 <?php
                                     if ( count($inventoryCounts) > 0 ):
-                                        foreach ($inventoryCounts['Due'] as $count):
+                                        foreach ($inventoryCounts['due'] as $count) :
                                 ?>
-                                <tr class="clickable" data-href="/inventory_count/<?php echo $count['id']; ?>">
+                                <?php if ( $count['status'] == 'STOCKTAKE_SCHEDULED' ): ?>
+                                <tr class="clickable" data-href="/inventory_count/<?php echo $count['id']; ?>/edit">
+                                <?php elseif ( $count['status'] == 'STOCKTAKE_IN_PROGRESS_PROCESSED' ): ?>
+                                <tr class="clickable" data-href="/inventory_count/<?php echo $count['id']; ?>/perform">
+                                <?php endif; ?>
                                     <td></td>
                                     <td>
                                         <p>
@@ -124,7 +129,7 @@
                                 </tr>
                                 <?php
                                         endforeach;
-                                    else:
+                                    else :
                                 ?>
                                 <tr>
                                     <td colspan="4">There is no data ...</td>
@@ -132,8 +137,19 @@
                                 <?php
                                     endif;
                                 ?>
+                                -->
                             </tbody>
                         </table>
+                    </div>
+                    <div class="no-list text-center" style="display:none;">
+                        <div class="margin-top-20"><img src="img/no-stock.png"></div>
+                        <h4 class="margin-bottom-20">You have no upcoming inventory counts</h4>
+                        <a href="/inventory_count/create">
+                            <button id="" class="btn btn-white" style="color:black">
+                                <div class="glyphicon glyphicon-plus"></div>&nbsp;
+                            New inventory count</button>
+                        </a>
+                        <h5 class="margin-top-30">If you're experiencing problems with your product data, <a>resync data</a> to load it again.</h5>
                     </div>
                 </div>
             </div>
@@ -236,17 +252,102 @@
 
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script>
+var inventoryCounts = <?php echo json_encode($inventoryCounts); ?>;
+var selectedTab = 'due';
+
 jQuery(document).ready(function() {    
     Metronic.init(); // init metronic core componets
     Layout.init(); // init layout
     QuickSidebar.init() // init quick sidebar
     Index.init();
+    
+    updateView();
 
+    $("#inventory-tab-due").click(function(){
+        $(".inventory-tab").find(".active").removeClass("active");
+        $(this).addClass("active");
 
+        selectedTab = 'due';
+        updateView();
+    });
+
+    $("#inventory-tab-upcoming").click(function(){
+        $(".inventory-tab").find(".active").removeClass("active");
+        $(this).addClass("active");
+
+        selectedTab = 'upcoming';
+        updateView();
+    });
+
+    $("#inventory-tab-completed").click(function(){
+        $(".inventory-tab").find(".active").removeClass("active");
+        $(this).addClass("active");
+
+        selectedTab = 'completed';
+        updateView();
+    });
+
+    $("#inventory-tab-cancelled").click(function(){
+        $(".inventory-tab").find(".active").removeClass("active");
+        $(this).addClass("active");
+
+        selectedTab = 'cancelled';
+        updateView();
+    });
 
     $(".clickable").click(function() {
         window.document.location = $(this).data("href");
     });
 });
+
+function updateView() {
+    var arrayMap = inventoryCounts[selectedTab];
+    var today = new Date();
+
+    $("#productTable").find('tbody').empty();
+
+    if (arrayMap == null || arrayMap.length == 0) {
+        $("#productTable").find('tbody').append('<tr><td colspan="4">There is no data ...</td></tr>');
+        $(".inventory-table").css('display', 'none');
+        $(".no-list").css('display', '');
+    } else {
+        $(".inventory-table").css('display', '');
+        $(".no-list").css('display', 'none');
+
+        for (var key in arrayMap) {
+            var appendString = '';
+
+            if (arrayMap[key]['status'] == 'STOCKTAKE_SCHEDULED') {
+                var start_date = new Date('Fri Apr 10 2015 15:53:50 GMT+1200');
+                var diff_date = new Date(start_date.getTime() - today.getTime()).getTime();
+
+                appendString = '<tr class="clickable" data-href="/inventory_count/' + arrayMap[key]['id'] + '/edit">';
+                appendString += '<td><input type="checkbox" id="stocktake-selected" /></td>';
+                if (diff_date < 0 && start_date.getDate() < today.getDate()) {
+                    appendString += '<td><p>' + arrayMap[key]['name'];
+                    appendString += '<span class="text-bg-blue">OVERDUE</span></p></td>';
+                } else {
+                    appendString += '<td><p>' + arrayMap[key]['name'] + '<p></td>';
+                }
+            } else {
+                if (arrayMap[key]['status'] == 'STOCKTAKE_IN_PROGRESS_PROCESSED') {
+                    appendString = '<tr class="clickable" data-href="/inventory_count/' + arrayMap[key]['id'] + '/perform">';
+                    appendString += '<td></td>';
+                    appendString += '<td><p>' + arrayMap[key]['name'];
+                    appendString += '<span class="text-bg-blue">IN PROGRESS</span></p></td>';
+                } else {
+                    appendString = '<tr class="clickable" data-href="/inventory_count/' + arrayMap[key]['id'] + '/view">';
+                    appendString += '<td></td>';
+                    appendString += '<td><p>' + arrayMap[key]['name'] + '</p></td>';
+                }
+            }
+            appendString += '<td>' + arrayMap[key]['outlet'] + '</td>';
+            appendString += '<td>' + arrayMap[key]['count'] + '</td>';
+            appendString += '</tr>';
+            
+            $("#productTable").find('tbody').append(appendString);
+        }
+    }
+}
 </script>
 <!-- END JAVASCRIPTS -->
