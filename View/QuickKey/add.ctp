@@ -77,8 +77,8 @@
                         </div>
                     </div>
                     <div class="col-md-12 col-xs-12 col-sm-12 text-align-center">
-                        <button class="btn btn-default cancel">Cancel</button>
-                        <button class="btn btn-primary save">Save Layout</button>
+                        <button class="btn btn-primary cancel">Cancel</button>
+                        <button class="btn btn-success save">Save Layout</button>
                     </div>
                 </div>
                 <div class="col-md-6 col-xs-6 col-sm-6 col-omega margin-top-30">
@@ -308,7 +308,7 @@ jQuery(document).ready(function() {
                 products.product_id = $(this).attr("data-id");
                 products.position = i;
                 products.label = $(this).find("p").text();
-                
+
                 keys.push(products);
                 
                 pages.keys = keys;

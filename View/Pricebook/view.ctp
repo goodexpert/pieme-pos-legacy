@@ -58,9 +58,10 @@
                     <?=$book['MerchantPriceBook']['name'];?>
                 </h2>
                 <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
+                    <a href="/pricebook/<?php echo $book['MerchantPriceBook']['id'];?>/edit">
                     <button class="add-type btn btn-white pull-right">
                         <div class="glyphicon glyphicon-plus"></div>&nbsp;
-                    Edit</button>
+                    Edit</button></a>
                 </div>
             </div>
             
@@ -75,6 +76,8 @@
                     <th>Retail Price (Excl)</th>
                     <th>Sales Tax</th>
                     <th>Retail Price (Incl)</th>
+                    <th>Min Units</th>
+                    <th>Max Units</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -84,7 +87,9 @@
                             <td><?=$product['MerchantProduct']['name'];?></td>
                             <td>$<?=number_format($product['price'],2,'.','');?></td>
                             <td>$<?=number_format($product['tax'],2,'.','');?></td>
-                            <td>$<?=$product['price'] + $product['tax'];?></td>
+                            <td>$<?=number_format($product['price_include_tax'],2,'.','');?></td>
+                            <td><?php echo $product['min_units'];?></td>
+                            <td><?php echo $product['max_units'];?></td>
                         </tr>
                     <?php } ?>
 

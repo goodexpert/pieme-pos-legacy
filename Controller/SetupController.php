@@ -168,6 +168,30 @@ class SetupController extends AppController {
     }
 
     public function loyalty() {
+    	$user = $this->Auth->user();
+    	
+    	$this->loadModel('MerchantLoyalty');
+    	
+    	$loyalty = $this->MerchantLoyalty->findByMerchantId($user['merchant_id']);
+    	$this->set('loyalty',$loyalty);
+    	
+    	if($this->request->is('post')) {
+	    	$data = $this->request->data;
+	    	$data['merchant_id'] = $user['merchant_id'];
+	    	$result = array();
+	    	try {
+	    		if(empty($loyalty)){
+		    		$this->MerchantLoyalty->create();
+		    	} else {
+			    	$this->MerchantLoyalty->id = $loyalty['MerchantLoyalty']['id'];
+		    	}
+		    	$this->MerchantLoyalty->save($data);
+	    	} catch (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+            $this->serialize($result);
+    	}
+    
     }
 
     public function user() {

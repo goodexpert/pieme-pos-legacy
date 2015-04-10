@@ -93,7 +93,7 @@
                 <?php foreach($users as $user) : ?>
                 <tr>
                     <td class="text-center"><img src="../img/no-image.png" alt="product"></td>
-                    <td><?php echo $user['MerchantUser']['username'];?></td>
+                    <td><a href="/users/<?php echo $user['MerchantUser']['id'];?>"><?php echo $user['MerchantUser']['username'];?></a></td>
                     <td><?php echo $user['MerchantUser']['display_name'];?></td>
                     <td><?php echo $user['MerchantUser']['user_type'];?></td>
                     <td><?php echo $user['MerchantUser']['outlet_id'];?></td>

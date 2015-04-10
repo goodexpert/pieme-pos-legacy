@@ -1,3 +1,9 @@
+<style>
+th small {
+    font-weight: 300;
+}
+</style>
+
 <div class="clearfix">
 </div>
 <!-- BEGIN CONTAINER -->
@@ -64,11 +70,19 @@
                           </dd>
                           <dt>Customer group</dt>
                           <dd>
-                            <select><option value="0">All Customers</option></select>
+                            <select id="price_book_customer_group_id">
+                                <?php foreach($groups as $group) { ?>
+                                <option value="<?php echo $group['MerchantCustomerGroup']['id'];?>"><?php echo $group['MerchantCustomerGroup']['name'];?></option>
+                                <?php } ?>
+                            </select>
                           </dd>
                           <dt>Outlet</dt>
                           <dd>
-                            <select><option>All Outlets</option></select>
+                            <select id="price_book_outlet_id">
+                                <?php foreach($outlets as $outlet) { ?>
+                                <option value="<?php echo $outlet['MerchantOutlet']['id'];?>"><?php echo $outlet['MerchantOutlet']['name'];?></option>
+                                <?php } ?>
+                            </select>
                           </dd>
                         </dl>
                       </div>
@@ -117,9 +131,10 @@
                         <input type="search" id="search" placeholder="Search Products">
                         <div class="search_result">
                             <span class="search-tri"></span>
+                            <div class="search-default"> No Result </div>
                             <?php foreach($items as $item){ ?>
                         
-                            <button type="button" data-id="<?=$item['MerchantProduct']['id'];?>" data-supply_price="<?=$item['MerchantProduct']['supply_price'];?>" data-price="<?=$item['MerchantProduct']['price'];?>" data-tax="<?=$item['MerchantProduct']['tax'];?>" class="data-found"><?=$item['MerchantProduct']['name'];?>
+                            <button type="button" data-id="<?=$item['MerchantProduct']['id'];?>" data-supply_price="<?=number_format($item['MerchantProduct']['supply_price'],2,'.','');?>" data-retail-price="<?=number_format($item['MerchantProduct']['price'],2,'.','');?>" data-markup="<?php echo $item['MerchantProduct']['markup']*100;?>" data-price="<?=number_format($item['MerchantProduct']['price_include_tax'],2,'.','');?>" data-tax="<?=number_format($item['MerchantProduct']['tax'],2,'.','');?>" data-tax-rate="<?php echo $item['MerchantTaxRate']['rate'];?>" class="data-found"><?=$item['MerchantProduct']['name'];?>
                             </button>
                             
                             <?php } ?>
@@ -147,11 +162,11 @@
                             <tr>
                                 <th>Product</th>
                                 <th>Supply price</th>
-                                <th>Markup</th>
+                                <th>Markup (%)</th>
                                 <th>Discount</th>
-                                <th>Retail Price</th>
+                                <th>Retail Price<br><small>excluding tax</small></th>
                                 <th>Sales Tax</th>
-                                <th>Retail Price</th>
+                                <th>Retail Price<br><small>including tax</small></th>
                                 <th>Min. Units</th>
                                 <th>Max. Units</th>
                                 <th></th>
@@ -176,7 +191,7 @@
             </div>   
             <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
                 <button class="btn btn-primary btn-wide save pull-right">Save</button>
-                <button class="btn btn-default btn-wide pull-right margin-right-10">Cancel</button>
+                <button class="btn btn-default btn-wide cancel pull-right margin-right-10">Cancel</button>
             </div>
         </div>
     </div>
@@ -279,151 +294,107 @@
 
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
-jQuery(document).ready(function() {    
+jQuery(document).ready(function() {
    Metronic.init(); // init metronic core componets
    Layout.init(); // init layout
    QuickSidebar.init() // init quick sidebar
    Index.init();
    
-   $("#valid_from").datepicker();
-   $("#valid_to").datepicker();
+   $("#valid_from").datepicker({ dateFormat: 'yy-mm-dd' });
+   $("#valid_to").datepicker({ dateFormat: 'yy-mm-dd' });
    
    $(".general").click(function(){
       $(".price_book_general").show('bounce');
+      $(".individual").removeClass("active");
+      $(this).addClass("active");
       $(".price_book_individual").hide();
+      $(this).blur();
    });
    $(".individual").click(function(){
       $(".price_book_general").hide();
+      $(".general").removeClass("active");
+      $(this).addClass("active");
       $(".price_book_individual").show('bounce');
+      $(this).blur();
    });
    
     $(document).on("click",".data-found",function(){
-        
-        $("tbody").append('<tr><td>'+$(this).text()+'</td><td>'+$(this).attr("data-supply_price")+'</td><td><input type="text"></td><td><input type="text"></td><td>'+($(this).attr("data-price")*(1-$(this).attr("data-tax"))).toFixed(2)+'</td><td>'+($(this).attr("data-price")*$(this).attr("data-tax")).toFixed(2)+'</td><td><input type="text" value="'+$(this).attr("data-price")+'"></td><td><input type="number"></td><td><input type="number"></td><td><div class="clickable remove"><i class="glyphicon glyphicon-remove"></i></div></td></tr>');
-        
+        $(".price_book_individual tbody").append('<tr class="added_price_book_entry" data-id="'+$(this).attr("data-id")+'"><td>'+$(this).text()+'</td><td>'+$(this).attr("data-supply_price")+'</td><td><input type="text" class="entry_markup" value="'+$(this).attr("data-markup")+'"></td><td><input type="text" class="entry_discount"></td><td class="entry_retail_price_exclude_tax">'+$(this).attr("data-retail-price")+'</td><td class="entry_tax" tax-rate="'+$(this).attr("data-tax-rate")+'">'+$(this).attr("data-tax")+'</td><td><input type="text" class="entry_retail_price_include_tax" value="'+$(this).attr("data-price")+'"></td><td><input type="number" class="entry_min_unit"></td><td><input type="number" class="entry_max_unit"></td><td><div class="clickable remove"><i class="glyphicon glyphicon-remove"></i></div></td></tr>');
     });
     /* DYNAMIC PROUCT SEARCH START */
+    
+    var $cells = $(".data-found");
+    $(".search_result").hide();
 
-   var $cells = $(".data-found");
-   $cells.hide();
-   $(".search_result").hide();
-
-   $(document).on("keyup","#search",function() {
+    $(document).on("keyup","#search",function() {
         var val = $.trim(this.value).toUpperCase();
         if (val === "")
-            $cells.hide();
+            $(".search_result").hide();
         else {
             $cells.hide();
             $(".search_result").show();
+            $(".search-default").hide();
             $cells.filter(function() {
                 return -1 != $(this).text().toUpperCase().indexOf(val);
             }).show();
-            
+            if($(".search_result").height() == 0){
+                $(".search-default").show();
+            }
         }
-        $cells.click(function(){
-           $("#search").val($(this).text());
-        });
     });
-    
+
     /* DYNAMIC PRODUCT SEARCH END */
     
     $(document).on("click",".remove",function() {
         $(this).parent().parent().remove();
     });
-});
-</script>
-
-<script>
-if($(".username").text() == "offline"){
-var db;
-function indexedDBOk() {
-    return "indexedDB" in window;
-}
-document.addEventListener("DOMContentLoaded", function(){
-    var openRequest = indexedDB.open("emcor");
-    openRequest.onupgradeneeded = function(e) {
-        var thisDB = e.target.result;
-    }
     
-    openRequest.onsuccess = function(e) {
-        console.log("running onsuccess");
-
-        db = e.target.result;
-        
-        
-        $(".save").click(function(){
-           var openPriceBook = db.transaction(["price_book"],"readwrite").objectStore("price_book");
-           var bookData = {
-               name: $("#price_book_name").val(),
-               valid_from: $("#valid_from").val(),
-               valid_to: $("#valid_to").val()
-           }
-           openPriceBook.add(bookData).onsuccess = function(e){
-               console.log(e);
-           }
+    $(document).on("click",".save",function() {
+        var entries = [];
+        var entry = {};
+        $(".added_price_book_entry").each(function(){
+            entry.product_id = $(this).attr("data-id");
+            entry.price = $(this).find(".entry_retail_price_exclude_tax").text();
+            entry.markup = $(this).find(".entry_markup").val() / 100;
+            entry.discount = $(this).find(".entry_discount").val();
+            entry.tax = $(this).find(".entry_tax").text();
+            entry.price_include_tax = $(this).find(".entry_retail_price_include_tax").val()
+            entry.min_units = $(this).find(".entry_min_unit").val();
+            entry.max_units = $(this).find(".entry_max_unit").val();
+            entries.push(entry);
+            entry = {};
         });
         
-        
-        
-        var productStore = db.transaction(["products"],"readwrite").objectStore("products");
-        productStore.openCursor().onsuccess = function(e) {
-            
-            var product = e.target.result;
-            
-            if(product){
-                $(".search_result").append('<button type="button" data-id="'+product.value.id+'" data-supply_price="'+product.value.supply_price+'" data-price="'+product.value.price_including_tax+'" data-tax="'+product.value.tax_rate+'" class="data-found">'+product.value.name+'</button>');
-                product.continue();
-            } else {
-            
-               /* DYNAMIC PROUCT SEARCH START */
-   
-               var $cells = $(".data-found");
-               $cells.hide();
-            
-               $(document).on("keyup","#search",function() {
-                    var val = $.trim(this.value).toUpperCase();
-                    if (val === "")
-                        $cells.hide();
-                    else {
-                        $cells.hide();
-                        $cells.filter(function() {
-                            return -1 != $(this).text().toUpperCase().indexOf(val); }).show();
-                    }
-                    $cells.click(function(){
-                       $("#search").val($(this).text());
-                    });
-                });
-                
-                /* DYNAMIC PRODUCT SEARCH END */
-                
-                
-                $(document).on("click",".remove",function() {
-                    $(this).parent().parent().remove();
-                });
-                
+        $.ajax({
+            url: '/pricebook/add.json',
+            type: 'POST',
+            data: {
+                name: $("#price_book_name").val(),
+                customer_group_id: $("#price_book_customer_group_id").val(),
+                outlet_id: $("#price_book_outlet_id").val(),
+                valid_from: $("#valid_from").val(),
+                valid_to: $("#valid_to").val(),
+                entries: JSON.stringify(entries)
+            },
+            success: function(){
+                window.location.href = "/pricebook";
             }
-        }
+        });
         
-                
-    }
-    openRequest.onerror = function(e) {
-        console.log("error occured", e.target.result);
-    }
+    });
     
-},false);
-}
-</script>
+    $(".cancel").click(function(){
+        window.history.back();
+    });
 
-<script>
-function checkNetConnection(){
- $.ajaxSetup({async:false});
- var re="";
- $.get("http://192.168.1.205/history",function(d){
-  re="online";
- }).error(function(){
-  re="offline";
- });
- $(".username").text(re);
+});
+/*
+function calculation() {
+    $(".added_price_book_entry").each(function(){
+        var price = $(this).find(".entry_retail_price_include_tax").val();
+        $(".entry_tax").text(parseFloat(price / (1 + $(".entry_tax").attr("tax-rate"))).toFixed(2));
+        $(".entry_retail_price_exclude_tax").text(parseFloat((1-$(".entry_tax").attr("tax-rate")) * price).toFixed(2));
+    });
 }
-checkNetConnection();
+*/
 </script>

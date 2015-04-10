@@ -40,45 +40,51 @@ class QuickKeyController extends AppController {
     }
 
     public function add(){
+    	if ($this->request->is('post')) {
+    		$data = $this->request->data;
+        	$result = array();
+        	try {
+	            $data['merchant_id'] = $this->Auth->user()['merchant_id'];
+	            $this->MerchantQuickKey->create();
+	            $this->MerchantQuickKey->save($data);
+            } catch (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+            $this->serialize($result);
+            return;
+        }
+
         $items = $this->MerchantProduct->find('all', array(
             'conditions' => array(
             'MerchantProduct.merchant_id' => $this->Auth->user()['merchant_id'],
             )
         ));
         $this->set("items",$items);
-        
-        if ($this->request->is('post')) {
-        
-            $data = array(
-                'merchant_id' => $this->Auth->user()['merchant_id'],
-                'name' => $_POST['name'],
-                'key_layouts' => $_POST['key_layouts']
-            );
-            
-            $this->MerchantQuickKey->save($data);
-            
-        }
     }
 
     public function edit(){
-        $items = $this->MerchantProduct->find('all');
+    	if ($this->request->is('post')) {
+
+            $data = $this->request->data;
+            $result = array();
+
+            try {
+            	$this->MerchantQuickKey->id = $_GET['id'];
+            	$this->MerchantQuickKey->save($data);
+            } catch (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+            $this->serialize($result);
+            return;
+        }
+
+        $items = $this->MerchantProduct->find('all', array(
+            'conditions' => array(
+            'MerchantProduct.merchant_id' => $this->Auth->user()['merchant_id'],
+            )
+        ));
         $this->set("items",$items);
         $keys = $this->MerchantQuickKey->findById($_GET['id']);
         $this->set("keys",$keys);
-        
-        if ($this->request->is('post')) {
-        
-            $data = array(
-                'merchant_id' => '54f5104a-df94-4d9e-a2a2-bf61c0a801cd',
-                'name' => $_POST['name'],
-                'key_layouts' => $_POST['key_layouts'],
-                'created' => date("Y-m-d H:i:s"),
-                'modified' => date("Y-m-d H:i:s"),
-            );
-            
-            $this->MerchantQuickKey->save($data);
-            
-        }
     }
-
 }

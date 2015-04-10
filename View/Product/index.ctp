@@ -154,9 +154,9 @@
                     <th class="hidden">supplier_code</th>
                     <th class="hidden">supply_price</th>
                     <th class="hidden">markup</th>
-                    <th class="hidden">price</th>
+                    <th class="hidden">retail_price</th>
                     <th>price_include_tax</th>
-                    <th class="hidden">tax</th>
+                    <th class="hidden">tax_value</th>
                     <th class="hidden">tax_id</th>
                     <th class="hidden">description</th>
                     <th class="hidden">image</th>
@@ -171,7 +171,7 @@
                     <th>sku</th>
                     <th class="hidden">stock_type</th>
                     <th class="hidden">track_inventory</th>
-                    <th class="hidden">is_active</th>
+                    <th class="hidden">active</th>
                     <th class="last-child"></th>
                 </tr>
                 </thead>
@@ -209,7 +209,7 @@
                         <td>
                             <a href="/product/<?=$item['MerchantProduct']['id'];?>">View</a> | 
                             <a href="/product/<?=$item['MerchantProduct']['id'];?>/edit">Edit</a> | 
-                            <span class="clickable">Active</span>
+                            <span data-id="<?php echo $item['MerchantProduct']['id'];?>" class="clickable <?php if($item['MerchantProduct']['is_active'] == 0){echo "active_product";}else{echo "inactive_product";}?>"><?php if($item['MerchantProduct']['is_active'] == 0){echo "Active";}else{echo "Inactive";}?></span>
                         </td>
                     </tr>
                     <?php } ?>
@@ -329,6 +329,38 @@ jQuery(document).ready(function() {
     });
     $("#productTable_length").hide();
     
+    $(document).on('click','.active_product',function(){
+	    $.ajax({
+		    url: '/product/change_status.json',
+		    type: 'POST',
+		    data: {
+			    product_id: $(this).attr("data-id"),
+			    is_active: 1
+		    },
+		    success: function(msg){
+			    console.log(msg);
+		    }
+	    });
+	    $(this).removeClass("active_product");
+	    $(this).addClass("inactive_product");
+	    $(this).text('Inactive');
+    });
+    $(document).on('click','.inactive_product',function(){
+	    $.ajax({
+		    url: '/product/change_status.json',
+		    type: 'POST',
+		    data: {
+			    product_id: $(this).attr("data-id"),
+			    is_active: 0
+		    },
+		    success: function(msg){
+			    console.log(msg);
+		    }
+	    });
+	    $(this).removeClass("inactive_product");
+	    $(this).addClass("active_product");
+	    $(this).text('Active');
+    });
 });
 </script>
 
@@ -429,10 +461,10 @@ $(document).ready(function () {
                     var i = 0;
                     $.each(datas, function(){
                         var id = datas[i]['id'];
-                        var name = datas[i]['Product'];
-                        var handle = datas[i]['Handle'];
-                        var type = datas[i]['Type'];
-                        var brand = datas[i]['Brand'];
+                        var name = datas[i]['name'];
+                        var handle = datas[i]['handle'];
+                        var type = datas[i]['type'];
+                        var brand = datas[i]['brand'];
                         var supplier_code = datas[i]['supplier_code'];
                         var supply_price = datas[i]['supply_price'];
                         var markup = datas[i]['markup'];
@@ -452,7 +484,7 @@ $(document).ready(function () {
                         var sku = datas[i]['sku'];
                         var stock_type = datas[i]['stock_type'];
                         var track_inventory = datas[i]['track_inventory'];
-                        var is_active = datas[i]['is_active'];
+                        var is_active = datas[i]['active'];
                         
                         //RUN AJAX HERE
                         
@@ -460,18 +492,13 @@ $(document).ready(function () {
                             url: '/product/add.json',
                             type: 'POST',
                             data: {
-                                id: id,
                                 name: name,
                                 handle: handle,
                                 supply_price: supply_price,
                                 markup: markup,
                                 price: price,
                                 price_include_tax: price_include_tax,
-                                tax: tax,
                                 description: description,
-                                image: image,
-                                image_large: image_large,
-                                has_variants: has_variants,
                                 variant_option_one_name: variant_option_one_name,
                                 variant_option_one_value: variant_option_one_value,
                                 variant_option_two_name: variant_option_two_name,

@@ -110,12 +110,6 @@
                       </select>
                     </dd>
                   </dl>
-                  <dl>
-                    <dt class="col-md-4">Account code</dt>
-                    <dd class="col-md-8">
-                      <input type="text" id="Account_code">
-                    </dd>
-                  </dl>
                 </div>
                 <!-- END col-md-6--> 
                 <!-- START col-md-6-->
@@ -138,9 +132,9 @@
                     </dd>
                   </dl>
                   <dl>
-                    <dt class="col-md-4">Purchasing code</dt>
+                    <dt class="col-md-4">Unit</dt>
                     <dd class="col-md-8">
-                      <input type="text" id="Purchasing_code">
+                      <select></select>
                     </dd>
                   </dl>
                 </div>
@@ -585,7 +579,7 @@ $(document).ready(function(){
                 product_brand_desc: $(".brand-description").val()
             }
         }).done(function(result){
-            $("#product_brand").append('<option value="'+result['id']+'">'+result['name']+'</option>');
+            $("#product_brand").prepend('<option value="'+result['id']+'">'+result['name']+'</option>');
             $("#product_brand").val(result['id']);
         });
     });
@@ -819,8 +813,8 @@ $(document).ready(function(){
                 cancel: function(button){
                     $("#product_type").val('');
                 },
-                confirmButtonClass: "type-add btn btn-success pull-right",
-                cancelButtonClass: "type-add btn btn-primary margin-right-5"
+                confirmButtonClass: "btn btn-success pull-right type-add",
+                cancelButtonClass: "btn btn-primary margin-right-5"
             });
         }
 
@@ -833,8 +827,8 @@ $(document).ready(function(){
                 cancel: function(button){
                     $("#product_brand").val('');
                 },
-                confirmButtonClass: "type-add btn btn-success pull-right",
-                cancelButtonClass: "type-add btn btn-primary margin-right-5"
+                confirmButtonClass: "btn btn-success pull-right brand-add",
+                cancelButtonClass: "btn btn-primary margin-right-5"
             });
         }
 
@@ -847,8 +841,8 @@ $(document).ready(function(){
                 cancel: function(button){
                     $("#product_supplier").val('');
                 },
-                confirmButtonClass: "type-add btn btn-success pull-right",
-                cancelButtonClass: "type-add btn btn-primary margin-right-5"
+                confirmButtonClass: "btn btn-success pull-right supplier-add",
+                cancelButtonClass: "btn btn-primary margin-right-5"
             });
         }
 
@@ -907,12 +901,6 @@ $(document).ready(function(){
     $("#composite_attr_add").click(function(){
         $("#composite_added_list").prepend('<div class="col-md-12 col-sm-12 col-xs-12 composite-attr" data-id="'+$("#selected_composite_id").val()+'"><div class="col-md-4 col-sm-4 col-xs-4">'+$("#composite_search").val()+'</div><div class="col-md-2 col-xs-2 col-sm-2 col-alpha"><input type="number" class="form-control composite_quantity" value="'+$("#composite_qty").val()+'"><button type="button" class="btn remove remove_composite_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button></div></div>');
 
-        $("#composite_search").val('');
-        $("#composite_qty").val('');
-    });
-
-    $("#composite_attr_add").click(function(){
-        $("#composite_added_list").prepend('<div class="col-md-12 col-sm-12 col-xs-12 composite-attr" data-id="'+$("#selected_composite_id").val()+'"><div class="col-md-4 col-sm-4 col-xs-4">'+$("#composite_search").val()+'</div><div class="col-md-2 col-xs-2 col-sm-2 col-alpha"><input type="number" class="form-control composite_quantity" value="'+$("#composite_qty").val()+'"><button type="button" class="btn remove remove_composite_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button></div></div>');
         $("#composite_search").val('');
         $("#composite_qty").val('');
     });

@@ -186,6 +186,8 @@ class UsersController extends AppController {
  */
     public function view($id) {
         $user = $this->Auth->user();
+        $user = $this->MerchantUser->findById($id);
+        $this->set('user',$user);
     }
 
 }

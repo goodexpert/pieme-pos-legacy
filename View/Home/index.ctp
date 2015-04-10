@@ -331,7 +331,7 @@
                         <td><?=$sale['RegisterSale']['status'];?></td>
                         <td><?=$sale['MerchantUser']['username'];?></td>
                         <td><?=$sale['MerchantCustomer']['name'];?></td>
-                        <td></td>
+                        <td><?=$sale['MerchantCustomer']['customer_code'];?></td>
                         <td><?=number_format($sale['RegisterSale']['total_price'],2,'.','');?></td>
                         <td><?=$sale['RegisterSale']['note'];?></td>
                         <td>
@@ -1014,6 +1014,7 @@ jQuery(document).ready(function() {
                 },
                 success: function(result){
                     console.log(result);
+                    $(".invoice-id").text(invoice_sequence);
                     invoice_sequence++;
                 }
             });
@@ -1031,7 +1032,7 @@ jQuery(document).ready(function() {
                 data: {
                     sale_id: $("#retrieve_sale_id").val(),
                     customer_id: $("#customer-selected-id").val(),
-                    receipt_number: '323232',
+                    receipt_number: '0',
                     total_price: $(".subTotal").text(),
                     total_cost: $(".toPay").text(),
                     total_discount: '',

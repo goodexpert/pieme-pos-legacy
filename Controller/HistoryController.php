@@ -56,6 +56,12 @@ class HistoryController extends AppController {
                     'foreignKey' => 'sale_id'
                 )
             ),
+            'belongsTo' => array(
+            	'MerchantUser' => array(
+            		'className' => 'MerchantUser',
+            		'foreignKey' => 'user_id'
+            	)
+            )
         ));
 
         $this->RegisterSale->recursive = 2;

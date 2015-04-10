@@ -94,6 +94,10 @@
     Router::connect('/users/:id',
         array('controller' => 'users', 'action' => 'view'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
+        
+    Router::connect('/pricebook/:id/edit',
+        array('controller' => 'pricebook', 'action' => 'edit'),
+        array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
 /**
  * ...and connect the rest of 'Pages' controller's URLs.

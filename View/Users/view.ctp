@@ -55,7 +55,7 @@
     <div class="page-content-wrapper">
         <div id="Users-container" class="page-content">
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">User Mail address</h2>
+                <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega"><?php echo $user['MerchantUser']['username'];?></h2>
                 <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega">
                 <button class="btn btn-white add-customer pull-right margin-top-20">
                 <div class="glyphicon glyphicon-edit"></div>&nbsp;Edit</button>
@@ -70,15 +70,15 @@
                     <div class="col-md-8 col-xs-8 col-sm-8 col-alpha">
                         <dl>
                             <dt>Username</dt>
-                            <dd><?=$authUser['username'];?></dd>
+                            <dd><?php echo $user['MerchantUser']['username'];?></dd>
                             <dt>Name</dt>
-                            <dd><?=$authUser['display_name'];?></dd>
+                            <dd><?php echo $user['MerchantUser']['display_name'];?></dd>
                             <dt>Email</dt>
-                            <dd><?=$authUser['email'];?></dd>
+                            <dd><?php echo $user['MerchantUser']['email'];?></dd>
                             <dt>Limit to outlet</dt>
                             <dd>-</dd>
                             <dt>Created at</dt>
-                            <dd><?=$authUser['created'];?></dd>
+                            <dd><?php echo $user['MerchantUser']['created'];?></dd>
                         </dl>
                     </div>
                 </div>

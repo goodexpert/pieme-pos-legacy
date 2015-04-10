@@ -119,8 +119,8 @@
                 <?php foreach($sales as $sale){ ?>
                 
                     <tr class="expandable" data-id="<?=$sale['RegisterSale']['id'];?>">
-                        <td>ID</td>
-                        <td>PERSON</td>
+                        <td><?php echo $sale['RegisterSale']['receipt_number'];?></td>
+                        <td><?php echo $sale['MerchantUser']['display_name'];?></td>
                         <td><?php echo $sale['MerchantCustomer']['name'];?></td>
                         <td><?=$sale['RegisterSale']['note'];?></td>
                         <td class="history_status"><?=$sale['RegisterSale']['status'];?></td>
