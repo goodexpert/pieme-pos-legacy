@@ -430,7 +430,7 @@ class SignupController extends AppController {
             'name' => 'Default',
             'pages' => array(
                 array(
-                    'page' => 0,
+                    'page' => 1,
                     'keys' => array(
                         array(
                             'position' => 0,

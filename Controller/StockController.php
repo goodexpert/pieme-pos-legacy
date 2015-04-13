@@ -1617,7 +1617,7 @@ class StockController extends AppController {
     }
 
     public function performInventoryCount($id) {
-    	$user = $this->Auth->user();
+        $user = $this->Auth->user();
 
         $stockTake = $this->MerchantStockTake->find('first', array(
             'fields' => array(
@@ -1632,9 +1632,9 @@ class StockController extends AppController {
                     'foreignKey' => 'outlet_id'
                 )
             ),
-        	'conditions' => array(
-            	'MerchantStockTake.id' => $id
-        	)
+            'conditions' => array(
+                'MerchantStockTake.id' => $id
+            )
         ));
 
         /*
@@ -1654,9 +1654,9 @@ class StockController extends AppController {
                     )
                 )
             ),
-        	'conditions' => array(
-            	'MerchantStockTakeItem.stock_take_id' => $id
-        	)
+            'conditions' => array(
+                'MerchantStockTakeItem.stock_take_id' => $id
+            )
         ));
 
         //call the noop function callback on every element of $data
@@ -1726,13 +1726,13 @@ class StockController extends AppController {
     }
 
     public function getStockTakeItems($id) {
-    	$result = array(
-        	'success' => false
-    	);
-    	$user = $this->Auth->user();
+        $result = array(
+            'success' => false
+        );
+        $user = $this->Auth->user();
 
-    	if ($this->request->is('ajax')) {
-        	try {
+        if ($this->request->is('ajax')) {
+            try {
                 $stockTake = $this->MerchantStockTake->find('first', array(
                     'fields' => array(
                         'MerchantStockTake.*',
@@ -1746,9 +1746,9 @@ class StockController extends AppController {
                             'foreignKey' => 'outlet_id'
                         )
                     ),
-                	'conditions' => array(
-                    	'MerchantStockTake.id' => $id
-                	)
+                    'conditions' => array(
+                        'MerchantStockTake.id' => $id
+                    )
                 ));
 
                 $stockTakeItems = $this->MerchantStockTakeItem->find('all', array(
@@ -1767,9 +1767,9 @@ class StockController extends AppController {
                             )
                         )
                     ),
-                	'conditions' => array(
-                    	'MerchantStockTakeItem.stock_take_id' => $id
-                	)
+                    'conditions' => array(
+                        'MerchantStockTakeItem.stock_take_id' => $id
+                    )
                 ));
 
                 //call the noop function callback on every element of $data
@@ -1779,36 +1779,38 @@ class StockController extends AppController {
                     return $newArray;
                 });
 
-            	$result['items'] = $stockTakeItems;
-            	$result['success'] = true;
+                $result['items'] = $stockTakeItems;
+                $result['success'] = true;
             } catch (Exception $e) {
                 $result['message'] = $e.getMessage();
             }
-    	}
-    	$this->serialize($result);
+        }
+        $this->serialize($result);
     }
 
     public function searchProduct() {
-    	$result = array(
-        	'success' => false
-    	);
-    	$user = $this->Auth->user();
+        $result = array(
+            'success' => false
+        );
+        $user = $this->Auth->user();
 
-    	if ($this->request->is('ajax')) {
-        	$data = $this->request->data;
+        if ($this->request->is('ajax')) {
+            $data = $this->request->data;
 
-        	$products = $this->MerchantProduct->find('all', array(
-        		'conditions' => array(
-        			'MerchantProduct.merchant_id' => $user['merchant_id'],
-        			'MerchantProduct.track_inventory = 1',
-        			'MerchantProduct.name LIKE' => '%' .$data['q'] . '%'
-        		)
-        	));
+            $this->loadModel('MerchantProduct');
 
-        	$result['products'] = $products;
-        	$result['success'] = true;
-    	}
-    	$this->serialize($result);
+            $products = $this->MerchantProduct->find('all', array(
+                'conditions' => array(
+                    'MerchantProduct.merchant_id' => $user['merchant_id'],
+                    'MerchantProduct.track_inventory = 1',
+                    'MerchantProduct.name LIKE' => '%' . $data['q'] . '%'
+                )
+            ));
+
+            $result['products'] = $products;
+            $result['success'] = true;
+        }
+        $this->serialize($result);
     }
 
     public function merchantProducts() {

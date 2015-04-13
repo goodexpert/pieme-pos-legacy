@@ -330,36 +330,36 @@ jQuery(document).ready(function() {
     $("#productTable_length").hide();
     
     $(document).on('click','.active_product',function(){
-	    $.ajax({
-		    url: '/product/change_status.json',
-		    type: 'POST',
-		    data: {
-			    product_id: $(this).attr("data-id"),
-			    is_active: 1
-		    },
-		    success: function(msg){
-			    console.log(msg);
-		    }
-	    });
-	    $(this).removeClass("active_product");
-	    $(this).addClass("inactive_product");
-	    $(this).text('Inactive');
+        $.ajax({
+            url: '/product/change_status.json',
+            type: 'POST',
+            data: {
+                product_id: $(this).attr("data-id"),
+                is_active: 1
+            },
+            success: function(msg){
+                console.log(msg);
+            }
+        });
+        $(this).removeClass("active_product");
+        $(this).addClass("inactive_product");
+        $(this).text('Inactive');
     });
     $(document).on('click','.inactive_product',function(){
-	    $.ajax({
-		    url: '/product/change_status.json',
-		    type: 'POST',
-		    data: {
-			    product_id: $(this).attr("data-id"),
-			    is_active: 0
-		    },
-		    success: function(msg){
-			    console.log(msg);
-		    }
-	    });
-	    $(this).removeClass("inactive_product");
-	    $(this).addClass("active_product");
-	    $(this).text('Active');
+        $.ajax({
+            url: '/product/change_status.json',
+            type: 'POST',
+            data: {
+                product_id: $(this).attr("data-id"),
+                is_active: 0
+            },
+            success: function(msg){
+                console.log(msg);
+            }
+        });
+        $(this).removeClass("inactive_product");
+        $(this).addClass("active_product");
+        $(this).text('Active');
     });
 });
 </script>

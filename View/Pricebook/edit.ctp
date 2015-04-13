@@ -187,16 +187,16 @@ th small {
                             </tr>
                             <?php foreach($pricebook['MerchantPriceBookEntry'] as $entry) { ?>
                             <tr class="added_price_book_entry" data-id="<?php echo $entry['product_id'];?>">
-                            	<td><?php echo $entry['MerchantProduct']['name'];?></td>
-                            	<td><?php echo number_format($entry['MerchantProduct']['supply_price'],2,'.','');?></td>
-                            	<td><input type="text" class="entry_markup" value="<?php echo $entry['markup']*100;?>"></td>
-                            	<td><input type="text" class="entry_discount" value="<?php echo number_format($entry['discount'],2,'.','');?>"></td>
-                            	<td class="entry_retail_price_exclude_tax"><?php echo number_format($entry['price'],2,'.','');?></td>
-                            	<td class="entry_tax" tax-rate="<?php echo $entry['MerchantProduct']['MerchantTaxRate']['rate'];?>"><?php echo number_format($entry['tax'],2,'.','');?></td>
-                            	<td><input type="text" class="entry_retail_price_include_tax" value="<?php echo number_format($entry['price_include_tax'],2,'.','');?>"></td>
-                            	<td><input type="number" class="entry_min_unit" value="<?php echo $entry['min_units'];?>"></td>
-                            	<td><input type="number" class="entry_max_unit" value="<?php echo $entry['max_units'];?>"></td>
-                            	<td><div class="clickable remove"><i class="glyphicon glyphicon-remove"></i></div></td>
+                                <td><?php echo $entry['MerchantProduct']['name'];?></td>
+                                <td><?php echo number_format($entry['MerchantProduct']['supply_price'],2,'.','');?></td>
+                                <td><input type="text" class="entry_markup" value="<?php echo $entry['markup']*100;?>"></td>
+                                <td><input type="text" class="entry_discount" value="<?php echo number_format($entry['discount'],2,'.','');?>"></td>
+                                <td class="entry_retail_price_exclude_tax"><?php echo number_format($entry['price'],2,'.','');?></td>
+                                <td class="entry_tax" tax-rate="<?php echo $entry['MerchantProduct']['MerchantTaxRate']['rate'];?>"><?php echo number_format($entry['tax'],2,'.','');?></td>
+                                <td><input type="text" class="entry_retail_price_include_tax" value="<?php echo number_format($entry['price_include_tax'],2,'.','');?>"></td>
+                                <td><input type="number" class="entry_min_unit" value="<?php echo $entry['min_units'];?>"></td>
+                                <td><input type="number" class="entry_max_unit" value="<?php echo $entry['max_units'];?>"></td>
+                                <td><div class="clickable remove"><i class="glyphicon glyphicon-remove"></i></div></td>
                             </tr>
                             <?php } ?>
                         </tbody>

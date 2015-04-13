@@ -40,13 +40,13 @@ class QuickKeyController extends AppController {
     }
 
     public function add(){
-    	if ($this->request->is('post')) {
-    		$data = $this->request->data;
-        	$result = array();
-        	try {
-	            $data['merchant_id'] = $this->Auth->user()['merchant_id'];
-	            $this->MerchantQuickKey->create();
-	            $this->MerchantQuickKey->save($data);
+        if ($this->request->is('post')) {
+            $data = $this->request->data;
+            $result = array();
+            try {
+                $data['merchant_id'] = $this->Auth->user()['merchant_id'];
+                $this->MerchantQuickKey->create();
+                $this->MerchantQuickKey->save($data);
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
             }
@@ -63,14 +63,14 @@ class QuickKeyController extends AppController {
     }
 
     public function edit(){
-    	if ($this->request->is('post')) {
+        if ($this->request->is('post')) {
 
             $data = $this->request->data;
             $result = array();
 
             try {
-            	$this->MerchantQuickKey->id = $_GET['id'];
-            	$this->MerchantQuickKey->save($data);
+                $this->MerchantQuickKey->id = $_GET['id'];
+                $this->MerchantQuickKey->save($data);
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
             }

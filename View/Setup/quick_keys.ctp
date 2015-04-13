@@ -99,7 +99,7 @@
                     <td>
                         <select class="width-inherit">
                             <?php foreach($items as $item) { ?>
-                            	<option value="<?php echo $item['MerchantQuickKey']['id'];?>" <?php if($authUser['MerchantRegister']['quick_key_id'] == $item['MerchantQuickKey']['id']){echo "selected";}?>)><?php echo $item['MerchantQuickKey']['name'];?></option>
+                                <option value="<?php echo $item['MerchantQuickKey']['id'];?>" <?php if($authUser['MerchantRegister']['quick_key_id'] == $item['MerchantQuickKey']['id']){echo "selected";}?>)><?php echo $item['MerchantQuickKey']['name'];?></option>
                             <?php } ?>
                         </select>
                     </td>

@@ -262,15 +262,15 @@ jQuery(document).ready(function() {
                     q: request.term
                 },
                 success: function (data) {
-                        response($.map(data.products, function (item) {
-                            if (!item.MerchantProduct.is_active)
-                                return;
-                            return {
-                                label: item.MerchantProduct.name,
-                                value: item.MerchantProduct.id,
-                                sku: item.MerchantProduct.sku
-                            }
-                        }));
+                    response($.map(data.products, function (item) {
+                        if (!item.MerchantProduct.is_active)
+                            return;
+                        return {
+                            label: item.MerchantProduct.name,
+                            value: item.MerchantProduct.id,
+                            sku: item.MerchantProduct.sku
+                        }
+                    }));
                 }
             });
         },

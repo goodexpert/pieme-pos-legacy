@@ -57,10 +57,10 @@ class HistoryController extends AppController {
                 )
             ),
             'belongsTo' => array(
-            	'MerchantUser' => array(
-            		'className' => 'MerchantUser',
-            		'foreignKey' => 'user_id'
-            	)
+                'MerchantUser' => array(
+                    'className' => 'MerchantUser',
+                    'foreignKey' => 'user_id'
+                )
             )
         ));
 

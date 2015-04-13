@@ -621,21 +621,21 @@ class ProductController extends AppController {
     }
 
     public function brand_quick() {
-    	if($this->request->is('post')){
-    		$result = array();
-    		try {
-		        $this->MerchantProductBrand->create();
-		        $productBrand['merchant_id'] = $this->Auth->user()['merchant_id'];
-		        $productBrand['name'] = $_POST['product_brand_name'];
-		        $productBrand['description'] = $_POST['product_brand_desc'];
-		        $this->MerchantProductBrand->save($productBrand);
-		        
-		        $result['id'] = $this->MerchantProductBrand->id;
-		        $result['name'] = $_POST['product_brand_name'];
-		    } catch  (Exception $e) {
+        if($this->request->is('post')){
+            $result = array();
+            try {
+                $this->MerchantProductBrand->create();
+                $productBrand['merchant_id'] = $this->Auth->user()['merchant_id'];
+                $productBrand['name'] = $_POST['product_brand_name'];
+                $productBrand['description'] = $_POST['product_brand_desc'];
+                $this->MerchantProductBrand->save($productBrand);
+                
+                $result['id'] = $this->MerchantProductBrand->id;
+                $result['name'] = $_POST['product_brand_name'];
+            } catch  (Exception $e) {
                 $result['message'] = $e->getMessage();
             }
-	        $this->serialize($result);
+            $this->serialize($result);
         }
     }
     
@@ -754,18 +754,18 @@ class ProductController extends AppController {
     }
     
     public function change_status() {
-    	$user = $this->Auth->user();
-	    if($this->request->is('post')) {
-		    $data = $this->request->data;
-		    $result = array();
-		    try {
-			    $this->MerchantProduct->id = $data['product_id'];
-			    $this->MerchantProduct->save($data);
-		    } catch  (Exception $e) {
+        $user = $this->Auth->user();
+        if($this->request->is('post')) {
+            $data = $this->request->data;
+            $result = array();
+            try {
+                $this->MerchantProduct->id = $data['product_id'];
+                $this->MerchantProduct->save($data);
+            } catch  (Exception $e) {
                 $result['message'] = $e->getMessage();
             }
             $this->serialize($result);
-	    }
+        }
     }
 
     public function add_variants() {
