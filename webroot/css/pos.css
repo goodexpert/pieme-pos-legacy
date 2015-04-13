@@ -671,7 +671,12 @@ margin-bottom: -1px;
 .product-info {
 	float: left;
 	width: 100%;
-	height: 60px;
+	border-top: 1px dashed #909090;
+	padding:6px;
+}
+.product-unit-table {
+	float: left;
+	width: 100%;
 	border-top: 1px dashed #909090;
 	padding:6px;
 }

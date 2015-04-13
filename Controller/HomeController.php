@@ -27,7 +27,7 @@ class HomeController extends AppController {
         $user = $this->Auth->user();
         
         $this->loadModel('MerchantQuickKey');
-        $this->loadModel('MerchantOutlet');
+        $this->loadModel('MerchantPriceBook');
         $this->loadModel('MerchantRegister');
         $this->loadModel('MerchantProductInventory');
         
@@ -83,6 +83,41 @@ class HomeController extends AppController {
             ));
     
             $this->set('items', $items);
+            
+            $this->MerchantPriceBook->bindModel(array(
+                'hasMany' => array(
+                    'MerchantPriceBookEntry' => array(
+                        'className' => 'MerchantPriceBookEntry',
+                        'foreignKey' => 'price_book_id'
+                    )
+                )
+            ));
+            
+            $pricebooks = $this->MerchantPriceBook->find('all', array(
+                'conditions' => array(
+                    'MerchantPriceBook.merchant_id' => $user['merchant_id'],
+                    array(
+                        'OR' => array(
+                            array('MerchantPriceBook.valid_from <=' => date("Y-m-d")),
+                            array('MerchantPriceBook.valid_from' => null)
+                        )
+                    ),
+                    array(
+                        'OR' => array(
+                            array('MerchantPriceBook.valid_to >=' => date("Y-m-d")),
+                            array('MerchantPriceBook.valid_to' => null)
+                        )
+                    ),
+                    array(
+                        'OR' => array(
+                            array('MerchantPriceBook.outlet_id' => $user['outlet_id']),
+                            array('MerchantPriceBook.outlet_id' => null)
+                        )
+                    )
+                ),
+                'order' => array('MerchantPriceBook.created ASC')
+            ));
+            $this->set('pricebooks',$pricebooks);
         }
         $merchant = $this->MerchantRegister->findById($user['MerchantRegister']['id']);
         $this->set('merchant',$merchant);
@@ -195,6 +230,7 @@ class HomeController extends AppController {
                 'conditions' => array(
                     'MerchantCustomerGroup.merchant_id' => $this->Auth->user()['merchant_id']
                 ),
+                'order' => array('MerchantCustomerGroup.created ASC')
             ));
             $this->set("groups",$groups);
             

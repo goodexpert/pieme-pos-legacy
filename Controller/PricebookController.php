@@ -35,6 +35,20 @@ class PricebookController extends AppController {
     }
 
     public function index() {
+    
+        $this->MerchantPriceBook->bindModel(array(
+            'belongsTo' => array(
+                'MerchantCustomerGroup' => array(
+                    'className' => 'MerchantCustomerGroup',
+                    'foreignKey' => 'customer_group_id'
+                ),
+                'MerchantOutlet' => array(
+                    'className' => 'MerchantOutlet',
+                    'foreignKey' => 'outlet_id'
+                )
+            )
+        ));
+    
         $books = $this->MerchantPriceBook->find('all',array(
             'conditions' => array(
                 'MerchantPriceBook.merchant_id' => $this->Auth->user()['merchant_id']
@@ -50,6 +64,10 @@ class PricebookController extends AppController {
         if($this->request->is('post')){
             $data = $this->request->data;
             $data['merchant_id'] = $user['merchant_id'];
+            if($data['outlet_id'] == ''){
+                $data['outlet_id'] = null;
+            }
+
             $result = array();
             try {
             
@@ -58,18 +76,39 @@ class PricebookController extends AppController {
                 $this->MerchantPriceBook->save($data);
                 
                 //Step 2: Create Merchant Price Book Entry
-                foreach(json_decode($data['entries'],true) as $ent){
-                    $this->MerchantPriceBookEntry->create();
-                    $entry->MerchantPriceBookEntry['price_book_id'] = $this->MerchantPriceBook->id;
-                    $entry->MerchantPriceBookEntry['product_id'] = $ent['product_id'];
-                    $entry->MerchantPriceBookEntry['markup'] = $ent['markup'];
-                    $entry->MerchantPriceBookEntry['discount'] = $ent['discount'];
-                    $entry->MerchantPriceBookEntry['price'] = $ent['price'];
-                    $entry->MerchantPriceBookEntry['price_include_tax'] = $ent['price_include_tax'];
-                    $entry->MerchantPriceBookEntry['tax'] = $ent['tax'];
-                    $entry->MerchantPriceBookEntry['min_units'] = $ent['min_units'];
-                    $entry->MerchantPriceBookEntry['max_units'] = $ent['max_units'];
-                    $this->MerchantPriceBookEntry->save($entry);
+                if($data['type'] == 0) {
+                    $products = $this->MerchantProduct->find('all',array(
+                        'conditions' => array(
+                            'MerchantProduct.merchant_id' => $user['merchant_id']
+                        )
+                    ));
+                    foreach($products as $product) {
+                        $this->MerchantPriceBookEntry->create();
+                        $entry->MerchantPriceBookEntry['price_book_id'] = $this->MerchantPriceBook->id;
+                        $entry->MerchantPriceBookEntry['product_id'] = $product['MerchantProduct']['product_id'];
+                        $entry->MerchantPriceBookEntry['markup'] = $data['general_markup'];
+                        $entry->MerchantPriceBookEntry['discount'] = $data['general_discount'];
+                        $entry->MerchantPriceBookEntry['price'] = $product['MerchantProduct']['price'];
+                        $entry->MerchantPriceBookEntry['price_include_tax'] = $product['MerchantProduct']['price_include_tax'] - $data['general_discount'];
+                        $entry->MerchantPriceBookEntry['tax'] = $product['MerchantProduct']['tax'];
+                        $entry->MerchantPriceBookEntry['min_units'] = $data['general_min_units'];
+                        $entry->MerchantPriceBookEntry['max_units'] = $data['general_max_units'];
+                        $this->MerchantPriceBookEntry->save($entry);
+                    }
+                } else {
+                    foreach(json_decode($data['entries'],true) as $ent){
+                        $this->MerchantPriceBookEntry->create();
+                        $entry->MerchantPriceBookEntry['price_book_id'] = $this->MerchantPriceBook->id;
+                        $entry->MerchantPriceBookEntry['product_id'] = $ent['product_id'];
+                        $entry->MerchantPriceBookEntry['markup'] = $ent['markup'];
+                        $entry->MerchantPriceBookEntry['discount'] = $ent['discount'];
+                        $entry->MerchantPriceBookEntry['price'] = $ent['price'];
+                        $entry->MerchantPriceBookEntry['price_include_tax'] = $ent['price_include_tax'];
+                        $entry->MerchantPriceBookEntry['tax'] = $ent['tax'];
+                        $entry->MerchantPriceBookEntry['min_units'] = $ent['min_units'];
+                        $entry->MerchantPriceBookEntry['max_units'] = $ent['max_units'];
+                        $this->MerchantPriceBookEntry->save($entry);
+                   }
                }
                 
             } catch (Exception $e) {
@@ -152,6 +191,9 @@ class PricebookController extends AppController {
         
         if($this->request->is('post')) {
             $data = $this->request->data;
+            if($data['outlet_id'] == ''){
+                $data['outlet_id'] = null;
+            }
             $result = array();
             try {
             

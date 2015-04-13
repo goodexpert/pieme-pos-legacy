@@ -78,9 +78,9 @@
                 <tbody>
                     <?php foreach($books as $book) { ?>
                     <tr>
-                        <td><?=$book['MerchantPriceBook']['name'];?></td>
-                        <td>All Customers</td>
-                        <td>All Outlets</td>
+                        <td><?php echo $book['MerchantPriceBook']['name'];?></td>
+                        <td><?php echo $book['MerchantCustomerGroup']['name'];?></td>
+                        <td><?php echo $book['MerchantOutlet']['name'];?></td>
                         <td></td>
                         <td></td>
                         <td></td>

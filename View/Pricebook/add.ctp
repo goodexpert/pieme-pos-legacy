@@ -79,6 +79,7 @@ th small {
                           <dt>Outlet</dt>
                           <dd>
                             <select id="price_book_outlet_id">
+                                <option value="">All Outlets</option>
                                 <?php foreach($outlets as $outlet) { ?>
                                 <option value="<?php echo $outlet['MerchantOutlet']['id'];?>"><?php echo $outlet['MerchantOutlet']['name'];?></option>
                                 <?php } ?>
@@ -101,7 +102,7 @@ th small {
                           <dt>Type</dt>
                           <dd class="price_book_type">
                             <input type="button" class="btn btn-white btn-left individual col-md-6 active" value="individual">
-                            <input type="button" class="btn btn-white btn-right general selecetd col-md-6" value="general">
+                            <input type="button" class="btn btn-white btn-right general col-md-6" value="general">
                           </dd>
                         </dl>
                     </div>
@@ -112,15 +113,15 @@ th small {
                     <div class="margin-bottom-20 col-md-12 col-alpha col-omega">
                         <dl class="col-md-6">
                             <dt>Markup</dt>
-                            <dd><input type="text"></dd>
+                            <dd><input type="text" id="general_markup"></dd>
                             <dt>Discount</dt>
-                            <dd><input type="text"></dd>
+                            <dd><input type="text" id="general_discount"></dd>
                         </dl>
                         <dl class="col-md-6">
                             <dt>Min. Units</dt>
-                            <dd><input type="number"></dd>
+                            <dd><input type="number" id="general_min_units"></dd>
                             <dt>Max. Unites</dt>
-                            <dd><input type="number"></dd>
+                            <dd><input type="number" id="general_max_units"></dd>
                         </dl>
                     </div>
                 </div>
@@ -300,6 +301,8 @@ jQuery(document).ready(function() {
    QuickSidebar.init() // init quick sidebar
    Index.init();
    
+   var price_book_type = 1;
+   
    $("#valid_from").datepicker({ dateFormat: 'yy-mm-dd' });
    $("#valid_to").datepicker({ dateFormat: 'yy-mm-dd' });
    
@@ -309,6 +312,7 @@ jQuery(document).ready(function() {
       $(this).addClass("active");
       $(".price_book_individual").hide();
       $(this).blur();
+      price_book_type = 1;
    });
    $(".individual").click(function(){
       $(".price_book_general").hide();
@@ -316,6 +320,7 @@ jQuery(document).ready(function() {
       $(this).addClass("active");
       $(".price_book_individual").show('bounce');
       $(this).blur();
+      price_book_type = 0;
    });
    
     $(document).on("click",".data-found",function(){
@@ -364,7 +369,7 @@ jQuery(document).ready(function() {
             entries.push(entry);
             entry = {};
         });
-        
+
         $.ajax({
             url: '/pricebook/add.json',
             type: 'POST',
@@ -374,15 +379,19 @@ jQuery(document).ready(function() {
                 outlet_id: $("#price_book_outlet_id").val(),
                 valid_from: $("#valid_from").val(),
                 valid_to: $("#valid_to").val(),
-                entries: JSON.stringify(entries)
+                entries: JSON.stringify(entries),
+                type: price_book_type,
+                general_markup: $("#general_markup").val(),
+                general_discount: $("#general_discount").val(),
+                general_min_units: $("#general_min_units").val(),
+                general_max_units: $("#general_max_units").val()
             },
             success: function(){
                 window.location.href = "/pricebook";
             }
         });
-        
     });
-    
+
     $(".cancel").click(function(){
         window.history.back();
     });

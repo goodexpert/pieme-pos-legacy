@@ -160,7 +160,7 @@
             </div>
           </div>
           <div class="commands col-md-12">
-              <?php if(!empty($authUser['outlet_id'])) { ?>
+            <?php if(!empty($authUser['outlet_id'])) { ?>
             <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 customer-search col-omega col-alpha">
                   <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                     <div class="col-md-9 col-xs-9 col-sm-9 col-alpha col-omega">
@@ -172,8 +172,9 @@
                             <?php foreach($customers as $customer){ ?>
                                 <button type="button" 
                                 data-id="<?=$customer['MerchantCustomer']['id'];?>"
-                                data-name="<?=$customer['MerchantCustomer']['name'];?>"  
+                                data-name="<?=$customer['MerchantCustomer']['name'];?>" 
                                 data-balance="<?=$customer['MerchantCustomer']['balance'];?>" 
+                                data-group-id="<?=$customer['MerchantCustomer']['customer_group_id'];?>"
                                 class="data-found customer_apply">
                                     <?=$customer['MerchantCustomer']['name'].' ('.
                                     $customer['MerchantCustomer']['customer_code'].')<br>$'.
@@ -191,6 +192,7 @@
                       <dt>Balance</dt>
                       <dd id="customer-result-balance"></dd>
                       <input type="hidden" id="customer-selected-id" value="<?php echo $customers[0]['MerchantCustomer']['id'];?>">
+                      <input type="hidden" id="customer-selected-group-id" value="<?php echo $customers[0]['MerchantCustomer']['customer_group_id'];?>">
                     </dl>
                 </div>
                 <div class="col-md-12 col-xs-12 col-sm-12 buttons col-alpha col-omega">
@@ -203,8 +205,8 @@
             <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 col-omega">
                 <div class="receipt"></div>
                 <div class="col-md-12 col-xs-12 col-sm-12 show-amount">
-                      <ul class="receipt-text">
-                          <li class="pull-left">Subtotal</li>
+                    <ul class="receipt-text">
+                        <li class="pull-left">Subtotal</li>
                         <li class="pull-right">$<text class="subTotal">0.00</text></li>
                     </ul>
                     <ul class="receipt-text">
@@ -249,15 +251,45 @@
                     $pageCount = 1;
                     if(!empty($authUser['outlet_id'])) {
                     foreach($items as $item) {
-                        if($count == 10){$page++; $count = 0; $pageCount++;}?>
+                        if($count == 6){$page++; $count = 0; $pageCount++;}?>
                         <div class="col-md-4 col-xs-12 col-sm-6 product clickable col-alpha col-omega" data-id="<?=$item['MerchantProduct']['id'];?>" page="<?=$page;?>">
                             <div class="product-container">
-                                <div class="product-img"><img src="img/<?php if($item['MerchantProduct']['image'] == null){echo 'no-image.png';}else{echo $item['MerchantProduct']['image'];}?>" alt="product"></div>
+                                <div class="product-img">
+                                    <img src="img/<?php if($item['MerchantProduct']['image'] == null){echo 'no-image.png';} else {echo $item['MerchantProduct']['image'];}?>" alt="product">
+                                </div>
                                 <div class="product-info">
                                     <div class="product-name"><p><?=$item['MerchantProduct']['name'];?></p></div>
                                     <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega price-wrap">
                                         <div class="product-price col-lg-5 col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                                            <b>$<span class="price_including_tax"><?=number_format($item['MerchantProduct']['price_include_tax'],2,'.','');?></span></b>
+                                            <b>$<span class="price_including_tax">
+                                                <?php
+                                                $priceAvailable = false;
+                                                foreach($pricebooks as $pricebook) {
+                                                    if($pricebook['MerchantPriceBook']['outlet_id'] == $authUser['outlet_id']) {
+                                                        foreach($pricebook['MerchantPriceBookEntry'] as $entry) {
+                                                            if($entry['product_id'] == $item['MerchantProduct']['id'] && $entry['min_units'] == null && $entry['max_units'] == null) {
+                                                                echo number_format($entry['price_include_tax'],2,'.','');
+                                                                $priceAvailable = true;
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                foreach($pricebooks as $pricebook) {
+                                                    if($priceAvailable == false) {
+                                                        if($pricebook['MerchantPriceBook']['is_default'] == 1) {
+                                                            foreach($pricebook['MerchantPriceBookEntry'] as $entry){
+                                                                if($entry['product_id'] == $item['MerchantProduct']['id'] && $entry['min_units'] == null && $entry['max_units'] == null) {
+                                                                    echo number_format($entry['price_include_tax'],2,'.','');
+                                                                    $priceAvailable = false;
+                                                                    break;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                ?>
+                                            </span></b>
                                         </div>
                                         <?php if($item['MerchantProduct']['track_inventory'] == 1) { ?>
                                         <div class="product-stock col-lg-7 col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
@@ -265,6 +297,32 @@
                                         </div>
                                         <?php } ?>
                                     </div>
+                                </div>
+                                <div class="product-unit-table hidden">
+                                    <table class="col-md-12">
+                                        <tr>
+                                            <th>Min.</th>
+                                            <th>Max.</th>
+                                            <th>Price</th>
+                                        </tr>
+                                    <?php foreach($pricebooks as $pricebook) {
+                                        foreach($pricebook['MerchantPriceBookEntry'] as $entry) {
+                                            if($entry['product_id'] == $item['MerchantProduct']['id'] && isset($entry['min_units'])) { ?>
+                                                <tr class="price-book-row"
+                                                 data-id="<?php echo $entry['product_id'];?>"
+                                                 group-id="<?php if($pricebook['MerchantPriceBook']['customer_group_id'] == $groups[0]['MerchantCustomerGroup']['id']){
+                                                    echo '';
+                                                } else {
+                                                    echo $pricebook['MerchantPriceBook']['customer_group_id'];
+                                                }?>">
+                                                    <td class="item_min"><?php echo $entry['min_units'];?></td>
+                                                    <td class="item_max"><?php echo $entry['max_units'];?></td>
+                                                    <td class="item_price"><?php echo number_format($entry['price_include_tax'],2,'.','');?></td>
+                                                </tr>
+                                            <?php }
+                                        }
+                                    }?>
+                                    </table>
                                 </div>
                                 <input type="hidden" class="product-retail_price" value="<?=$item['MerchantProduct']['price'];?>">
                                 <input type="hidden" class="product-tax" value="<?=$item['MerchantProduct']['tax'];?>">
@@ -692,15 +750,14 @@
                 </div>
             </div>
         </div>
-
     </form>
-
 </div>
 <div class="discount_block">
 
     <form action="#" novalidate class="discount-form">
 
         <div class="main_panel col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
+            <!--
             <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega numpad" style="display: none;">
                 <div id="numpad-main" class="col-md-9 col-sm-9 col-xs-9">
                     <div class="number_button" onclick="number_write(1);">1</div>
@@ -722,6 +779,7 @@
                     <input type="submit" class="number_button-gr num_submit" value="return">
                 </div>
             </div>
+            -->
             <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega margin-bottom-10">
                 <input type="button" id="set-discount-all" class="col-md-6 btn btn-primary btn-left active" value="Percentage">
                 <input type="button" id="set-unit-price-all" class="col-md-6 btn btn-primary btn-right" value="Amount">
@@ -729,7 +787,7 @@
 
             <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
                 <input id="item-discount" class="discount_field numpad_text col-md-10" type="text" name="num" placeholder="E.g. 20% or 20">
-                <button type="button" class="btn btn-primary col-md-2 show_numpad"><i class="glyphicon glyphicon-th"></i></button>
+                <button type="button" class="btn btn-primary col-md-2 show_numpad" disabled><i class="glyphicon glyphicon-th"></i></button>
             </div>
 
         </div>
@@ -792,6 +850,7 @@ jQuery(document).ready(function() {
         var customer_id = $(this).attr("data-customer-id");
         var customer_balance = parseFloat($(this).attr("data-customer-balance")).toFixed(2);
         var retrieve_sale_id = $(this).attr("data-id");
+        var customer_group_id = $(this).attr("data-group-id");
         $("#retrieve-sale").addClass("hidden");
         $("#sell-index").removeClass("hidden");
         if($(".order-product").length !== 0){
@@ -819,11 +878,12 @@ jQuery(document).ready(function() {
                         retCount++;
                     });
                     if(customer_name == ''){
-    
+
                     } else {
                         $("#customer-result-name").text(customer_name);
                         $("#customer-selected-id").val(customer_id);
                         $("#customer-result-balance").text(customer_balance);
+                        $("#customer-selected-group-id").val(customer_group_id);
                         $(".customer-search-result").children("dl").show();
                     }
                 });
@@ -848,6 +908,7 @@ jQuery(document).ready(function() {
                 $("#customer-result-name").text(customer_name);
                 $("#customer-selected-id").val(customer_id);
                 $("#customer-result-balance").text(customer_balance);
+                $("#customer-selected-group-id").val(customer_group_id);
                 $(".customer-search-result").children("dl").show();
             }
         }
@@ -1212,7 +1273,8 @@ jQuery(document).ready(function() {
         $("#customer-result-name").text($(this).attr("data-name"));
         $("#customer-result-balance").text('$'+ parseFloat($(this).attr("data-balance")).toFixed(2));
         $("#customer-selected-id").val($(this).attr("data-id"));
-        
+        $("#customer-selected-group-id").val($(this).attr("data-group-id"));
+        assign_pricebook();
     });
 
     $(".product").hide();
@@ -1605,10 +1667,6 @@ function number_negative()
   text_box.value = -num;
 }
 
-
-
-
-
 function qty_write(x)
 {
   var text_box = document.getElementsByClassName("qty_field")[0];
@@ -1774,6 +1832,7 @@ $(document).on("click",".price-control",function(event){
         }
     }
 });
+
 $(document).on('submit',".price-form",function(){
     if(priceEdit == 'price') {
         $("a[data-id="+$(this).attr("data-id")+"]").text("@"+parseFloat($(".price_field").val()).toFixed(2));
@@ -1846,6 +1905,7 @@ $(document).on("click",".qty-control",function(event){
 $(".qty-form").submit(function(){
     $("a[qty-id="+$(this).attr("data-id")+"]").text(parseInt($(".qty_field").val()));
     $(".qty_block").hide();
+    assign_pricebook();
     return false;
 });
 
@@ -1883,4 +1943,47 @@ $(document).on("click",".discount",function(event){
         }
     }
 });
+
+function assign_pricebook() {
+    $(".order-product").each(function(){
+        var data_row = $(this);
+        $(".price-book-row[data-id="+$(this).find('.added-code').val()+"]").each(function(){
+            if($(this).attr("group-id") == ""){
+                if($(this).find(".item_max").text().length > 0){
+                    if(data_row.find(".qty-control").text() >= parseInt($(this).find(".item_min").text()) && data_row.find(".qty-control").text() <= parseInt($(this).find(".item_max").text())){
+                        data_row.find(".price-control").text('@'+$(this).find(".item_price").text());
+                        return false;
+                    } else {
+                        data_row.find(".price-control").text('@'+$(this).parents(".product-container").find(".price_including_tax").text());
+                    }
+                } else {
+                    if(data_row.find(".qty-control").text() >= parseInt($(this).find(".item_min").text())){
+                        data_row.find(".price-control").text('@'+$(this).find(".item_price").text());
+                        return false;
+                    } else {
+                        data_row.find(".price-control").text('@'+$(this).parents(".product-container").find(".price_including_tax").text());
+                    }
+                }
+            } else {
+                if($(this).attr("group-id") == $("#customer-selected-group-id").val()){
+                    if($(this).find(".item_max").text().length > 0){
+                        if(data_row.find(".qty-control").text() >= parseInt($(this).find(".item_min").text()) && data_row.find(".qty-control").text() <= parseInt($(this).find(".item_max").text())){
+                            data_row.find(".price-control").text('@'+$(this).find(".item_price").text());
+                            return false;
+                        } else {
+                            data_row.find(".price-control").text('@'+$(this).parents(".product-container").find(".price_including_tax").text());
+                        }
+                    } else {
+                        if(data_row.find(".qty-control").text() >= parseInt($(this).find(".item_min").text())){
+                            data_row.find(".price-control").text('@'+$(this).find(".item_price").text());
+                            return false;
+                        } else {
+                            data_row.find(".price-control").text('@'+$(this).parents(".product-container").find(".price_including_tax").text());
+                        }
+                    }
+                }
+            }
+        });
+    });
+}
 </script>

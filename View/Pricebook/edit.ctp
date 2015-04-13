@@ -72,15 +72,16 @@ th small {
                           <dd>
                             <select id="price_book_customer_group_id">
                                 <?php foreach($groups as $group) { ?>
-                                <option value="<?php echo $group['MerchantCustomerGroup']['id'];?>"><?php echo $group['MerchantCustomerGroup']['name'];?></option>
+                                <option value="<?php echo $group['MerchantCustomerGroup']['id'];?>" <?php if($group['MerchantCustomerGroup']['id'] == $pricebook['MerchantPriceBook']['customer_group_id']){echo "selected";}?>><?php echo $group['MerchantCustomerGroup']['name'];?></option>
                                 <?php } ?>
                             </select>
                           </dd>
                           <dt>Outlet</dt>
                           <dd>
                             <select id="price_book_outlet_id">
+                            	<option value="">All Outlets</option>
                                 <?php foreach($outlets as $outlet) { ?>
-                                <option value="<?php echo $outlet['MerchantOutlet']['id'];?>"><?php echo $outlet['MerchantOutlet']['name'];?></option>
+                                <option value="<?php echo $outlet['MerchantOutlet']['id'];?>" <?php if($pricebook['MerchantPriceBook']['outlet_id'] == $outlet['MerchantOutlet']['id']){echo "selected";}?>><?php echo $outlet['MerchantOutlet']['name'];?></option>
                                 <?php } ?>
                             </select>
                           </dd>
