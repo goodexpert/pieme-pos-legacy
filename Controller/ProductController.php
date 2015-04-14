@@ -28,7 +28,7 @@ class ProductController extends AppController {
  * @var array
  */
     public $uses = array('Merchant', 'MerchantProduct', 'MerchantProductType', 'MerchantProductBrand', 'MerchantProductTag',
-        'MerchantTaxRate', 'MerchantSupplier', 'MerchantProductCategory', 'MerchantPriceBookEntry', 'MerchantVariant', 'MerchantProductInventory', 'MerchantOutlet', 'MerchantProductComposite');
+        'MerchantTaxRate', 'MerchantSupplier', 'MerchantProductCategory', 'MerchantPriceBookEntry', 'MerchantVariant', 'MerchantProductInventory', 'MerchantOutlet', 'MerchantProductComposite', 'MerchantPriceBook');
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -101,14 +101,6 @@ class ProductController extends AppController {
 
     public function add() {
         $user = $this->Auth->user();
-        
-        $this->loadModel("MerchantOutlet");
-        $outlets = $this->MerchantOutlet->find('all', array(
-            'conditions' => array(
-                'MerchantOutlet.merchant_id' => $this->Auth->user()['merchant_id']
-            )
-        ));
-        $this->set("outlets",$outlets);
 
         if ($this->request->is('ajax') || $this->request->is('post')) {
             $result = array(
@@ -150,32 +142,29 @@ class ProductController extends AppController {
                              $inventory['restock_level'] = 0;
                          }
 
-                         /*
-                         $inventory['MerchantProductInventory']['outlet_id'] = $inventory['outlet_id'];
-                         $inventory['MerchantProductInventory']['product_id'] = $this->MerchantProduct->id;
-                         $inventory['MerchantProductInventory']['count'] = $inventory['count'];
-                         $inventory['MerchantProductInventory']['reorder_point'] = $inventory['reorder_point'];
-                         $inventory['MerchantProductInventory']['restock_level'] = $inventory['restock_level'];
-                          */
                          $inventory['product_id'] = $this->MerchantProduct->id;
 
                          $this->MerchantProductInventory->create();
                          $this->MerchantProductInventory->save(array('MerchantProductInventory' => $inventory));
                      }
                 }
-                
-                if(json_decode($data['tags'])[0] !== "") {
+
+                if(!empty($data['tags']) && isset($data['tags'])) {
                     // Step 4: Save Tags
                     $savedTag = array();
-                    
-                    foreach(json_decode($data['tags']) as $tag) {
+                    $tagArray = json_decode($data['tags'],true);
+                    foreach($tagArray as $tag) {
                         $tag_exist = $this->MerchantProductTag->find('first', array(
                             'conditions' => array(
                                 'MerchantProductTag.name' => $tag,
                                 'MerchantProductTag.merchant_id' => $user['merchant_id']
                             )
                         ));
-                        $this->MerchantProductTag->id = $tag_exist['MerchantProductTag']['id'];
+                        if(empty($tag_exist)) {
+                            $this->MerchantProductTag->create();
+                        } else {
+                            $this->MerchantProductTag->id = $tag_exist['MerchantProductTag']['id'];
+                        }
                         $saveTag['MerchantProductTag']['merchant_id'] = $this->Auth->user()['merchant_id'];
                         $saveTag['MerchantProductTag']['name'] = $tag;
                         $this->MerchantProductTag->save($saveTag);
@@ -219,6 +208,14 @@ class ProductController extends AppController {
             $this->serialize($result);
             return;
         }
+        
+        $this->loadModel("MerchantOutlet");
+        $outlets = $this->MerchantOutlet->find('all', array(
+            'conditions' => array(
+                'MerchantOutlet.merchant_id' => $this->Auth->user()['merchant_id']
+            )
+        ));
+        $this->set("outlets",$outlets);
 
         $brands = $this->MerchantProductBrand->find('all', array(
             'conditions' => array(
@@ -279,7 +276,7 @@ class ProductController extends AppController {
     public function edit($id) {
         $user = $this->Auth->user();
 
-        if ($this->request->is('ajax') || $this->request->is('put')) {
+        if ($this->request->is('ajax') || $this->request->is('post')) {
             $result = array(
                 'success' => false
             );
@@ -302,6 +299,11 @@ class ProductController extends AppController {
                         'product_id' => $id
                     )
                 ));
+                if(!empty($priceBookEntry)) {
+                    $this->MerchantPriceBookEntry->create();
+                } else {
+                    $this->MerchantPriceBookEntry->id = $priceBookEntry['MerchantPriceBookEntry']['id'];
+                }
                 $priceBookEntry['MerchantPriceBookEntry']['markup'] = $data['markup'];
                 $priceBookEntry['MerchantPriceBookEntry']['price'] = $data['price'];
                 $priceBookEntry['MerchantPriceBookEntry']['price_include_tax'] = $data['price_include_tax'];
@@ -318,7 +320,20 @@ class ProductController extends AppController {
                                 'MerchantProductInventory.product_id' => $id
                             )
                         ));
-                        $this->MerchantProductInventory->id = $notNull['MerchantProductInventory']['id'];
+                        if(empty($notNull)) {
+                            $this->MerchantProductInventory->create();
+                        } else {
+                            $this->MerchantProductInventory->id = $notNull['MerchantProductInventory']['id'];
+                        }
+                        if($inventory['count'] == null) {
+                            $inventory['count'] = 0;
+                        }
+                        if($inventory['reorder_point'] == null) {
+                            $inventory['reorder_point'] = 0;
+                        }
+                        if($inventory['restock_level'] == null) {
+                            $inventory['restock_level'] = 0;
+                        }
                         $inventory['MerchantProductInventory']['outlet_id'] = $inventory['outlet_id'];
                         $inventory['MerchantProductInventory']['product_id'] = $id;
                         $inventory['MerchantProductInventory']['count'] = $inventory['count'];
@@ -326,20 +341,24 @@ class ProductController extends AppController {
                         $inventory['MerchantProductInventory']['restock_level'] = $inventory['restock_level'];
                         $this->MerchantProductInventory->save($inventory);
                     }
-                } else {
                 }
 
                 // Step 4: Save Tags
-                if(json_decode($data['tags'])[0] !== ""){
+                if(!empty($data['tags']) && isset($data['tags'])){
                     $savedTag = array();
-                    foreach(json_decode($data['tags']) as $tag) {
+                    $tagArray = json_decode($data['tags'],true);
+                    foreach($tagArray as $tag) {
                         $tag_exist = $this->MerchantProductTag->find('first', array(
                             'conditions' => array(
                                 'MerchantProductTag.name' => $tag,
                                 'MerchantProductTag.merchant_id' => $user['merchant_id']
                             )
                         ));
-                        $this->MerchantProductTag->id = $tag_exist['MerchantProductTag']['id'];
+                        if(empty($tag_exist)) {
+                            $this->MerchantProductTag->create();
+                        } else {
+                            $this->MerchantProductTag->id = $tag_exist['MerchantProductTag']['id'];
+                        }
                         $saveTag['MerchantProductTag']['merchant_id'] = $user['merchant_id'];
                         $saveTag['MerchantProductTag']['name'] = $tag;
                         $this->MerchantProductTag->save($saveTag);
@@ -347,14 +366,19 @@ class ProductController extends AppController {
                     }
     
                     // Setp 5: Save Category
+                    $category_refresh = $this->MerchantProductCategory->find('all',array(
+                        'conditions' => array(
+                            'MerchantProductCategory.product_id' => $id
+                        )
+                    ));
+                    if(!empty($category_refresh) && is_array($category_refresh)) {
+                        foreach($category_refresh as $toDelete) {
+                            $this->MerchantProductCategory->delete($toDelete['MerchantProductCategory']['id']);
+                        }
+                    }
+                    
                     foreach($savedTag as $category) {
-                        $category_exist = $this->MerchantProductCategory->find('first',array(
-                            'conditions' => array(
-                                'MerchantProductCategory.product_tag_id' => $category,
-                                'MerchantProductCategory.product_id' => $id
-                            )
-                        ));
-                        $this->MerchantProductCategory->id = $category_exist['MerchantProductCategory']['id'];
+                        $this->MerchantProductCategory->create();
                         $saveCategory['MerchantProductCategory']['product_id'] = $this->MerchantProduct->id;
                         $saveCategory['MerchantProductCategory']['product_tag_id'] = $category;
                         $this->MerchantProductCategory->save($saveCategory);
@@ -365,8 +389,10 @@ class ProductController extends AppController {
                             'MerchantProductCategory.product_id' => $id
                         )
                     ));
-                    foreach($category_exist as $toDelete) {
-                        $this->MerchantProductCategory->delete($toDelete['MerchantProductCategory']['id']);
+                    if(!empty($category_exist) && is_array($category_exist)) {
+                        foreach($category_exist as $toDelete) {
+                            $this->MerchantProductCategory->delete($toDelete['MerchantProductCategory']['id']);
+                        }
                     }
                 }
 
@@ -379,7 +405,11 @@ class ProductController extends AppController {
                                 'MerchantProductComposite.parent_id' => $id
                             )
                         ));
-                        $this->MerchantProductComposite->id = $composite_exist['MerchantProductComposite']['id'];
+                        if(empty($composite_exist)) {
+                            $this->MerchantProductComposite->create();
+                        } else {
+                            $this->MerchantProductComposite->id = $composite_exist['MerchantProductComposite']['id'];
+                        }
                         $saveComposite['MerchantProductComposite']['parent_id'] = $this->MerchantProduct->id;
                         $saveComposite['MerchantProductComposite']['product_id'] = $composite['product_id'];
                         $saveComposite['MerchantProductComposite']['quantity'] = $composite['quantity'];
@@ -390,14 +420,11 @@ class ProductController extends AppController {
                 $dataSource->commit();
 
                 $result['success'] = true;
-                $result['data'] = $data['composite'];
                 $result['product_id'] = $this->MerchantProduct->id;
             } catch (Exception $e) {
                 $dataSource->rollback();
                 $result['message'] = $e->getMessage();
             }
-            
-
             $this->serialize($result);
             return;
         }

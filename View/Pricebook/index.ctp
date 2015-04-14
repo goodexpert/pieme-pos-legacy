@@ -84,7 +84,12 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td><a href="/pricebook/view?r=<?=$book['MerchantPriceBook']['id'];?>">View</a></td>
+                        <td>
+                        	<a href="/pricebook/view?r=<?php echo $book['MerchantPriceBook']['id'];?>">View</a>
+                        	<?php if(!$book['MerchantPriceBook']['is_default'] == 1){ ?>
+                        	 | <a href="/pricebook/<?php echo $book['MerchantPriceBook']['id'];?>/edit">Edit</a>
+                        	<?php } ?>
+                        </td>
                     </tr>
                     <?php } ?>
                 </tbody>

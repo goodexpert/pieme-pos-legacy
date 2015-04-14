@@ -71,19 +71,19 @@
                                     <option value="2">Cheque</option>
                                     <option value="3">Credit Card</option>
                                     <option value="4">EFTPOS</option>
-                                    <option value="9">Finance</option>
-                                    <option value="10">Voucher</option>
-                                    <option value="11">Credit Note</option>
-                                    <option value="101">Cash (Concealed totals)</option>
+                                    <option value="9" disabled>Finance</option>
+                                    <option value="10" disabled>Voucher</option>
+                                    <option value="11" disabled>Credit Note</option>
+                                    <option value="101" disabled>Cash (Concealed totals)</option>
                                 </optgroup>
                                 <optgroup label="Integrated"><option value="5">Integrated EFTPOS (DPS)</option>
-                                    <option value="8">Square</option>
-                                    <option value="102">Element</option>
-                                    <option value="103">PayPal</option>
-                                    <option value="105">Authorize.Net</option>
-                                    <option value="108">Tyro</option>
-                                    <option value="111">iZettle</option>
-                                    <option value="114">Smartpay</option>
+                                    <option value="7">Square</option>
+                                    <option value="102" disabled>Element</option>
+                                    <option value="8">PayPal</option>
+                                    <option value="105" disabled>Authorize.Net</option>
+                                    <option value="108" disabled>Tyro</option>
+                                    <option value="111" disabled>iZettle</option>
+                                    <option value="114" disabled>Smartpay</option>
                                 </optgroup>
                             </select>
                         </dd>

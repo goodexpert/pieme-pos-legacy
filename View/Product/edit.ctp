@@ -197,6 +197,7 @@
               <div class="col-md-12">
                   <dl class="form-group">
                     <dt class="col-md-2">Product tags</dt>
+                    <input type="hidden" id="tag_list" value='<?php echo json_encode($tags);?>'>
                     <dd class="col-md-10 col-alpha">
                       <input type="hidden" class="form-control select2_sample3 product_tag" value="<?php 
                       $i=0;
@@ -227,7 +228,7 @@
                     </div>
                     <div class="set-price-box col-md-2 col-xs-2 col-sm-2 col-alpha">
                         <h5><strong>x Markup (%)</strong></h5>
-                      <input type="text" id="markup" value="<?=$product['MerchantProduct']['markup'];?>">
+                      <input type="text" id="markup" value="<?=number_format($product['MerchantProduct']['markup']*100,0);?>">
                     </div>
                     <div class="set-price-box col-md-2 col-xs-2 col-sm-2 col-alpha">
                         <h5><strong> = Retail price</strong></h5>
@@ -680,23 +681,21 @@ $(document).ready(function(){
 
     /* DYNAMIC TAG SETTING */
     var FormSamples = function () {
-    
-    
         return {
             //main function to initiate the module
             init: function () {
                 var tags = [];
-
+                var tag_array = $("#tag_list").val();
+                tag_array = JSON.parse(tag_array);
+                $.each(tag_array, function(value){
+                    tags.push($(this)[0]['MerchantProductTag']['name']);
+                });
                 $(".select2_sample3").select2({
                     tags: tags
                 });
-    
             }
-    
         };
-    
     }();
-    
     FormSamples.init();
 
     /* DYNAMIC PROUCT SEARCH START */
@@ -777,9 +776,6 @@ $(document).ready(function(){
             variant_option_three_name = $(".variant_value_3").val();
             variant_option_three_value = $(".variant_default_3").val();
         }
-        
-        console.log(variant_option_one_name+', '+variant_option_one_value+'<br>'+variant_option_two_name+', '+variant_option_two_value+'<br>'+variant_option_three_name+', '+variant_option_three_value+'<br>');
-        
         
         $(".incorrect-message").remove();
         $(".required").each(function(){
@@ -864,14 +860,21 @@ $(document).ready(function(){
                     composite: composite
                 },
                 success: function(result){
-                    window.location.href = "/product";
+                    if(result.success) {
+	                    window.location.href = "/product/"+result.product_id;
+                    } else {
+                    	$("#loader-wrapper").hide();
+	                    alert(result);
+                    }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
+                	$("#loader-wrapper").hide();
                     console.log(textStatus, errorThrown);
                 }
             });
             
         } else {
+        	$("#loader-wrapper").hide();
             $("html, body").animate({ scrollTop: 0 }, "slow");
         }
     });

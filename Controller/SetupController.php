@@ -199,6 +199,15 @@ class SetupController extends AppController {
 
         $this->loadModel('MerchantUser');
 
+        $this->MerchantUser->bindModel(array(
+        	'belongsTo' => array(
+                'MerchantOutlet' => array(
+                    'className' => 'MerchantOutlet',
+                    'foreignKey' => 'outlet_id'
+                )
+            )
+        ));
+
         $users = $this->MerchantUser->find('all', array(
             'conditions' => array(
                 'MerchantUser.merchant_id' => $user['merchant_id']

@@ -26,7 +26,6 @@
 
 <link href="/css/dropzone.css" rel="stylesheet" type="text/css"/>
 <link href="/css/loader.css" rel="stylesheet" type="text/css"/>
-<link rel="stylesheet" type="text/css" href="/assets/global/plugins/select2/select2.css"/>
 <div class="clearfix"> </div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
@@ -92,19 +91,19 @@
                   <dl>
                     <dt class="col-md-4">Username</dt>
                     <dd class="col-md-8">
-                        <input type="text" name="merchant_user['username']" id="merchant_user_username">                
+                        <input type="text" name="merchant_user['username']" id="merchant_user_username" value="<?php echo $users['MerchantUser']['username'];?>">                
                      </dd>
                   </dl>
                   <dl>
                     <dt class="col-md-4">Display name</dt>
                     <dd class="col-md-8">
-                        <input type="text" name="merchant_user['display_name']" id="merchant_user_display_name">                
+                        <input type="text" name="merchant_user['display_name']" id="merchant_user_display_name" value="<?php echo $users['MerchantUser']['display_name'];?>">                
                      </dd>
                   </dl>
                   <dl>
                     <dt class="col-md-4">Email Address</dt>
                     <dd class="col-md-8">
-                        <input type="text" name="merchant_user['email']" id="merchant_user_email">                
+                        <input type="text" name="merchant_user['email']" id="merchant_user_email" value="<?php echo $users['MerchantUser']['email'];?>">                
                      </dd>
                   </dl>
                   <dl>
@@ -116,11 +115,11 @@
                                 $outlet_id = $outlet['MerchantOutlet']['id'];
                                 $name = $outlet['MerchantOutlet']['name'];
                          ?>
-                            <option value="<?php echo $outlet_id; ?>"><?php echo $name; ?></option>
+                            <option value="<?php echo $outlet_id; ?>" <?php if($users['MerchantUser']['outlet_id'] == $outlet_id){echo "selected";}?>><?php echo $name; ?></option>
                         <?php
                             endforeach;
                          ?>
-                        </select>              
+                        </select>
                      </dd>
                   </dl>
                 </div>
@@ -130,13 +129,13 @@
                   <dl>
                     <dt class="col-md-4">Password</dt>
                     <dd class="col-md-8">
-                        <input type="text" name="merchant_user['password']" id="merchant_user_password">                
+                        <input type="password" name="merchant_user['password']" id="merchant_user_password">                
                      </dd>
                   </dl>
                   <dl>
                     <dt class="col-md-4">Password again</dt>
                     <dd class="col-md-8">
-                        <input type="text" name="merchant_user['password_confirm']" id="merchant_user_password_confirm">                
+                        <input type="password" name="merchant_user['password_confirm']" id="merchant_user_password_confirm">                
                      </dd>
                   </dl>
                   <dl>
@@ -147,7 +146,7 @@
                             foreach($user_types as $user_type) :
                                 $type = $user_type['MerchantUserType']['user_type'];
                          ?>
-                            <option value="<?php echo $type; ?>"><?php echo ucwords($type); ?></option>
+                            <option value="<?php echo $type; ?>" <?php if($users['MerchantUser']['user_type'] == $type){echo "selected";}?>><?php echo ucwords($type); ?></option>
                         <?php
                             endforeach;
                          ?>
@@ -180,7 +179,7 @@
             <div class="col-md-12 margin-top-20 col-omega">
               <div class="pull-right">
                 <button type="button" class="btn btn-default btn-wide cancel margin-right-10">Cancel</button>
-                <button type="button" class="btn btn-primary btn-wide addProduct">Submit</button>
+                <button type="button" id="submit" class="btn btn-primary btn-wide">Submit</button>
               </div>
             </div>
           </div>
@@ -188,30 +187,6 @@
         <!-- END FORM--> 
       </div>
     </div>
-    <input type="hidden" id="created">
-    <!-- BEGIN QUICK SIDEBAR --> 
-    <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
-    <div class="page-quick-sidebar-wrapper">
-      <div class="page-quick-sidebar">
-        <div class="nav-justified">
-          <ul class="nav nav-tabs nav-justified">
-            <li class="active"> <a href="#quick_sidebar_tab_1" data-toggle="tab"> Users <span class="badge badge-danger">2</span> </a> </li>
-            <li> <a href="#quick_sidebar_tab_2" data-toggle="tab"> Alerts <span class="badge badge-success">7</span> </a> </li>
-            <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown"> More<i class="fa fa-angle-down"></i> </a>
-              <ul class="dropdown-menu pull-right" role="menu">
-                <li> <a href="#quick_sidebar_tab_3" data-toggle="tab"> <i class="icon-bell"></i> Alerts </a> </li>
-                <li> <a href="#quick_sidebar_tab_3" data-toggle="tab"> <i class="icon-info"></i> Notifications </a> </li>
-                <li> <a href="#quick_sidebar_tab_3" data-toggle="tab"> <i class="icon-speech"></i> Activities </a> </li>
-                <li class="divider"> </li>
-                <li> <a href="#quick_sidebar_tab_3" data-toggle="tab"> <i class="icon-settings"></i> Settings </a> </li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- END QUICK SIDEBAR --> 
 </div>
 <!-- END CONTAINER -->
 </div>
@@ -233,459 +208,42 @@
 <script src="/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script> 
 <script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script> 
 <!-- END CORE PLUGINS --> 
-<!-- BEGIN PAGE LEVEL PLUGINS --> 
-<script src="/assets/global/plugins/jqvmap/jqvmap/jquery.vmap.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.russia.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.world.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.europe.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.germany.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.usa.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jqvmap/jqvmap/data/jquery.vmap.sampledata.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/flot/jquery.flot.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/flot/jquery.flot.resize.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/flot/jquery.flot.categories.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jquery.pulsate.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/bootstrap-daterangepicker/moment.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.js" type="text/javascript"></script> 
-<!-- IMPORTANT! fullcalendar depends on jquery-ui-1.10.3.custom.min.js for drag & drop support --> 
-<script src="/assets/global/plugins/fullcalendar/fullcalendar/fullcalendar.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jquery-easypiechart/jquery.easypiechart.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jquery.sparkline.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/gritter/js/jquery.gritter.js" type="text/javascript"></script> 
-<!-- END PAGE LEVEL PLUGINS --> 
 <!-- BEGIN PAGE LEVEL SCRIPTS --> 
 <script src="/assets/global/scripts/metronic.js" type="text/javascript"></script> 
 <script src="/assets/admin/layout/scripts/layout.js" type="text/javascript"></script> 
-<script src="/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script> 
 <script src="/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
-<script type="text/javascript" src="/assets/global/plugins/select2/select2.min.js"></script>
 <!-- END PAGE LEVEL SCRIPTS --> 
 <script>
 jQuery(document).ready(function() {    
-   Metronic.init(); // init metronic core componets
-   Layout.init(); // init layout
-   QuickSidebar.init() // init quick sidebar
-   Index.init();
-   
-});
-</script> 
-<script>
-$(document).ready(function(){
-    $(document).on("keyup", "#supply_price", function(key){
-         var code = key.keyCode || key.which;
-         var clean = $(this).val().replace(/[^\d\.]/g, '');
-         $(this).val(clean);
-         if(code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8"){
-         
-             $("#markup").val(($("#retail_price_exclude").val() - $(this).val()) / ($(this).val()) * 100);
-             
-         }
-    });
-    $(document).on("keyup", "#markup", function(key){
-         var code = key.keyCode || key.which;
-         var clean = $(this).val().replace(/[^\d\.]/g, '');
-         $(this).val(clean);
-         if(code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8"){
-             var retail_exclude = parseFloat($("#supply_price").val()) * ($(this).val() / 100) + parseFloat($("#supply_price").val());
-             $("#retail_price_exclude").val(retail_exclude.toFixed(2));
-             $("#retail_price_include").val(parseFloat(retail_exclude * $("#sales_tax").val() + retail_exclude).toFixed(2));
-             $("#sales_tax_calc").val(parseFloat(retail_exclude * $("#sales_tax").val()).toFixed(2));
-         }
-    });
-    $(document).on("keyup", "#retail_price_exclude", function(key){
-         var code = key.keyCode || key.which;
-         var clean = $(this).val().replace(/[^\d\.]/g, '');
-         $(this).val(clean);
-         if(code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8"){
-             var sales_tax = $(this).val() * $("#sales_tax").val();
-             $("#markup").val(parseFloat(($("#retail_price_exclude").val() - $("#supply_price").val()) * 100 / $("#supply_price").val()).toFixed(2));
-             $("#sales_tax_calc").val(parseFloat(sales_tax).toFixed(2));
-             $("#retail_price_include").val(parseFloat(sales_tax + parseFloat($(this).val())).toFixed(2));
-         }
-    });
-    $(document).on("change", "#sales_tax", function(){
-        $("#sales_tax_calc").val(parseFloat($("#retail_price_exclude").val() * $(this).val()).toFixed(2));
-        $("#retail_price_include").val(parseFloat($("#retail_price_exclude").val() * $(this).val() + parseFloat($("#retail_price_exclude").val())).toFixed(2));
-        if($(".default_tax").is(":selected")){
-            $(".tax_info").show('slow');
-        } else {
-            $(".tax_info").hide('slow');
-        }
+    Metronic.init(); // init metronic core componets
+    Layout.init(); // init layout
+    Index.init();
+    
+    $("#submit").click(function(){
+        $.ajax({
+            url: location.href+'.json',
+            type: 'POST',
+            data: {
+                user_type: $("#merchant_user_type").val(),
+                username: $("#merchant_user_username").val(),
+                password: $("#merchant_user_password").val(),
+                display_name: $("#merchant_user_display_name").val(),
+                email: $("#merchant_user_email").val(),
+                outlet_id: $("#merchant_user_outlet_id").val()
+            },
+            success: function(result) {
+                if(result.success) {
+                    window.location.href = "/users/"+result.user_id;
+                } else {
+                    console.log(result);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
+            }
+        });
     });
 });
 </script>
-
-<script>
-$(document).ready(function(){
-    var variant_count = 2;
-    $(document).on('click','.variant_add',function(){
-        $(this).parent().parent().parent().append('<div class="col-md-12 col-sm-12 col-xs-12 variant_attr variant_added" style="margin-top:15px;"><div class="col-md-12 col-xs-12 col-sm-12"><div class="col-md-3 col-xs-3 col-sm-3"><div class="info"><select class="variant_value_'+variant_count+'"><option></option><option value="variant_value_add">+ Add new attribute</option><?php foreach($variants as $variant){ ?><option value="<?=$variant['MerchantVariant']['name'];?>"><?=$variant['MerchantVariant']['name'];?></option><?php } ?></select></div></div><div class="col-md-3 col-xs-3 col-sm-3"><div class="info"><input type="text" class="variant_default_'+variant_count+'"></div></div><div class="col-md-2 col-xs-2 col-sm-2"><button class="btn remove remove_variant_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button></div></div><div>'+ ($(".variant_attr").length >= 2 ? '<span class="variant_max">A product has a maximum of three variants.</span><span class="variant_add" style="display:none;">Add Another Attribute</span>':'<span class="variant_add">Add Another Attribute</span>') +'</div></div>');
-        $(this).hide();
-        variant_count++;
-    });
-    
-    $(document).on('click','.remove_variant_attr',function(){
-        $(this).parent().parent().parent().remove();
-        $(".variant_max").remove();
-        $(".variant_attr:last").children().children(".variant_add").show();
-        variant_count--;
-    });
-
-    $(document).on('click','.remove_composite_attr',function(){
-        $(this).parent().parent().remove();
-    });
-    
-    $(document).on('change','#variant',function(){
-        
-        if($(this).is(":checked")){
-            $("#first_variant_attr").show();
-            $(".variant_add").show();
-        } else {
-            $("#first_variant_attr").hide();
-            $(".variant_added").remove();
-            $(".variant_value").val('');
-        }
-        
-    });
-
-    $(document).on('click','.type-add',function(){
-        $.ajax({
-            url: "/product/type_quick.json",
-            type: "POST",
-            data: {
-                product_type_name: $(".type-name").val(),
-            }
-        }).done(function(result){
-            $("#product_type").prepend('<option value="'+result['id']+'">'+result['name']+'</option>');
-            $("#product_type").val(result['id']);
-        });
-    });
-
-    $(document).on('click','.brand-add',function(){
-        $.ajax({
-            url: "/product/brand_quick.json",
-            type: "POST",
-            data: {
-                product_brand_name: $(".brand-name").val(),
-                product_brand_desc: $(".brand-description").val()
-            }
-        }).done(function(result){
-            $("#product_brand").append('<option value="'+result['id']+'">'+result['name']+'</option>');
-            $("#product_brand").val(result['id']);
-        });
-    });
-    $(document).on('click','.supplier-add',function(){
-        $.ajax({
-            url: "/supplier/quick_add.json",
-            type: "POST",
-            data: {
-                name: $(".supplier-name").val(),
-                description: $(".supplier-desc").val()
-            },
-            success: function(msg) {
-                $("#product_supplier").prepend('<option value="'+msg['id']+'">'+msg['name']+'</option>')
-                $("#product_supplier").val(msg['id']);
-            }
-        });
-    });
-
-
-    /* DYNAMIC TAG SETTING */
-    var FormSamples = function () {
-    
-    
-        return {
-            //main function to initiate the module
-            init: function () {
-                var tags = [];
-                var tag_array = $("#tag_list").val();
-                tag_array = JSON.parse(tag_array);
-                $.each(tag_array, function(value){
-                    tags.push($(this)[0]['MerchantProductTag']['name']);
-                });
-
-                $(".select2_sample3").select2({
-                    tags: tags
-                });
-    
-            }
-    
-        };
-    
-    }();
-    
-    FormSamples.init();
-
-    /* DYNAMIC PROUCT SEARCH START */
-    
-    var $cells = $(".data-found");
-    $(".search_result").hide();
-    $(".search-default").hide();
-
-    $(document).on("keyup","#composite_search",function() {
-        var val = $.trim(this.value).toUpperCase();
-        if (val === ""){
-            $(".search_result").hide();
-        }
-        else {
-            $cells.hide();
-            $(".search_result").show();
-            var coffee = 0;
-            $cells.filter(function() {
-                return -1 != $(this).text().toUpperCase().indexOf(val);
-            }).show("fast",function(){
-                $(".search-default").hide();
-            });
-
-            if($(".search_result").height() == 0){
-                $(".search-default").show();
-            }
-        }
-        
-        $cells.click(function(){
-           $("#composite_search").val($(this).text());
-        });
-    });
-
-    /* DYNAMIC PRODUCT SEARCH END */
-
-
-    /* PRODUCT ADD */
-   $(document).on('click','.addProduct',function(){
-           $("#loader-wrapper").show();
-           
-        var name = $("#product_name").val();
-        var handle = $("#product_handle").val();
-        var type = $("#product_type").val();
-        var brand = $("#product_brand").val();
-        var description = $("#product_description").val();
-        var image = "no-image.png";
-        var sku = $("#sku").val();
-        if($("#product_supplier").val() !== ""){
-            var supplier = $("#product_supplier").val();
-        } else {
-            var supplier;
-        }
-        
-        var supplier_code = $("#supplier_code").val();
-        var supply_price = $("#supply_price").val();
-        var retail_price = $("#retail_price_exclude").val();
-        var price_include_tax = $("#retail_price_include").val();
-        var tax_rate = $("#sales_tax").val();
-        var tax = $("#sales_tax_calc").val();
-        var markup = $("#markup").val();
-        var tax_id = $('option:selected',"#sales_tax").attr("tax-id");
-        var tags = $("input[type=hidden]").val().split(",");
-        var stock_type = $("#stock_type").val();
-        
-        var variant_option_one_name = $(".variant_value_1").val();
-        var variant_option_one_value = $(".variant_default_1").val();
-        var variant_option_two_name = '';
-        var variant_option_two_value = '';
-        var variant_option_three_name = '';
-        var variant_option_three_value = '';
-        
-        if($(".variant_value_2").val() !== undefined){
-            variant_option_two_name = $(".variant_value_2").val();
-            variant_option_two_value = $(".variant_default_2").val();
-        }
-        if($(".variant_value_3").val() !== undefined){
-            variant_option_three_name = $(".variant_value_3").val();
-            variant_option_three_value = $(".variant_default_3").val();
-        }
-        
-        $(".incorrect-message").remove();
-        
-        $(".required").each(function(){
-            if($(this).val() == ""){
-                $(this).parent().addClass("incorrect");
-                $('<h5 class="incorrect-message"><i class="glyphicon glyphicon-remove-circle margin-right-5"></i>This field is required.</h5>').insertAfter($(this));
-            } else {
-                $(this).parent().removeClass("incorrect");
-            }
-        });
-        
-        if($(".incorrect").length == 0) {
-            var created = moment().format("YYYY-MM-DD HH:mm");
-            var availability;
-            if($("#availability").attr('checked')){
-                availability = 1;
-            } else {
-                availability = 0;
-            }
-            var track_inventory;
-            if($("#track_inventory").is(':checked')){
-                track_inventory = 1;
-            } else {
-                track_inventory = 0;
-            }
-            
-            var category;
-            var inventories = [];
-            $(".stock-tracking").each(function(){
-               inventories.push({outlet_id: $(this).find(".stock-outlet_id").val(), count: $(this).find(".stock_count").val(), reorder_point: $(this).find(".stock_reorder_point").val(), restock_level: $(this).find(".stock_reorder_amount").val()}) 
-            });
-            $.ajax({
-                url: "/product/add.json",
-                type: "POST",
-                data: {
-                    name: name,
-                    handle: handle,
-                    product_type_id: type,
-                    product_brand_id: brand,
-                    supplier_id: supplier,
-                    supplier_code: supplier_code,
-                    supply_price: supply_price,
-                    price: retail_price,
-                    tax: tax,
-                    price_include_tax: price_include_tax,
-                    markup: markup,
-                    tax_id: tax_id,
-                    description: description,
-                    image: image,
-                    stock_type: stock_type,
-                    sku: sku,
-                    is_active: availability,
-                    variant_option_one_name: variant_option_one_name,
-                    variant_option_one_value: variant_option_one_value,
-                    variant_option_two_name: variant_option_two_name,
-                    variant_option_two_value: variant_option_two_value,
-                    variant_option_three_name: variant_option_three_name,
-                    variant_option_three_value: variant_option_three_value,
-                    track_inventory: track_inventory,
-                    inventories: inventories
-                },
-                //async: false
-            }).done(function(result){
-                category = result['product_id'];
-                window.location.href = "/product";
-            });
-            var tagId;
-            var tagArray = $("input:hidden.product_tag").val().split(",");
-            var i = 0;
-            $(tagArray).each(function(){
-                $.ajax({
-                    url: "/product/tag.json",
-                    type: 'POST',
-                    data: {
-                        name: tagArray[i]
-                    },
-                    async: false
-                }).done(function(result){
-                    result['id'];
-                    
-                    $.ajax({
-                        url: "/product/add_product_category.json",
-                        type: "POST",
-                        data: {
-                            product_id: category,
-                            product_tag_id: result['id']
-                        }
-                    }).done(function(){
-                        window.location.href = "/product";
-                    });
-                    
-                });
-                i++;
-            });
-        } else {
-            $("#loader-wrapper").hide();
-            $("html, body").animate({ scrollTop: 0 }, "slow");
-        }
-    });
-    
-    $(document).on("change","select",function(){
-
-        if($("select option[value=add-type]").attr("selected")){
-            $.confirm({
-                title:'Add Product Type',
-                text:'<input type="text" class="type-name" placeholder="Type Name">',
-                confirmButton: "Add",
-                cancelButton: "Cancel",
-                cancel: function(button){
-                    $("#product_type").val('');
-                },
-                confirmButtonClass: "type-add"
-            });
-        }
-        
-        if($("select option[value=add-brand]").attr("selected")){
-            $.confirm({
-                title:'Add Product Brand',
-                text:'<input type="text" class="brand-name" placeholder="Brand Name"><textarea placeholder="Brand Description" style="width:100%;" class="brand-description"></textarea>',
-                confirmButton: "Add",
-                cancelButton: "Cancel",
-                cancel: function(button){
-                    $("#product_brand").val('');
-                },
-                confirmButtonClass: "brand-add"
-            });
-        }
-        
-        if($("select option[value=add-supplier]").attr("selected")){
-            $.confirm({
-                title:'Add Supplier',
-                text:'<input type="text" class="supplier-name" placeholder="Supplier Name"><br><textarea placeholder="Description" class="supplier-desc"></textarea>',
-                confirmButton: "Add",
-                cancelButton: "Cancel",
-                cancel: function(button){
-                    $("#product_supplier").val('');
-                },
-                confirmButtonClass: "supplier-add"
-            });
-        }
-        
-        if($("select option[value=variant_value_add]").attr("selected")){
-            var selection = $(this);
-            $.confirm({
-                title:'Add Variant',
-                text:'<input type="text" class="variant-name" placeholder="Variant Name"><br><input type="text" class="variant-default_value" placeholder="Default Value">',
-                confirmButton: "Add",
-                confirm: function(button){
-                    $.ajax({
-                        url: '/product/add_variants.json',
-                        type: 'POST',
-                        data: {
-                            name: $(".variant-name").val(),
-                            default_value: $(".variant-default_value").val()
-                        }
-                    }).done(function(result){
-                        selection.append('<option value="'+result['id']+'">'+result['name']+'</option>');
-                        selection.val(result['id']);
-                        selection.parents("div:first").next("div").find("input[type=text]").val(result['default_value']);
-                    });
-                },
-                cancelButton: "Cancel",
-                cancel: function(button){
-                    selection.val('');
-                },
-                confirmButtonClass: "variant-add"
-            });
-        }
-        
-        if($("#stock_type").val() == 'standard'){
-            $("#type_standard").show();
-            $("#type_composite").hide();
-        } else {
-            $("#type_standard").hide();
-            $("#type_composite").show();
-        }
-        
-    });
-    
-    $(document).on('click','#track_inventory',function(){
-       if($(this).is(':checked')){
-           $(".stock-tracking").show();
-           $(".stock-tracking-header").show();
-       } else {
-           $(".stock-tracking").hide();
-           $(".stock-tracking-header").hide();
-       }
-    });
-
-});
-</script> 
 <!-- END JAVASCRIPTS --> 
 <script src="/js/dropzone.js"></script> 
-<script src="/js/jquery.popupoverlay.js"></script>
-<script type="text/javascript" src="/js/jquery.confirm.js"></script> 

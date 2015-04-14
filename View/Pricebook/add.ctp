@@ -177,8 +177,8 @@ th small {
                             <tr>
                                 <td>Change all</td>
                                 <td></td>
-                                <td><input type="text"></td>
-                                <td><input type="text"></td>
+                                <td><input type="text" id="change_all_markup"></td>
+                                <td><input type="text" id="change_all_discount"></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -301,10 +301,10 @@ jQuery(document).ready(function() {
    QuickSidebar.init() // init quick sidebar
    Index.init();
    
-   var price_book_type = 1;
-   
    $("#valid_from").datepicker({ dateFormat: 'yy-mm-dd' });
    $("#valid_to").datepicker({ dateFormat: 'yy-mm-dd' });
+   
+   var price_book_type = 'individual';
    
    $(".general").click(function(){
       $(".price_book_general").show('bounce');
@@ -312,7 +312,7 @@ jQuery(document).ready(function() {
       $(this).addClass("active");
       $(".price_book_individual").hide();
       $(this).blur();
-      price_book_type = 1;
+      price_book_type = 'general';
    });
    $(".individual").click(function(){
       $(".price_book_general").hide();
@@ -320,11 +320,12 @@ jQuery(document).ready(function() {
       $(this).addClass("active");
       $(".price_book_individual").show('bounce');
       $(this).blur();
-      price_book_type = 0;
+      price_book_type = 'individual';
    });
    
     $(document).on("click",".data-found",function(){
-        $(".price_book_individual tbody").append('<tr class="added_price_book_entry" data-id="'+$(this).attr("data-id")+'"><td>'+$(this).text()+'</td><td>'+$(this).attr("data-supply_price")+'</td><td><input type="text" class="entry_markup" value="'+$(this).attr("data-markup")+'"></td><td><input type="text" class="entry_discount"></td><td class="entry_retail_price_exclude_tax">'+$(this).attr("data-retail-price")+'</td><td class="entry_tax" tax-rate="'+$(this).attr("data-tax-rate")+'">'+$(this).attr("data-tax")+'</td><td><input type="text" class="entry_retail_price_include_tax" value="'+$(this).attr("data-price")+'"></td><td><input type="number" class="entry_min_unit"></td><td><input type="number" class="entry_max_unit"></td><td><div class="clickable remove"><i class="glyphicon glyphicon-remove"></i></div></td></tr>');
+        $(".price_book_individual tbody").append('<tr class="added_price_book_entry" data-id="'+$(this).attr("data-id")+'"><td>'+$(this).text()+'</td><td class="entry_supply_price">'+$(this).attr("data-supply_price")+'</td><td><input type="text" class="entry_markup" value="'+$(this).attr("data-markup")+'"></td><td><input type="text" class="entry_discount"></td><td class="entry_retail_price_exclude_tax">'+$(this).attr("data-retail-price")+'</td><td class="entry_tax" tax-rate="'+$(this).attr("data-tax-rate")+'">'+$(this).attr("data-tax")+'</td><td><input type="text" class="entry_retail_price_include_tax" value="'+$(this).attr("data-price")+'"></td><td><input type="number" class="entry_min_unit"></td><td><input type="number" class="entry_max_unit"></td><td><div class="clickable remove"><i class="glyphicon glyphicon-remove"></i></div></td></tr>');
+        calculation();
     });
     /* DYNAMIC PROUCT SEARCH START */
     
@@ -363,7 +364,7 @@ jQuery(document).ready(function() {
             entry.markup = $(this).find(".entry_markup").val() / 100;
             entry.discount = $(this).find(".entry_discount").val();
             entry.tax = $(this).find(".entry_tax").text();
-            entry.price_include_tax = $(this).find(".entry_retail_price_include_tax").val()
+            entry.price_include_tax = $(this).find(".entry_retail_price_include_tax").val();
             entry.min_units = $(this).find(".entry_min_unit").val();
             entry.max_units = $(this).find(".entry_max_unit").val();
             entries.push(entry);
@@ -381,13 +382,20 @@ jQuery(document).ready(function() {
                 valid_to: $("#valid_to").val(),
                 entries: JSON.stringify(entries),
                 type: price_book_type,
-                general_markup: $("#general_markup").val(),
+                general_markup: $("#general_markup").val() / 100,
                 general_discount: $("#general_discount").val(),
                 general_min_units: $("#general_min_units").val(),
                 general_max_units: $("#general_max_units").val()
             },
-            success: function(){
-                window.location.href = "/pricebook";
+            success: function(result){
+                if(result.success) {
+                    window.location.href = "/pricebook/view?r="+result.price_book_id;
+                } else {
+                    console.log(result.message);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown);
             }
         });
     });
@@ -395,15 +403,40 @@ jQuery(document).ready(function() {
     $(".cancel").click(function(){
         window.history.back();
     });
-
 });
-/*
 function calculation() {
     $(".added_price_book_entry").each(function(){
-        var price = $(this).find(".entry_retail_price_include_tax").val();
-        $(".entry_tax").text(parseFloat(price / (1 + $(".entry_tax").attr("tax-rate"))).toFixed(2));
-        $(".entry_retail_price_exclude_tax").text(parseFloat((1-$(".entry_tax").attr("tax-rate")) * price).toFixed(2));
+        var supply_price = $(this).find(".entry_supply_price");
+        var retail_price = $(this).find(".entry_retail_price_exclude_tax");
+        var markup = $(this).find(".entry_markup");
+        var discount = $(this).find(".entry_discount");
+        var tax = $(this).find(".entry_tax");
+        var price = $(this).find(".entry_retail_price_include_tax");
+        
+        var changed_retail_price = supply_price.text() * (markup.val() / 100 + 1);
+        var changed_tax = changed_retail_price * tax.attr("tax-rate");
+        
+        retail_price.text(changed_retail_price.toFixed(2));
+        tax.text(changed_tax.toFixed(2));
+        price.val((changed_retail_price + changed_tax - discount.val()).toFixed(2));
     });
 }
-*/
+$(document).on("focusout","#change_all_markup",function() {
+    var value_to_change = $(this).val();
+    if(!value_to_change == '') {
+        $(".added_price_book_entry").each(function(){
+            $(this).find(".entry_markup").val(value_to_change);
+        });
+    }
+    calculation();
+});
+$(document).on("focusout","#change_all_discount",function() {
+    var value_to_change = $(this).val();
+    if(!value_to_change == '') {
+        $(".added_price_book_entry").each(function(){
+            $(this).find(".entry_discount").val(value_to_change);
+        });
+    }
+    calculation();
+});
 </script>

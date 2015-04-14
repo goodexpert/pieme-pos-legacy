@@ -786,13 +786,14 @@ $(document).ready(function(){
                 },
                 success: function(result) {
                     if (result.success) {
-                        window.location.href = "/product";
+                        window.location.href = "/product/"+result.product_id;
                     } else {
-                        //alert(result.message);
-                        window.location.href = "/product";
+                        $("#loader-wrapper").hide();
+                        console.log(result);
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
+                    $("#loader-wrapper").hide();
                     console.log(textStatus, errorThrown);
                 }
             });

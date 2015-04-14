@@ -65,22 +65,22 @@
                   <dt>Time zone</dt>
                   <dd>
                     <select name="merchant[time_zone]" id="merchant_time_zone">
-                      <option value="Pacific/Auckland">(GMT+13:00) Auckland, Wellington</option>
-                      <option value="Pacific/Chatham">(GMT+13:45) Chatham Islands</option>
+                      <option value="Pacific/Auckland" <?php if($merchant['Merchant']['time_zone'] == "Pacific/Auckland"){echo "selected";}?>>(GMT+13:00) Auckland, Wellington</option>
+                      <option value="Pacific/Chatham" <?php if($merchant['Merchant']['time_zone'] == "Pacific/Chatham"){echo "selected";}?>>(GMT+13:45) Chatham Islands</option>
                     </select>
                   </dd>
                   <dt>Display prices</dt>
                   <dd>
                     <select name="merchant[display_price_tax_inclusive]" id="merchant_display_price_tax_inclusive">
-                      <option value="0">Tax exclusive</option>
-                      <option value="1">Tax inclusive</option>
+                      <option value="0" <?php if($merchant['Merchant']['display_price_tax_inclusive'] == 0){echo "selected";}?>>Tax exclusive</option>
+                      <option value="1" <?php if($merchant['Merchant']['display_price_tax_inclusive'] == 1){echo "selected";}?>>Tax inclusive</option>
                     </select>
                   </dd>
                   <dt>Default sales tax</dt>
                   <dd>
                     <select name="merchant[default_tax_id]" id="merchant_default_tax_id">
                       <?php foreach ($taxes as $tax) : ?>
-                      <option value="<?php echo $tax['MerchantTaxRate']['id']; ?>"><?php echo $tax['MerchantTaxRate']['name'] . ' (' . $tax['MerchantTaxRate']['rate'] * 100 . '%)'; ?></option>
+                      <option value="<?php echo $tax['MerchantTaxRate']['id']; ?>" <?php if($merchant['Merchant']['default_tax_id'] == $tax['MerchantTaxRate']['id']){echo "selected";}?>><?php echo $tax['MerchantTaxRate']['name'] . ' (' . $tax['MerchantTaxRate']['rate'] * 100 . '%)'; ?></option>
                       <?php endforeach; ?>
                       <option value="0" disabled="true">-----------</option>
                       <option value="add-new">+Add sales tax</option>
@@ -94,14 +94,14 @@
                   <dd>
                     <select name="merchant[label_printer_format]" id="merchant_label_printer_format">
                       <option value="" selected="selected"></option>
-                      <option value="2x1">Continuous feed</option>
-                      <option value="5x1">Continuous feed (wide)</option>
-                      <option value="avery_3x11">Avery Sheet of 3 X 11</option>
-                      <option value="avery_5x13">Avery Sheet of 5 X 13</option>
-                      <option value="letter_3x10">US Letter Sheet of 3 X 10</option>
-                      <option value="4x14">Sheet of 4 X 14</option>
-                      <option value="jewellery_butterfly">Jewelry Label - Butterfly</option>
-                      <option value="jewellery_rats_tail">Jewelry Label - Rats Tail</option>
+                      <option value="2x1" <?php if($merchant['Merchant']['label_printer_format'] == "2x1"){echo "selected";}?>>Continuous feed</option>
+                      <option value="5x1" <?php if($merchant['Merchant']['label_printer_format'] == "5x1"){echo "selected";}?>>Continuous feed (wide)</option>
+                      <option value="avery_3x11" <?php if($merchant['Merchant']['label_printer_format'] == "avert_ 3x11"){echo "selected";}?>>Avery Sheet of 3 X 11</option>
+                      <option value="avery_5x13" <?php if($merchant['Merchant']['label_printer_format'] == "avery_5x13"){echo "selected";}?>>Avery Sheet of 5 X 13</option>
+                      <option value="letter_3x10" <?php if($merchant['Merchant']['label_printer_format'] == "letter_3x10"){echo "selected";}?>>US Letter Sheet of 3 X 10</option>
+                      <option value="4x14" <?php if($merchant['Merchant']['label_printer_format'] == "4x14"){echo "selected";}?>>Sheet of 4 X 14</option>
+                      <option value="jewellery_butterfly" <?php if($merchant['Merchant']['label_printer_format'] == "jewellery_butterfly"){echo "selected";}?>>Jewelry Label - Butterfly</option>
+                      <option value="jewellery_rats_tail" <?php if($merchant['Merchant']['label_printer_format'] == "jewellery_rats_tail"){echo "selected";}?>>Jewelry Label - Rats Tail</option>
                     </select>
                   </dd>
                   <dt>SKU generation</dt>
@@ -118,9 +118,9 @@
                   <dt>User switching security</dt>
                   <dd>
                     <select name="merchant[switching_security]" id="merchant_switching_security">
-                      <option value="0">Never require a password when switching between users</option>
-                      <option value="1">Require a password when switching to a user with greater privileges</option>
-                      <option value="2">Always require a password when switching between users</option>
+                      <option value="0" <?php if($merchant['Merchant']['switching_security'] == 0){echo "selected";}?>>Never require a password when switching between users</option>
+                      <option value="1" <?php if($merchant['Merchant']['switching_security'] == 1){echo "selected";}?>>Require a password when switching to a user with greater privileges</option>
+                      <option value="2" <?php if($merchant['Merchant']['switching_security'] == 2){echo "selected";}?>>Always require a password when switching between users</option>
                     </select>
                   </dd>
                   <dt>Cashier discounts and returns</dt>
@@ -423,7 +423,7 @@ jQuery(document).ready(function() {
               time_zone: $("#merchant_time_zone").val(),
               display_price_tax_inclusive: $("#merchant_display_price_tax_inclusive").val(),
               default_tax_id: $("#merchant_default_tax_id").val(),
-              label_printer_format: $("#merchant_label_printer_formant").val(),
+              label_printer_format: $("#merchant_label_printer_format").val(),
               use_sku_sequence: $("#merchant_use_sku_sequence").val(),
               sku_sequence: $("#merchant_sku_sequence").val(),
               switching_security: $("#merchant_switching_security").val(),

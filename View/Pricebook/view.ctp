@@ -58,16 +58,23 @@
                     <?=$book['MerchantPriceBook']['name'];?>
                 </h2>
                 <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
+                	<?php if(!$book['MerchantPriceBook']['is_default'] == 1){ ?>
                     <a href="/pricebook/<?php echo $book['MerchantPriceBook']['id'];?>/edit">
-                    <button class="add-type btn btn-white pull-right">
+                    <button class="btn btn-white pull-right">
                         <div class="glyphicon glyphicon-plus"></div>&nbsp;
                     Edit</button></a>
+                    <button id="delete" class="btn btn-white pull-right margin-right-5">
+                        <div class="glyphicon glyphicon-trash"></div>&nbsp;
+                    Delete</button>
+                    <?php } ?>
                 </div>
             </div>
-            
+
+            <?php if($book['MerchantPriceBook']['is_default'] == 1) { ?>
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                 By default, products will be sold for the following amounts, unless they are overridden by another price book or on the sell screen.<br>To change these amounts you can edit the price and tax rate on individual products.
             </div>
+            <?php } ?>
             <div class="dashed-line margin-top-20 margin-bottom-20"></div>
             <table id="productList" class="table-bordered">
                 <thead>
@@ -205,5 +212,36 @@ jQuery(document).ready(function() {
         searching: false
     });
     $("#productList_length").hide();
+    
+    $("#delete").confirm({
+	    text: "Are you sure you want to delete this price book?",
+	    title: "Confirmation required",
+	    confirm: function(button) {
+	       $.ajax({
+    	       url: '/pricebook/delete.json',
+    	       type: 'POST',
+    	       data: {
+        	       id: location.search.split('=')[1]
+    	       },
+    	       success: function(result){
+        	       if(result.success) {
+            	       window.location.href = "/pricebook";
+        	       } else {
+            	       console.log(result);
+        	       }
+    	       },
+    	       error: function(jqXHR, textStatus, errorThrown) {
+                   console.log(textStatus, errorThrown);
+               }
+	       });
+	    },
+	    cancel: function(button) {
+	    },
+	    confirmButton: "Delete",
+	    cancelButton: "Cancel",
+	    confirmButtonClass: "btn-danger",
+	    cancelButtonClass: "btn-default",
+	    dialogClass: "modal-dialog modal-lg" // Bootstrap classes for large modal
+	});
 });
 </script>

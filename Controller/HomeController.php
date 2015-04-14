@@ -41,7 +41,7 @@ class HomeController extends AppController {
                     array_push($products_ids, $product['product_id']);
                 }
             }
-            
+
             $this->MerchantProduct->bindModel(array(
                 'hasMany' => array(
                     'MerchantProductInventory' => array(
@@ -50,7 +50,7 @@ class HomeController extends AppController {
                     )
                 )
             ));
-    
+
             $items = $this->MerchantProduct->find('all', array(
                 'fields' => array(
                     'MerchantProduct.*',
@@ -60,7 +60,7 @@ class HomeController extends AppController {
                 'conditions' => array(
                     'MerchantProduct.merchant_id' => $user['merchant_id'],
                     'MerchantProduct.is_active' => 1,
-                    //'MerchantProduct.id' => $products_ids
+                    'MerchantProduct.id' => $products_ids
                 ),
                 'joins' => array(
                     array(
@@ -81,9 +81,13 @@ class HomeController extends AppController {
                     )
                 )
             ));
-    
-            $this->set('items', $items);
             
+            $key_items = Hash::combine($items, "{n}.MerchantProduct.id", "{n}");
+            
+            $this->set("productsids",$products_ids);
+            $this->set("key_items",$key_items);
+            $this->set('items', $items);
+
             $this->MerchantPriceBook->bindModel(array(
                 'hasMany' => array(
                     'MerchantPriceBookEntry' => array(
@@ -115,7 +119,7 @@ class HomeController extends AppController {
                         )
                     )
                 ),
-                'order' => array('MerchantPriceBook.created ASC')
+                'order' => array('MerchantPriceBook.created DESC')
             ));
             $this->set('pricebooks',$pricebooks);
         }

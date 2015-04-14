@@ -135,6 +135,24 @@ class UsersController extends AppController {
             $result = array(
                 'success' => false
             );
+            $dataSource = $this->MerchantUser->getDataSource();
+            $dataSource->begin();
+            
+            try {
+            	$data = $this->request->data;
+            	$data['merchant_id'] = $user['merchant_id'];
+            	
+	            $this->MerchantUser->create();
+	            $this->MerchantUser->save($data);
+	            
+	            $dataSource->commit();
+	            
+	            $result['success'] = true;
+	            $result['user_id'] = $this->MerchantUser->id;
+            } catch (Exception $e) {
+            	$dataSource->rollback();
+                $result['message'] = $e->getMessage();
+            }
 
             $this->serialize($result);
             return;
@@ -164,6 +182,29 @@ class UsersController extends AppController {
                 'success' => false
             );
 
+            $dataSource = $this->MerchantUser->getDataSource();
+            $dataSource->begin();
+            
+            try {
+            	$data = $this->request->data;
+            	$data['merchant_id'] = $user['merchant_id'];
+            	
+            	if(empty($data['password'])) {
+	            	unset($data['password']);
+            	}
+            	
+	            $this->MerchantUser->id = $id;
+	            $this->MerchantUser->save($data);
+	            
+	            $dataSource->commit();
+	            
+	            $result['success'] = true;
+	            $result['user_id'] = $this->MerchantUser->id;
+            } catch (Exception $e) {
+            	$dataSource->rollback();
+                $result['message'] = $e->getMessage();
+            }
+
             $this->serialize($result);
             return;
         }
@@ -177,6 +218,9 @@ class UsersController extends AppController {
             )
         ));
         $this->set('outlets', $outlets);
+        
+        $users = $this->MerchantUser->findById($id);
+        $this->set('users',$users);
     }
 
 /**
