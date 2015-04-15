@@ -98,7 +98,7 @@
                             </colgroup>
                             <thead>
                                 <tr role="row">
-                                    <th><input type="checkbox" value="1" id="select-all"></th>
+                                    <th><input type="checkbox" class="checkbox" id="select-all"></th>
                                     <th>INVENTORY COUNT</th>
                                     <th>OUTLET</th>
                                     <th>COUNT</th>
@@ -156,6 +156,9 @@
         </div>
     </div>
     <!-- END CONTENT -->
+    <div class="hidden-data">
+        <input type="hidden" id="hidden-data" value='<?php echo json_encode($inventoryCounts); ?>' />
+    </div>
     <!-- BEGIN QUICK SIDEBAR -->
     <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
     <div class="page-quick-sidebar-wrapper">
@@ -252,7 +255,7 @@
 
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script>
-var inventoryCounts = <?php echo json_encode($inventoryCounts); ?>;
+var inventoryCounts = JSON.parse($("#hidden-data").val());
 var selectedTab = 'due';
 
 jQuery(document).ready(function() {    
@@ -260,7 +263,7 @@ jQuery(document).ready(function() {
     Layout.init(); // init layout
     QuickSidebar.init() // init quick sidebar
     Index.init();
-    
+
     updateView();
 
     $("#inventory-tab-due").click(function(){
@@ -295,6 +298,9 @@ jQuery(document).ready(function() {
         updateView();
     });
 
+    $(".checkbox").on("change", function(e) {
+    });
+
     $(".clickable").click(function() {
         window.document.location = $(this).data("href");
     });
@@ -304,6 +310,7 @@ function updateView() {
     var arrayMap = inventoryCounts[selectedTab];
     var today = new Date();
 
+    $("body").find(".hidden-data").remove();
     $("#productTable").find('tbody').empty();
 
     if (arrayMap == null || arrayMap.length == 0) {
@@ -318,27 +325,27 @@ function updateView() {
             var appendString = '';
 
             if (arrayMap[key]['status'] == 'STOCKTAKE_SCHEDULED') {
-                var start_date = new Date('Fri Apr 10 2015 15:53:50 GMT+1200');
+                var start_date = new Date(arrayMap[key]['start_date']);
                 var diff_date = new Date(start_date.getTime() - today.getTime()).getTime();
 
-                appendString = '<tr class="clickable" data-href="/inventory_count/' + arrayMap[key]['id'] + '/edit">';
-                appendString += '<td><input type="checkbox" id="stocktake-selected" /></td>';
+                appendString = '<tr>';
+                appendString += '<td><input type="checkbox" class="checkbox" id="stocktake-selected" /></td>';
                 if (diff_date < 0 && start_date.getDate() < today.getDate()) {
-                    appendString += '<td><p>' + arrayMap[key]['name'];
+                    appendString += '<td class="clickable" data-href="/inventory_count/' + arrayMap[key]['id'] + '/edit"><p>' + arrayMap[key]['name'];
                     appendString += '<span class="text-bg-blue">OVERDUE</span></p></td>';
                 } else {
-                    appendString += '<td><p>' + arrayMap[key]['name'] + '<p></td>';
+                    appendString += '<td class="clickable" data-href="/inventory_count/' + arrayMap[key]['id'] + '/edit"><p>' + arrayMap[key]['name'] + '<p></td>';
                 }
             } else {
                 if (arrayMap[key]['status'] == 'STOCKTAKE_IN_PROGRESS_PROCESSED') {
-                    appendString = '<tr class="clickable" data-href="/inventory_count/' + arrayMap[key]['id'] + '/perform">';
+                    appendString = '<tr>';
                     appendString += '<td></td>';
-                    appendString += '<td><p>' + arrayMap[key]['name'];
+                    appendString += '<td class="clickable" data-href="/inventory_count/' + arrayMap[key]['id'] + '/perform"><p>' + arrayMap[key]['name'];
                     appendString += '<span class="text-bg-blue">IN PROGRESS</span></p></td>';
                 } else {
-                    appendString = '<tr class="clickable" data-href="/inventory_count/' + arrayMap[key]['id'] + '/view">';
+                    appendString = '<tr>';
                     appendString += '<td></td>';
-                    appendString += '<td><p>' + arrayMap[key]['name'] + '</p></td>';
+                    appendString += '<td class="clickable" data-href="/inventory_count/' + arrayMap[key]['id'] + '/view"><p>' + arrayMap[key]['name'] + '</p></td>';
                 }
             }
             appendString += '<td>' + arrayMap[key]['outlet'] + '</td>';

@@ -69,6 +69,9 @@
     Router::connect('/inventory_count/start',
         array('controller' => 'stock', 'action' => 'startInventoryCount'));
 
+    Router::connect('/inventory_count/search',
+        array('controller' => 'stock', 'action' => 'searchInventoryCount'));
+
     Router::connect('/inventory_count/:id',
         array('controller' => 'stock', 'action' => 'viewInventoryCount'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
@@ -108,19 +111,19 @@
     Router::connect('/users/:id',
         array('controller' => 'users', 'action' => 'view'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
-        
+
     Router::connect('/users/:id/edit',
         array('controller' => 'users', 'action' => 'edit'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
-        
+
     Router::connect('/pricebook/:id/edit',
         array('controller' => 'pricebook', 'action' => 'edit'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
-        
+
     Router::connect('/quick_keys/:id/edit',
         array('controller' => 'quickkey', 'action' => 'edit'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
-        
+
     Router::connect('/receipt_template/:id/edit',
         array('controller' => 'receipttemplate', 'action' => 'edit'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));

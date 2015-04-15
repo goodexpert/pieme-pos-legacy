@@ -37,7 +37,7 @@ class SignupController extends AppController {
     public function index() {
         if ($this->request->is('post')) {
             $data = $this->request->data;
-            $data['domain_prefix'] = str_replace(' ','_',strtolower($data['name']));
+            $data['domain_prefix'] = str_replace(' ', '_', strtolower($data['name']));
             $this->createMerchant($data);
         }
     }
