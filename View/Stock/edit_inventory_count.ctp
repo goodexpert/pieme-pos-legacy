@@ -1,3 +1,28 @@
+<?php
+    $stock_take_id = "";
+    $filters = "";
+    $products = "";
+    $name = "";
+    $outlet_id = "";
+    $current = time();
+    $start_date = date('Y-m-d', $current);
+    $start_time = date('h:i A', $current - $current % 3600 + 3600);
+    $show_inactive = 0;
+    $full_count = 0;
+
+    if (!empty($data) && is_array($data)) {
+        $stock_take_id = $data['id'];
+        $filters = $data['filters'];
+        $products = $data['products'];
+        $name = $data['name'];
+        $outlet_id = $data['outlet_id'];
+        $timestamp = $this->Time->fromString($data['start_date']);
+        $start_date = date('Y-m-d', $timestamp);
+        $start_time = date('h:i A', $timestamp);
+        $show_inactive = $data['show_inactive'];
+        $full_count = $data['full_count'];
+    }
+ ?>
 <style>
 /*
 .ui-helper-hidden-accessible { position: absolute; left:-999em; }
@@ -66,24 +91,25 @@
                 </div>
             </div>
             <!--<form action="/inventory_count/create" method="post" id="inventory_count_form">-->
-            <form id="inventory_count_form">
-            <input type="hidden" name="data[MerchantStockTake][id]" value="<?php echo $this->request->data['MerchantStockTake']['id']; ?>">
+            <form method="post" id="inventory_count_form">
+            <input type="hidden" name="data[id]" id="stock_take_id" value="<?php echo $stock_take_id; ?>" />
+            <input type="hidden" name="data[outlet_id]" id="outlet_id" value='<?php echo $outlet_id; ?>' />
+            <input type="hidden" name="data[filters]" id="filters" value='<?php echo $filters; ?>' />
+            <input type="hidden" name="data[products]" id="products" value='<?php echo $products; ?>' />
             <div class="col-md-12 col-xs-12 col-sm-12 line-box filter-box new-inventory margin-top-20">
                 <div class="col-md-4 col-xs-4 col-sm-4">
                     <dl>
-                        <dt>Outlet</dt> 
+                        <dt>Outlet</dt>
                         <dd>
                             <?php
-                                $merchantOutlets = $this->Form->input('MerchantStockTake.outlet_id', array(
-                                    'type' => 'select',
-                                    'div' => false,
-                                    'label' => false,
-                                    'class' => 'status outlet',
-                                    'optoins' => $outlets,
-                                    'empty' => ''
-                                ));
-                                echo $merchantOutlets;
-                            ?>
+                                foreach ($outlets as $key => $value) :
+                                    if ($outlet_id == $key) :
+                             ?>
+                            <input type="text" id="outlet_name" value="<?php echo $value; ?>" disabled="disabled" />
+                            <?php
+                                    endif;
+                                endforeach;
+                             ?>
                         </dd>
                     </dl>
                 </div>
@@ -92,17 +118,7 @@
                         <dt>Start Date</dt>
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <!--<input type="text" class="hasDatepicker">-->
-                            <?php
-                                $startDate = $this->Form->input('MerchantStockTake.start_date', array(
-                                    'type' => 'text',
-                                    'div' => false,
-                                    'label' => false,
-                                    'class' => 'hasDatepicker',
-                                    'default' => date('Y-m-d')
-                                ));
-                                echo $startDate;
-                            ?>
+                            <input class="hasDatepicker" type="text" name="data[start_date]" id="start_date" value="<?php echo $start_date; ?>" />
                         </dd>
                     </dl> 
                 </div>
@@ -110,16 +126,7 @@
                     <dl>
                         <dt>Start Time</dt>
                         <dd>
-                            <!--<input type="text">-->
-                            <?php
-                                $startTime = $this->Form->input('MerchantStockTake.start_time', array(
-                                    'type' => 'text',
-                                    'div' => false,
-                                    'label' => false,
-                                    'default' => date('h:i A')
-                                ));
-                                echo $startTime;
-                            ?>
+                            <input type="text" name="data[start_time]" id="start_time" value="<?php echo $start_time; ?>" />
                         </dd>
                     </dl>
                  </div>
@@ -127,84 +134,67 @@
                     <dl>
                         <dt style="width: 19%;">Count Name</dt>
                         <dd style="width: 81%;">
-                            <!--<input type="text">-->
-                            <?php
-                                $name = $this->Form->input('MerchantStockTake.name', array(
-                                    'type' => 'text',
-                                    'div' => false,
-                                    'label' => false
-                                ));
-                                echo $name;
-                            ?>
+                            <input type="text" name="data[name]" id="name" maxlength="255" value="<?php echo $name; ?>" />
                         </dd>
                     </dl>
                  </div>
                 <div class="col-md-4 col-xs-4 col-sm-4 margin-top-20">
-                    <?php if ( $this->request->data['MerchantStockTake']['show_inactive'] == '1' ): ?>
-                    <input type="checkbox" name="data[MerchantStockTake][show_inactive]" value="1" checked>
-                    <?php else: ?>
-                    <input type="checkbox" name="data[MerchantStockTake][show_inactive]" value="1">
-                    <?php endif; ?>
+                    <input type="checkbox" name="data[show_inactive]" id="show_inactive" value="1" <?php echo $show_inactive == 1 ? "checked" : ""; ?> />
                     <label>Include inactive products</label>
-                 </div>
-                 <div class="solid-line-gr"></div>
+                </div>
+                <div class="solid-line-gr"></div>
                 <div class="col-md-12 col-xs-12 col-sm-12">
-                     <div class="col-md-3 col-xs-3 col-sm-3">
-                        <?php if ( $this->request->data['MerchantStockTake']['full_count'] == '0' ): ?>
-                        <input type="radio" name="data[MerchantStockTake][full_count]" value="0" checked><label>Partial Count</label>
-                        <?php else: ?>
-                        <input type="radio" name="data[MerchantStockTake][full_count]" value="0"><label>Partial Count</label>
-                        <?php endif; ?>
+                    <div class="col-md-3 col-xs-3 col-sm-3">
+                        <input type="radio" class="full_count" name="data[full_count]" id="full_count1" value="0" <?php echo $full_count == 0 ? "checked" : ""; ?>/><label>Partial Count</label>
                     </div>
-                     <div class="col-md-3 col-xs-3 col-sm-3">
-                        <?php if ( $this->request->data['MerchantStockTake']['full_count'] == '1' ): ?>
-                        <input type="radio" name="data[MerchantStockTake][full_count]" value="1" checked><label>Full Count</label>
-                        <?php else: ?>
-                        <input type="radio" name="data[MerchantStockTake][full_count]" value="1"><label>Full Count</label>
-                        <?php endif; ?>
+                    <div class="col-md-3 col-xs-3 col-sm-3">
+                        <input type="radio" class="full_count" name="data[full_count]" id="full_count2" value="1" <?php echo $full_count == 1 ? "checked" : ""; ?>/><label>Full Count</label>
                     </div>
-                 </div>
-                 <div class="line-box-stitle col-md-12 col-xs-12 col-sm-12 margin-top-20">
-                  <div class="col-md-12 col-xs-12 col-sm-12">
-                    <h5><strong>Partial Count List</strong></h5>
-                    <h5>Create your list of items to count using suppliers, brands, types, tags, or SKUs. Combine multiple filters to narrow down your list.</h5>
-                    <input type="text" id="search-items" class="margin-top-20" placeholder="Search for suppliers, brands, types, tags, or SKUs.">
-                  </div>
-                  <div class="col-md-12 col-xs-12 col-sm-12 margin-top-20">
-                        <table id="productTable" class="table-bordered dataTable">
-                            <colgroup>
-                                <col width="100%">
-                            </colgroup>
-                            <thead>
-                                <tr role="row">
-                                    <th>Product</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!--
-                                <tr>
-                                    <td>T-shirt (Demo)<h6>tshirt-white</h6></td>
-                                </tr>
-                                -->
-                                <?php foreach ($this->request->data['MerchantStockTakeItem'] as $idx => $item): ?>
-                                <input type="hidden" name="data[MerchantStockTakeItem][<?php echo $idx; ?>][id]" value="<?php echo $item['id']; ?>">
-                                <tr>
-                                    <td><?php echo $item['name']; ?><h6><?php echo $item['sku']; ?></h6></td> 
-                                </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                  </div>
+                </div>
+                <div class="line-box-stitle col-md-12 col-xs-12 col-sm-12 margin-top-20">
+                    <div class="partial-count">
+                        <div class="col-md-12 col-xs-12 col-sm-12">
+                            <h5><strong>Partial Count List</strong></h5>
+                            <h5>Create your list of items to count using suppliers, brands, types, tags, or SKUs. Combine multiple filters to narrow down your list.</h5>
+                            <input type="text" class="margin-top-20" id="search-items" placeholder="Search for suppliers, brands, types, tags, or SKUs.">
+                        </div>
+                        <div class="col-md-12 col-xs-12 col-sm-12 margin-top-20">
+                            <table id="productTable" class="table-bordered dataTable" style="display:none;">
+                                <colgroup>
+                                    <col width="100%">
+                                </colgroup>
+                                <thead>
+                                    <tr role="row">
+                                        <th>Product</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!--
+                                    <tr>
+                                        <td>T-shirt (Demo)<h6>tshirt-white</h6></td>
+                                    </tr>
+                                    -->
+                                </tbody>
+                            </table>
+                            <div class="no-list text-center margin-top-20">
+                                <div class="margin-top-20"><img src="/img/stock.png"></div>
+                                <h5 class="margin-top-30">Categorising your products makes partial inventory counts easy. <a>Learn how</a></h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="full-count text-center margin-top-10 inline-block" style="display:none;">
+                        <p class="background-text"><h5>All products will be counted</h5></p>
+                    </div>
                 </div>
             </div>
             <div class="col-md-12 margin-top-20 col-omega">
-              <div class="pull-left">
-                <button type="button" class="btn btn-default btn-wide cancel margin-right-10">Cancel</button>
-              </div>
-              <div class="pull-right">
-                <button type="button" class="btn btn-primary btn-wide save margin-right-10">Save</button>
-                <button type="button" class="btn btn-success btn-wide addProduct">Start</button>
-              </div>
+                <div class="pull-left">
+                    <button type="button" class="btn btn-default btn-wide cancel margin-right-10">Cancel</button>
+                </div>
+                <div class="pull-right">
+                    <button type="button" class="btn btn-primary btn-wide save margin-right-10" disabled="disabled">Save</button>
+                    <button type="button" class="btn btn-success btn-wide start" disabled="disabled">Start</button>
+                </div>
             </div>
             </form>
         </div>
@@ -307,122 +297,323 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"> 
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script>
+var manualNamed = false;
+var outletName = $("#outlet_name").val();
+var filters = [];
+var isFullCount = <?php echo $full_count; ?>;
+var showInactive = <?php echo $show_inactive ? 'true' : 'false'; ?>;
+var products = {};
+
 jQuery(document).ready(function() {    
     Metronic.init(); // init metronic core componets
     Layout.init(); // init layout
     QuickSidebar.init() // init quick sidebar
     Index.init();
 
+    updateData();
 
-    $(document).on('change', '.outlet', function() {
-        var outlet = $('option:selected', $(this)).text();
-        var count_name = '';
-
-        if ( outlet != '' ) {
-            //count_name = outlet + 
-        }
+    $("#name").keyup(function(e) {
+        manualNamed = true;
     });
-});
 
-$(function() {
-    // jquery ui autocomplete
-    /*
-    var items = ["Coffee", "Apple", "Banana"];
-    $("#search-items").autocomplete({
-        source: items
+    $("#start_date").on("change", function(e) {
+        if (manualNamed || outletName == '')
+            return;
+
+        $("#name").val(outletName + ' ' + $("#start_date").val() + ' ' + $("#start_time").val());
     });
-     */
-    $("#search-items").autocomplete({
-        source: function (request, response) {
-            $.ajax({
-                url: "/stock/merchantProducts.json",
-                dataType: "json",
-                data: {
-                    search_str: request.term
-                },
-                success: function (data) {
-                    if ( data != null ) {
-                        response($.map(data, function (item) {
-                            return {
-                                label: item.MerchantProduct.name,
-                                value: item.MerchantProduct.id,
-                                sku: item.MerchantProduct.sku
-                            }
-                        }));
+
+    $("#start_time").on("change", function(e) {
+        if (manualNamed || outletName == '')
+            return;
+
+        $("#name").val(outletName + ' ' + $("#start_date").val() + ' ' + $("#start_time").val());
+    });
+
+    $("#show_inactive").change(function(e) {
+        showInactive = $(this).prop('checked');
+        if (!showInactive) {
+            for (var productId in products) {
+                var product = products[productId];
+                if (product['is_active'] == 0) {
+                    delete products[productId];
+
+                    for (var index in filters) {
+                        if (filters[index]['type'] == 'products' && filters[index]['value'] == productId) {
+                            filters.splice(index, 1);
+                        }
                     }
                 }
-            });
-        },
-        minLength: 2,
-        select: function( event, ui ) {
-            event.preventDefault();
-
-            $(this).val('');
-
-            var found = false;
-            $("input[type=hidden][name*=MerchantStockTakeItem]").each(function(index) {
-                if ( $(this).val() == ui.item.value ) {
-                    found = true;
-                    return false;
-                }
-            });
-
-            if ( !found ) {
-                var rowCount = $('#productTable tbody tr').length;
-
-                $('#productTable tbody').append('<tr><td><input type="hidden" name="data[MerchantStockTakeItem]['+rowCount+'][id]" value="'+ui.item.value+'">'+ui.item.label+'<h6>'+ui.item.sku+'</h6></td></tr>');
             }
-
-            return false;
-            
-        },
-        focus: function( event, ui ) {
-            event.preventDefault();
+            updateView();
         }
     });
 
-    $(".save").click(function() {
+    $(".full_count").on("change", function(e) {
+        isFullCount = $(this).val();
+        if (isFullCount == 0) {
+            $(".full-count").css('display', 'none');
+            $(".partial-count").css('display', '');
+
+            if (Object.keys(products).length == 0) {
+                $(".no-list").css('display', '');
+                $(".save").attr('disabled', true);
+                $(".start").attr('disabled', true);
+            }
+        } else {
+            $(".full-count").css('display', '');
+            $(".partial-count").css('display', 'none');
+            $(".no-list").css('display', 'none');
+
+            $(".save").attr('disabled', false);
+            $(".start").attr('disabled', false);
+        }
+    });
+
+    $("#search-items").catcomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/inventory_count/search.json",
+                method: "POST",
+                dataType: "json",
+                data: {
+                    keyword: request.term,
+                    show_inactive: showInactive ? 1 : 0
+                },
+                success: function (data) {
+                    if (!data.success)
+                        return;
+
+                    var items = [];
+                    $.map(data.suppliers, function (item) {
+                        items.push({
+                            id: item.id,
+                            label: item.name,
+                            category: "Supplier",
+                            type: "suppliers",
+                            data: item.MerchantProduct
+                        });
+                    });
+
+                    $.map(data.brands, function (item) {
+                        items.push({
+                            id: item.id,
+                            label: item.name,
+                            category: "Brand",
+                            type: "brands",
+                            data: item.MerchantProduct
+                        });
+                    });
+
+                    $.map(data.types, function (item) {
+                        items.push({
+                            id: item.id,
+                            label: item.name,
+                            category: "Type",
+                            type: "types",
+                            data: item.MerchantProduct
+                        });
+                    });
+
+                    $.map(data.tags, function (item) {
+                        items.push({
+                            id: item.id,
+                            label: item.name,
+                            category: "Tag",
+                            type: "tags",
+                            data: item.MerchantProduct
+                        });
+                    });
+
+                    $.map(data.products, function (item) {
+                        items.push({
+                            id: item.id,
+                            label: item.name,
+                            category: "Product",
+                            type: "products",
+                            data: item
+                        });
+                    });
+
+                    response(items);
+                }
+            });
+        },
+        minLength: 3,
+        select: function( event, ui ) {
+            var data = ui.item.data;
+
+            if (ui.item.category == 'Product') {
+                products[data.id] = data;
+            } else {
+                $.each(data, function(index, product) {
+                    products[product.id] = product;
+                });
+            }
+
+            var id =  ui.item.id;
+            var type = ui.item.type;
+            var found = false;
+
+            for (var index in filters) {
+                if (type == filters[index]['type'] && id == filters[index]['value']) {
+                    found = true;
+                }
+            }
+
+            if (!found) {
+                filters.push({
+                    type: type,
+                    value: id
+                })
+            }
+
+            if (Object.keys(products).length > 0) {
+                $(".no-list").css('display', 'none');
+                $(".save").attr('disabled', false);
+                $(".start").attr('disabled', false);
+            }
+            $("#filters").val(JSON.stringify(filters));
+            $(this).val('');
+            updateView();
+
+            return false;
+        }
+    });
+
+    $(".save").click(function(e) {
+        if (!outletName) {
+            alert('Please select the outlet!');
+            return;
+        } else if ($("#name").val() == '') {
+            alert('Please input the count name!');
+            return;
+        }
+
+        if (!isFullCount) {
+            $("#filters").val(JSON.stringify(filters));
+        }
+        $("#products").val(JSON.stringify(products));
+
         $.ajax({
             url: '/inventory_count/save.json',
             type: 'POST',
             data: $('#inventory_count_form').serialize(),
             error: function( jqXHR, textStatus, errorThrown ) {
             },
-            success: function( data, textStatus, jqXHR ) {
+            success: function( data ) {
                 if ( data.success ) {
                     location.href = "/inventory_count";
                 } else {
                     alert(data.message);
-                    console.log(data.message);
                 }
             }
         });
-
         return false;
     });
 
-    $(".addProduct").click(function() {
+    $(".start").click(function(e) {
+        if (!outletName) {
+            alert('Please select the outlet!');
+            return;
+        } else if ($("#name").val() == '') {
+            alert('Please input the count name!');
+            return;
+        }
+
+        if (!isFullCount) {
+            $("#filters").val(JSON.stringify(filters));
+        }
+        $("#products").val(JSON.stringify(products));
+
         $.ajax({
             url: '/inventory_count/start.json',
             type: 'POST',
             data: $('#inventory_count_form').serialize(),
             error: function( jqXHR, textStatus, errorThrown ) {
             },
-            success: function( data, textStatus, jqXHR ) {
+            success: function( data ) {
                 if ( data.success ) {
                     location.href = "/inventory_count/" + data.id + "/perform";
                 } else {
                     alert(data.message);
-                    console.log(data.message);
                 }
-
             }
         });
-
         return false;
     });
-
 });
 
+$.widget( "custom.catcomplete", $.ui.autocomplete, {
+    _create: function() {
+        this._super();
+        this.widget().menu( "option", "items", "> :not(.ui-autocomplete-category)" );
+    },
+    _renderMenu: function( ul, items ) {
+        var that = this,
+        currentCategory = "";
+        $.each( items, function( index, item ) {
+            var li;
+            if ( item.category != currentCategory ) {
+                ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
+                currentCategory = item.category;
+            }
+            li = that._renderItemData( ul, item );
+            if ( item.category ) {
+                li.attr( "aria-label", item.category + " : " + item.label );
+            }
+        });
+    }
+});
+
+function updateView() {
+    $("#productTable tbody").empty();
+
+    if (isFullCount == 0) {
+        $(".full-count").css('display', 'none');
+        $(".partial-count").css('display', '');
+
+        if (Object.keys(products).length == 0) {
+            $("#productTable").css('display', 'none');
+            $(".no-list").css('display', '');
+
+            $(".save").attr('disabled', true);
+            $(".start").attr('disabled', true);
+        } else {
+            $("#productTable").css('display', '');
+            $(".no-list").css('display', 'none');
+
+            $(".save").attr('disabled', false);
+            $(".start").attr('disabled', false);
+        }
+
+        var index = 0;
+        $.each(products, function(id, product) {
+            $('#productTable tbody').append('<tr><td><input type="hidden" value="' + id +'" /><p class="pull-left">' + product.name + '</p><h6 class="pull-left">' + product.sku + '</h6></td></tr>');
+            index++;
+        });
+    } else {
+        $(".full-count").css('display', '');
+        $(".partial-count").css('display', 'none');
+
+        $(".save").attr('disabled', false);
+        $(".start").attr('disabled', false);
+    }
+}
+
+function updateData() {
+    if (isFullCount == 0) {
+        if ($("#filters").val() != "") {
+            filters = JSON.parse($("#filters").val());
+            $("#filters").val("");
+        }
+
+        if ($("#products").val() != "") {
+            products = JSON.parse($("#products").val());
+            $("#products").val("");
+        }
+    }
+    updateView();
+}
 </script>
 <!-- END JAVASCRIPTS -->

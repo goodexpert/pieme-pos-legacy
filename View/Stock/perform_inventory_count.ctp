@@ -284,7 +284,6 @@ jQuery(document).ready(function() {
             //$('#productTable tbody').append('<tr><td>'+ui.item.label+'<h6>'+ui.item.sku+'</h6></td></tr>');
 
             return false;
-            
         },
         focus: function( event, ui ) {
             event.preventDefault();
