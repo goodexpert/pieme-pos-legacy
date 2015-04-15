@@ -542,6 +542,37 @@ class ProductController extends AppController {
     }
 
     public function view($id) {
+    
+        $this->loadModel("RegisterSaleItem");
+        $this->loadModel("RegisterSale");
+        
+        $this->RegisterSale->bindModel(array(
+            'belongsTo' => array(
+                'MerchantUser' => array(
+                    'className' => 'MerchantUser',
+                    'foreignKey' => 'user_id'
+                )
+            )
+        ));
+        
+        $this->RegisterSaleItem->bindModel(array(
+            'belongsTo' => array(
+                'RegisterSale' => array(
+                    'className' => 'RegisterSale',
+                    'foreignKey' => 'sale_id'
+                )
+            )
+        ));
+        
+        $this->RegisterSaleItem->recursive = 2;
+    
+        $sales_history = $this->RegisterSaleItem->find('all', array(
+            'conditions' => array(
+                'RegisterSaleItem.product_id' => $id
+            )
+        ));
+        $this->set("sales_history",$sales_history);
+
         $this->MerchantProduct->bindModel(array(
             'belongsTo' => array(
                 'MerchantProductType' => array(

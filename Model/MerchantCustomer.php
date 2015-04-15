@@ -50,14 +50,6 @@ class MerchantCustomer extends AppModel {
  * @var array
  */
     public $validate = array(
-        'customer_code' => array(
-            'isUnique' => array(
-                'rule' => 'isUnique'
-            ),
-            'notEmpty' => array(
-                'rule' => 'notEmpty'
-            ),
-        ),
     );
 
 }

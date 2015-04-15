@@ -824,7 +824,11 @@ $(document).ready(function(){
             });
             
             var tagArray = $("input:hidden.product_tag").val().split(",");
-            tagArray = JSON.stringify(tagArray);
+            if(tagArray[0] == ''){
+                tagArray = '';
+            } else {
+                tagArray = JSON.stringify(tagArray);
+            }
             
             $.ajax({
                 url: window.location+'.json',

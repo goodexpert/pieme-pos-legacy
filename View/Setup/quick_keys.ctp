@@ -77,7 +77,7 @@
                     <tr>
                     <td><?=$item['MerchantQuickKey']['name'];?></td>
                     <td><?=date("D, d M Y, h:i A", strtotime($item['MerchantQuickKey']['created']));?></td>
-                    <td><a href="/quickkey/edit?id=<?=$item['MerchantQuickKey']['id'];?>">Edit</a></td>
+                    <td><a href="/quick_keys/<?=$item['MerchantQuickKey']['id'];?>/edit">Edit</a></td>
                     </tr>
                 <?php } ?>
             </tbody>

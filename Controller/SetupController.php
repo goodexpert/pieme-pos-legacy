@@ -100,6 +100,13 @@ class SetupController extends AppController {
     
         $user = $this->Auth->user();
         
+        $receipt_templates = $this->MerchantReceiptTemplate->find('all', array(
+            'conditions' => array(
+                'MerchantReceiptTemplate.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set("receipt_templates",$receipt_templates);
+        
         $this->MerchantRegister->bindModel(array(
             'belongsTo' => array(
                 'MerchantQuickKey' => array(

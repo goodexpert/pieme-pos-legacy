@@ -245,14 +245,14 @@
                   <ul class="feeds">
                     <li>
                     <?php
-                    foreach($productsids as $product) { ?>
-                        <div class="col-md-4 col-xs-12 col-sm-6 product clickable col-alpha col-omega" data-id="<?=$key_items[$product]['MerchantProduct']['id'];?>" page="1">
+                    foreach($key_layout as $product) { ?>
+                        <div class="col-md-4 col-xs-12 col-sm-6 product clickable col-alpha col-omega" data-id="<?php echo $key_items[$product['product_id']]['MerchantProduct']['id'];?>" page="<?php echo $product['page'];?>">
                             <div class="product-container">
                                 <div class="product-img">
-                                    <img src="img/<?php if($key_items[$product]['MerchantProduct']['image'] == null){echo 'no-image.png';} else {echo $key_items[$product]['MerchantProduct']['image'];}?>" alt="product">
+                                    <img src="img/<?php if($key_items[$product['product_id']]['MerchantProduct']['image'] == null){echo 'no-image.png';} else {echo $key_items[$product['product_id']]['MerchantProduct']['image'];}?>" alt="<?php echo $key_items[$product['product_id']]['MerchantProduct']['name'];?>">
                                 </div>
                                 <div class="product-info">
-                                    <div class="product-name"><p><?=$key_items[$product]['MerchantProduct']['name'];?></p></div>
+                                    <div class="product-name"><p><?=$key_items[$product['product_id']]['MerchantProduct']['name'];?></p></div>
                                     <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega price-wrap">
                                         <div class="product-price col-lg-5 col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                                             <b>$<span class="price_including_tax">
@@ -261,7 +261,7 @@
                                                 foreach($pricebooks as $pricebook) {
                                                     if($pricebook['MerchantPriceBook']['outlet_id'] == $authUser['outlet_id']) {
                                                         foreach($pricebook['MerchantPriceBookEntry'] as $entry) {
-                                                            if($entry['product_id'] == $key_items[$product]['MerchantProduct']['id'] && $entry['min_units'] == null && $entry['max_units'] == null) {
+                                                            if($entry['product_id'] == $key_items[$product['product_id']]['MerchantProduct']['id'] && $entry['min_units'] == null && $entry['max_units'] == null) {
                                                                 echo number_format($entry['price_include_tax'],2,'.','');
                                                                 $priceAvailable = true;
                                                                 break;
@@ -274,7 +274,7 @@
                                                     if($priceAvailable == false) {
                                                         if($pricebook['MerchantPriceBook']['outlet_id'] == $authUser['outlet_id']) {
                                                             foreach($pricebook['MerchantPriceBookEntry'] as $entry){
-                                                                if($entry['product_id'] == $key_items[$product]['MerchantProduct']['id'] && $entry['min_units'] == null && $entry['max_units'] == null) {
+                                                                if($entry['product_id'] == $key_items[$product['product_id']]['MerchantProduct']['id'] && $entry['min_units'] == null && $entry['max_units'] == null) {
                                                                     echo number_format($entry['price_include_tax'],2,'.','');
                                                                     $priceAvailable = false;
                                                                     break 2;
@@ -283,7 +283,7 @@
                                                         }
                                                         if($pricebook['MerchantPriceBook']['is_default'] == 1) {
                                                             foreach($pricebook['MerchantPriceBookEntry'] as $entry){
-                                                                if($entry['product_id'] == $key_items[$product]['MerchantProduct']['id'] && $entry['min_units'] == null && $entry['max_units'] == null) {
+                                                                if($entry['product_id'] == $key_items[$product['product_id']]['MerchantProduct']['id'] && $entry['min_units'] == null && $entry['max_units'] == null) {
                                                                     echo number_format($entry['price_include_tax'],2,'.','');
                                                                     $priceAvailable = false;
                                                                     break;
@@ -295,9 +295,9 @@
                                                 ?>
                                             </span></b>
                                         </div>
-                                        <?php if($key_items[$product]['MerchantProduct']['track_inventory'] == 1) { ?>
+                                        <?php if($key_items[$product['product_id']]['MerchantProduct']['track_inventory'] == 1) { ?>
                                         <div class="product-stock col-lg-7 col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                                            <small>In Stock: <?php echo $key_items[$product]['MerchantProductInventory'][0]['count'];?></small>
+                                            <small>In Stock: <?php echo $key_items[$product['product_id']]['MerchantProductInventory'][0]['count'];?></small>
                                         </div>
                                         <?php } ?>
                                     </div>
@@ -311,7 +311,7 @@
                                         </tr>
                                     <?php foreach($pricebooks as $pricebook) {
                                         foreach($pricebook['MerchantPriceBookEntry'] as $entry) {
-                                            if($entry['product_id'] == $key_items[$product]['MerchantProduct']['id'] && isset($entry['min_units'])) { ?>
+                                            if($entry['product_id'] == $key_items[$product['product_id']]['MerchantProduct']['id'] && isset($entry['min_units'])) { ?>
                                                 <tr class="price-book-row"
                                                  data-id="<?php echo $entry['product_id'];?>"
                                                  group-id="<?php if($pricebook['MerchantPriceBook']['customer_group_id'] == $groups[0]['MerchantCustomerGroup']['id']){
@@ -328,8 +328,8 @@
                                     }?>
                                     </table>
                                 </div>
-                                <input type="hidden" class="product-retail_price" value="<?=$key_items[$product]['MerchantProduct']['price'];?>">
-                                <input type="hidden" class="product-tax" value="<?=$key_items[$product]['MerchantProduct']['tax'];?>">
+                                <input type="hidden" class="product-retail_price" value="<?=$key_items[$product['product_id']]['MerchantProduct']['price'];?>">
+                                <input type="hidden" class="product-tax" value="<?=$key_items[$product['product_id']]['MerchantProduct']['tax'];?>">
                             </div>
                         </div>
                     <?php } ?>
@@ -351,6 +351,12 @@
               <span class="pull-left clickable prev"><i class="glyphicon glyphicon-chevron-left"></i></span>
               <span class="pull-right clickable next"><i class="glyphicon glyphicon-chevron-right"></i></span>
               <span class="page clickable selected">1</span>
+              <?php $last_page = $key_layout[count($key_layout) - 1]['page'];
+                  if($last_page > 1) {
+                      for($i = 2;$i <= $last_page;$i++)
+                        echo '<span class="page clickable">'.$i.'</span>';
+                  }
+              ?>
           </div>
         </div>
       </div>

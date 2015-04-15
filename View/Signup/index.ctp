@@ -90,7 +90,7 @@
                         <div class="line-box">
                             <h1>Sign up</h1>
                             <div class="dashed-line-gr"><?php echo $this->Session->flash(); ?></div>
-                            <form action="/signup" method="post" id="register_form">
+                            <form action="/signup/index.json" method="post" id="register_form">
                             <dl>
                                 <dt>Store name</dt> 
                                 <dd><input type="text" name="name" id="name" required></dd>
@@ -113,7 +113,7 @@
                                 <dt class="hidden">Default currency</dt>
                                 <dd class="hidden"><input type="text" name="default_currency" id="default_currency" value="NZD"></dd>
                                 <dt class="hidden">Timezone</dt>
-                                <dd class="hidden"><input type="text" name="time_zone" id="time_zone" value="pacific/auckland"></dd>
+                                <dd class="hidden"><input type="text" name="time_zone" id="time_zone" value="Pacific/Auckland"></dd>
                             </dl>
                             <div class="dashed-line-gr"></div>
                             <button type="submit" class="btn btn-success"><img src="/img/ONZSA_eye.png">Start onzsa</button>

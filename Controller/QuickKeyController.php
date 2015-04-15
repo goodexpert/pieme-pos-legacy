@@ -41,10 +41,13 @@ class QuickKeyController extends AppController {
 
     public function add(){
         if ($this->request->is('post')) {
-            $data = $this->request->data;
-            $result = array();
+            $result = array(
+                'success' => false
+            );
             try {
+                $data = $this->request->data;
                 $data['merchant_id'] = $this->Auth->user()['merchant_id'];
+                
                 $this->MerchantQuickKey->create();
                 $this->MerchantQuickKey->save($data);
             } catch (Exception $e) {
@@ -62,16 +65,24 @@ class QuickKeyController extends AppController {
         $this->set("items",$items);
     }
 
-    public function edit(){
-        if ($this->request->is('post')) {
-
-            $data = $this->request->data;
-            $result = array();
+    public function edit($id){
+        if ($this->request->is('post') || $this->request->is('ajax')) {
+            $result = array(
+            	'success' => false
+            );
+            $dataSource = $this->MerchantQuickKey->getDataSource();
+            $dataSource->begin();
 
             try {
-                $this->MerchantQuickKey->id = $_GET['id'];
+            	$data = $this->request->data;
+            	
+                $this->MerchantQuickKey->id = $id;
                 $this->MerchantQuickKey->save($data);
+                
+                $result['success'] = true;
+                $dataSource->commit();
             } catch (Exception $e) {
+            	$dataSource->rollback();
                 $result['message'] = $e->getMessage();
             }
             $this->serialize($result);
@@ -84,7 +95,7 @@ class QuickKeyController extends AppController {
             )
         ));
         $this->set("items",$items);
-        $keys = $this->MerchantQuickKey->findById($_GET['id']);
+        $keys = $this->MerchantQuickKey->findById($id);
         $this->set("keys",$keys);
     }
 }

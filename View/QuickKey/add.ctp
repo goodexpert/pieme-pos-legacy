@@ -293,59 +293,45 @@ jQuery(document).ready(function() {
         var pages = {};
         var keys = [];
         var products = {};
-        var page_count = 1;
-        var i = 0;
-        var sortable_length = $("#sortable li").length;
-        $("#sortable li").each(function(index, element){
-            if($(this).attr("page") == page_count){
-                if(index == sortable_length-1) {
-                    layout.push(pages);
-                    
-                    layouts.pages = layout;
-                }
-                pages.page = page_count;
-                
-                products.product_id = $(this).attr("data-id");
-                products.position = i;
-                products.label = $(this).find("p").text();
-
-                keys.push(products);
-                
-                pages.keys = keys;
-                
-                products = {};
-                i++;
-                
-            } else {
-            
-                page_count++;
-                i = 0;
-
-                layout.push(pages);
-
-                keys = [];
-                products = {};
-                pages = {};
-                pages.page = page_count;
-
-                products.product_id = $(this).attr("data-id");
-                products.position = i;
-                products.label = $(this).find("p").text();
-
-                keys.push(products);
-
-                pages.keys = keys;
-
-                products = {};
-                i++;
-                
+        var last_page = 0;
+        var sortable_length = $(".qKey").length;
+        $(".qKey").each(function(){
+            if($(this).attr("page") > last_page){
+                last_page = $(this).attr("page");
             }
         });
         
-        var key_layouts = JSON.stringify(layouts);
+        for(var j = 1;j <= last_page;j++) {
+            repeat_each(j);
+        }
+        
+        function repeat_each(page_number){
+            $(".qKey[page="+page_number+"]").each(function(){
+            
+                products.product_id = $(this).attr("data-id");
+                products.position = 0;
+                products.label = $(this).find("p").text();
+                
+                keys.push(products);
+                
+                pages.page = page_number;
+                pages.keys = keys;
+                
+                products = {};
+                
+            });
+            layout.push(pages);
+            keys = [];
+            products = {};
+            pages = {};
+        }
 
+        layouts.pages = layout;
+
+        var key_layouts = JSON.stringify(layouts);
+        
         $.ajax({
-            url: "/quickkey/add",
+            url: "/quickkey/add.json",
             type: "POST",
             data: {
                 name: $("#layout_name").val(),

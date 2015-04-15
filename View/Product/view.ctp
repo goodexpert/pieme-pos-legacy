@@ -242,7 +242,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                
+                	<?php foreach($sales_history as $record) { ?>
+                		<tr>
+                			<td><?php echo $record['RegisterSale']['sale_date'];?></td>
+                			<td><?php echo $record['RegisterSale']['MerchantUser']['display_name'];?></td>
+                			<td>outlet</td>
+                			<td><?php echo $record['RegisterSaleItem']['quantity'];?></td>
+                			<td>outlet_quantity</td>
+                			<td>change</td>
+                			<td></td>
+                		</tr>
+                	<?php } ?>
                 </tbody>
             </table>
         

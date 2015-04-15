@@ -109,52 +109,6 @@
     </div>
 
     <!-- END CONTENT -->
-    <!-- BEGIN QUICK SIDEBAR -->
-    <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
-    <div class="page-quick-sidebar-wrapper">
-        <div class="page-quick-sidebar">            
-            <div class="nav-justified">
-                <ul class="nav nav-tabs nav-justified">
-                    <li class="active">
-                        <a href="#quick_sidebar_tab_1" data-toggle="tab">
-                        Users <span class="badge badge-danger">2</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#quick_sidebar_tab_2" data-toggle="tab">
-                        Alerts <span class="badge badge-success">7</span>
-                        </a>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        More<i class="fa fa-angle-down"></i>
-                        </a>
-                        <ul class="dropdown-menu pull-right" role="menu">
-                            <li>
-                                <a href="#quick_sidebar_tab_3" data-toggle="tab">
-                                <i class="icon-bell"></i> Alerts </a>
-                            </li>
-                            <li>
-                                <a href="#quick_sidebar_tab_3" data-toggle="tab">
-                                <i class="icon-info"></i> Notifications </a>
-                            </li>
-                            <li>
-                                <a href="#quick_sidebar_tab_3" data-toggle="tab">
-                                <i class="icon-speech"></i> Activities </a>
-                            </li>
-                            <li class="divider">
-                            </li>
-                            <li>
-                                <a href="#quick_sidebar_tab_3" data-toggle="tab">
-                                <i class="icon-settings"></i> Settings </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-<!-- END QUICK SIDEBAR -->
 </div>
 <!-- END CONTAINER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
@@ -175,30 +129,9 @@
 <script src="/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
 <!-- END CORE PLUGINS -->
-<!-- BEGIN PAGE LEVEL PLUGINS -->
-<script src="/assets/global/plugins/jqvmap/jqvmap/jquery.vmap.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.russia.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.world.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.europe.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.germany.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.usa.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jqvmap/jqvmap/data/jquery.vmap.sampledata.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/flot/jquery.flot.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/flot/jquery.flot.resize.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/flot/jquery.flot.categories.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery.pulsate.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-daterangepicker/moment.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.js" type="text/javascript"></script>
-<!-- IMPORTANT! fullcalendar depends on jquery-ui-1.10.3.custom.min.js for drag & drop support -->
-<script src="/assets/global/plugins/fullcalendar/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery-easypiechart/jquery.easypiechart.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery.sparkline.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/gritter/js/jquery.gritter.js" type="text/javascript"></script>
-<!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <script src="/assets/global/scripts/metronic.js" type="text/javascript"></script>
 <script src="/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
-<script src="/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
 <script src="/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
 <script src="/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
@@ -210,7 +143,6 @@ var quick = [];
 jQuery(document).ready(function() {    
     Metronic.init(); // init metronic core componets
     Layout.init(); // init layout
-    QuickSidebar.init() // init quick sidebar
     Index.init();
 
     $( "#sortable" ).sortable({
@@ -298,66 +230,55 @@ jQuery(document).ready(function() {
         var pages = {};
         var keys = [];
         var products = {};
-        var page_count = 1;
-        var i = 0;
-        var sortable_length = $("#sortable li").length;
-        $("#sortable li").each(function(index, element){
-            if($(this).attr("page") == page_count){
-                if(index == sortable_length-1) {
-                    layout.push(pages);
-                    
-                    layouts.pages = layout;
-                }
-                pages.page = page_count;
-                
-                products.product_id = $(this).attr("data-id");
-                products.position = i;
-                products.label = $(this).find("p").text();
-                
-                keys.push(products);
-                
-                pages.keys = keys;
-                
-                products = {};
-                i++;
-
-            } else {
-
-                page_count++;
-                i = 0;
-
-                layout.push(pages);
-
-                keys = [];
-                products = {};
-                pages = {};
-                pages.page = page_count;
-
-                products.product_id = $(this).attr("data-id");
-                products.position = i;
-                products.label = $(this).find("p").text();
-
-                keys.push(products);
-
-                pages.keys = keys;
-
-                products = {};
-                i++;
-
+        var last_page = 0;
+        var sortable_length = $(".qKey").length;
+        $(".qKey").each(function(){
+            if($(this).attr("page") > last_page){
+                last_page = $(this).attr("page");
             }
         });
+        
+        for(var j = 1;j <= last_page;j++) {
+            repeat_each(j);
+        }
+        
+        function repeat_each(page_number){
+            $(".qKey[page="+page_number+"]").each(function(){
+            
+                products.product_id = $(this).attr("data-id");
+                products.position = 0;
+                products.label = $(this).find("p").text();
+                
+                keys.push(products);
+                
+                pages.page = page_number;
+                pages.keys = keys;
+                
+                products = {};
+                
+            });
+            layout.push(pages);
+            keys = [];
+            products = {};
+            pages = {};
+        }
+
+        layouts.pages = layout;
 
         var key_layouts = JSON.stringify(layouts);
-
         $.ajax({
-            url: location.href,
+            url: location.href+'.json',
             type: "POST",
             data: {
                 name: $("#layout_name").val(),
                 key_layouts: key_layouts,
             },
-            success: function() {
-                window.location.href = "/setup/quick_keys";
+            success: function(result) {
+                if(result.success) {
+                    window.location.href = "/setup/quick_keys";
+                } else {
+                    console.log(result);
+                }
             }
         });
         

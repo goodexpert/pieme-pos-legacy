@@ -37,11 +37,16 @@ class HomeController extends AppController {
             $quick = json_decode($quick['MerchantQuickKey']['key_layouts'],true);
             $products_ids = array();
             foreach($quick['pages'] as $page) {
-                foreach($page['keys'] as $product) {
-                    array_push($products_ids, $product['product_id']);
-                }
+            	if(!empty($page['keys'])){
+	                foreach($page['keys'] as $product) {
+	                    $arr = array(
+	                    	'product_id'=>$product['product_id'],
+	                    	'page'=>$page['page']
+	                    );
+	                    array_push($products_ids, $arr);
+	                }
+	            }
             }
-
             $this->MerchantProduct->bindModel(array(
                 'hasMany' => array(
                     'MerchantProductInventory' => array(
@@ -59,8 +64,7 @@ class HomeController extends AppController {
                 ),
                 'conditions' => array(
                     'MerchantProduct.merchant_id' => $user['merchant_id'],
-                    'MerchantProduct.is_active' => 1,
-                    'MerchantProduct.id' => $products_ids
+                    'MerchantProduct.is_active' => 1
                 ),
                 'joins' => array(
                     array(
@@ -84,9 +88,8 @@ class HomeController extends AppController {
             
             $key_items = Hash::combine($items, "{n}.MerchantProduct.id", "{n}");
             
-            $this->set("productsids",$products_ids);
+            $this->set("key_layout",$products_ids);
             $this->set("key_items",$key_items);
-            $this->set('items', $items);
 
             $this->MerchantPriceBook->bindModel(array(
                 'hasMany' => array(
