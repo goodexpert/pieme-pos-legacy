@@ -124,7 +124,7 @@
                     </select>
                   </dd>
                   <dt>Cashier discounts and returns</dt>
-                  <dd class="form-group">
+                  <dd>
                     <input type="checkbox" name="merchant[allow_cashier_discount]" id="merchant_allow_cashier_discount" <?php if($merchant['Merchant']['allow_cashier_discount'] == 1){echo "checked";}?>>
                     Allow Cashires to apply discounts and perform returns on sales</dd>
                 </dl>
