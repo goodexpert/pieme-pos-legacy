@@ -309,9 +309,14 @@ jQuery(document).ready(function() {
                 postal_state: $(".postal_state").val(),
                 postal_postcode: $(".postal_postcode").val(),
                 postal_country_id: $(".postal_country").val()
+            },
+            success: function(result) {
+	            if(result.success) {
+		            window.location.href = "/supplier";
+	            } else {
+		            console.log(result);
+	            }
             }
-        }).done(function(result){
-            window.location.href = "/supplier";
         });
     });
 });

@@ -242,15 +242,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                	<?php foreach($sales_history as $record) { ?>
+                	<?php foreach($logs as $log) { ?>
                 		<tr>
-                			<td><?php echo $record['RegisterSale']['sale_date'];?></td>
-                			<td><?php echo $record['RegisterSale']['MerchantUser']['display_name'];?></td>
-                			<td>outlet</td>
-                			<td><?php echo $record['RegisterSaleItem']['quantity'];?></td>
-                			<td>outlet_quantity</td>
-                			<td>change</td>
-                			<td></td>
+                			<td><?php echo $log['MerchantProductLog']['created'];?></td>
+                			<td><?php echo $log['MerchantUser']['display_name'];?></td>
+                			<td><?php echo $log['MerchantOutlet']['name'];?></td>
+                			<td><?php echo $log['MerchantProductLog']['quantity'];?></td>
+                			<td><?php echo $log['MerchantProductLog']['outlet_quantity'];?></td>
+                			<td><?php echo $log['MerchantProductLog']['change'];?></td>
+                			<td><?php echo $log['MerchantProductLog']['action_type'];?></td>
                 		</tr>
                 	<?php } ?>
                 </tbody>

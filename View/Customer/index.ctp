@@ -55,47 +55,49 @@
                     </div>
                 </div>
             </div>
-                        <!-- FILTER -->
-            <div class="col-md-12 col-xs-12 col-sm-12 line-box filter-box">
+            <!-- FILTER -->
+            <form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box" action="/customer" method="get">
                 <div class="col-md-4 col-xs-4 col-sm-4">
                     <dl>
                         <dt>Name</dt> 
                         <dd>
-                            <input type="text" id="">
+                            <input type="text" name="name">
                         </dd>
 
                         <dt>Created on/after</dt>
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="Created_after">
+                            <input type="text" id="Created_after" name="from">
                         </dd>
                     </dl> 
                 </div>
                 <div class="col-md-4 col-xs-4 col-sm-4">
                     <dl>
-                        <dt>Email</dt> 
+                        <dt>Code</dt> 
                         <dd>
-                            <input type="text" id="">
+                            <input type="text" name="customer_code">
                         </dd>
                         <dt>Created on/before</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="Created_before">
+                            <input type="text" id="Created_before" name="to">
                         </dd>
                     </dl>
                  </div>
                 <div class="col-md-4 col-xs-4 col-sm-4">
                     <dl>
                         <dt>Customer group</dt>
-                        <dd><select>
-                        <option></option>
+                        <dd><select name="customer_group_id">
+                        <?php foreach($customer_groups as $group) { ?>
+                        	<option value="<?php echo $group['MerchantCustomerGroup']['id'];?>" <?php if(isset($_GET['customer_group_id']) && $_GET['customer_group_id'] == $group['MerchantCustomerGroup']['id']){echo "selected";}?>><?php echo $group['MerchantCustomerGroup']['name'];?></option>
+                        <?php } ?>
                         </select></dd>
                     </dl>
                  </div>
                  <div class="col-md-12 col-xs-12 col-sm-12">
-                     <button class="btn btn-primary filter pull-right">Update</button>
+                     <button type="submit" class="btn btn-primary filter pull-right">Update</button>
                  </div>
-            </div>
+            </form>
 
             <table id="customerTable" class="table-bordered">
                 <thead>
@@ -172,8 +174,8 @@ jQuery(document).ready(function() {
         searching: false
     });
     $("#customerTable_length").hide();
-    $("#Created_before").datepicker();
-    $("#Created_after").datepicker();
+    $("#Created_before").datepicker({dateFormat: 'yy-mm-dd'});
+    $("#Created_after").datepicker({dateFormat: 'yy-mm-dd'});
 });
 </script>
 <!-- END JAVASCRIPTS -->

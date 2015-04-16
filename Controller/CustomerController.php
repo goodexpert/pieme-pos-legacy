@@ -35,15 +35,43 @@ class CustomerController extends AppController {
     }
 
     public function index() {
+        $user = $this->Auth->user();
+        $filter = array(
+            'MerchantCustomer.merchant_id' => $user['merchant_id']
+        );
+
+        if(isset($_GET)) {
+            foreach($_GET as $filtering_option_name => $filtering_option_value) {
+                if(!empty($filtering_option_value)) {
+                    if($filtering_option_name == 'name' || $filtering_option_name == 'email') {
+                        $filter['OR'] = array(
+                            'MerchantCustomer.'.$filtering_option_name.' LIKE' => '%'.$filtering_option_value.'%'
+                        );
+                    } else if($filtering_option_name == 'from') {
+                        $filter['MerchantCustomer.created >='] = $filtering_option_value;
+                    } else if($filtering_option_name == 'to') {
+                        $filter['MerchantCustomer.created <='] = $filtering_option_value;
+                    } else {
+                        $filter['MerchantCustomer.'.$filtering_option_name] = $filtering_option_value;
+                    }
+                }
+            }
+        }
+
+        $customer_groups = $this->MerchantCustomerGroup->find('all', array(
+            'conditions' => array(
+                'MerchantCustomerGroup.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('customer_groups',$customer_groups);
+
         $customers = $this->MerchantCustomer->find('all', array(
             'fields' => array(
                 'MerchantCustomer.*',
                 'Contact.*',
                 'MerchantCustomerGroup.*'
             ),
-            'conditions' => array(
-                'MerchantCustomer.merchant_id' => $this->Auth->user()['merchant_id'],
-            ),
+            'conditions' => $filter,
             'joins' => array(
                 array(
                     'table' => 'contacts',
@@ -64,7 +92,6 @@ class CustomerController extends AppController {
             )
         ));
         $this->set("customers",$customers);
-    
     }
 
     public function add() {
@@ -76,10 +103,18 @@ class CustomerController extends AppController {
         $this->set("groups",$groups);
     
         if($this->request->is('post')) {
-            $result = array();
+            $result = array(
+            	'success' => false
+            );
             try {
                 $data = $this->request->data;
-            
+                if(empty($data['physical_country_id']))
+                    unset($data['physical_country_id']);
+                if(empty($data['postal_country_id']))
+                    unset($data['postal_country_id']);
+                if($data['birthday'] == '--')
+                    unset($data['birthday']);
+
                 $this->Contact->create();
                 $this->Contact->save($data);
 
@@ -88,14 +123,14 @@ class CustomerController extends AppController {
                 
                 $this->MerchantCustomer->create();
                 $this->MerchantCustomer->save($data);
+                
+                $result['success'] = true;
                 $result['id'] = $this->MerchantCustomer->id;
                 $result['data'] = $data;
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
             }
             $this->serialize($result);
-            var_dump($result);
-            exit();
         }
     
     }

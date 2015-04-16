@@ -28,7 +28,7 @@ class ProductController extends AppController {
  * @var array
  */
     public $uses = array('Merchant', 'MerchantProduct', 'MerchantProductType', 'MerchantProductBrand', 'MerchantProductTag',
-        'MerchantTaxRate', 'MerchantSupplier', 'MerchantProductCategory', 'MerchantPriceBookEntry', 'MerchantVariant', 'MerchantProductInventory', 'MerchantOutlet', 'MerchantProductComposite', 'MerchantPriceBook');
+        'MerchantTaxRate', 'MerchantSupplier', 'MerchantProductCategory', 'MerchantPriceBookEntry', 'MerchantVariant', 'MerchantProductInventory', 'MerchantOutlet', 'MerchantProductComposite', 'MerchantPriceBook', 'MerchantProductLog');
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -41,39 +41,72 @@ class ProductController extends AppController {
 
     public function index() {
         $user = $this->Auth->user();
-        
+
+        $filter = array(
+            'MerchantProduct.merchant_id' => $user['merchant_id'],
+            'MerchantProduct.is_active' => 1
+        );
+
+        if(isset($_GET)) {
+            foreach($_GET as $filtering_option_name => $filtering_option_value) {
+                if($filtering_option_name == 'is_active') {
+                    if($filtering_option_value == '0' || $filtering_option_value == '1') {
+                        $filter['MerchantProduct.'.$filtering_option_name] = $filtering_option_value;
+                    } else {
+                        unset($filter['MerchantProduct.is_active']);
+                    }
+                } else {
+                    if(!empty($filtering_option_value)) {
+                        if($filtering_option_name == 'name') {
+                            $filter['OR'] = array(
+                                'MerchantProduct.name LIKE' => "%".$filtering_option_value."%",
+                                'MerchantProduct.sku LIKE' => "%".$filtering_option_value."%",
+                                'MerchantProduct.handle LIKE' => "%".$filtering_option_value."%"
+                            );
+                        } else {
+                            $filter['MerchantProduct.'.$filtering_option_name] = $filtering_option_value;
+                        }
+                    }
+                }
+            }
+        }
+
         $this->MerchantProduct->bindModel(array(
             'belongsTo' => array(
                 'MerchantProductBrand' => array(
                     'className' => 'MerchantProductBrand',
                     'foreignKey' => 'product_brand_id'
-                )
-            )
-        ));
-        
-        $this->MerchantProduct->bindModel(array(
-            'belongsTo' => array(
+                ),
                 'MerchantProductType' => array(
                     'className' => 'MerchantProductType',
                     'foreignKey' => 'product_type_id'
                 )
             )
         ));
+
+        $this->MerchantProduct->bindModel(array(
+            'hasMany' => array(
+                'MerchantProductCategory' => array(
+                    'className' => 'MerchantProductCategory',
+                    'foreignKey' => 'product_id'
+                )
+            )
+        ));
         
-        if (empty($_GET['supplier'])) {
-            $items = $this->MerchantProduct->find('all', array(
-                'conditions' => array(
-                    'MerchantProduct.merchant_id' => $user['merchant_id']
-                ),
-            ));
-        } else {
-            $items = $this->MerchantProduct->find('all', array(
-                'conditions' => array(
-                    'MerchantProduct.merchant_id' => $user['merchant_id'],
-                    'MerchantProduct.supplier_id' => $_GET['supplier']
-                ),
-            ));
-        }
+        $this->MerchantProductCategory->bindModel(array(
+            'belongsTo' => array(
+                'MerchantProductTag' => array(
+                    'className' => 'MerchantProductTag',
+                    'foreignKey' => 'product_tag_id'
+                )
+            )
+        ));
+        
+        $this->MerchantProduct->recursive = 2;
+        
+        $items = $this->MerchantProduct->find('all', array(
+            'conditions' => $filter
+        ));
 
         $suppliers = $this->MerchantSupplier->find('all', array(
             'conditions' => array(
@@ -114,6 +147,10 @@ class ProductController extends AppController {
                 // Step 1: add a new product.
                 $data = $this->request->data;
                 $data['merchant_id'] = $user['merchant_id'];
+                if(empty($data['product_type_id']))
+                    unset($data['product_type_id']);
+                if(empty($data['product_brand_id']))
+                    unset($data['product_brand_id']);
 
                 $this->MerchantProduct->create();
                 $this->MerchantProduct->save(array('MerchantProduct' => $data));
@@ -274,6 +311,7 @@ class ProductController extends AppController {
     }
 
     public function edit($id) {
+    
         $user = $this->Auth->user();
 
         if ($this->request->is('ajax') || $this->request->is('post')) {
@@ -288,6 +326,10 @@ class ProductController extends AppController {
                 // Step 1: update the product.
                 $data = $this->request->data;
                 $data['merchant_id'] = $user['merchant_id'];
+                if(empty($data['product_type_id']))
+                    $data['product_type_id'] = null;
+                if(empty($data['product_brand_id']))
+                    $data['product_brand_id'] = null;
 
                 $this->MerchantProduct->id = $id;
                 $this->MerchantProduct->save(array('MerchantProduct' => $data));
@@ -311,8 +353,8 @@ class ProductController extends AppController {
                 $this->MerchantPriceBookEntry->save($priceBookEntry);
 
                 // Step 3: If track_inventory is active, update the stock of product in the inventory of each outlet.
-                if ($data['track_inventory']) {
-                    $inventories = $data['inventories'];
+                if ($data['track_inventory'] == 1) {
+                    $inventories = json_decode($data['inventories'],true);
                     foreach ($inventories as $inventory) {
                         $notNull = $this->MerchantProductInventory->find('first', array(
                             'conditions' => array (
@@ -340,6 +382,17 @@ class ProductController extends AppController {
                         $inventory['MerchantProductInventory']['reorder_point'] = $inventory['reorder_point'];
                         $inventory['MerchantProductInventory']['restock_level'] = $inventory['restock_level'];
                         $this->MerchantProductInventory->save($inventory);
+                        
+                        //Setp 3-2: Save log
+                        $this->MerchantProductLog->create();
+                        $log['MerchantProductLog']['product_id'] = $this->MerchantProduct->id;
+                        $log['MerchantProductLog']['user_id'] = $user['id'];
+                        $log['MerchantProductLog']['outlet_id'] = $inventory['outlet_id'];
+                        $log['MerchantProductLog']['quantity'] = $inventory['count'];
+                        $log['MerchantProductLog']['outlet_quantity'] = $inventory['count'];
+                        $log['MerchantProductLog']['change'] = $inventory['count'];
+                        $log['MerchantProductLog']['action_type'] = 'update';
+                        $this->MerchantProductLog->save($log);
                     }
                 }
 
@@ -542,36 +595,32 @@ class ProductController extends AppController {
     }
 
     public function view($id) {
+        $user = $this->Auth->user();
     
         $this->loadModel("RegisterSaleItem");
         $this->loadModel("RegisterSale");
+        $this->loadModel("MerchantUser");
         
-        $this->RegisterSale->bindModel(array(
+        $this->MerchantProductLog->bindModel(array(
             'belongsTo' => array(
                 'MerchantUser' => array(
                     'className' => 'MerchantUser',
                     'foreignKey' => 'user_id'
+                ),
+                'MerchantOutlet' => array(
+                    'className' => 'MerchantOutlet',
+                    'foreignKey' => 'outlet_id'
                 )
             )
         ));
         
-        $this->RegisterSaleItem->bindModel(array(
-            'belongsTo' => array(
-                'RegisterSale' => array(
-                    'className' => 'RegisterSale',
-                    'foreignKey' => 'sale_id'
-                )
-            )
-        ));
-        
-        $this->RegisterSaleItem->recursive = 2;
-    
-        $sales_history = $this->RegisterSaleItem->find('all', array(
+        $logs = $this->MerchantProductLog->find('all', array(
             'conditions' => array(
-                'RegisterSaleItem.product_id' => $id
-            )
+                'MerchantProductLog.product_id' => $id
+            ),
+            'order' => array('MerchantProductLog.created DESC')
         ));
-        $this->set("sales_history",$sales_history);
+        $this->set('logs',$logs);
 
         $this->MerchantProduct->bindModel(array(
             'belongsTo' => array(
@@ -815,10 +864,14 @@ class ProductController extends AppController {
         $user = $this->Auth->user();
         if($this->request->is('post')) {
             $data = $this->request->data;
-            $result = array();
+            $result = array(
+                'success' => false
+            );
             try {
                 $this->MerchantProduct->id = $data['product_id'];
                 $this->MerchantProduct->save($data);
+                
+                $result['success'] = true;
             } catch  (Exception $e) {
                 $result['message'] = $e->getMessage();
             }

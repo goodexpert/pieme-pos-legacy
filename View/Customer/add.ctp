@@ -332,7 +332,7 @@ $(".save").click(function(){
     
     if($(".incorrect").length == 0) {
         $.ajax({
-            url: '/customer/add',
+            url: '/customer/add.json',
             type: 'POST',
             data: {
                 company_name: $(".company_name").val(),
@@ -366,9 +366,14 @@ $(".save").click(function(){
                 user_field_3: $(".customer_field_3").val(),
                 user_field_4: $(".customer_field_4").val(),
                 note: $(".customer_note").val()
+            },
+            success: function(result) {
+	            if(result.success) {
+		            window.location.href = "/customer";
+	            } else {
+		            console.log(result);
+	            }
             }
-        }).done(function(){
-            window.location.href = "/customer";
         });
     } else {
         $("html, body").animate({ scrollTop: 0 }, "slow");

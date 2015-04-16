@@ -92,6 +92,7 @@
                     <dt class="col-md-3">Product type</dt>
                     <dd class="col-md-9">
                       <select class="form-control" id="product_type">
+                      	<option value=""></option>
                         <?php foreach($types as $type){?>
                             <option value="<?=$type['MerchantProductType']['id'];?>" <?php if($type['MerchantProductType']['id'] == $product['MerchantProduct']['product_type_id']){echo "selected";}?>><?=$type['MerchantProductType']['name'];?></option>
                         <?php } ?>
@@ -119,6 +120,7 @@
                     <dt class="col-md-3">Product brand</dt>
                     <dd class="col-md-9">
                       <select class="form-control" id="product_brand">
+                          <option value=""></option>
                           <?php foreach($brands as $brand){?>
                             <option value="<?=$brand['MerchantProductBrand']['id'];?>" <?php if($brand['MerchantProductBrand']['id'] == $product['MerchantProduct']['product_brand_id']){echo "selected";}?>><?=$brand['MerchantProductBrand']['name'];?></option>
                         <?php } ?>
@@ -817,7 +819,7 @@ $(document).ready(function(){
             $(".stock-tracking").each(function(){
                inventories.push({outlet_id: $(this).find(".stock-outlet_id").val(), count: $(this).find(".stock_count").val(), reorder_point: $(this).find(".stock_reorder_point").val(), restock_level: $(this).find(".stock_reorder_amount").val()}) 
             });
-            
+            inventories = JSON.stringify(inventories);
             var composite = [];
             $(".composite-attr").each(function(){
                 composite.push({product_id: $(this).attr("data-id"), quantity: $(this).find(".composite_quantity").val()});
@@ -868,7 +870,7 @@ $(document).ready(function(){
 	                    window.location.href = "/product/"+result.product_id;
                     } else {
                     	$("#loader-wrapper").hide();
-	                    alert(result);
+	                    console.log(result);
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {

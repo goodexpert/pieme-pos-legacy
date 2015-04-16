@@ -93,18 +93,22 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Main Register</td>
-                    <td>Main Outlet</td>
-                    <td>
-                        <select class="width-inherit">
-                            <?php foreach($items as $item) { ?>
-                                <option value="<?php echo $item['MerchantQuickKey']['id'];?>" <?php if($authUser['MerchantRegister']['quick_key_id'] == $item['MerchantQuickKey']['id']){echo "selected";}?>)><?php echo $item['MerchantQuickKey']['name'];?></option>
-                            <?php } ?>
-                        </select>
-                    </td>
-                    <td><a href="#">Edit</a></td>
-                </tr>
+            	<?php foreach($outlets as $outlet){
+	            	foreach($outlet['MerchantRegister'] as $register) { ?>
+		                <tr class="register-list-data" data-id="<?php echo $register['id'];?>">
+		                    <td><?php echo $register['name'];?></td>
+		                    <td><?php echo $outlet['MerchantOutlet']['name'];?></td>
+		                    <td>
+		                        <select class="width-inherit quick_key_id">
+		                            <?php foreach($items as $item) { ?>
+		                                <option value="<?php echo $item['MerchantQuickKey']['id'];?>" <?php if($register['quick_key_id'] == $item['MerchantQuickKey']['id']){echo "selected";}?>><?php echo $item['MerchantQuickKey']['name'];?></option>
+		                            <?php } ?>
+		                        </select>
+		                    </td>
+		                    <td><span class="clickable assign_quick_key">Edit</span></td>
+		                </tr>
+		            <?php }
+		        }?>
             </tbody>
         </table>
         </div>
@@ -207,10 +211,27 @@
 <script src="/js/notify.js" type="text/javascript"></script>
 <script>
 jQuery(document).ready(function() {    
-   Metronic.init(); // init metronic core componets
-   Layout.init(); // init layout
-   QuickSidebar.init() // init quick sidebar
-   Index.init();
+    Metronic.init(); // init metronic core componets
+    Layout.init(); // init layout
+    QuickSidebar.init() // init quick sidebar
+    Index.init();
+    $(".assign_quick_key").click(function(){
+        $.ajax({
+            url: '/quickkey/assign.json',
+            type: 'POST',
+            data: {
+                register_id: $(this).parents(".register-list-data").attr("data-id"),
+                quick_key_id: $(this).parents(".register-list-data").find(".quick_key_id").val()
+            },
+            success: function(result) {
+                if(result.success) {
+                    alert("changed");
+                } else {
+                    console.log(result);
+                }
+            }
+        });
+    });
 });
 </script>
 <!-- END JAVASCRIPTS -->

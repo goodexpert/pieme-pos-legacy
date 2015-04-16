@@ -55,12 +55,20 @@ class SupplierController extends AppController {
         $countries = $this->Country->find('all');
         $this->set('countries',$countries);
         
-        $result = array();
+        $result = array(
+        	'success' => false
+        );
         
         if($this->request->is('post')) {
             try {
                 $data = $this->request->data;
                 $data['merchant_id'] = $this->Auth->user()['merchant_id'];
+                
+                if(empty($data['physical_country_id']))
+                	unset($data['physical_country_id']);
+                	
+                if(empty($data['postal_country_id']))
+                	unset($data['postal_country_id']);
                 
                 $this->Contact->create();
                 $this->Contact->save($data);
@@ -69,6 +77,8 @@ class SupplierController extends AppController {
                 
                 $this->MerchantSupplier->create();
                 $this->MerchantSupplier->save($data);
+                
+                $result['success'] = true;
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
             }
@@ -114,6 +124,12 @@ class SupplierController extends AppController {
             try {
                 $data = $this->request->data;
                 $data['merchant_id'] = $this->Auth->user()['merchant_id'];
+                
+                if(empty($data['physical_country_id']))
+                	unset($data['physical_country_id']);
+                	
+                if(empty($data['postal_country_id']))
+                	unset($data['postal_country_id']);
 
                 $this->Contact->id = $data['contact_id'];
                 $this->Contact->save($data);

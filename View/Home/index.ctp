@@ -403,6 +403,7 @@
                                 <span class="retrieve-child-name"><?=$get['MerchantProduct']['name'];?></span>
                                 <span class="retrieve-child-price"><?=$get['MerchantProduct']['price'];?></span>
                                 <span class="retrieve-child-tax"><?=$get['MerchantProduct']['tax'];?></span>
+                                <span class="retrieve-child-qty"><?php echo $get['quantity'];?></span>
                             </span>
                             <?php } ?>
                         </td>
@@ -878,7 +879,7 @@ jQuery(document).ready(function() {
                         var comp_2 = $(this).children(".retrieve-child-tax").text();
                         var price_including_tax = parseFloat(comp_1) + parseFloat(comp_2);
         
-                        $(".added-body").prepend('<tr class="order-product"><input type="hidden" class="added-code" value="'+$(this).children(".retrieve-child-id").text()+'"><td class="added-product">'+$(this).children(".retrieve-child-name").text()+'<br><span class="added-price">$'+parseFloat($(this).children(".retrieve-child-price").text()).toFixed(2)+'</span></td><td class="added-qty"><a qty-id="'+retCount+'" class="qty-control btn btn-white">1</a></td><td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="'+retCount+'">@'+price_including_tax.toFixed(2)+'</a></td><td class="added-amount"></td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');
+                        $(".added-body").prepend('<tr class="order-product"><input type="hidden" class="added-code" value="'+$(this).children(".retrieve-child-id").text()+'"><td class="added-product">'+$(this).children(".retrieve-child-name").text()+'<br><span class="added-price">$'+parseFloat($(this).children(".retrieve-child-price").text()).toFixed(2)+'</span></td><td class="added-qty"><a qty-id="'+retCount+'" class="qty-control btn btn-white">'+$(this).find(".retrieve-child-qty").text()+'</a></td><td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="'+retCount+'">@'+price_including_tax.toFixed(2)+'</a></td><td class="added-amount"></td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');
                         retCount++;
                     });
                     if(customer_name == ''){
@@ -903,7 +904,7 @@ jQuery(document).ready(function() {
                 var comp_2 = $(this).children(".retrieve-child-tax").text();
                 var price_including_tax = parseFloat(comp_1) + parseFloat(comp_2);
 
-                $(".added-body").prepend('<tr class="order-product"><input type="hidden" class="added-code" value="'+$(this).children(".retrieve-child-id").text()+'"><td class="added-product">'+$(this).children(".retrieve-child-name").text()+'<br><span class="added-price">$'+parseFloat($(this).children(".retrieve-child-price").text()).toFixed(2)+'</span></td><td class="added-qty"><a qty-id="'+retCount+'" class="qty-control btn btn-white">1</a></td><td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="'+retCount+'">@'+price_including_tax.toFixed(2)+'</a></td><td class="added-amount"></td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');
+                $(".added-body").prepend('<tr class="order-product"><input type="hidden" class="added-code" value="'+$(this).children(".retrieve-child-id").text()+'"><td class="added-product">'+$(this).children(".retrieve-child-name").text()+'<br><span class="added-price">$'+parseFloat($(this).children(".retrieve-child-price").text()).toFixed(2)+'</span></td><td class="added-qty"><a qty-id="'+retCount+'" class="qty-control btn btn-white">'+$(this).find(".retrieve-child-qty").text()+'</a></td><td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="'+retCount+'">@'+price_including_tax.toFixed(2)+'</a></td><td class="added-amount"></td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');
                 retCount++;
             });
             if(customer_name == ''){
@@ -1124,7 +1125,7 @@ jQuery(document).ready(function() {
                 type: "POST",
                 data: {
                     customer_id: $("#customer-selected-id").val(),
-                    receipt_number: '323232',
+                    receipt_number: '0',
                     total_price: $(".subTotal").text(),
                     total_cost: $(".toPay").text(),
                     total_discount: '',
@@ -1134,6 +1135,9 @@ jQuery(document).ready(function() {
                     items: line_array,
                     actual_amount: amount,
                     payments: JSON.stringify(pays)
+                },
+                success: function(result){
+                    console.log(result);
                 }
             });
     

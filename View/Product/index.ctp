@@ -78,20 +78,20 @@
             </div>
                 
             <!-- FILTER -->
-            <div class="col-md-12 col-xs-12 col-sm-12 line-box filter-box">
+            <form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box" action="/product" method="get">
                 <div class="col-md-4 col-xs-4 col-sm-4">
                     <dl>
                         <dt>Show</dt> 
                         <dd>
-                            <select class="status">
-                                <option value="active" class="active_product_count">Active products</option>
-                                <option value="inactive" class="inactive_product_count">Inactive products</option>
-                                <option value="all" class="product_count">All products</option>
+                            <select name="is_active" class="status">
+                                <option value="1" class="active_product_count" <?php if(isset($_GET['is_active']) && $_GET['is_active'] == 1){echo "selected";}?>>Active products</option>
+                                <option value="0" class="inactive_product_count" <?php if(isset($_GET['is_active']) && $_GET['is_active'] == 0){echo "selected";}?>>Inactive products</option>
+                                <option value="" class="product_count" <?php if(isset($_GET['is_active']) && $_GET['is_active'] == ""){echo "selected";}?>>All products</option>
                             </select>
                         </dd>
 
                         <dt>Name / SKU / Handle</dt>
-                        <dd><input type="text"></dd>
+                        <dd><input type="text" name="name" value="<?php if(isset($_GET['name'])){echo $_GET['name'];}?>"></dd>
                         <dt>Tag</dt>
                         <dd><input type="text"></dd>
                     </dl> 
@@ -99,15 +99,17 @@
                 <div class="col-md-4 col-xs-4 col-sm-4">
                     <dl>
                         <dt>Product type</dt>
-                        <dd><select>
+                        <dd><select name="product_type_id">
+                        	<option value=""></option>
                             <?php foreach($types as $type){?>
-                            <option value="<?=$type['MerchantProductType']['id'];?>"><?=$type['MerchantProductType']['name'];?></option>
+                            <option value="<?=$type['MerchantProductType']['id'];?>" <?php if(isset($_GET['product_type_id']) && $_GET['product_type_id'] == $type['MerchantProductType']['id']){echo "selected";}?>><?=$type['MerchantProductType']['name'];?></option>
                             <?php } ?>
                         </select></dd>
                            <dt>Brand</dt>
-                        <dd><select>
+                        <dd><select name="product_brand_id">
+                        	<option value=""></option>
                             <?php foreach($brands as $brand){?>
-                            <option value="<?=$brand['MerchantProductBrand']['id'];?>"><?=$brand['MerchantProductBrand']['name'];?></option>
+                            <option value="<?=$brand['MerchantProductBrand']['id'];?>" <?php if(isset($_GET['product_brand_id']) && $_GET['product_brand_id'] == $brand['MerchantProductBrand']['id']){echo "selected";}?>><?=$brand['MerchantProductBrand']['name'];?></option>
                             <?php } ?>
                         </select></dd>
                     </dl>
@@ -115,10 +117,10 @@
                 <div class="col-md-4 col-xs-4 col-sm-4">
                     <dl>
                         <dt>Supplier</dt>
-                        <dd><select>
+                        <dd><select name="supplier_id">
                         <option></option>
                         <?php foreach($suppliers as $supplier){?>
-                            <option value="<?=$supplier['MerchantSupplier']['id'];?>" <?php if(!empty($_GET['supplier'])){if($_GET['supplier'] == $supplier['MerchantSupplier']['id']){echo "selected";}}?>><?=$supplier['MerchantSupplier']['name'];?></option>
+                            <option value="<?=$supplier['MerchantSupplier']['id'];?>" <?php if(isset($_GET['supplier_id']) && $_GET['supplier_id'] == $supplier['MerchantSupplier']['id']){echo "selected";}?>><?=$supplier['MerchantSupplier']['name'];?></option>
                             <?php } ?>
                         </select></dd>
                     </dl>
@@ -126,7 +128,7 @@
                  <div class="col-md-12 col-xs-12 col-sm-12">
                      <button class="btn btn-primary filter pull-right">Update</button>
                  </div>
-            </div>
+            </form>
 
 
             <br>
@@ -337,8 +339,12 @@ jQuery(document).ready(function() {
                 product_id: $(this).attr("data-id"),
                 is_active: 1
             },
-            success: function(msg){
-                console.log(msg);
+            success: function(result){
+                if(result.success) {
+	                // do nothing
+                } else {
+	                console.log(result);
+                }
             }
         });
         $(this).removeClass("active_product");
@@ -353,8 +359,12 @@ jQuery(document).ready(function() {
                 product_id: $(this).attr("data-id"),
                 is_active: 0
             },
-            success: function(msg){
-                console.log(msg);
+            success: function(result){
+                if(result.success) {
+	                // do nothing
+                } else {
+	                console.log(result);
+                }
             }
         });
         $(this).removeClass("inactive_product");

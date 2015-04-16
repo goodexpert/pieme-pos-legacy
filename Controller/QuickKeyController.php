@@ -98,4 +98,30 @@ class QuickKeyController extends AppController {
         $keys = $this->MerchantQuickKey->findById($id);
         $this->set("keys",$keys);
     }
+    
+    public function assign(){
+        $this->loadModel('MerchantRegister');
+        $user = $this->Auth->user();
+        if($this->request->is('post') || $this->request->is('ajax')) {
+            $result = array(
+                'success' => false
+            );
+            $dataSource = $this->MerchantRegister->getDataSource();
+            $dataSource->begin();
+            
+            try {
+                $data = $this->request->data;
+                $this->MerchantRegister->id = $data['register_id'];
+                $this->MerchantRegister->save($data);
+                
+                $dataSource->commit();
+                $result['success'] = true;
+            } catch (Exception $e) {
+            	$dataSource->rollback();
+                $result['message'] = $e->getMessage();
+            }
+            $this->serialize($result);
+            return;
+        }
+    }
 }

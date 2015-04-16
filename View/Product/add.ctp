@@ -91,6 +91,7 @@
                     <dt class="col-md-4">Product type</dt>
                     <dd class="col-md-8">
                       <select id="product_type">
+                        <option value="" selected></option>
                         <?php foreach($types as $type){?>
                             <option value="<?=$type['MerchantProductType']['id'];?>"><?=$type['MerchantProductType']['name'];?></option>
                         <?php } ?>
@@ -118,6 +119,7 @@
                     <dt class="col-md-4">Product brand</dt>
                     <dd class="col-md-8">
                       <select id="product_brand">
+                          <option value="" selected></option>
                           <?php foreach($brands as $brand){?>
                             <option value="<?=$brand['MerchantProductBrand']['id'];?>"><?=$brand['MerchantProductBrand']['name'];?></option>
                         <?php } ?>

@@ -162,9 +162,11 @@ class SetupController extends AppController {
     }
 
     public function quick_keys() {
-        $user = $this->Auth->user();
-
         $this->loadModel('MerchantQuickKey');
+        $this->loadModel('MerchantOutlet');
+        $this->loadModel('MerchantRegister');
+        
+        $user = $this->Auth->user();
 
         $items = $this->MerchantQuickKey->find('all', array(
             'conditions' => array(
@@ -172,6 +174,22 @@ class SetupController extends AppController {
             )
         ));
         $this->set("items",$items);
+        
+        $this->MerchantOutlet->bindModel(array(
+            'hasMany' => array(
+                'MerchantRegister' => array(
+                    'className' => 'MerchantRegister',
+                    'foreignKey' => 'outlet_id'
+                )
+            )
+        ));
+        
+        $outlets = $this->MerchantOutlet->find('all', array(
+            'conditions' => array(
+                'MerchantOutlet.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('outlets',$outlets);
     }
 
     public function loyalty() {

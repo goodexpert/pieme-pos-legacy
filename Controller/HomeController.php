@@ -11,7 +11,7 @@ class HomeController extends AppController {
  *
  * @var array
  */
-    public $uses = array('MerchantCustomer','MerchantCustomerGroup','Country','MerchantProduct','TaxRate','RegisterSale','RegisterSaleItem','RegisterSalePayment','MerchantUser','MerchantOutlet','MerchantPaymentType');
+    public $uses = array('MerchantCustomer','MerchantCustomerGroup','Country','MerchantProduct','TaxRate','RegisterSale','RegisterSaleItem','RegisterSalePayment','MerchantUser','MerchantOutlet','MerchantPaymentType','MerchantProductInventory','MerchantProductLog','MerchantRegisterOpen');
     public $layout = 'home';
 
 /**
@@ -29,7 +29,6 @@ class HomeController extends AppController {
         $this->loadModel('MerchantQuickKey');
         $this->loadModel('MerchantPriceBook');
         $this->loadModel('MerchantRegister');
-        $this->loadModel('MerchantProductInventory');
         
         if(!empty($this->Auth->user()['outlet_id'])) {
             $key_id = $this->MerchantRegister->findById($this->Auth->user()['MerchantRegister']['id'])['MerchantRegister']['quick_key_id'];
@@ -198,37 +197,27 @@ class HomeController extends AppController {
                         'foreignKey' => 'sale_id'
                     )
                 ),
+                'belongsTo' => array(
+                    'MerchantUser' => array(
+                        'className' => 'MerchantUser',
+                        'foreignKey' => 'user_id'
+                    ),
+                    'MerchantCustomer' => array(
+                        'className' => 'MerchantCustomer',
+                        'foreignKey' => 'customer_id'
+                    )
+                )
             ));
     
             $this->RegisterSale->recursive = 2;
     
             $retrieves = $this->RegisterSale->find('all', array(
                 'fields' => array(
-                    'MerchantUser.*',
-                    'RegisterSale.*',
-                    'MerchantCustomer.*'
+                    'RegisterSale.*'
                 ),
                 'conditions' => array(
-                    'RegisterSale.register_id' => $this->Auth->user()['MerchantRegister']['id'],
+                    'RegisterSale.register_id' => $user['MerchantRegister']['id'],
                     'RegisterSale.status' => array('saved','layby','onaccount')
-                ),
-                'joins' => array(
-                    array(
-                        'table' => 'merchant_users',
-                        'alias' => 'MerchantUser',
-                        'type' => 'INNER',
-                        'conditions' => array(
-                            'RegisterSale.user_id = MerchantUser.id'
-                        )
-                    ),
-                    array(
-                        'table' => 'merchant_customers',
-                        'alias' => 'MerchantCustomer',
-                        'type' => 'INNER',
-                        'conditions' => array(
-                            'RegisterSale.customer_id = MerchantCustomer.id'
-                        )
-                    )
                 )
             ));
             $this->set('retrieves',$retrieves);
@@ -262,13 +251,7 @@ class HomeController extends AppController {
                 $data = $this->request->data;
                 $data['register_id'] = $this->Auth->user()['MerchantRegister']['id'];
                 $data['user_id'] = $this->Auth->user()['id'];
-                $data['status'] = 'closed';
                 $data['sale_date'] = date('Y-m-d H:i:s');
-                if($_POST['customer_id']){
-                    $data['customer_id'] = $_POST['customer_id'];
-                } else {
-                    unset($data['customer_id']);
-                }
 
                 $registerOpen = $this->MerchantRegisterOpen->find('all',array(
                     'conditions' => array(
@@ -320,11 +303,17 @@ class HomeController extends AppController {
                     $this->MerchantRegisterOpen->save($open);
                 }
                 
-                if($_POST['sale_id']){
+                if(isset($_POST['sale_id'])){
                     $this->RegisterSaleItem->deleteAll(array('RegisterSaleItem.sale_id' => $data['sale_id']), false);
                     $this->RegisterSale->id = $data['sale_id'];
+                    $currentStatus = $this->RegisterSale->findById($data['sale_id'])['RegisterSale']['status'];
+                    if($currentStatus == 'layby')
+                    	$data['status'] = 'layby_closed';
+                    if($currentStatus == 'onaccount')
+                    	$data['status'] = 'onaccount_closed';
                 } else {
                     $this->RegisterSale->create();
+                    $data['status'] = 'closed';
                 }
                 $this->RegisterSale->save($data);
 
@@ -336,11 +325,14 @@ class HomeController extends AppController {
                     $payment['sale_id'] = $this->RegisterSale->id;
                     $payment['merchant_payment_type_id'] = $pay[0];
                     $payment['amount'] = $pay[1];
+                    $payment['payment_date'] = date('Y-m-d H:i:s');
                     $this->RegisterSalePayment->save($payment);
 
                 }
 
                 $array = json_decode($_POST['items']);
+                $generalQuantity = 0;
+                $outletQuantity = 0;
                 foreach($array as $item) {
                     $this->RegisterSaleItem->create();
                     $line->RegisterSaleItem['sale_id'] = $this->RegisterSale->id;
@@ -350,6 +342,37 @@ class HomeController extends AppController {
                     $line->RegisterSaleItem['sequence'] = $item[3];
                     $line->RegisterSaleItem['status'] = 'VALID';
                     $this->RegisterSaleItem->save($line);
+                    
+                    $quantities = $this->MerchantProductInventory->find('all', array(
+                    	'conditions' => array(
+                    		'MerchantProductInventory.product_id' => $item[0]
+                    	)
+                    ));
+                    foreach($quantities as $quantity) {
+	                    $generalQuantity += $quantity['MerchantProductInventory']['count'];
+	                    if($quantity['MerchantProductInventory']['outlet_id'] == $user['outlet_id']) {
+	                    	$outletQuantity = $quantity['MerchantProductInventory']['count'];
+	                    	
+	                    	$this->MerchantProductInventory->id = $quantity['MerchantProductInventory']['id'];
+	                    	$update['MerchantProductInventory']['count'] = $outletQuantity - $item[1];
+	                    	$this->MerchantProductInventory->save($update);
+	                    }
+                    }
+                    
+                    if($data['status'] == 'closed') {
+	                    $this->MerchantProductLog->create();
+	                    $log['MerchantProductLog']['product_id'] = $item[0];
+	                    $log['MerchantProductLog']['user_id'] = $user['id'];
+	                    $log['MerchantProductLog']['outlet_id'] = $user['outlet_id'];
+	                    $log['MerchantProductLog']['quantity'] = $generalQuantity - $item[1];
+	                    $log['MerchantProductLog']['outlet_quantity'] = $outletQuantity - $item[1];
+	                    $log['MerchantProductLog']['change'] = -$item[1];
+	                    $log['MerchantProductLog']['action_type'] = 'sale';
+	                    $this->MerchantProductLog->save($log);
+	                    
+	                    $generalQuantity = 0;
+	                    $outletQuantity = 0;
+	                }
                 }
                 $this->MerchantRegister->id = $user['MerchantRegister']['id'];
                 $increase->MerchantRegister['invoice_sequence'] = $this->MerchantRegister->findById($user['MerchantRegister']['id'])['MerchantRegister']['invoice_sequence'] + 1;
@@ -363,6 +386,7 @@ class HomeController extends AppController {
     }
     
     public function park() {
+        $user = $this->Auth->user();
     
         $result = array();
 
@@ -370,9 +394,9 @@ class HomeController extends AppController {
             try {
                 $data = $this->request->data;
                 $data['register_id'] = $this->Auth->user()['MerchantRegister']['id'];
-                $data['user_id'] = $this->Auth->user()['id'];
+                $data['user_id'] = $user['id'];
 
-                if($_POST['sale_id']){
+                if(isset($_POST['sale_id'])){
                     $this->RegisterSaleItem->deleteAll(array('RegisterSaleItem.sale_id' => $data['sale_id']), false);
                     $this->RegisterSale->id = $data['sale_id'];
                 } else {
@@ -391,6 +415,43 @@ class HomeController extends AppController {
                     $line->RegisterSaleItem['sequence'] = $item[3];
                     $line->RegisterSaleItem['status'] = 'VALID';
                     $this->RegisterSaleItem->save($line);
+                    
+                    $quantities = $this->MerchantProductInventory->find('all', array(
+                    	'conditions' => array(
+                    		'MerchantProductInventory.product_id' => $item[0]
+                    	)
+                    ));
+                    
+                    $generalQuantity = 0;
+                    $outletQuantity = 0;
+                    foreach($quantities as $quantity) {
+	                    $generalQuantity += $quantity['MerchantProductInventory']['count'];
+	                    if($quantity['MerchantProductInventory']['outlet_id'] == $user['outlet_id']) {
+	                    	$outletQuantity = $quantity['MerchantProductInventory']['count'];
+	                    	
+	                    	$this->MerchantProductInventory->id = $quantity['MerchantProductInventory']['id'];
+	                    	$update['MerchantProductInventory']['count'] = $outletQuantity - $item[1];
+	                    	$this->MerchantProductInventory->save($update);
+	                    }
+                    }
+                    
+                    if($data['status'] !== 'saved') {
+	                    $this->MerchantProductLog->create();
+	                    $log['MerchantProductLog']['product_id'] = $item[0];
+	                    $log['MerchantProductLog']['user_id'] = $user['id'];
+	                    $log['MerchantProductLog']['outlet_id'] = $user['outlet_id'];
+	                    $log['MerchantProductLog']['quantity'] = $generalQuantity - $item[1];
+	                    $log['MerchantProductLog']['outlet_quantity'] = $outletQuantity - $item[1];
+	                    $log['MerchantProductLog']['change'] = -$item[1];
+	                    if($data['status'] == 'layby')
+	                       $log['MerchantProductLog']['action_type'] = 'layby_sale';
+	                    if($data['status'] == 'onaccount')
+	                       $log['MerchantProductLog']['action_type'] = 'account_sale';
+	                    $this->MerchantProductLog->save($log);
+	                    
+	                    $generalQuantity = 0;
+	                    $outletQuantity = 0;
+	                }
                 }
                 
                 $paymentArray = json_decode($data['payments']);
@@ -401,6 +462,7 @@ class HomeController extends AppController {
                     $payment['sale_id'] = $this->RegisterSale->id;
                     $payment['merchant_payment_type_id'] = $pay[0];
                     $payment['amount'] = $pay[1];
+                    $payment['payment_date'] = date('Y-m-d H:i:s');
                     $this->RegisterSalePayment->save($payment);
 
                 }
@@ -478,23 +540,134 @@ class HomeController extends AppController {
 
     public function close() {
         $user = $this->Auth->user();
-        $this->set("user",$user);
 
-        $this->loadModel('MerchantRegisterOpen');
-        $opens = $this->MerchantRegisterOpen->find('all',array(
+        $opens = $this->MerchantRegisterOpen->find('first',array(
             'conditions' => array(
                 'MerchantRegisterOpen.register_id' => $this->Auth->user()['MerchantRegister']['id'],
                 'MerchantRegisterOpen.register_close_time' => ''
             )
         ));
-        $open = $opens[0];
-        $this->set('open',$open);
+        
         if($this->request->is('post')) {
-            $this->MerchantRegisterOpen->id = $open['MerchantRegisterOpen']['id'];
-            $close->MerchantRegisterOpen['register_close_time'] = date('Y-m-d H:i:s');
-            $this->MerchantRegisterOpen->save($close);
+        
+            $result = array(
+                'success' => false
+            );
+            try {
+                $data = $this->request->data;
+                $this->MerchantRegisterOpen->id = $opens['MerchantRegisterOpen']['id'];
+                $this->MerchantRegisterOpen->save($data);
+                
+                $result['success'] = true;
+            } catch (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+            $this->serialize($result);
+            return;
         }
+        
+        $this->set("user",$user);
+        $this->set('open',$opens);
+        
+        $this->RegisterSalePayment->bindModel(array(
+            'belongsTo' => array(
+                'MerchantPaymentType' => array(
+                    'className' => 'MerchantPaymentType',
+                    'foreignKey' => 'merchant_payment_type_id'
+                )
+            )
+        ));
+        
+        $this->RegisterSale->bindModel(array(
+            'hasMany' => array(
+                'RegisterSalePayment' => array(
+                    'className' => 'RegisterSalePayment',
+                    'foreignKey' => 'sale_id'
+                )
+            ),
+            'belongsTo' => array(
+                'MerchantUser' => array(
+                    'className' => 'MerchantUser',
+                    'foreignKey' => 'user_id'
+                ),
+                'MerchantCustomer' => array(
+                    'className' => 'MerchantCustomer',
+                    'foreignKey' => 'customer_id'
+                )
+            )
+        ));
+        
+        $this->RegisterSale->recursive = 2;
+        
+        $laybys = $this->RegisterSale->find('all', array(
+            'conditions' => array(
+                'RegisterSale.created >=' => $opens['MerchantRegisterOpen']['register_open_time'],
+                'RegisterSale.status' => array('layby','layby_closed')
+            )
+        ));
+        $this->set('laybys',$laybys);
+        
+        $this->RegisterSale->bindModel(array(
+            'hasMany' => array(
+                'RegisterSalePayment' => array(
+                    'className' => 'RegisterSalePayment',
+                    'foreignKey' => 'sale_id'
+                )
+            ),
+            'belongsTo' => array(
+                'MerchantUser' => array(
+                    'className' => 'MerchantUser',
+                    'foreignKey' => 'user_id'
+                ),
+                'MerchantCustomer' => array(
+                    'className' => 'MerchantCustomer',
+                    'foreignKey' => 'customer_id'
+                )
+            )
+        ));
+        
+        $onaccounts = $this->RegisterSale->find('all', array(
+            'conditions' => array(
+                'RegisterSale.created >=' => $opens['MerchantRegisterOpen']['register_open_time'],
+                'RegisterSale.status' => array('onaccount','onaccount_closed')
+            )
+        ));
+        $this->set('onaccounts',$onaccounts);
+        
+        $this->RegisterSalePayment->bindModel(array(
+            'belongsTo' => array(
+                'MerchantPaymentType' => array(
+                    'className' => 'MerchantPaymentType',
+                    'foreignKey' => 'merchant_payment_type_id'
+                )
+            )
+        ));
+        
+        $this->RegisterSalePayment->recursive = 2;
+
+        $payments = $this->RegisterSalePayment->find('all', array(
+            'fields' => array(
+                'RegisterSalePayment.*',
+                'RegisterSale.*'
+            ),
+            'conditions' => array(
+                'RegisterSalePayment.payment_date >=' => $opens['MerchantRegisterOpen']['register_open_time'],
+                'RegisterSale.register_id' => $user['MerchantRegister']['id']
+            ),
+            'joins' => array(
+                array(
+                    'table' => 'register_sales',
+                    'alias' => 'RegisterSale',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'RegisterSalePayment.sale_id = RegisterSale.id'
+                    )
+                )
+            )
+        ));
+        $this->set('payments',$payments);
     }
+    
     public function select_register() {
         if($this->request->is('post')) {
             $this->loadModel("MerchantRegister");
