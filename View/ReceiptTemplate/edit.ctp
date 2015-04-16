@@ -51,11 +51,14 @@
                   </dd>
                   <dt>Receipt style</dt>
                   <dd>
-                    <input type="text">
+                    <select>
+						<option></option>
+					</select>
                   </dd>
                   <dt>Print receipt barcode</dt>
                   <dd>
-                    <input type="radio">
+                    <input type="radio"> Yes <span class="margin-right-10"></span>
+                    <input type="radio"> No
                   </dd>
                 </dl>
               </div>
@@ -69,16 +72,55 @@
               <div class="col-md-6">
                 <dl>
                   <dt>Banner image</dt>
-                  <dd>
+                  <dd class="height-inherit">
                     <input type="file">
+					<h6>Upload a JPG, PNG or GIF file, no wider than 280px.</h6>
                   </dd>
                   <dt>Header text</dt>
-                  <dd>
-                    <input type="text">
+                  <dd class="height-inherit">
+                    <textarea></textarea>
+					<h6>Limit this to around one paragraph or no more than 15 lines.</h6>
                   </dd>
                   <dt>Invoice.no.prefix</dt>
                   <dd>
+                    <input type="text" value="">
+                  </dd>
+                  <dt>Invoice heading</dt>
+                  <dd>
                     <input type="text">
+                  </dd>
+                  <dt>Served by label</dt>
+                  <dd>
+                    <input type="text">
+                  </dd>
+                  <dt>Discount label</dt>
+                  <dd>
+                    <input type="text">
+                  </dd>
+                  <dt>Sub total label</dt>
+                  <dd>
+                    <input type="text">
+                  </dd>
+                  <dt>Tax label</dt>
+                  <dd>
+                    <input type="text">
+                  </dd>
+                  <dt>To pay label</dt>
+                  <dd>
+                    <input type="text">
+                  </dd>
+                  <dt>Total label</dt>
+                  <dd>
+                    <input type="text">
+                  </dd>
+                  <dt>Change label</dt>
+                  <dd>
+                    <input type="text">
+                  </dd>
+                  <dt>Footer text</dt>
+                  <dd class="height-inherit">
+                    <textarea></textarea>
+					<h6>Limit this to around one paragraph or no more than 15 lines.</h6>
                   </dd>
                 </dl>
               </div>

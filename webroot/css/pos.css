@@ -464,6 +464,8 @@ label{
 }
 .radio input[type=radio], .radio-inline input[type=radio], .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox] {
 	width:inherit;
+	margin-left: 0;
+	  position: inherit;
 }
 .customer_add input[type=text]{
 	margin-bottom:5px;
