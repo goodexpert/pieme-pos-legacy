@@ -68,21 +68,21 @@ class QuickKeyController extends AppController {
     public function edit($id){
         if ($this->request->is('post') || $this->request->is('ajax')) {
             $result = array(
-            	'success' => false
+                'success' => false
             );
             $dataSource = $this->MerchantQuickKey->getDataSource();
             $dataSource->begin();
 
             try {
-            	$data = $this->request->data;
-            	
+                $data = $this->request->data;
+                
                 $this->MerchantQuickKey->id = $id;
                 $this->MerchantQuickKey->save($data);
                 
                 $result['success'] = true;
                 $dataSource->commit();
             } catch (Exception $e) {
-            	$dataSource->rollback();
+                $dataSource->rollback();
                 $result['message'] = $e->getMessage();
             }
             $this->serialize($result);
@@ -117,7 +117,7 @@ class QuickKeyController extends AppController {
                 $dataSource->commit();
                 $result['success'] = true;
             } catch (Exception $e) {
-            	$dataSource->rollback();
+                $dataSource->rollback();
                 $result['message'] = $e->getMessage();
             }
             $this->serialize($result);

@@ -225,7 +225,7 @@ class SetupController extends AppController {
         $this->loadModel('MerchantUser');
 
         $this->MerchantUser->bindModel(array(
-        	'belongsTo' => array(
+            'belongsTo' => array(
                 'MerchantOutlet' => array(
                     'className' => 'MerchantOutlet',
                     'foreignKey' => 'outlet_id'

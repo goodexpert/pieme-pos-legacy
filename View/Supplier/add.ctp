@@ -311,11 +311,11 @@ jQuery(document).ready(function() {
                 postal_country_id: $(".postal_country").val()
             },
             success: function(result) {
-	            if(result.success) {
-		            window.location.href = "/supplier";
-	            } else {
-		            console.log(result);
-	            }
+                if(result.success) {
+                    window.location.href = "/supplier";
+                } else {
+                    console.log(result);
+                }
             }
         });
     });

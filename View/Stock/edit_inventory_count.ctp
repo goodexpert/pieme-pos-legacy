@@ -165,7 +165,7 @@
                                 </colgroup>
                                 <thead>
                                     <tr role="row">
-                                        <th>Product</th>
+                                        <th style="border-radius:5px 5px 0 0">Product</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -293,8 +293,6 @@
 <script src="/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
 <script src="/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
-
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"> 
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script>
 var manualNamed = false;
@@ -589,7 +587,7 @@ function updateView() {
 
         var index = 0;
         $.each(products, function(id, product) {
-            $('#productTable tbody').append('<tr><td><input type="hidden" value="' + id +'" /><p class="pull-left">' + product.name + '</p><h6 class="pull-left">' + product.sku + '</h6></td></tr>');
+            $('#productTable tbody').append('<tr><td><input type="hidden" value="' + id +'" /><p class="pull-left margin-right-10">' + product.name + '</p><h6 class="pull-left" style="margin-top: 3px;">' + product.sku + '</h6></td></tr>');
             index++;
         });
     } else {

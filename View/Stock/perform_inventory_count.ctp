@@ -237,7 +237,6 @@
 <script src="/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
 <script src="/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"> 
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script>
 var quickScanMode = false;

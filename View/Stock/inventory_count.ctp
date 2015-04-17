@@ -252,7 +252,6 @@
 <script src="/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
 <script src="/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
-
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script>
 var inventoryCounts = JSON.parse($("#hidden-data").val());

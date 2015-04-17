@@ -79,7 +79,7 @@ th small {
                           <dt>Outlet</dt>
                           <dd>
                             <select id="price_book_outlet_id">
-                            	<option value="">All Outlets</option>
+                                <option value="">All Outlets</option>
                                 <?php foreach($outlets as $outlet) { ?>
                                 <option value="<?php echo $outlet['MerchantOutlet']['id'];?>" <?php if($pricebook['MerchantPriceBook']['outlet_id'] == $outlet['MerchantOutlet']['id']){echo "selected";}?>><?php echo $outlet['MerchantOutlet']['name'];?></option>
                                 <?php } ?>
@@ -400,10 +400,10 @@ jQuery(document).ready(function() {
                 general_max_units: $("#general_max_units").val()
             },
             success: function(result){
-            	if(result.success) {
-                	window.location.href = "/pricebook/view?r="+result.price_book_id;
+                if(result.success) {
+                    window.location.href = "/pricebook/view?r="+result.price_book_id;
                 } else {
-	                console.log(result.message);
+                    console.log(result.message);
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {

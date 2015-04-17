@@ -89,7 +89,7 @@
                         <dt>Customer group</dt>
                         <dd><select name="customer_group_id">
                         <?php foreach($customer_groups as $group) { ?>
-                        	<option value="<?php echo $group['MerchantCustomerGroup']['id'];?>" <?php if(isset($_GET['customer_group_id']) && $_GET['customer_group_id'] == $group['MerchantCustomerGroup']['id']){echo "selected";}?>><?php echo $group['MerchantCustomerGroup']['name'];?></option>
+                            <option value="<?php echo $group['MerchantCustomerGroup']['id'];?>" <?php if(isset($_GET['customer_group_id']) && $_GET['customer_group_id'] == $group['MerchantCustomerGroup']['id']){echo "selected";}?>><?php echo $group['MerchantCustomerGroup']['name'];?></option>
                         <?php } ?>
                         </select></dd>
                     </dl>

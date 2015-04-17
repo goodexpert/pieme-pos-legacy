@@ -93,22 +93,22 @@
                 </tr>
             </thead>
             <tbody>
-            	<?php foreach($outlets as $outlet){
-	            	foreach($outlet['MerchantRegister'] as $register) { ?>
-		                <tr class="register-list-data" data-id="<?php echo $register['id'];?>">
-		                    <td><?php echo $register['name'];?></td>
-		                    <td><?php echo $outlet['MerchantOutlet']['name'];?></td>
-		                    <td>
-		                        <select class="width-inherit quick_key_id">
-		                            <?php foreach($items as $item) { ?>
-		                                <option value="<?php echo $item['MerchantQuickKey']['id'];?>" <?php if($register['quick_key_id'] == $item['MerchantQuickKey']['id']){echo "selected";}?>><?php echo $item['MerchantQuickKey']['name'];?></option>
-		                            <?php } ?>
-		                        </select>
-		                    </td>
-		                    <td><span class="clickable assign_quick_key">Edit</span></td>
-		                </tr>
-		            <?php }
-		        }?>
+                <?php foreach($outlets as $outlet){
+                    foreach($outlet['MerchantRegister'] as $register) { ?>
+                        <tr class="register-list-data" data-id="<?php echo $register['id'];?>">
+                            <td><?php echo $register['name'];?></td>
+                            <td><?php echo $outlet['MerchantOutlet']['name'];?></td>
+                            <td>
+                                <select class="width-inherit quick_key_id">
+                                    <?php foreach($items as $item) { ?>
+                                        <option value="<?php echo $item['MerchantQuickKey']['id'];?>" <?php if($register['quick_key_id'] == $item['MerchantQuickKey']['id']){echo "selected";}?>><?php echo $item['MerchantQuickKey']['name'];?></option>
+                                    <?php } ?>
+                                </select>
+                            </td>
+                            <td><span class="clickable assign_quick_key">Edit</span></td>
+                        </tr>
+                    <?php }
+                }?>
             </tbody>
         </table>
         </div>

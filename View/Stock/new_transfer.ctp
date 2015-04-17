@@ -1,6 +1,3 @@
-input[type=file] {
-    border: 0;
-}
 <div class="clearfix">
 </div>
 <!-- BEGIN CONTAINER -->
@@ -55,23 +52,36 @@ input[type=file] {
     <!-- BEGIN CONTENT -->
     <div class="page-content-wrapper">
         <div class="page-content">
-        
             <h3>New Stock Transfer</h3>
-            
             <div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">Details</div>
-                
                 <form action="/stock/newTransfer" method="post" id="stock_order_form">
                 <div class="line-box line-box-content col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-6">
                         <dl>
                             <dt>Name / reference</dt>
                             <dd>
-                                <input tpye="text" name="data[MerchantStockOrder][name]" value="Order - <?=date('d M Y');?>" id="order-name">
+                                <?php
+                                    echo $this->Form->input('MerchantStockOrder.name', array(
+                                        'id' => 'name',
+                                        'type' => 'text',
+                                        'div' => false,
+                                        'label' => false,
+                                        'value' => 'Transfer - ' . date('d M Y')
+                                    ));
+                                 ?>
                             </dd>
                             <dt>Due at</dt>
                             <dd>
                                 <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                                <input type="text" name="data[MerchantStockOrder][due_date]" class="datepicker" id="order-due">
+                                <?php
+                                    echo $this->Form->input('MerchantStockOrder.due_date', array(
+                                        'id' => 'due_date',
+                                        'type' => 'text',
+                                        'class' => 'datepicker',
+                                        'div' => false,
+                                        'label' => false
+                                    ));
+                                 ?>
                             </dd>
                         </dl>
                     </div>
@@ -80,25 +90,26 @@ input[type=file] {
                             <dt>Source outlet</dt>
                             <dd>
                                 <?php
-                                    $merchantOutlets = $this->Form->input('MerchantStockOrder.source_outlet_id', array(
-                                        'type'    => 'select',
-                                        'div'     => false,
-                                        'label'   => false,
-                                        'options' => $outlets
+                                    echo $this->Form->input('MerchantStockOrder.source_outlet_id', array(
+                                        'id' => 'source_outlet_id',
+                                        'type' => 'select',
+                                        'div' => false,
+                                        'label' => false,
+                                        'options' => $outlets,
+                                        'empty'   => ''
                                     ));
-                                    echo $merchantOutlets;
                                 ?>
                             </dd>
                             <dt>Destination outlet</dt>
                             <dd>
                                 <?php
-                                    $merchantOutlets = $this->Form->input('MerchantStockOrder.outlet_id', array(
-                                        'type'    => 'select',
-                                        'div'     => false,
-                                        'label'   => false,
+                                    echo $this->Form->input('MerchantStockOrder.outlet_id', array(
+                                        'id' => 'outlet_id',
+                                        'type' => 'select',
+                                        'div' => false,
+                                        'label' => false,
                                         'options' => $outlets
                                     ));
-                                    echo $merchantOutlets;
                                 ?>
                             </dd>
                         </dl>
@@ -129,9 +140,7 @@ input[type=file] {
                     <button class="btn btn-default btn-wide pull-right margin-right-10 cancel">Cancel</button>
                 </div>
                 </form>
-
             </div>
-                    
         </div>
     </div>
     <!-- END CONTENT -->
@@ -228,7 +237,6 @@ input[type=file] {
 <script src="/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
 <script src="/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
-
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script>
 jQuery(document).ready(function() {    
@@ -239,24 +247,16 @@ jQuery(document).ready(function() {
 
     $(".datepicker").datepicker({ dateFormat: 'yy-mm-dd' });
 
+/*
     $(document).on('click','.save',function(){
         $.ajax({
-
             url: '/stock/order.json',
             type: 'POST',
-            data: {
-                name: $("#order-name").val(),
-                supplier_id: $("#order-supplier").val(),
-                outlet_id: $("#order-outlet").val(),
-                type: 'SUPPLIER',
-                status: 'OPEN',
-                due_date: $("#order-due").val()
-            }
-        
+            data: $("#stock_order_form").serialize()
         }).done(function(result){
-            console.log(result);
         });
     });
+*/
    
     $(".cancel").click(function(){
         parent.history.back();

@@ -74,70 +74,70 @@
                     Add Outlet</button></a> 
                 </div>
             </div>
-	        <table id="registerTable" class="table table-striped table-bordered dataTable">
-	            <thead>
-	            <tr>
-	                <th>Outlet Name</th>
-	                <th>Registers</th>
-	                <th>Status</th>
-	                <th>Details</th>
-	                <th></th>
-	            </tr>
-	            </thead>
-	            
-	            <tbody>
-	                <?php foreach($outlets as $outlet){ ?>
-	                    <tr>
-	                        <td><?=$outlet['MerchantOutlet']['name'];?></td>
-	                        <td colspan="3"></td>
-	                        <td>
-	                        <a href="/outlet/<?=$outlet['MerchantOutlet']['id'];?>/edit">Edit Outlet</a> | 
-	                        <a href="/register/add?outlet=<?=$outlet['MerchantOutlet']['id'];?>">Add a Register</a>
-	                        </td>
-	                    </tr>
-	                    <?php foreach($outlet['MerchantRegister'] as $register){ ?>
-	                        <tr>
-	                            <td></td>
-	                            <td><?=$register['name'];?></td>
-	                            <td>Open</td>
-	                            <td>
-	                                <ul>
-	                                    <li><?php echo $register['MerchantQuickKey']['name'];?></li>
-	                                    <li><?php echo $register['MerchantReceiptTemplate']['name'];?></li>
-	                                    <li>Invoice <?php echo $register['invoice_sequence']+1;?></li>
-	                                    <a class="clickable more_details"><li style="list-style: none">More Details</li></a>
-	                                    <?php if($register['email_receipt'] == 1){ ?>
-	                                    <li class="hidden_li" style="display:none;">Email receipt</li>
-	                                    <?php }
-	                                    if($register['print_receipt'] == 1){ ?>
-	                                    <li class="hidden_li" style="display:none;">Print receipt</li>
-	                                    <?php }
-	                                    if(!$register['ask_for_note_on_save'] == 0) { ?>
-	                                    <li class="hidden_li" style="display:none;">Ask for note on <?php if($register['ask_for_note_on_save'] == 1){echo 'Save/Layby/Account/Return';}else{echo "all sales";}?></li>
-	                                    <?php }
-	                                    if($register['print_note_on_receipt'] == 1){ ?>
-	                                    <li class="hidden_li" style="display:none;">Print note on receipt</li>
-	                                    <?php }
-	                                    if($register['show_discounts'] == 1){ ?>
-	                                    <li class="hidden_li" style="display:none;">Show discounts on receipt</li>
-	                                    <?php } ?>
-	                                    <a class="clickable fewer_details" style="display:none;"><li style="list-style: none">Fewer Details</li></a>
-	                                </ul>
-	                            </td>
-	                            <td><a href="/register/<?=$register['id'];?>/edit">Edit register</a></td>
-	                        </tr>
-	                    <?php } ?>
-	                <?php } ?>
-	            </tbody>
-	        </table>
-	        <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-bottom-20">
+            <table id="registerTable" class="table table-striped table-bordered dataTable">
+                <thead>
+                <tr>
+                    <th>Outlet Name</th>
+                    <th>Registers</th>
+                    <th>Status</th>
+                    <th>Details</th>
+                    <th></th>
+                </tr>
+                </thead>
+                
+                <tbody>
+                    <?php foreach($outlets as $outlet){ ?>
+                        <tr>
+                            <td><?=$outlet['MerchantOutlet']['name'];?></td>
+                            <td colspan="3"></td>
+                            <td>
+                            <a href="/outlet/<?=$outlet['MerchantOutlet']['id'];?>/edit">Edit Outlet</a> | 
+                            <a href="/register/add?outlet=<?=$outlet['MerchantOutlet']['id'];?>">Add a Register</a>
+                            </td>
+                        </tr>
+                        <?php foreach($outlet['MerchantRegister'] as $register){ ?>
+                            <tr>
+                                <td></td>
+                                <td><?=$register['name'];?></td>
+                                <td>Open</td>
+                                <td>
+                                    <ul>
+                                        <li><?php echo $register['MerchantQuickKey']['name'];?></li>
+                                        <li><?php echo $register['MerchantReceiptTemplate']['name'];?></li>
+                                        <li>Invoice <?php echo $register['invoice_sequence']+1;?></li>
+                                        <a class="clickable more_details"><li style="list-style: none">More Details</li></a>
+                                        <?php if($register['email_receipt'] == 1){ ?>
+                                        <li class="hidden_li" style="display:none;">Email receipt</li>
+                                        <?php }
+                                        if($register['print_receipt'] == 1){ ?>
+                                        <li class="hidden_li" style="display:none;">Print receipt</li>
+                                        <?php }
+                                        if(!$register['ask_for_note_on_save'] == 0) { ?>
+                                        <li class="hidden_li" style="display:none;">Ask for note on <?php if($register['ask_for_note_on_save'] == 1){echo 'Save/Layby/Account/Return';}else{echo "all sales";}?></li>
+                                        <?php }
+                                        if($register['print_note_on_receipt'] == 1){ ?>
+                                        <li class="hidden_li" style="display:none;">Print note on receipt</li>
+                                        <?php }
+                                        if($register['show_discounts'] == 1){ ?>
+                                        <li class="hidden_li" style="display:none;">Show discounts on receipt</li>
+                                        <?php } ?>
+                                        <a class="clickable fewer_details" style="display:none;"><li style="list-style: none">Fewer Details</li></a>
+                                    </ul>
+                                </td>
+                                <td><a href="/register/<?=$register['id'];?>/edit">Edit register</a></td>
+                            </tr>
+                        <?php } ?>
+                    <?php } ?>
+                </tbody>
+            </table>
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-bottom-20">
                 <h2>
                     Receipt Templates
                 </h2>
 
                 <?php foreach($receipt_templates as $template) { ?>
-                	<a href="/receipt_template/<?php echo $template['MerchantReceiptTemplate']['id'];?>/edit">
-                		<?php echo $template['MerchantReceiptTemplate']['name'];?></a>
+                    <a href="/receipt_template/<?php echo $template['MerchantReceiptTemplate']['id'];?>/edit">
+                        <?php echo $template['MerchantReceiptTemplate']['name'];?></a>
                 <?php } ?>
             </div>
         </div>

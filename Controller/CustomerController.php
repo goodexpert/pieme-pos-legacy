@@ -104,7 +104,7 @@ class CustomerController extends AppController {
     
         if($this->request->is('post')) {
             $result = array(
-            	'success' => false
+                'success' => false
             );
             try {
                 $data = $this->request->data;
@@ -260,7 +260,7 @@ class CustomerController extends AppController {
         
         if($this->request->is('post')) {
             $result = array(
-            	'success' => false
+                'success' => false
             );
             try {
                 $data = $this->request->data;

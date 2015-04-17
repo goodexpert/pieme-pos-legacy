@@ -118,6 +118,9 @@ class SignupController extends AppController {
             // create a default inventories
             $this->createDefaultInventory($merchant_id);
 
+            // create a merchant loyalty
+            $this->createMerchantLoyalty($merchant_id, $data['name']);
+
             $dataSource->commit();
             $this->redirect('/users/login');
         } catch (Exception $e) {
@@ -534,6 +537,33 @@ class SignupController extends AppController {
                 ));
             }
         }
+    }
+
+/**
+ * Create a merchant loyalty function.
+ *
+ * @return void
+ */
+    private function createMerchantLoyalty($merchant_id, $store_name) {
+        $this->loadModel('MerchantLoyalty');
+
+        // create a merchant loyalty
+        $this->MerchantLoyalty->create();
+        $loyalty['MerchantLoyalty']['merchant_id'] = $merchant_id;
+        $loyalty['MerchantLoyalty']['loyalty_earn_amount'] = 1;
+        $loyalty['MerchantLoyalty']['loyalty_spend_amount'] = 50;
+        $loyalty['MerchantLoyalty']['offer_signup_bonus_loyalty'] = 0;
+        $loyalty['MerchantLoyalty']['signup_bonus_loyalty_amount'] = 0;
+        $loyalty['MerchantLoyalty']['send_welcome_email'] = 0;
+        $loyalty['MerchantLoyalty']['welcome_email_subject'] = 'Welcome to the ' . $store_name . ' Loyalty Program';
+
+        $email_body = '<h1>Welcome to ' . $store_name . ' Loyalty Program</h1>';
+        $email_body .= '<p>You can earn Loyalty $ when you make purchases at onzsa and redeem your credit in store.</p>';
+        $email_body .= '<p>Thanks,<br>' . $store_name . '</p>';
+        $email_body .= '<p>Register your details with the ' . $store_name . ' Loyalty Program to earn an additional $ Loyalty:</p>';
+        $loyalty['MerchantLoyalty']['welcome_email_body'] = base64_encode($email_body);
+
+        $this->MerchantLoyalty->save($loyalty);
     }
 
 }

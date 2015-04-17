@@ -152,10 +152,10 @@
                             <dd><input type="text" class="physical_state" value="<?php echo $customer['Contact']['physical_state'];?>"></dd>
                             <dt>Country</dt>
                             <dd>
-                            	<select class="physical_country">
-                            		<option>Select a country</option>
-                            		<option value="NZ">NZ</option>
-                            	</select>
+                                <select class="physical_country">
+                                    <option>Select a country</option>
+                                    <option value="NZ">NZ</option>
+                                </select>
                             </dd>
                         </dl>
                     </div>
@@ -383,11 +383,11 @@ $(".save").click(function(){
                 note: $(".customer_note").val()
             },
             success: function(result) {
-	            if(result.success) {
-		            window.location.href = "/customer";
-	            } else {
-		            console.log(result);
-	            }
+                if(result.success) {
+                    window.location.href = "/customer";
+                } else {
+                    console.log(result);
+                }
             }
         });
     } else {

@@ -92,7 +92,7 @@
                     <dt class="col-md-3">Product type</dt>
                     <dd class="col-md-9">
                       <select class="form-control" id="product_type">
-                      	<option value=""></option>
+                          <option value=""></option>
                         <?php foreach($types as $type){?>
                             <option value="<?=$type['MerchantProductType']['id'];?>" <?php if($type['MerchantProductType']['id'] == $product['MerchantProduct']['product_type_id']){echo "selected";}?>><?=$type['MerchantProductType']['name'];?></option>
                         <?php } ?>
@@ -867,20 +867,20 @@ $(document).ready(function(){
                 },
                 success: function(result){
                     if(result.success) {
-	                    window.location.href = "/product/"+result.product_id;
+                        window.location.href = "/product/"+result.product_id;
                     } else {
-                    	$("#loader-wrapper").hide();
-	                    console.log(result);
+                        $("#loader-wrapper").hide();
+                        console.log(result);
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {
-                	$("#loader-wrapper").hide();
+                    $("#loader-wrapper").hide();
                     console.log(textStatus, errorThrown);
                 }
             });
             
         } else {
-        	$("#loader-wrapper").hide();
+            $("#loader-wrapper").hide();
             $("html, body").animate({ scrollTop: 0 }, "slow");
         }
     });

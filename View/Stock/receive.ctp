@@ -56,37 +56,34 @@
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                 <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">Receive Stock Order</h2>
                 <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
-                    <a href="/stock/editDetails/<?php echo $order['MerchantStockOrder']['id']; ?>"><button id="import" class="btn btn-white pull-right" style="color:black">
+                    <a href="/stock/<?php echo $data['MerchantStockOrder']['id']; ?>/editDetails"><button id="import" class="btn btn-white pull-right" style="color:black">
                     <div class="glyphicon glyphicon-edit"></div>&nbsp;Edit Order Details</button></a>
                 </div>
             </div>
-                        
             <div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">Details</div>
-                
             <div class="line-box line-box-content col-md-12 col-sm-12 col-xs-12">
                 <div class="col-md-6">
                     <dl>
                         <dt>Order name</dt>
                         <dd>
-                            <?php echo $order['MerchantStockOrder']['name']; ?>
+                            <?php echo $data['MerchantStockOrder']['name']; ?>
                         </dd>
                         <dt>Order from</dt>
                         <dd>
-                            <?php
-                                if ($order['MerchantStockOrder']['type'] == 'SUPPLIER') {
-                                    echo is_null($order['MerchantSupplier']['name']) ? 'Any' : $order['MerchantSupplier']['name'];
-                                } elseif ($order['MerchantStockOrder']['type'] == 'OUTLET') {
-                                    echo is_null($order['MerchantSourceOutlet']['name']) ? 'Any' : $order['MerchantSourceOutlet']['name'];
-                                }
-                             ?>
+                        <?php if ($data['MerchantStockOrder']['type'] == 'OUTLET') : ?>
+                            <?php echo empty($data['MerchantSourceOutlet']['id']) ? 'Any' : $data['MerchantSourceOutlet']['name']; ?>
+                        <?php elseif ($data['MerchantStockOrder']['type'] == 'SUPPLIER' ) : ?>
+                            <?php echo empty($data['MerchantSupplier']['id']) ? 'Any' : $data['MerchantSupplier']['name']; ?>
+                        <?php endif; ?>
                         </dd>
                         <dt>Deliver to</dt>
                         <dd>
-                            <?php echo $order['MerchantOutlet']['name']; ?> 
+                            <?php echo $data['MerchantOutlet']['name']; ?> 
                         </dd>
                     </dl>
                 </div>
                 <div class="col-md-6">
+<!--
                     <dl>
                         <dt>Due at</dt>
                         <dd>
@@ -97,43 +94,34 @@
                             <?php echo $order['MerchantStockOrder']['supplier_invoice']; ?>
                         </dd>
                     </dl>
+-->
                 </div>
             </div>
             <div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">Order Products</div>
+                <!--<form action="/stock/<?php echo $order['MerchantStockOrder']['id']; ?>/edit" method="post" id="stock_order_item_form">-->
                 <form id="stock_order_item_form">
+                <?php
+                    echo $this->Form->input('MerchantStockOrder.id', array(
+                        'id' => 'id',
+                        'type' => 'hidden',
+                        'div' => false,
+                        'label' => false
+                    ));
+                 ?>
                 <div class="line-box line-box-content col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
                 <div class="col-md-12 col-sm-12 col-xs-12 order-product-header col-alpha col-omega">
                     <div class="col-md-7 col-alpha">
-                        <input type="search" placeholder="Search Products" id="product_search" autocomplete="off">
+                        <input type="text" class="" id="search-items" placeholder="Search Products">
                     </div>
                     <div class="col-md-1 col-alpha">
-                        <input type="number" id="product_quantity" placeholder="1" >
+                        <input type="number" id="quantity" placeholder="1" value="1">
                     </div>
                     <div class="col-md-4 col-alpha">
                         <button type="button" class="btn btn-default add-order-item">Add</button>
                     </div>
-                    <div class="search_result" style="display:none;">
-                        <span class="search-tri"></span>
-                        <div class="search-default"> No Result </div>
-                        <?php foreach($products as $product){ ?>
-                        <?php
-                            if ( isset($product['MerchantProductInventory'][0]['count']) ):
-                                if ( is_null($product['MerchantProductInventory'][0]['count']) ):
-                                    $inventoryCount = '0';
-                                else:
-                                    $inventoryCount = $product['MerchantProductInventory']['count'];
-                                endif;
-                            else:
-                                $inventoryCount = '0';
-                            endif;
-                        ?>
-                        <!--<button type="button" data-stock="0" data-order-id="<?=$order['MerchantStockOrder']['id'];?>" data-name="<?=$product['MerchantProduct']['name'];?>" data-sku="<?=$product['MerchantProduct']['sku'];?>" data-id="<?=$product['MerchantProduct']['id'];?>" data-price-include-tax="<?=$product['MerchantProduct']['price_include_tax'];?>" class="data-found"><?=$product['MerchantProduct']['name']." (".$product['MerchantProduct']['sku'].")";?></button>-->
-                        <button type="button" data-stock="0" data-order-id="<?=$order['MerchantStockOrder']['id'];?>" data-name="<?=$product['MerchantProduct']['name'];?>" data-sku="<?=$product['MerchantProduct']['sku'];?>" data-id="<?=$product['MerchantProduct']['id'];?>" data-price-include-tax="<?=$product['MerchantProduct']['price_include_tax'];?>" data-inventory-count="<?php echo $inventoryCount; ?>" data-supply-price="<?php echo $product['MerchantProduct']['supply_price']; ?>" class="data-found"><?=$product['MerchantProduct']['name']." (".$product['MerchantProduct']['sku'].")";?></button>
-                        <?php } ?> 
-                    </div>
                 </div>
                 <div class="col-md-12 col-sm-12 col-xs-12">
-                    <table class="dataTable table-bordered">
+                    <table class="dataTable table-bordered" id="orderItemTable">
                         <colgroup>
                             <col width="10%">
                             <col width="35%">
@@ -154,85 +142,28 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <input type="hidden" name="data[MerchantStockOrder][id]" value="<?php echo $order['MerchantStockOrder']['id']; ?>">
-                            <?php
-                                if ( count($order['MerchantStockOrderItem']) > 0 ):
-                                    foreach ($order['MerchantStockOrderItem'] as $idx => $item):
-                            ?>
-                            <input type="hidden" name="data[MerchantStockOrderItem][<?php echo $idx; ?>][id]" value="<?php echo $item['id']; ?>" />
-                            <input type="hidden" name="data[MerchantStockOrderItem][<?php echo $idx; ?>][order_id]" value="<?php echo $item['order_id']; ?>" />
-                            <input type="hidden" name="data[MerchantStockOrderItem][<?php echo $idx; ?>][product_id]" value="<?php echo $item['product_id']; ?>" />
-                            <tr>
-                                <!--
-                                <input type="hidden" name="data[MerchantStockOrderItem][<?php echo $idx; ?>][supply_price]" value="<?php echo $item['MerchantProduct']['supply_price']; ?>" />
-                                -->
-                                <input type="hidden" name="data[MerchantStockOrderItem][<?php echo $idx; ?>][price_include_tax]" value="<?php echo $item['MerchantProduct']['price_include_tax']; ?>" />
-                                <td><?php echo $idx+1; ?></td>
-                                <td><?php echo $item['MerchantProduct']['name']; ?></td>
-                                <td>
-                                    <?php
-                                        if ( isset($item['MerchantProduct']['MerchantProductInventory'][0]['count']) ):
-                                            echo $item['MerchantProduct']['MerchantProductInventory'][0]['count'];
-                                        else:
-                                            echo '0';
-                                        endif;
-                                    ?>
-                                </td>
-                                <td><?php echo $item['count']; ?></td>
-                                <td>
-                                    <?php
-                                        $default = is_null($item['received']) ? $item['count'] : $item['received'];
-                                        $received = $this->Form->input('MerchantStockOrderItem.' . $idx . '.received', array(
-                                            'type' => 'text',
-                                            'div'  => false,
-                                            'label' => false,
-                                            'class' => 'changable',
-                                            'value' => $default
-                                        ));
-                                        echo $received;
-                                    ?>
-                                </td>
-                                <td>
-                                    <?php
-                                        $supplyPrice = $this->Form->input('MerchantStockOrderItem.' . $idx . '.supply_price', array(
-                                            'type' => 'text',
-                                            'div'  => 'false',
-                                            'label' => false,
-                                            'class' => 'changable',
-                                            'value' => sprintf("%.2f", round($this->request->data['MerchantStockOrderItem'][$idx]
-                                            ['supply_price'], 2))
-                                        ));     
-                                        echo $supplyPrice;
-                                    ?>
-                                </td>
-                                <td><?php echo sprintf("%.2f", round($item['count'] * $item['supply_price'], 2)); ?></td>
-                            </tr>
-                            <?php
-                                    endforeach;
-                                else:
-                            ?>
-                            <tr>
+                            <tr class="order-null">
                                 <td colspan="7">There are no products in this consignment order yet.</td>
                             </tr>
-                            <?php
-                                endif;
-                            ?>
                         </tbody>
                     </table>
                 </div>
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
-                <button class="btn btn-primary pull-right save-and-receive">Save and Receive</button>
+                <button class="btn btn-primary save_and_send pull-right">Save and Send</button>
                 <button class="btn btn-primary btn-wide pull-right save margin-right-10">Save</button>
                 <button class="btn btn-default btn-wide pull-right margin-right-10 cancel">Cancel</button>
             </div>
             </form>
-                    
         </div>
     </div>
     <!-- END CONTENT -->
+    <div class="hidden-data">
+        <input type="hidden" id="hidden-data1" value='<?php echo json_encode($data['MerchantStockOrderItem']); ?>' />
+        <input type="hidden" id="hidden-data2" value='<?php echo json_encode($inventories); ?>' />
+    </div>
     <!-- Save&Send POPUP BOX -->
-    <div class="confirmation-modal modal fade in save_receive" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="confirmation-modal modal fade in save_send" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -242,32 +173,41 @@
                     <h4 class="modal-title">Send order</h4>
                 </div>
                 <form id="confirmation-email-form">
-                <input type="hidden" name="data[MerchantStockOrder][id]" value="<?php echo $order['MerchantStockOrder']['id']; ?>" />
+                <input type="hidden" name="data[Email][order_id]" value="<?php echo $data['MerchantStockOrder']['id']; ?>" />
                 <div class="modal-body margin-bottom-20">
                     <dl>
                         <dt>Recipient name</dt>
-                        <dd><input type="text" name="data[recipient_name]"></dd>
+                        <dd>
+                            <input type="text" name="data[Email][recipient_name]" id="recipient_name">
+                        </dd>
                         <dt>Email</dt>
-                        <dd><input type="text" name="data[email]"></dd>
+                        <dd>
+                            <input type="text" name="data[Email][email]" id="email">
+                        </dd>
                         <dt>CC</dt>
-                        <dd><input type="text" name="data[cc]"></dd>
+                        <dd>
+                            <input type="text" name="data[Email][cc]" id="cc">
+                        </dd>
                         <dt>Subject</dt>
-                        <dd><input type="text" name="data[subject]"></dd>
+                        <dd>
+                            <input type="text" name="data[Email][subject]" id="subject">
+                        </dd>
                         <dt>Message</dt>
-                        <dd><textarea col="2" name="data[message]"></textarea></dd>
+                        <dd>
+                            <textarea col="2" name="data[Email][message]" id="message"></textarea>
+                        </dd>
                     </dl>
                 </div>
                 <div class="modal-footer">
                     <button class="close-pop btn btn-primary btn-wide" type="button" data-dismiss="modal">Cancel</button>
-                    <button class="confirm btn btn-success btn-wide modal-send" type="button" data-dismiss="modal">Send</button>
+                    <button class="send-email btn btn-success btn-wide modal-send" type="button" data-dismiss="modal">Send</button>
                 </div>
                 </form>
             </div>
         </div>
     </div>
     <!-- Save&Send POPUP BOX END -->
-
-   <!-- BEGIN QUICK SIDEBAR -->
+    <!-- BEGIN QUICK SIDEBAR -->
     <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
     <div class="page-quick-sidebar-wrapper">
         <div class="page-quick-sidebar">            
@@ -360,9 +300,11 @@
 <script src="/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
 <script src="/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
-
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script>
+var orderItems = JSON.parse($("#hidden-data1").val());
+var inventories = JSON.parse($("#hidden-data2").val());
+var selectedProduct = null;
 
 jQuery(document).ready(function() {    
     Metronic.init(); // init metronic core componets
@@ -370,161 +312,247 @@ jQuery(document).ready(function() {
     QuickSidebar.init() // init quick sidebar
     Index.init();
 
+    updateView();
+
     $(".datepicker").datepicker({ dateFormat: 'yy-mm-dd' });
 
-    $(document).on('click','.save',function(e){
-        e.preventDefault();
-        $.ajax({
-            //url: '/stock/receive.json',
-            url: "/stock/saveItems.json",
-            method: "POST",
-            data: $('#stock_order_item_form').serialize(),
-            error: function ( jqXHR, textStatus, errorThrown ) {
-            },
-            success: function( data, textStatus, jqXHR ) {
-                if (data.success) {
-                    location.href = "/stock/receive/<?php echo $order['MerchantStockOrder']['id']; ?>";
-                } else {
-                    alert(data.message);
-                    console.log(data.message);
-                }
-            }
-        });
+    $(".add-order-item").click(function(e) {
+        if (selectedProduct == null) {
+            return;
+        }
+
+        addOrderItem($("#id").val(), selectedProduct['id'], selectedProduct['name'], parseInt($("#quantity").val()), selectedProduct['supply_price'], selectedProduct['price_include_tax']);
     });
 
-    // 'save and receive' button click ...
-    $(document).on('click', '.save-and-receive', function(e) {
-        e.preventDefault();
+    $("#search-items").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/stock/searchProduct.json",
+                method: "POST",
+                dataType: "json",
+                data: {
+                    keyword: request.term
+                },
+                success: function (data) {
+                    selectedProduct = null;
+                    if (!data.success)
+                        return;
+
+                    response($.map(data.products, function (item) {
+                        return ({
+                            label: item.name,
+                            handle: item.handle,
+                            sku: item.sku,
+                            data: item
+                        });
+                    }));
+                }
+            });
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+            selectedProduct = ui.item.data;
+
+            $(this).val(ui.item.sku);
+            return false;
+        }
+    });
+
+    $(".count").on('change', function(e) {
+        var orderItemId = $(this).closest('tr').data('id');
+        var count = $(this).val();
+        var supply_price = $("#order_item_" + orderItemId + "_supply_price").val();
+        var price_include_tax = $("#order_item_" + orderItemId + "_price_include_tax").val();
+        var total_cost = parseFloat(supply_price * count).toFixed(2);
+        var total_price_incl_tax = parseFloat(price_include_tax * count).toFixed(2);
+
+        $(this).closest('tr').find('.calculated-total').text(total_cost);
+        $(this).val(parseInt(count));
+        $("#order_item_" + orderItemId + "_total_cost").val(total_cost);
+        $("#order_item_" + orderItemId + "_total_price_incl_tax").val(total_price_incl_tax);
+    });
+
+    $(".cost").on('change', function(e) {
+        var orderItemId = $(this).closest('tr').data('id');
+        var count = $("#order_item_" + orderItemId + "_count").val();
+        var supply_price = $(this).val();
+        var total_cost = parseFloat(supply_price * count).toFixed(2);
+
+        $(this).closest('tr').find('.calculated-total').text(total_cost);
+        $(this).val(parseFloat(supply_price).toFixed(2));
+        $("#order_item_" + orderItemId + "_total_cost").val(total_cost);
+    });
+
+    // 'cancel' button click ...
+    $(".cancel").click(function(e) {
+        parent.history.back();
+    });
+
+    // 'save' button click ...
+    $(".save").click(function(e) {
+        var order_id = $("#id").val();
+
         $.ajax({
-            //url: "/stock/saveReceivedItems.json",
             url: "/stock/saveItems.json",
             method: "POST",
             data: $('#stock_order_item_form').serialize(),
             error: function( jqXHR, textStatus, errorThrown ) {
             },
-            success: function( data, textStatus, jqXHR ) {
+            success: function( data ) {
                 if (data.success) {
-                    $('.save_receive').show();
+                    location.href = "/stock/" + order_id;
                 } else {
                     alert(data.message);
-                    console.log(data.message);
                 }
             }
         });
+        return false;
+    });
 
+    // 'save and send' button click ...
+    $(".save_and_send").click(function(e) {
+        $.ajax({
+            url: "/stock/saveItems.json",
+            method: "POST",
+            data: $('#stock_order_item_form').serialize(),
+            error: function( jqXHR, textStatus, errorThrown ) {
+            },
+            success: function( data ) {
+                if (data.success) {
+                    $('.save_send').show();
+                } else {
+                    alert(data.message);
+                }
+            }
+        });
         return false;
     });
 
     // modal ...
+    // 'close-pop' button click ...
     $(".close-pop").click(function() {
         $(".confirmation-modal").hide();
     });
-    $(".confirm").click(function(e) {
-        e.preventDefault();
+
+    // 'send-email' button click ...
+    $(".send-email").click(function(e) {
+        var order_id = $("#id").val();
+        var recipient_name = $("#recipient_name").val();
+        var email = $("#email").val();
+        var cc = $("#cc").val();
+        var subject = $("#subject").val();
+        var message = $("#message").val();
+
+        if (email == '') {
+            return;
+        }
+
+        if (subject == '') {
+            return;
+        }
+
+        if (message == '') {
+            return;
+        }
 
         $.ajax({
-            url: "/stock/sendReceive.json",
+            url: "/stock/send.json",
             method: "POST",
             data: $('#confirmation-email-form').serialize(),
             error: function( jqXHR, textStatus, errorThrown ) {
             },
-            success: function( data, textStatus, jqXHR ) {
+            success: function( data ) {
                 if (data.success) {
-                    window.location.href = "/stock/view/<?php echo $order['MerchantStockOrder']['id']; ?>";
+                    window.location.href = "/stock/" + order_id;
                 } else {
-                    $('.save_receive').hide();
-                    //alert(data.message);
-                    console.log(data.message);
+                    $('.save_send').hide();
+                    alert(data.message);
                 }
             }
         });
-
         return false;
     });
-   
-    $(".cancel").click(function(){
-        parent.history.back();
-    });
-    
-    /* DYNAMIC PROUCT SEARCH START */
-    
-    var $cells = $(".data-found");
-    $(".search_result").hide();
-
-    $(document).on("keyup","#product_search",function() {
-        var val = $.trim(this.value).toUpperCase();
-        if (val === "")
-            $(".search_result").hide();
-        else {
-            $cells.hide();
-            $(".search_result").show();
-            $(".search-default").hide();
-            $cells.filter(function() {
-                return -1 != $(this).text().toUpperCase().indexOf(val);
-            }).show();
-            if($(".search_result").height() == 0){
-                $(".search-default").show();
-            }
-        }
-        $cells.click(function(){
-           $("#search").val($(this).text());
-        });
-    });
-    
-    var selectedProductName;
-    var selectedProductStock;
-    var selectedProductId;
-    var selectedOrderId;
-    var selectedProductPriceIncludeTax;
-    var selectedProductSku;
-    $(".data-found").click(function(){
-        $("#product_search").val($(this).attr("data-name"));
-        $(".search_result").hide();
-        selectedProductName = $(this).attr("data-name");
-        selectedProductStock = $(this).attr("data-stock");
-        selectedProductId = $(this).attr("data-id");
-        selectedOrderId = $(this).attr("data-order-id");
-        selectedProductPriceIncludeTax = $(this).attr("data-price-include-tax");
-        selectedProductSku = $(this).attr("data-sku");
-    });
-    
-    
-    $(document).on("click",".add-order-item",function(){
-        if(!selectedProductId == ""){
-            if($("tr[data-id="+selectedProductId+"]").length == 0){
-                // next index
-                var nextIdx = $('.dataTable tbody tr').length;
-                $(".dataTable").children("tbody").append('<tr data-id="'+selectedProductId+'" class="added-order"><input type="hidden" name="data[MerchantStockOrderItem]['+nextIdx+'][order_id]" value="'+selectedOrderId+'"><input type="hidden" name="data[MerchantStockOrderItem]['+nextIdx+'][product_id]" value="'+selectedProductId+'"><input type="hidden" name="data[MerchantStockOrderItem]['+nextIdx+'][name]" value="'+selectedProductName+'"><input type="hidden" name="data[MerchantStockOrderItem]['+nextIdx+'][price_include_tax]" value="'+selectedProductPriceIncludeTax+'"><td>'+(nextIdx+1)+'</td><td>'+selectedProductName+'</td><td>'+selectedProductSku+'</td><td>'+$("#product_quantity").val()+'</td><td><input name="data[MerchantStockOrderItem]['+nextIdx+'][received]" placeholder="0" maxlength="11" type="text" value="'+$("#product_quantity").val()+'"></td><td><input name="data[MerchantStockOrderItem]['+nextIdx+'][supply_price]" placeholder="0.00000" maxlength="15,5" type="text"></td><td>0<span class="remove inline-block pull-right"><span class="glyphicon glyphicon-remove"></span></span></td></tr>');
-            } else {
-                //$("tr[data-id="+selectedProductId+"]").find("#MerchantStockOrderItem0Count").val(function(i, oldval){
-                $("tr[data-id="+selectedProductId+"]").find("input[name*=count]").val(function(i, oldval){
-                    return parseInt($("#product_quantity").val(),10) + parseInt(oldval, 10);
-                });
-            }
-            $(".order-null").hide();
-            $("#product_search").val('');
-            selectedProductId = '';
-        }
-
-        $('#product_quantity').val('1');
-    });
-    $(document).on('click','.remove',function(){
-        $(this).parents("tr:first").remove();
-        if($(".added-order").length == 0){
-            $(".order-null").show();
-        }
-    });
-
-    $(document).on("blur", ".changable", function() {
-        var received = $(this).closest('tr').children().find('input[name*=received]').val();
-        var supply_price = $(this).closest('tr').children().find('input[name*=supply_price]').val();
-            supply_price = (Math.round(supply_price*100)/100).toFixed(2);
-        var total = (Math.round(parseFloat(received * supply_price)*100)/100).toFixed(2);
-
-        $(this).closest('tr').find('td:last').text(total);
-    });
-
-    /* DYNAMIC PRODUCT SEARCH END */
 });
+
+function addOrderItem(order_id, product_id, name, count, supply_price, price_include_tax) {
+    for (var idx in orderItems) {
+        if (orderItems[idx]['product_id'] == product_id) {
+            return;
+        }
+    }
+
+    var orderItem = {
+        order_id: order_id,
+        product_id: product_id,
+        name: name,
+        count: count,
+        supply_price: supply_price,
+        total_cost: supply_price * count,
+        price_include_tax: price_include_tax,
+        total_price_incl_tax: price_include_tax * count
+    };
+
+    $.ajax({
+        url: "/stock/saveItem.json",
+        method: "POST",
+        data: {
+            MerchantStockOrderItem: orderItem
+        },
+        error: function( jqXHR, textStatus, errorThrown ) {
+        },
+        success: function( data ) {
+            if (data.success) {
+                orderItem.id = data.id;
+                orderItems.push(orderItem);
+                updateView();
+            } else {
+                alert(data.message);
+            }
+        }
+    });
+}
+
+function updateView() {
+    $("body").find(".hidden-data").remove();
+    $("#orderItemTable").find('tbody').empty();
+
+    if (orderItems.length == 0) {
+        var appendString = '<tr class="order-null">';
+        appendString += '<td colspan="7">There are no products in this consignment order yet.</td>';
+        appendString += '</tr>';
+        $("#orderItemTable").find('tbody').append(appendString);
+    } else {
+        for (var idx in orderItems) {
+            var index = parseInt(idx) + 1;
+            var order_item_id = orderItems[idx]['id'];
+            var order_id = orderItems[idx]['order_id'];
+            var product_id = orderItems[idx]['product_id'];
+            var name = orderItems[idx]['name'];
+            var inventory = inventories[orderItems[idx]['product_id']];
+            var stock_on_hand = ((inventory == null || inventory == '') ? '<i class="icon-general-infinity"></i>' : inventory['count']);
+            var count = orderItems[idx]['count'];
+            var received = (null == orderItems[idx]['received'] ? '1' : orderItems[idx]['received']);
+            var supply_price = parseFloat(orderItems[idx]['supply_price']).toFixed(2);
+            var price_include_tax = parseFloat(orderItems[idx]['price_include_tax']).toFixed(2);
+            var total_cost = parseFloat(orderItems[idx]['total_cost']).toFixed(2);
+            var total_price_incl_tax = parseFloat(orderItems[idx]['total_price_incl_tax']).toFixed(2);
+
+            var appendString = '<tr data-id="' + order_item_id + '">'
+            appendString +=  '<input type="hidden" name="data[MerchantStockOrderItem][' + idx + '][id]" id="order_item_' + order_item_id + '_id" value="' + order_item_id +'" />';
+            appendString +=  '<input type="hidden" name="data[MerchantStockOrderItem][' + idx + '][price_include_tax]" id="order_item_' + order_item_id + '_price_include_tax" value="' + price_include_tax +'" />';
+            appendString +=  '<input type="hidden" name="data[MerchantStockOrderItem][' + idx + '][total_cost]" id="order_item_' + order_item_id + '_total_cost" value="' + total_cost +'" />';
+            appendString +=  '<input type="hidden" name="data[MerchantStockOrderItem][' + idx + '][total_price_incl_tax]" id="order_item_' + order_item_id + '_total_price_incl_tax" value="' + total_price_incl_tax +'" />';
+            appendString += '<td>' + index + '</td>';
+            appendString += '<td>' + name + '</td>';
+            appendString += '<td>' + stock_on_hand + '</td>';
+            appendString += '<td>' + count + '</td>';
+            appendString += '<td><input type="text" class="count changable" name="data[MerchantStockOrderItem][' + idx + '][received]" id="order_item_' + order_item_id + '_received" value="' + received +'" /></td>';
+            appendString += '<td><input type="text" class="cost changable" name="data[MerchantStockOrderItem][' + idx + '][supply_price]" id="order_item_' + order_item_id + '_supply_price" value="' + supply_price +'" /></td>';
+            appendString += '<td><strong class="calculated-total font-xl">' + total_cost + '</strong></td>';
+            appendString += '</tr>';
+            $("#orderItemTable").find('tbody').append(appendString);
+        }
+    }
+}
 </script>
 <!-- END JAVASCRIPTS -->

@@ -54,7 +54,7 @@
         <div class="page-content">
             
             <div id="close-register-wrapper" class="line-box">
-            	<div class="col-md-12 col-sm-12 col-xs-12 col-omega col-alpha to_print">
+                <div class="col-md-12 col-sm-12 col-xs-12 col-omega col-alpha to_print">
                 <div id="close-register-header" class="col-md-12 col-sm-12 col-xs-12">
                 
                     <h3><strong>Closing totals to verify</strong></h3>
@@ -144,15 +144,15 @@
                 <div id="close-register-payments" class="col-md-12 col-sm-12 col-xs-12">
                     <h4>Payments</h4>
                     <?php
-                    	$payment_list = array();
-                    	
-                    	foreach($payments as $payment) {
-                    		if(isset($payment_list[$payment['MerchantPaymentType']['name']])) {
-	                    		$payment_list[$payment['MerchantPaymentType']['name']] += $payment['RegisterSalePayment']['amount'];
-	                    	} else {
-		                    	$payment_list[$payment['MerchantPaymentType']['name']] = $payment['RegisterSalePayment']['amount'];
-	                    	}
-                    	}
+                        $payment_list = array();
+                        
+                        foreach($payments as $payment) {
+                            if(isset($payment_list[$payment['MerchantPaymentType']['name']])) {
+                                $payment_list[$payment['MerchantPaymentType']['name']] += $payment['RegisterSalePayment']['amount'];
+                            } else {
+                                $payment_list[$payment['MerchantPaymentType']['name']] = $payment['RegisterSalePayment']['amount'];
+                            }
+                        }
                     ?>
                     <table class="dataTable table-bordered">
                         <thead>
@@ -163,13 +163,13 @@
                             </tr>
                         </thead>
                         <tbody>
-                        	<?php foreach($payment_list as $payment_name => $payment_amount) { ?>
-                        		<tr>
-                        			<td><?php echo $payment_name;?></td>
-                        			<td><?php echo number_format($payment_amount,2,'.','');?></td>
-                        			<td><input type="text" value="<?php echo number_format($payment_amount,2,'.','');?>"></td>
-                        		</tr>
-                        	<?php } ?>
+                            <?php foreach($payment_list as $payment_name => $payment_amount) { ?>
+                                <tr>
+                                    <td><?php echo $payment_name;?></td>
+                                    <td><?php echo number_format($payment_amount,2,'.','');?></td>
+                                    <td><input type="text" value="<?php echo number_format($payment_amount,2,'.','');?>"></td>
+                                </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 
@@ -192,15 +192,15 @@
                             </tr>
                         </thead>
                         <tbody>
-                        	<!-- New laybys -->
-                        	<?php if(!empty($laybys)) { ?>
-                        	<tr style="background:#eee;">
-                        		<th style="border:0;">Laybys started</th>
-                        		<th style="border:0;" colspan="6"></th>
-                        	</tr>
-                        	<?php
-                        	$total_layby_amount = 0;
-                        	foreach($laybys as $layby) { ?>
+                            <!-- New laybys -->
+                            <?php if(!empty($laybys)) { ?>
+                            <tr style="background:#eee;">
+                                <th style="border:0;">Laybys started</th>
+                                <th style="border:0;" colspan="6"></th>
+                            </tr>
+                            <?php
+                            $total_layby_amount = 0;
+                            foreach($laybys as $layby) { ?>
                             <tr>
                                 <td><?php echo $layby['RegisterSale']['created'];?></td>
                                 <td><?php echo $layby['RegisterSale']['receipt_number'];?></td>
@@ -214,55 +214,55 @@
                             $total_layby_amount += $layby['RegisterSale']['total_cost'];
                             } ?>
                             <tr style="background:#FFF7D6">
-                            	<th style="border:0; text-align:right;" colspan="6">Total new laybys</th>
-                        		<td style="border:0;"><?php echo '$'.number_format($total_layby_amount,2,'.','');?></td>
-                        	</tr>
-                        	<?php } ?>
-                        	<!-- New laybys END -->
-                        	<!-- Layby payments -->
-                        	<?php $layby_payment_available = false;
-                        	foreach($laybys as $layby) {
-	                        	if(!empty($layby['RegisterSalePayment']))
-	                        		$layby_payment_available = true;
-                        	}
-                        	if($layby_payment_available == true) { ?>
-                        	<tr style="background:#eee;">
-                        		<th style="border:0;">Layby payments</th>
-                        		<th style="border:0;" colspan="6"></th>
-                        	</tr>
-                        	<?php
-                        	$total_layby_payment = 0;
-                        	foreach($laybys as $layby) {
-	                        	if(!empty($layby['RegisterSalePayment'])) {
-	                        		foreach($layby['RegisterSalePayment'] as $payment) { ?>
-			                            <tr>
-			                                <td><?php echo $payment['payment_date'];?></td>
-			                                <td><?php echo $layby['RegisterSale']['receipt_number'];?></td>
-			                                <td><?php echo $layby['MerchantUser']['display_name'];?></td>
-			                                <td><?php echo $layby['MerchantCustomer']['name'];?></td>
-			                                <td></td>
-			                                <td><?php echo $payment['MerchantPaymentType']['name'];?></td>
-			                                <td><?php echo '$'.number_format($payment['amount'],2,'.','');?></td>
-			                            </tr>
-		                            <?php $total_layby_payment += $payment['amount'];
-		                            }
-		                        }
-		                    }?>
+                                <th style="border:0; text-align:right;" colspan="6">Total new laybys</th>
+                                <td style="border:0;"><?php echo '$'.number_format($total_layby_amount,2,'.','');?></td>
+                            </tr>
+                            <?php } ?>
+                            <!-- New laybys END -->
+                            <!-- Layby payments -->
+                            <?php $layby_payment_available = false;
+                            foreach($laybys as $layby) {
+                                if(!empty($layby['RegisterSalePayment']))
+                                    $layby_payment_available = true;
+                            }
+                            if($layby_payment_available == true) { ?>
+                            <tr style="background:#eee;">
+                                <th style="border:0;">Layby payments</th>
+                                <th style="border:0;" colspan="6"></th>
+                            </tr>
+                            <?php
+                            $total_layby_payment = 0;
+                            foreach($laybys as $layby) {
+                                if(!empty($layby['RegisterSalePayment'])) {
+                                    foreach($layby['RegisterSalePayment'] as $payment) { ?>
+                                        <tr>
+                                            <td><?php echo $payment['payment_date'];?></td>
+                                            <td><?php echo $layby['RegisterSale']['receipt_number'];?></td>
+                                            <td><?php echo $layby['MerchantUser']['display_name'];?></td>
+                                            <td><?php echo $layby['MerchantCustomer']['name'];?></td>
+                                            <td></td>
+                                            <td><?php echo $payment['MerchantPaymentType']['name'];?></td>
+                                            <td><?php echo '$'.number_format($payment['amount'],2,'.','');?></td>
+                                        </tr>
+                                    <?php $total_layby_payment += $payment['amount'];
+                                    }
+                                }
+                            }?>
                             <tr style="background:#FFF7D6">
-                            	<th style="border:0; text-align:right;" colspan="6">Total layby payments</th>
-                        		<td style="border:0;"><?php echo '$'.number_format($total_layby_payment,2,'.','');?></td>
-                        	</tr>
-                        	<?php } ?>
-                        	<!-- Layby payments END -->
-                        	<!-- New account sales -->
-                        	<?php if(!empty($onaccounts)) { ?>
-                        	<tr style="background:#eee;">
-                        		<th style="border:0;">Account sales started</th>
-                        		<th style="border:0;" colspan="6"></th>
-                        	</tr>
-                        	<?php
-                        	$total_onaccount_amount = 0;
-                        	foreach($onaccounts as $onaccount) { ?>
+                                <th style="border:0; text-align:right;" colspan="6">Total layby payments</th>
+                                <td style="border:0;"><?php echo '$'.number_format($total_layby_payment,2,'.','');?></td>
+                            </tr>
+                            <?php } ?>
+                            <!-- Layby payments END -->
+                            <!-- New account sales -->
+                            <?php if(!empty($onaccounts)) { ?>
+                            <tr style="background:#eee;">
+                                <th style="border:0;">Account sales started</th>
+                                <th style="border:0;" colspan="6"></th>
+                            </tr>
+                            <?php
+                            $total_onaccount_amount = 0;
+                            foreach($onaccounts as $onaccount) { ?>
                             <tr>
                                 <td><?php echo $onaccount['RegisterSale']['created'];?></td>
                                 <td><?php echo $onaccount['RegisterSale']['receipt_number'];?></td>
@@ -276,50 +276,50 @@
                             $total_onaccount_amount += $onaccount['RegisterSale']['total_cost'];
                             } ?>
                             <tr style="background:#FFF7D6">
-                            	<th style="border:0; text-align:right;" colspan="6">Total new account sales</th>
-                        		<td style="border:0;"><?php echo '$'.number_format($total_onaccount_amount,2,'.','');?></td>
-                        	</tr>
-                        	<?php } ?>
-                        	<!-- New account sales END -->
-                        	<!-- Account sale payments -->
-                        	<?php $account_payment_available = false;
-                        	foreach($onaccounts as $onaccount) {
-                        		if(!empty($onaccount['RegisterSalePayment']))
-                        			$account_payment_available = true;
-                        	}
-                        	if($account_payment_available == true) { ?>
-                        	<tr style="background:#eee;">
-                        		<th style="border:0;">Account sale payments</th>
-                        		<th style="border:0;" colspan="6"></th>
-                        	</tr>
-                        	<?php
-                        	$total_onaccount_payment = 0;
-                        	foreach($onaccounts as $onaccount) {
-                        		foreach($onaccount['RegisterSalePayment'] as $payment) { ?>
-	                            <tr>
-	                                <td><?php echo $payment['payment_date'];?></td>
-	                                <td><?php echo $onaccount['RegisterSale']['receipt_number'];?></td>
-	                                <td><?php echo $onaccount['MerchantUser']['display_name'];?></td>
-	                                <td><?php echo $onaccount['MerchantCustomer']['name'];?></td>
-	                                <td></td>
-	                                <td></td>
-	                                <td><?php echo '$'.number_format($payment['amount'],2,'.','');?></td>
-	                            </tr>
-	                            <?php
-	                            $total_onaccount_payment += $payment['amount'];
-	                            }
+                                <th style="border:0; text-align:right;" colspan="6">Total new account sales</th>
+                                <td style="border:0;"><?php echo '$'.number_format($total_onaccount_amount,2,'.','');?></td>
+                            </tr>
+                            <?php } ?>
+                            <!-- New account sales END -->
+                            <!-- Account sale payments -->
+                            <?php $account_payment_available = false;
+                            foreach($onaccounts as $onaccount) {
+                                if(!empty($onaccount['RegisterSalePayment']))
+                                    $account_payment_available = true;
+                            }
+                            if($account_payment_available == true) { ?>
+                            <tr style="background:#eee;">
+                                <th style="border:0;">Account sale payments</th>
+                                <th style="border:0;" colspan="6"></th>
+                            </tr>
+                            <?php
+                            $total_onaccount_payment = 0;
+                            foreach($onaccounts as $onaccount) {
+                                foreach($onaccount['RegisterSalePayment'] as $payment) { ?>
+                                <tr>
+                                    <td><?php echo $payment['payment_date'];?></td>
+                                    <td><?php echo $onaccount['RegisterSale']['receipt_number'];?></td>
+                                    <td><?php echo $onaccount['MerchantUser']['display_name'];?></td>
+                                    <td><?php echo $onaccount['MerchantCustomer']['name'];?></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><?php echo '$'.number_format($payment['amount'],2,'.','');?></td>
+                                </tr>
+                                <?php
+                                $total_onaccount_payment += $payment['amount'];
+                                }
                             }?>
                             <tr style="background:#FFF7D6">
-                            	<th style="border:0; text-align:right;" colspan="6">Total account sale payments</th>
-                        		<td style="border:0;"><?php echo '$'.number_format($total_onaccount_payment,2,'.','');?></td>
-                        	</tr>
-                        	<?php } ?>
-                        	<!-- Account sale payments -->
+                                <th style="border:0; text-align:right;" colspan="6">Total account sale payments</th>
+                                <td style="border:0;"><?php echo '$'.number_format($total_onaccount_payment,2,'.','');?></td>
+                            </tr>
+                            <?php } ?>
+                            <!-- Account sale payments -->
                         </tbody>
                     </table>
                 </div>
                 <?php } ?>
-            	</div>
+                </div>
                 <div class="dashed-line"></div>
                 
                 <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
@@ -441,16 +441,16 @@ jQuery(document).ready(function() {
                 register_close_time: $("#register_close_time").text()
             },
             success: function(result) {
-	            if(result.success) {
-		            window.location.href = "/dashboard";
-	            } else {
-		            console.log(result);
-	            }
+                if(result.success) {
+                    window.location.href = "/dashboard";
+                } else {
+                    console.log(result);
+                }
             }
         });
     });
     $(".print").click(function(){
-	    $(".to_print").jqprint();
+        $(".to_print").jqprint();
     });
 });
 </script>

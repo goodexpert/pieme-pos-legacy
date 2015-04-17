@@ -58,7 +58,7 @@
                     <?=$book['MerchantPriceBook']['name'];?>
                 </h2>
                 <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
-                	<?php if(!$book['MerchantPriceBook']['is_default'] == 1){ ?>
+                    <?php if(!$book['MerchantPriceBook']['is_default'] == 1){ ?>
                     <a href="/pricebook/<?php echo $book['MerchantPriceBook']['id'];?>/edit">
                     <button class="btn btn-white pull-right">
                         <div class="glyphicon glyphicon-plus"></div>&nbsp;
@@ -146,34 +146,34 @@ jQuery(document).ready(function() {
     $("#productList_length").hide();
     
     $("#delete").confirm({
-	    text: "Are you sure you want to delete this price book?",
-	    title: "Confirmation required",
-	    confirm: function(button) {
-	       $.ajax({
-    	       url: '/pricebook/delete.json',
-    	       type: 'POST',
-    	       data: {
-        	       id: location.search.split('=')[1]
-    	       },
-    	       success: function(result){
-        	       if(result.success) {
-            	       window.location.href = "/pricebook";
-        	       } else {
-            	       console.log(result);
-        	       }
-    	       },
-    	       error: function(jqXHR, textStatus, errorThrown) {
+        text: "Are you sure you want to delete this price book?",
+        title: "Confirmation required",
+        confirm: function(button) {
+           $.ajax({
+               url: '/pricebook/delete.json',
+               type: 'POST',
+               data: {
+                   id: location.search.split('=')[1]
+               },
+               success: function(result){
+                   if(result.success) {
+                       window.location.href = "/pricebook";
+                   } else {
+                       console.log(result);
+                   }
+               },
+               error: function(jqXHR, textStatus, errorThrown) {
                    console.log(textStatus, errorThrown);
                }
-	       });
-	    },
-	    cancel: function(button) {
-	    },
-	    confirmButton: "Delete",
-	    cancelButton: "Cancel",
-	    confirmButtonClass: "btn-danger",
-	    cancelButtonClass: "btn-default",
-	    dialogClass: "modal-dialog modal-lg" // Bootstrap classes for large modal
-	});
+           });
+        },
+        cancel: function(button) {
+        },
+        confirmButton: "Delete",
+        cancelButton: "Cancel",
+        confirmButtonClass: "btn-danger",
+        cancelButtonClass: "btn-default",
+        dialogClass: "modal-dialog modal-lg" // Bootstrap classes for large modal
+    });
 });
 </script>

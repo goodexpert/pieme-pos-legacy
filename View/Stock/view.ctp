@@ -53,18 +53,26 @@
     <div class="page-content-wrapper">
         <div class="page-content">
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                <?php
+                    echo $this->Form->input('MerchantStockOrder.id', array(
+                        'id' => 'id',
+                        'type' => 'hidden',
+                        'div' => false,
+                        'label' => false,
+                        'value' => $data['MerchantStockOrder']['id']
+                    ));
+                 ?>
                 <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
-                    <?php echo $order['MerchantStockOrder']['name'] . ' (' . $order['MerchantStockOrder']['status'] . ')'; ?>
+                    <?php echo $data['MerchantStockOrder']['name'] . ' (' . $data['MerchantStockOrder']['status'] . ')'; ?>
                 </h2>
-                
                 <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
                     <button class="btn btn-white pull-right btn-right">
                         <div class="glyphicon glyphicon-import"></div>&nbsp;
                     Import Products</button>
-                    <a href="/stock/editDetails/<?php echo $order['MerchantStockOrder']['id']; ?>"  class="btn btn-white pull-right btn-center">
+                    <a href="/stock/<?php echo $data['MerchantStockOrder']['id']; ?>/editDetails"  class="btn btn-white pull-right btn-center">
                         <div class="glyphicon glyphicon-edit"></div>&nbsp;
                     Edit Details</button>
-                    <a href="/stock/edit/<?php echo $order['MerchantStockOrder']['id']; ?>" class="btn btn-white pull-right btn-left">
+                    <a href="/stock/<?php echo $data['MerchantStockOrder']['id']; ?>/edit" class="btn btn-white pull-right btn-left">
                         <div class="glyphicon glyphicon-edit"></div>&nbsp;
                      Edit Products</a>
                     </a>
@@ -72,57 +80,55 @@
             </div>
             <div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">Details
                 <span class="clickable same_as_physical pull-right btn btn-default btn-right mark_as_sent">Mark as sent
-                    <!--<a href="/stock/markSent/<?php echo $order['MerchantStockOrder']['id']; ?>">Mark as sent</a>-->
+                    <!--<a href="/stock/markSent/<?php echo $data['MerchantStockOrder']['id']; ?>">Mark as sent</a>-->
                 </span>
                 <span class="clickable same_as_physical pull-right btn btn-default btn-left">Print labels</span>
             </div>
-                
-                <div class="line-box line-box-content col-md-12 col-sm-12 col-xs-12">
-                    <div class="col-md-6 margin-bottom-20">
-                        <dl>
-                            <dt>Deliver to</dt>
-                            <dd><?php echo $order['MerchantOutlet']['name']; ?></dd>
-                        </dl>
-                    </div>
-                    <div class="col-md-6 margin-bottom-20">
-                        <dl>
-                            <dt>Created</dt>
-                            <dd><?php echo date('d F Y', strtotime($order['MerchantStockOrder']['created'])); ?></dd>
-                        </dl>
-                    </div>
-                    <div class="col-md-3 col-omega">
-                        <table class="table-bordered dataTable">
-                            <colgroup>
-                                <col width="15%">
-                                <col width="15%">
-                            </colgroup>
-                            <thead>
+            <div class="line-box line-box-content col-md-12 col-sm-12 col-xs-12">
+                <div class="col-md-6 margin-bottom-20">
+                    <dl>
+                        <dt>Deliver to</dt>
+                        <dd><?php echo $data['MerchantOutlet']['name']; ?></dd>
+                    </dl>
+                </div>
+                <div class="col-md-6 margin-bottom-20">
+                    <dl>
+                        <dt>Created</dt>
+                        <dd><?php echo date('d F Y', strtotime($data['MerchantStockOrder']['created'])); ?></dd>
+                    </dl>
+                </div>
+                <div class="col-md-3 col-omega">
+                    <table class="table-bordered dataTable">
+                        <colgroup>
+                            <col width="15%">
+                            <col width="15%">
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th>Order</th>
+                            <th>Product</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                                foreach ($data['MerchantStockOrderItem'] as $idx => $item):
+                            ?>
                             <tr>
-                                <th>Order</th>
-                                <th>Product</th>
+                                <td><?php echo $idx+1; ?></td>
+                                <td><?php echo $item['name']; ?></td>
                             </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                    foreach ($order['MerchantStockOrderItem'] as $idx => $item):
-                                ?>
-                                <tr>
-                                    <td><?php echo $idx+1; ?></td>
-                                    <td><?php echo $item['MerchantProduct']['name']; ?></td>
-                                </tr>
-                                <?php
-                                    endforeach;
-                                ?>
-                                <tr class="table-result">
-                                    <td><strong>Total</strong></td>
-                                    <td></td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="col-md-9 col-alpha">
-                        <div class="scroll-table">
+                            <?php
+                                endforeach;
+                            ?>
+                            <tr class="table-result">
+                                <td><strong>Total</strong></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-md-9 col-alpha">
+                    <div class="scroll-table">
                         <table class="table-bordered dataTable">
                             <colgroup>
                                 <col width="10%">
@@ -150,19 +156,21 @@
                             </thead>
                             <tbody>
                                 <?php
-                                    $totalOrdered = $totalReceived = 0;
+                                    $totalOrdered = 0;
+                                    $totalReceived = 0;
                                     $totalSupplyCost = 0.00;
-                                    foreach ($order['MerchantStockOrderItem'] as $item):
+    
+                                    foreach ($data['MerchantStockOrderItem'] as $item) :
+                                        $totalOrdered += $item['count'];
+                                        $totalReceived += $item['received'];
+                                        $totalSupplyCost += round($item['count'] * $item['supply_price'], 2);
+                                        $inventory = isset($inventories[$item['product_id']]) ? $inventories[$item['product_id']] : null;
                                 ?>
                                 <tr>
                                     <td><?php echo $item['MerchantProduct']['sku']; ?></td>
                                     <td><?php echo $item['MerchantProduct']['supplier_code']; ?></td>
                                     <td>
-                                        <?php
-                                            echo isset($item['MerchantProduct']['MerchantProductInventory'][0])
-                                            ? $item['MerchantProduct']['MerchantProductInventory'][0]['count']
-                                            : '';
-                                        ?>
+                                        <?php echo empty($inventory) ? '<i class="icon-general-infinity"></i>' : $inventory['count']; ?>
                                     </td>
                                     <td><?php echo $item['count']; ?></td>
                                     <td><?php echo is_null($item['received']) ? '0' : $item['received']; ?></td>
@@ -172,9 +180,6 @@
                                     <td></td>
                                 </tr>
                                 <?php
-                                        $totalOrdered += $item['count'];
-                                        $totalReceived += $item['received'];
-                                        $totalSupplyCost += round($item['count'] * $item['supply_price'], 2);
                                     endforeach;
                                 ?>
                                 <tr class="table-result">
@@ -190,21 +195,17 @@
                                 </tr>
                             </tbody>
                         </table>
-                        </div>
                     </div>
                 </div>
                 <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
-                    <?php if ( $order['MerchantStockOrder']['status'] == 'SENT' ): ?>
-                    <a href="/stock/receive/<?php echo $order['MerchantStockOrder']['id']; ?>" class="btn btn-primary btn-wide pull-right">Receive</a>
+                    <?php if ( $data['MerchantStockOrder']['status'] == 'SENT' ): ?>
+                    <a href="/stock/<?php echo $data['MerchantStockOrder']['id']; ?>/receive" class="btn btn-primary btn-wide pull-right">Receive</a>
                     <?php else: ?>
                     <button type="submit" class="btn btn-primary btn-wide pull-right send">Send</button>
                     <?php endif; ?>
-                    <a href="#" class="btn btn-default btn-wide pull-left margin-right-10 cancel-order">Cancel</a>
-                    
-                </form>
-
+                    <a href="#" class="btn btn-default pull-left margin-right-10 cancel-order">Cancel Order</a>
+                </div>
             </div>
-                    
         </div>
     </div>
     <!-- END CONTENT -->
@@ -219,24 +220,34 @@
                     <h4 class="modal-title">Send order</h4>
                 </div>
                 <form id="confirmation-email-form">
-                <input type="hidden" name="data[order_id]" value="<?php echo $order['MerchantStockOrder']['id']; ?>" />
+                <input type="hidden" name="data[Email][order_id]" value="<?php echo $data['MerchantStockOrder']['id']; ?>" />
                 <div class="modal-body margin-bottom-20">
                     <dl>
                         <dt>Recipient name</dt>
-                        <dd><input type="text"></dd>
+                        <dd>
+                            <input type="text" name="data[Email][recipient_name]" id="recipient_name">
+                        </dd>
                         <dt>Email</dt>
-                        <dd><input type="text"></dd>
+                        <dd>
+                            <input type="text" name="data[Email][email]" id="email">
+                        </dd>
                         <dt>CC</dt>
-                        <dd><input type="text"></dd>
+                        <dd>
+                            <input type="text" name="data[Email][cc]" id="cc">
+                        </dd>
                         <dt>Subject</dt>
-                        <dd><input type="text"></dd>
+                        <dd>
+                            <input type="text" name="data[Email][subject]" id="subject">
+                        </dd>
                         <dt>Message</dt>
-                        <dd><textarea col="2"></textarea></dd>
+                        <dd>
+                            <textarea col="2" name="data[Email][message]" id="message"></textarea>
+                        </dd>
                     </dl>
                 </div>
                 <div class="modal-footer">
                     <button class="close-pop btn btn-primary btn-wide" type="button" data-dismiss="modal">Cancel</button>
-                    <button class="confirm btn btn-success btn-wide" type="button" data-dismiss="modal">Send</button>
+                    <button class="send-email btn btn-success btn-wide" type="button" data-dismiss="modal">Send</button>
                 </div>
                 </form>
             </div>
@@ -357,7 +368,6 @@
 <script src="/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
 <script src="/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
-
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script>
 jQuery(document).ready(function() {    
@@ -368,35 +378,64 @@ jQuery(document).ready(function() {
 
     $(".datepicker").datepicker({ dateFormat: 'yy-mm-dd' });
 
-    $(document).on('click','.save',function(){
-        $.ajax({
-
-            url: '/stock/order.json',
-            type: 'POST',
-            data: {
-                name: $("#order-name").val(),
-                supplier_id: $("#order-supplier").val(),
-                outlet_id: $("#order-outlet").val(),
-                type: 'SUPPLIER',
-                status: 'OPEN',
-                due_date: $("#order-due").val()
-            }
-        
-        }).done(function(result){
-            console.log(result);
-        });
-    });
-   
     $(".cancel").click(function(){
         parent.history.back();
     });
-    
+
+    $(".cancel-order").click(function(){
+        $(".cancel-confirm").show();
+    });
+
+    $(".send").click(function(){
+        $(".save_send").show();
+    });
+
+    $(".mark_as_sent").click(function(e) {
+        var order_id = $("#id").val();
+
+        $.ajax({
+            url: "/stock/" + order_id + "/markSent.json",
+            method: "POST",
+            data: {MerchantStockOrder:{id: order_id}},
+            error: function( jqXHR, textStatus, errorThrown ) {
+            },
+            success: function( data ) {
+                if ( data.success ) {
+                    window.location.href = "/stock/" + order_id;
+                } else {
+                    alert(data.message);
+                }
+            } 
+        });
+    });
+
     $(".close-pop").click(function(){
         $(".confirmation-modal").hide();
     });
 
     $(".confirm").click(function(e) {
-        e.preventDefault();
+        $(".confirmation-modal").hide();
+    });
+
+    $(".send-email").click(function(e) {
+        var order_id = $("#id").val();
+        var recipient_name = $("#recipient_name").val();
+        var email = $("#email").val();
+        var cc = $("#cc").val();
+        var subject = $("#subject").val();
+        var message = $("#message").val();
+
+        if (email == '') {
+            return;
+        }
+
+        if (subject == '') {
+            return;
+        }
+
+        if (message == '') {
+            return;
+        }
 
         $.ajax({
             url: "/stock/sentEmail.json",
@@ -404,43 +443,14 @@ jQuery(document).ready(function() {
             data: $('#confirmation-email-form').serialize(),
             error: function( jqXHR, textStatus, errorThrown ) {
             },
-            success: function( data, textStatus, jqXHR ) {
+            success: function( data ) {
                 if (data.success) {
-                    window.location.href = "/stock/receive/<?php echo $order['MerchantStockOrder']['id']; ?>";
+                    window.location.href = "/stock/" + order_id + "/receive";
                 } else {
                     $('.save_send').hide();
                     alert(data.message);
                 }
             }
-        });
-    });
-
-    $(".send").click(function(){
-        $(".save_send").show();
-    });
-
-    $(".cancel-order").click(function(){
-        $(".cancel-confirm").show();
-    });
-
-    $(".mark_as_sent").click(function(e) {
-        e.preventDefault();
-
-        var order_id = "<?php echo $order['MerchantStockOrder']['id']; ?>";
-
-        $.ajax({
-            url: "/stock/send.json",
-            method: "POST",
-            data: {MerchantStockOrder:{id: order_id}},
-            error: function( jqXHR, textStatus, errorThrown ) {
-            },
-            success: function( data, textStatus, jqXHR ) {
-                if ( data.success ) {
-                    window.location.href = "/stock/view/<?php echo $order['MerchantStockOrder']['id']; ?>";
-                } else {
-                    alert(data.message);
-                }
-            } 
         });
     });
 });

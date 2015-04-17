@@ -53,8 +53,24 @@
         array('controller' => 'stock', 'action' => 'view'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
+    Router::connect('/stock/:id/edit',
+        array('controller' => 'stock', 'action' => 'edit'),
+        array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
+
+    Router::connect('/stock/:id/editDetails',
+        array('controller' => 'stock', 'action' => 'editDetails'),
+        array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
+
     Router::connect('/stock/:id/cancel',
         array('controller' => 'stock', 'action' => 'cancel'),
+        array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
+
+    Router::connect('/stock/:id/markSent',
+        array('controller' => 'stock', 'action' => 'markSent'),
+        array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
+
+    Router::connect('/stock/:id/receive',
+        array('controller' => 'stock', 'action' => 'receive'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
     Router::connect('/inventory_count',

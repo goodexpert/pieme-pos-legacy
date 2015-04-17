@@ -72,7 +72,7 @@
                             <select name="register_id">
                                 <option></option>
                                 <?php foreach($registers as $register) { ?>
-                                	<option value="<?php echo $register['MerchantRegister']['id'];?>" <?php if(isset($_GET['register_id']) && $_GET['register_id'] == $register['MerchantRegister']['id']){echo "selected";}?>><?php echo $register['MerchantRegister']['name'];?></option>
+                                    <option value="<?php echo $register['MerchantRegister']['id'];?>" <?php if(isset($_GET['register_id']) && $_GET['register_id'] == $register['MerchantRegister']['id']){echo "selected";}?>><?php echo $register['MerchantRegister']['name'];?></option>
                                 <?php } ?>
                             </select>
                         </dd>
@@ -85,7 +85,7 @@
                             <select name="outlet_id">
                                 <option></option>
                                 <?php foreach($outlets as $outlet) { ?>
-                                	<option value="<?php echo $outlet['MerchantOutlet']['id'];?>" <?php if(isset($_GET['outlet_id']) && $_GET['outlet_id'] == $outlet['MerchantOutlet']['id']){echo "selected";}?>><?php echo $outlet['MerchantOutlet']['name'];?></option>
+                                    <option value="<?php echo $outlet['MerchantOutlet']['id'];?>" <?php if(isset($_GET['outlet_id']) && $_GET['outlet_id'] == $outlet['MerchantOutlet']['id']){echo "selected";}?>><?php echo $outlet['MerchantOutlet']['name'];?></option>
                                 <?php } ?>
                             </select>
                         </dd>
@@ -116,7 +116,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                	<?php foreach($closures as $closure) { ?>
+                    <?php foreach($closures as $closure) { ?>
                     <tr>
                         <td><?php echo $closure['MerchantRegister']['name'];?></td>
                         <td class="text-right"><?php echo $closure['MerchantRegisterOpen']['register_open_count_sequence'];?></td>

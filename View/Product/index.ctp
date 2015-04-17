@@ -94,7 +94,7 @@
                         <dd><input type="text" name="name" value="<?php if(isset($_GET['name'])){echo $_GET['name'];}?>"></dd>
                         <dt>Tag</dt>
                         <dd>
-							<input type="text">
+                            <input type="text">
                         </dd>
                     </dl> 
                 </div>
@@ -102,14 +102,14 @@
                     <dl>
                         <dt>Product type</dt>
                         <dd><select name="product_type_id">
-                        	<option value=""></option>
+                            <option value=""></option>
                             <?php foreach($types as $type){?>
                             <option value="<?=$type['MerchantProductType']['id'];?>" <?php if(isset($_GET['product_type_id']) && $_GET['product_type_id'] == $type['MerchantProductType']['id']){echo "selected";}?>><?=$type['MerchantProductType']['name'];?></option>
                             <?php } ?>
                         </select></dd>
                            <dt>Brand</dt>
                         <dd><select name="product_brand_id">
-                        	<option value=""></option>
+                            <option value=""></option>
                             <?php foreach($brands as $brand){?>
                             <option value="<?=$brand['MerchantProductBrand']['id'];?>" <?php if(isset($_GET['product_brand_id']) && $_GET['product_brand_id'] == $brand['MerchantProductBrand']['id']){echo "selected";}?>><?=$brand['MerchantProductBrand']['name'];?></option>
                             <?php } ?>
@@ -276,9 +276,9 @@ jQuery(document).ready(function() {
             },
             success: function(result){
                 if(result.success) {
-	                // do nothing
+                    // do nothing
                 } else {
-	                console.log(result);
+                    console.log(result);
                 }
             }
         });
@@ -296,9 +296,9 @@ jQuery(document).ready(function() {
             },
             success: function(result){
                 if(result.success) {
-	                // do nothing
+                    // do nothing
                 } else {
-	                console.log(result);
+                    console.log(result);
                 }
             }
         });

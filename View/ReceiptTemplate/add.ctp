@@ -52,10 +52,10 @@
                   <dt>Receipt style</dt>
                   <dd>
                     <select id="receipt_style_id">
-                    	<?php foreach($styles as $style) { ?>
-                    		<option value="<?php echo $style['ReceiptStyle']['id'];?>"><?php echo $style['ReceiptStyle']['name'];?></option>
-                    	<?php } ?>
-					</select>
+                        <?php foreach($styles as $style) { ?>
+                            <option value="<?php echo $style['ReceiptStyle']['id'];?>"><?php echo $style['ReceiptStyle']['name'];?></option>
+                        <?php } ?>
+                    </select>
                   </dd>
                   <dt>Print receipt barcode</dt>
                   <dd>
@@ -76,12 +76,12 @@
                   <dt>Banner image</dt>
                   <dd class="height-inherit">
                     <input type="file">
-					<h6>Upload a JPG, PNG or GIF file, no wider than 280px.</h6>
+                    <h6>Upload a JPG, PNG or GIF file, no wider than 280px.</h6>
                   </dd>
                   <dt>Header text</dt>
                   <dd class="height-inherit">
                     <textarea id="receipt_header"></textarea>
-					<h6>Limit this to around one paragraph or no more than 15 lines.</h6>
+                    <h6>Limit this to around one paragraph or no more than 15 lines.</h6>
                   </dd>
                   <dt>Invoice.no.prefix</dt>
                   <dd>
@@ -122,7 +122,7 @@
                   <dt>Footer text</dt>
                   <dd class="height-inherit">
                     <textarea id="receipt_footer"></textarea>
-					<h6>Limit this to around one paragraph or no more than 15 lines.</h6>
+                    <h6>Limit this to around one paragraph or no more than 15 lines.</h6>
                   </dd>
                 </dl>
               </div>

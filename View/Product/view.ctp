@@ -175,12 +175,12 @@
                             </dd>
                             <dt>User</dt>
                             <dd>
-	                            <select name="user_id">
-	                            	<option></option>
-	                            	<?php foreach($users as $user) { ?>
-	                            		<option value="<?php echo $user['MerchantUser']['id'];?>" <?php if(isset($_GET['user_id']) && $_GET['user_id'] == $user['MerchantUser']['id']){echo "selected";}?>><?php echo $user['MerchantUser']['display_name'];?></option>
-	                            	<?php } ?>
-	                            </select>
+                                <select name="user_id">
+                                    <option></option>
+                                    <?php foreach($users as $user) { ?>
+                                        <option value="<?php echo $user['MerchantUser']['id'];?>" <?php if(isset($_GET['user_id']) && $_GET['user_id'] == $user['MerchantUser']['id']){echo "selected";}?>><?php echo $user['MerchantUser']['display_name'];?></option>
+                                    <?php } ?>
+                                </select>
                             </dd>
                         </dl> 
                     </div>
@@ -193,12 +193,12 @@
                             </dd>
                             <dt>Outlet</dt>
                             <dd>
-	                            <select name="outlet_id">
-	                            	<option></option>
-	                            	<?php foreach($outlets as $outlet) { ?>
-	                            		<option value="<?php echo $outlet['MerchantOutlet']['id'];?>" <?php if(isset($_GET['outlet_id']) && $_GET['outlet_id'] == $outlet['MerchantOutlet']['id']){echo "selected";}?>><?php echo $outlet['MerchantOutlet']['name'];?></option>
-	                            	<?php } ?>
-	                            </select>
+                                <select name="outlet_id">
+                                    <option></option>
+                                    <?php foreach($outlets as $outlet) { ?>
+                                        <option value="<?php echo $outlet['MerchantOutlet']['id'];?>" <?php if(isset($_GET['outlet_id']) && $_GET['outlet_id'] == $outlet['MerchantOutlet']['id']){echo "selected";}?>><?php echo $outlet['MerchantOutlet']['name'];?></option>
+                                    <?php } ?>
+                                </select>
                             </dd>
                         </dl>
                      </div>
@@ -206,27 +206,27 @@
                         <dl>
                             <dt>Action type</dt>
                             <dd>
-	                            <select name="action_type">
-		                            <option value="" selected="selected"></option>
-		                            <option value="back_order_placed">Back Order Placed</option>
-		                            <option value="back_order_transfer_placed">Back Order Transfer Placed</option>
-		                            <option value="order_cancelled">Order Cancelled</option>
-		                            <option value="order_placed">Order Placed</option>
-		                            <option value="order_received">Order Received</option>
-		                            <option value="stocktake_complete">Inventory Count Complete</option>
-		                            <option value="transfer_cancelled">Transfer Cancelled</option>
-		                            <option value="transfer_placed">Transfer Placed</option>
-		                            <option value="transfer_received">Transfer Received</option>
-		                            <option value="sale">Sale</option>
-		                            <option value="layby_sale">Layby Sale</option>
-		                            <option value="account_sale">Account Sale</option>
-		                            <option value="sale_voided">Voided Sale</option>
-		                            <option value="component_deleted">Deleted</option>
-		                            <option value="create">Created</option>
-		                            <option value="delete">Deleted</option>
-		                            <option value="update">Update</option>
-		                            <option value="shopify">Shopify</option>
-	                            </select>
+                                <select name="action_type">
+                                    <option value="" selected="selected"></option>
+                                    <option value="back_order_placed">Back Order Placed</option>
+                                    <option value="back_order_transfer_placed">Back Order Transfer Placed</option>
+                                    <option value="order_cancelled">Order Cancelled</option>
+                                    <option value="order_placed">Order Placed</option>
+                                    <option value="order_received">Order Received</option>
+                                    <option value="stocktake_complete">Inventory Count Complete</option>
+                                    <option value="transfer_cancelled">Transfer Cancelled</option>
+                                    <option value="transfer_placed">Transfer Placed</option>
+                                    <option value="transfer_received">Transfer Received</option>
+                                    <option value="sale">Sale</option>
+                                    <option value="layby_sale">Layby Sale</option>
+                                    <option value="account_sale">Account Sale</option>
+                                    <option value="sale_voided">Voided Sale</option>
+                                    <option value="component_deleted">Deleted</option>
+                                    <option value="create">Created</option>
+                                    <option value="delete">Deleted</option>
+                                    <option value="update">Update</option>
+                                    <option value="shopify">Shopify</option>
+                                </select>
                             </dd>
                         </dl>
                      </div>
@@ -248,17 +248,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                	<?php foreach($logs as $log) { ?>
-                		<tr>
-                			<td><?php echo $log['MerchantProductLog']['created'];?></td>
-                			<td><?php echo $log['MerchantUser']['display_name'];?></td>
-                			<td><?php echo $log['MerchantOutlet']['name'];?></td>
-                			<td><?php echo $log['MerchantProductLog']['quantity'];?></td>
-                			<td><?php echo $log['MerchantProductLog']['outlet_quantity'];?></td>
-                			<td><?php echo $log['MerchantProductLog']['change'];?></td>
-                			<td><?php echo $log['MerchantProductLog']['action_type'];?></td>
-                		</tr>
-                	<?php } ?>
+                    <?php foreach($logs as $log) { ?>
+                        <tr>
+                            <td><?php echo $log['MerchantProductLog']['created'];?></td>
+                            <td><?php echo $log['MerchantUser']['display_name'];?></td>
+                            <td><?php echo $log['MerchantOutlet']['name'];?></td>
+                            <td><?php echo $log['MerchantProductLog']['quantity'];?></td>
+                            <td><?php echo $log['MerchantProductLog']['outlet_quantity'];?></td>
+                            <td><?php echo $log['MerchantProductLog']['change'];?></td>
+                            <td><?php echo $log['MerchantProductLog']['action_type'];?></td>
+                        </tr>
+                    <?php } ?>
                 </tbody>
             </table>
         

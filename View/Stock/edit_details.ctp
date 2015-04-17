@@ -52,96 +52,93 @@
     <!-- BEGIN CONTENT -->
     <div class="page-content-wrapper">
         <div class="page-content">
-        
-            <?php if ($this->request->data['MerchantStockOrder']['type'] == 'OUTLET'): ?>
+        <?php if ($data['MerchantStockOrder']['type'] == 'OUTLET') : ?>
             <h3>Update Transfer</h3>
-            <?php else: ?>
+        <?php else: ?>
             <h3>Update Order</h3>
-            <?php endif; ?>
-            
+        <?php endif; ?>
             <div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">Details</div>
-                
-                <form action="/stock/editDetails/<?php echo $this->request->data['MerchantStockOrder']['id']; ?>" method="post" id="stock_order_form">
+                <form action="/stock/<?php echo $data['MerchantStockOrder']['id']; ?>/editDetails" method="post" id="stock_order_form">
                 <div class="line-box line-box-content col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-6">
                         <dl>
                             <dt>Order name</dt>
                             <dd>
                                 <?php
-                                    $orderName = $this->Form->input('MerchantStockOrder.name', array(
+                                    echo $this->Form->input('MerchantStockOrder.name', array(
+                                        'id' => 'name',
                                         'type' => 'text',
-                                        'div'  => false,
+                                        'div' => false,
                                         'label' => false,
-                                        'placeholder' => 'Order - ' . date('D d F Y')
+                                        'placeholder' => 'Order - ' . date('d M Y')
                                     ));
-
-                                    echo $orderName;
-                                ?>
+                                 ?>
                             </dd>
-
+                            <?php if ($data['MerchantStockOrder']['type'] == 'OUTLET') : ?>
                             <dt>Due at</dt>
                             <dd>
                                 <span class="glyphicon glyphicon-calendar icon-calendar"></span>
                                 <?php
-                                    $dueAt = $this->Form->input('MerchantStockOrder.due_date', array(
+                                    echo $this->Form->input('MerchantStockOrder.due_date', array(
+                                        'id' => 'due_date',
                                         'type' => 'text',
-                                        'div'  => false,
+                                        'div' => false,
                                         'label' => false,
                                         'class' => 'datepicker',
                                         'placeholder' => date('Y-m-d')
                                     ));
-
-                                    echo $dueAt;
-                                ?>
+                                 ?>
                             </dd>
-
-
+                            <?php elseif ($data['MerchantStockOrder']['type'] == 'SUPPLIER') : ?>
+                            <dt>Supplier</dt>
+                            <dd>
+                                <?php echo empty($data['MerchantSupplier']['id']) ? '' : $data['MerchantSupplier']['name']; ?>
+                            </dd>
+                            <dt>Deliver to</dt>
+                            <dd>
+                                <?php echo empty($data['MerchantOutlet']['id']) ? 'Any' : $data['MerchantOutlet']['name']; ?>
+                            </dd>
+                            <?php endif; ?>
                         </dl>
                     </div>
                     <div class="col-md-6">
                         <dl>
-                            <?php if ( $this->request->data['MerchantStockOrder']['type'] == 'OUTLET' ): ?>
+                            <?php if ($data['MerchantStockOrder']['type'] == 'OUTLET') : ?>
                             <dt>Source outlet</dt>
                             <dd>
-                                <?php
-                                    foreach ($outlets as $outlet):
-                                        if ( $outlet['MerchantOutlet']['id'] == $this->request->data['MerchantStockOrder']['source_outlet_id'] ):
-                                            $source_outlet = $outlet['MerchantOutlet']['name'];
-                                            break;
-                                        endif;
-                                    endforeach;
-                                    echo $source_outlet;
-                                ?>
+                                <?php echo empty($data['MerchantSourceOutlet']['id']) ? '' : $data['MerchantSourceOutlet']['name']; ?>
                             </dd>
-                            <?php endif; ?>
-
-                            <?php if ( $this->request->data['MerchantStockOrder']['type'] == 'SUPPLIER' ): ?>
-                            <dt>Supplier</dt>
-                            <dd>
-                                <?php echo is_null($this->request->data['MerchantSupplier']['name']) ? 'Any' : $this->request->data['MerchantSupplier']['name']; ?>
-                            </dd>
-                            <?php endif; ?>
-
                             <dt>Deliver to</dt>
                             <dd>
-                                <?php echo $this->request->data['MerchantOutlet']['name']; ?> 
+                                <?php echo empty($data['MerchantOutlet']['id']) ? 'Any' : $data['MerchantOutlet']['name']; ?>
                             </dd>
-
-                            <?php if ( $this->request->data['MerchantStockOrder']['type'] == 'SUPPLIER' ): ?>
+                            <?php elseif ($data['MerchantStockOrder']['type'] == 'SUPPLIER') : ?>
+                            <dt>Due at</dt>
+                            <dd>
+                                <span class="glyphicon glyphicon-calendar icon-calendar"></span>
+                                <?php
+                                    echo $this->Form->input('MerchantStockOrder.due_date', array(
+                                        'id' => 'due_date',
+                                        'type' => 'text',
+                                        'div' => false,
+                                        'label' => false,
+                                        'class' => 'datepicker',
+                                        'placeholder' => date('Y-m-d')
+                                    ));
+                                 ?>
+                            </dd>
                             <dt>Supplier invoice</dt>
                             <dd>
                                 <?php
-                                    $supplierInvoice = $this->Form->input('MerchantStockOrder.supplier_invoice', array(
+                                    echo $this->Form->input('MerchantStockOrder.supplier_invoice', array(
+                                        'id' => 'supplier_invoice',
                                         'type' => 'text',
-                                        'div'  => false,
+                                        'div' => false,
                                         'label' => false
                                     ));
-
-                                    echo $supplierInvoice;
-                                ?>
+                                 ?>
                             </dd>
                             <?php endif; ?>
-
                         </dl>
                     </div>
                 </div>
@@ -151,9 +148,7 @@
                     <button type="submit" class="btn btn-default btn-wide pull-left">Delete</button>
                 </div>
                 </form>
-
             </div>
-                    
         </div>
     </div>
     <!-- END CONTENT -->
@@ -250,7 +245,6 @@
 <script src="/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
 <script src="/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
-
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script>
 jQuery(document).ready(function() {    
@@ -261,24 +255,16 @@ jQuery(document).ready(function() {
 
     $(".datepicker").datepicker({ dateFormat: 'yy-mm-dd' });
 
+/*
     $(document).on('click','.save',function(){
         $.ajax({
-
             url: '/stock/order.json',
             type: 'POST',
-            data: {
-                name: $("#order-name").val(),
-                supplier_id: $("#order-supplier").val(),
-                outlet_id: $("#order-outlet").val(),
-                type: 'SUPPLIER',
-                status: 'OPEN',
-                due_date: $("#order-due").val()
-            }
-        
+            data: $("#stock_order_form").serialize()
         }).done(function(result){
-            console.log(result);
         });
     });
+*/
    
     $(".cancel").click(function(){
         parent.history.back();

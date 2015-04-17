@@ -177,22 +177,22 @@ class ReportsController extends AppController {
  * @return void
  */
     public function closures() {
-    	$user = $this->Auth->user();
-    	
-    	$this->loadModel('MerchantOutlet');
-    	$outlets = $this->MerchantOutlet->find('all', array(
-    		'conditions' => array(
-    			'MerchantOutlet.merchant_id' => $user['merchant_id']
-    		)
-    	));
-    	$this->set('outlets',$outlets);
-    	
-    	$outlet_ids = array();
-    	foreach($outlets as $outlet) {
-        	array_push($outlet_ids,$outlet['MerchantOutlet']['id']);
-    	}
-    	
-    	$this->loadModel('MerchantRegister');
+        $user = $this->Auth->user();
+        
+        $this->loadModel('MerchantOutlet');
+        $outlets = $this->MerchantOutlet->find('all', array(
+            'conditions' => array(
+                'MerchantOutlet.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('outlets',$outlets);
+        
+        $outlet_ids = array();
+        foreach($outlets as $outlet) {
+            array_push($outlet_ids,$outlet['MerchantOutlet']['id']);
+        }
+        
+        $this->loadModel('MerchantRegister');
         $registers = $this->MerchantRegister->find('all', array(
             'conditions' => array(
                 'MerchantRegister.outlet_id' => $outlet_ids

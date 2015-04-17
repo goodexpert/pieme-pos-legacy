@@ -368,11 +368,11 @@ $(".save").click(function(){
                 note: $(".customer_note").val()
             },
             success: function(result) {
-	            if(result.success) {
-		            window.location.href = "/customer";
-	            } else {
-		            console.log(result);
-	            }
+                if(result.success) {
+                    window.location.href = "/customer";
+                } else {
+                    console.log(result);
+                }
             }
         });
     } else {

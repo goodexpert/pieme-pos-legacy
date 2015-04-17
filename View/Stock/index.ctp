@@ -90,25 +90,44 @@
                     <dl>
                         <dt>Show</dt> 
                         <dd>
-                            <select class="status" name="status" id="status">
-                                <option value="ALL" <?php echo $status == 'ALL' ? 'selected="selected"' : ''; ?>>All orders</option>
-                                <option value="OPEN" <?php echo $status == 'OPEN' ? 'selected="selected"' : ''; ?>>Open orders</option>
-                                <option value="SENT" <?php echo $status == 'SENT' ? 'selected="selected"' : ''; ?>>Sent orders</option>
-                                <option value="RECEIVED" <?php echo $status == 'RECEIVED' ? 'selected="selected"' : ''; ?>>Received orders</option>
-                                <option value="OVERDUE" <?php echo $status == 'OVERDUE' ? 'selected="selected"' : ''; ?>>Overdue orders</option>
-                                <option value="CANCELLED" <?php echo $status == 'RECEIVED' ? 'selected="selected"' : ''; ?>>Cancelled orders</option>
-                                <option value="RECEIVE_FAIL" <?php echo $status == 'RECEIVE_FAIL' ? 'selected="selected"' : ''; ?>>Failed orders</option>
-                            </select>
+                            <?php
+                                echo $this->Form->input('status', array(
+                                    'id' => 'status',
+                                    'type' => 'select',
+                                    'div' => false,
+                                    'label' => false,
+                                    'selected' => $status,
+                                    'options' => $filters
+                                ));
+                            ?>
                         </dd>
                         <dt>Date from</dt>
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" name="date_from" id="date_from" value="<?php echo $date_from; ?>">
+                            <?php
+                                echo $this->Form->input('date_from', array(
+                                    'id' => 'date_from',
+                                    'type' => 'text',
+                                    'class' => 'datepicker',
+                                    'div' => false,
+                                    'label' => false,
+                                    'value' => $date_from
+                                ));
+                             ?>
                         </dd>
                         <dt>Due date from</dt>
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" name="due_date_from" id="due_date_from" value="<?php echo $due_date_from; ?>">
+                            <?php
+                                echo $this->Form->input('due_date_from', array(
+                                    'id' => 'due_date_from',
+                                    'type' => 'text',
+                                    'class' => 'datepicker',
+                                    'div' => false,
+                                    'label' => false,
+                                    'value' => $due_date_from
+                                ));
+                             ?>
                         </dd>
                     </dl> 
                 </div>
@@ -116,17 +135,43 @@
                     <dl>
                         <dt>Name / Has product</dt>
                         <dd>
-                            <input type="text" name="name" id="name" value="<?php echo $name; ?>">
+                            <?php
+                                echo $this->Form->input('name', array(
+                                    'id' => 'name',
+                                    'type' => 'text',
+                                    'div' => false,
+                                    'label' => false,
+                                    'value' => $name
+                                ));
+                             ?>
                         </dd>
                         <dt>Date to</dt>
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" name="date_to" id="date_to" value="<?php echo $date_to; ?>">
+                            <?php
+                                echo $this->Form->input('date_to', array(
+                                    'id' => 'date_to',
+                                    'type' => 'text',
+                                    'class' => 'datepicker',
+                                    'div' => false,
+                                    'label' => false,
+                                    'value' => $date_to
+                                ));
+                             ?>
                         </dd>
                         <dt>Due date to</dt>
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" name="due_date_to" id="due_date_to" value="<?php echo $due_date_to; ?>">
+                            <?php
+                                echo $this->Form->input('due_date_to', array(
+                                    'id' => 'due_date_to',
+                                    'type' => 'text',
+                                    'class' => 'datepicker',
+                                    'div' => false,
+                                    'label' => false,
+                                    'value' => $due_date_to
+                                ));
+                             ?>
                         </dd>
                     </dl>
                  </div>
@@ -134,25 +179,43 @@
                     <dl>
                         <dt>Supplier invoice</dt>
                         <dd>
-                            <input type="text" name="supplier_invoice" id="supplier_invoice" value="<?php echo $supplier_invoice; ?>">
+                            <?php
+                                echo $this->Form->input('supplier_invoice', array(
+                                    'id' => 'supplier_invoice',
+                                    'type' => 'text',
+                                    'div' => false,
+                                    'label' => false,
+                                    'value' => $supplier_invoice
+                                ));
+                             ?>
                         </dd>
                         <dt>Outlet</dt>
                         <dd>
-                            <select name="outlet_id" id="outlet_id">
-                                <option></option>
-                            <?php foreach ($outlets as $key => $value) : ?>
-                                <option value="<?php echo $key; ?>" <?php echo $key == $outlet_id ? 'selected="selected"' : ''; ?>><?php echo $value; ?></option>
-                            <?php endforeach; ?>
-                            </select>
+                            <?php
+                                echo $this->Form->input('outlet_id', array(
+                                    'id' => 'outlet_id',
+                                    'type' => 'select',
+                                    'div' => false,
+                                    'label' => false,
+                                    'selected' => $outlet_id,
+                                    'options' => $outlets,
+                                    'empty' => ''
+                                ));
+                            ?>
                         </dd>
                         <dt>Supplier</dt>
                         <dd>
-                            <select name="supplier_id" id="supplier_id">
-                                <option></option>
-                            <?php foreach ($suppliers as $key => $value) : ?>
-                                <option value="<?php echo $key; ?>" <?php echo $key == $supplier_id ? 'selected="selected"' : ''; ?>><?php echo $value; ?></option>
-                            <?php endforeach; ?>
-                            </select>
+                            <?php
+                                echo $this->Form->input('supplier_id', array(
+                                    'id' => 'supplier_id',
+                                    'type' => 'select',
+                                    'div' => false,
+                                    'label' => false,
+                                    'selected' => $supplier_id,
+                                    'options' => $suppliers,
+                                    'empty' => ''
+                                ));
+                            ?>
                         </dd>
                     </dl>
                  </div>
@@ -201,6 +264,7 @@
                             $orderType = $order['MerchantStockOrder']['type'];
                             $orderStatus = $order['MerchantStockOrder']['status'];
                             $sourceName = '';
+                            $orderItemCount = 0;
 
                             if ($orderType === 'SUPPLIER') {
                                 $orderType = 'Supplier order';
@@ -209,8 +273,13 @@
                                 $orderType = 'Outlet transfer';
                                 $sourceName = $order['MerchantSourceOutlet']['name'];
                             }
+
                             if (empty($sourceName)) {
                                 $sourceName = 'No Name';
+                            }
+
+                            if (!empty($order['MerchantStockOrder']['order_item_count'])) {
+                                $orderItemCount = $order['MerchantStockOrder']['order_item_count'];
                             }
                     ?>
                     <tr>
@@ -233,12 +302,12 @@
                         <td><?php echo $order['MerchantOutlet']['name']; ?></td>
                         <td><?php echo $sourceName; ?></td>
                         <!-- <td><?php echo count($order['MerchantStockOrderItem']); ?></td> -->
-                        <td><?php echo $order[0]['items']; ?></td>
+                        <td><?php echo $orderItemCount; ?></td>
                         <td><?php echo $orderStatusDisp[$orderStatus]; ?></td>
                         <td>
-                            <a href="/stock/view/<?php echo $order['MerchantStockOrder']['id']; ?>">View</a>
+                            <a href="/stock/<?php echo $order['MerchantStockOrder']['id']; ?>">View</a>
                             <?php if ($orderStatus == 'OPEN') : ?>
-                            | <a href="/stock/edit/<?php echo $order['MerchantStockOrder']['id']; ?>">Edit</a> 
+                            | <a href="/stock/<?php echo $order['MerchantStockOrder']['id']; ?>/edit">Edit</a> 
                             <?php elseif ($orderStatus == 'SENT') : ?>
                             | <a href="/stock/receive/<?php echo $order['MerchantStockOrder']['id']; ?>">Receive</a> 
                             <?php elseif ( in_array($orderStatus, array('OVERDUE', 'RECEIVED', 'RECEIVE_FAIL'))) : ?>
@@ -355,7 +424,6 @@
 <script src="/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
 <script src="/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
-
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script>
 jQuery(document).ready(function() {    
@@ -380,15 +448,15 @@ jQuery(document).ready(function() {
         var date_to = $('#date_to').val();
         var due_date_from = $('#due_date_from').val();
         var due_date_to = $('#due_date_to').val();
-        var outlet_id = $('#outlet_id').val();
         var supplier_id = $('#supplier_id').val();
+        var outlet_id = $('#outlet_id').val();
         var supplier_invoice = $('#supplier_invoice').val();
 
         uri = 'status=' + status + '&name=' + name
             + '&date_from=' + date_from + '&date_to=' + date_to
             + '&due_date_from=' + due_date_from + '&due_date_to=' + due_date_to
-            + '&outlet_id=' + outlet_id + '&supplier_id=' + supplier_id
-            + '&supplier_invoice=' + supplier_invoice;
+            + '&supplier_invoice=' + supplier_invoice
+            + '&outlet_id=' + outlet_id + '&supplier_id=' + supplier_id;
         window.location.href = '/stock?' + encodeURI(uri);
     });
 });
