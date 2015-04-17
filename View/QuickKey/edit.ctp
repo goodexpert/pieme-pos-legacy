@@ -69,12 +69,14 @@
                            <ul id="sortable">
                                <?php $keyArray = json_decode($keys['MerchantQuickKey']['key_layouts'], true);
                                foreach($keyArray['pages'] as $key){
-                                foreach($key['keys'] as $attr) {?>
-                                    <li class="col-md-3 col-xs-3 col-sm-3 product clickable col-alpha col-omega button-view qKey" data-id="<?php echo $attr['product_id'];?>" page="<?php echo $key['page'];?>" <?php if($key['page'] !== 1){echo 'style="display:none;"';}?>>
-                                        <span class="button-remove"><i class="glyphicon glyphicon-remove"></i></span>
-                                        <p><?php echo $attr['label'];?></p>
-                                    </li>
-                                <?php }
+                                if(!empty($key['keys'])) {
+                                    foreach($key['keys'] as $attr) { ?>
+                                        <li class="col-md-3 col-xs-3 col-sm-3 product clickable col-alpha col-omega button-view qKey" data-id="<?php echo $attr['product_id'];?>" page="<?php echo $key['page'];?>" <?php if($key['page'] !== 1){echo 'style="display:none;"';}?>>
+                                            <span class="button-remove"><i class="glyphicon glyphicon-remove"></i></span>
+                                            <p><?php echo $attr['label'];?></p>
+                                        </li>
+                                    <?php }
+                                }
                                } ?>
                            </ul>
                         </div>
@@ -82,8 +84,9 @@
                             <span class="pull-left clickable prev"><i class="glyphicon glyphicon-chevron-left"></i></span>
                             <span class="pull-right clickable next"><i class="glyphicon glyphicon-chevron-right"></i></span>
                             <?php $keyArray = json_decode($keys['MerchantQuickKey']['key_layouts'], true);
-                               foreach($keyArray['pages'] as $key){ ?>
-                            <span rel="<?php echo $key['page'];?>" class="page clickable <?php if($key['page'] == 1){echo "selected";}?>"><?php echo $key['page'];?></span>
+                            $pages = count($keyArray['pages']);
+                            for($i = 1;$i <= $pages;$i++){?>
+                                <span rel="<?php echo $i;?>" class="page clickable <?php if($i == 1){echo "selected";}?>"><?php echo $i;?></span>
                             <?php } ?>
                         </div>
                     </div>

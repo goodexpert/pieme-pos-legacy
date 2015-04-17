@@ -64,14 +64,16 @@
             </div>
                 
             <!-- FILTER -->
-            <div class="col-md-12 col-xs-12 col-sm-12 line-box filter-box">
+            <form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box" methond="/reports/closures" method="get">
                 <div class="col-md-4 col-xs-6 col-sm-6">
                     <dl>
                         <dt>Register</dt> 
                         <dd>
-                            <select>
-                                <option>
-                                </option>
+                            <select name="register_id">
+                                <option></option>
+                                <?php foreach($registers as $register) { ?>
+                                	<option value="<?php echo $register['MerchantRegister']['id'];?>" <?php if(isset($_GET['register_id']) && $_GET['register_id'] == $register['MerchantRegister']['id']){echo "selected";}?>><?php echo $register['MerchantRegister']['name'];?></option>
+                                <?php } ?>
                             </select>
                         </dd>
                     </dl> 
@@ -80,9 +82,11 @@
                     <dl>
                         <dt>Outlet</dt> 
                         <dd>
-                            <select>
-                                <option>
-                                </option>
+                            <select name="outlet_id">
+                                <option></option>
+                                <?php foreach($outlets as $outlet) { ?>
+                                	<option value="<?php echo $outlet['MerchantOutlet']['id'];?>" <?php if(isset($_GET['outlet_id']) && $_GET['outlet_id'] == $outlet['MerchantOutlet']['id']){echo "selected";}?>><?php echo $outlet['MerchantOutlet']['name'];?></option>
+                                <?php } ?>
                             </select>
                         </dd>
                     </dl>
@@ -90,7 +94,7 @@
                  <div class="col-md-12 col-xs-12 col-sm-12">
                      <button class="btn btn-primary filter pull-right">Update</button>
                  </div>
-            </div>
+            </form>
 
             <table class="table-bordered dataTable table-price">
                 <colgroup>
@@ -108,21 +112,19 @@
                     <th class="text-right">#</th>
                     <th>Time Opened</th>
                     <th>Time Closed</th>
-                    <th class="text-right">Cash</th>
-                    <th class="text-right">Credit Card</th>
                     <th class="text-right">Total</th>
                 </tr>
                 </thead>
                 <tbody>
+                	<?php foreach($closures as $closure) { ?>
                     <tr>
-                        <td>takapuna #1</td>
-                        <td class="text-right">2</td>
-                        <td>March 25, 2015 11:59 AM  </td>
-                        <td>Still open</td>
-                        <td class="text-right">64.35</td>
-                        <td class="text-right">-</td>
-                        <td class="text-right">0.00</td>
+                        <td><?php echo $closure['MerchantRegister']['name'];?></td>
+                        <td class="text-right"><?php echo $closure['MerchantRegisterOpen']['register_open_count_sequence'];?></td>
+                        <td><?php echo $closure['MerchantRegisterOpen']['register_open_time'];?></td>
+                        <td><?php if(empty($closure['MerchantRegisterOpen']['register_close_time'])){echo "Still open";}else{echo $closure['MerchantRegisterOpen']['register_close_time'];}?></td>
+                        <td class="text-right">$<?php echo number_format($closure['MerchantRegisterOpen']['total_payments'],2,'.',',');?></td>
                     </tr>
+                    <?php } ?>
                 </tbody>
             </table>
         </div>

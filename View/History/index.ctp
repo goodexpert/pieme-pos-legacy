@@ -57,51 +57,66 @@
                 <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">History</h2>
             </div>
             <!-- FILTER -->
-            <div class="col-md-12 col-xs-12 col-sm-12 line-box filter-box">
+            <form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box" action="/history" method="get">
                 <div class="col-md-4 col-xs-4 col-sm-4">
                     <dl>
                         <dt>Date from</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="date_from">
+                            <input type="text" id="date_from" name="from" value="<?php if(isset($_GET['from'])){echo $_GET['from'];}?>">
                         </dd>
                         <dt>Register</dt>
-                        <dd><input type="text" id=""></dd>
+                        <dd>
+                            <select name="register_id">
+                                <option value=""></option>
+                                <?php foreach($registers as $register) { ?>
+                                    <option value="<?php echo $register['MerchantRegister']['id'];?>" <?php if(isset($_GET['register_id']) && $_GET['register_id'] == $register['MerchantRegister']['id']){echo "selected";}?>><?php echo $register['MerchantRegister']['name'];?></option>
+                                <?php } ?>
+                            </select>
+                        </dd>
                         <dt>Customer name</dt>
-                        <dd><input type="text" id=""></dd>
-                    </dl> 
+                        <dd><input type="text" name="customer" value="<?php if(isset($_GET['customer'])){echo $_GET['customer'];}?>"></dd>
+                    </dl>
                 </div>
                 <div class="col-md-4 col-xs-4 col-sm-4">
                     <dl>
                         <dt>Date to</dt>
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="date_to">
+                            <input type="text" id="date_to" name="to" value="<?php if(isset($_GET['to'])){echo $_GET['to'];}?>">
                         </dd>
                         <dt>Receipt number</dt>
-                        <dd><input type="text" id=""></dd>
+                        <dd><input type="text" name="receipt_number" value="<?php if(isset($_GET['receipt_number'])){echo $_GET['receipt_number'];}?>"></dd>
                         <dt>Amount</dt>
-                        <dd><input type="text" id=""></dd>
+                        <dd><input type="text" name="total_cost" value="<?php if(isset($_GET['total_cost'])){echo $_GET['total_cost'];}?>"></dd>
                     </dl>
                  </div>
                 <div class="col-md-4 col-xs-4 col-sm-4">
                     <dl>
                         <dt>Show</dt>
-                        <dd><select>
-                        <option></option>
-                        </select>
+                        <dd>
+                            <select name="status">
+                                <option value="">All Sales</option>
+                                <?php foreach($status as $stat) { ?>
+                                    <option value="<?php echo $stat['SaleStatus']['status'];?>" <?php if(isset($_GET['status']) && $_GET['status'] == $stat['SaleStatus']['status']){echo "selected";}?>><?php echo $stat['SaleStatus']['status'];?></option>
+                                <?php } ?>
+                            </select>
                         </dd>
                         <dt>User</dt>
-                        <dd><select>
-                        <option></option>
-                        </select>
+                        <dd>
+                            <select name="user_id">
+                                <option></option>
+                                <?php foreach($users as $user) { ?>
+                                    <option value="<?php echo $user['MerchantUser']['id'];?>" <?php if(isset($_GET['user_id']) && $_GET['user_id'] == $user['MerchantUser']['id']){echo "selected";}?>><?php echo $user['MerchantUser']['display_name'];?></option>
+                                <?php } ?>
+                            </select>
                         </dd>
                     </dl>
                  </div>
                  <div class="col-md-12 col-xs-12 col-sm-12">
-                     <button class="btn btn-primary filter pull-right">Update</button>
+                     <button type="submit" class="btn btn-primary filter pull-right">Update</button>
                  </div>
-            </div>
+            </form>
             <table id="historyTable" class="table table-striped table-bordered dataTable">
                 <thead>
                 <tr>
@@ -124,8 +139,8 @@
                         <td><?php echo $sale['MerchantCustomer']['name'];?></td>
                         <td><?=$sale['RegisterSale']['note'];?></td>
                         <td class="history_status"><?=$sale['RegisterSale']['status'];?></td>
-                        <td class="tdTotal">$<?=number_format($sale['RegisterSale']['total_cost'],2,'.','');?></td>
-                        <td><?=$sale['RegisterSale']['sale_date'];?></td>
+                        <td class="tdTotal">$<?=number_format($sale['RegisterSale']['total_cost'],2,'.',',');?></td>
+                        <td><?=$sale['RegisterSale']['created'];?></td>
                     </tr>
                     <tr class="expandable-child" data-parent-id="<?=$sale['RegisterSale']['id'];?>">
                         <td colspan="8" class="expandable-child-td">
@@ -142,8 +157,8 @@
                                     <?php } ?>
                                 </div>
                                 <div class="pull-right">
-                                    <?php if($sale['RegisterSale']['status'] == 'layby' or $sale['RegisterSale']['status'] == 'saved' or $sale['RegisterSale']['status'] == 'onaccount'){ ?>
                                     <button class="btn btn-default void-history" data-id="<?=$sale['RegisterSale']['id'];?>">Void</button>
+                                    <?php if($sale['RegisterSale']['status'] == 'layby' or $sale['RegisterSale']['status'] == 'saved' or $sale['RegisterSale']['status'] == 'onaccount'){ ?>
                                     <button class="btn btn-default">Continue Sale</button>
                                     <?php } ?>
                                 </div>
@@ -158,11 +173,11 @@
                                                 <span class="col-md-4 col-xs-4 col-sm-4 col-alpha col-omega row-product">
                                                     <b><?=$item['quantity'];?> x</b> <?=$item['MerchantProduct']['name'];?></span>
                                                 <span class="col-md-4 col-xs-4 col-sm-4 col-alpha col-omega row-product-pice">
-                                                    <b>@ $<?=number_format($item['MerchantProduct']['price_include_tax'] - $item['MerchantProduct']['tax'],2,'.','');?></b>
-                                                    <small>+ $<?=number_format($item['MerchantProduct']['tax'],2,'.','');?> Tax (GST)</small>
+                                                    <b>@ $<?=number_format($item['MerchantProduct']['price_include_tax'] - $item['MerchantProduct']['tax'],2,'.',',');?></b>
+                                                    <small>+ $<?=number_format($item['MerchantProduct']['tax'],2,'.',',');?> Tax (GST)</small>
                                                 </span>
                                                 <span class="col-md-4 col-xs-4 col-sm-4 col-alpha col-omega row-amount">
-                                                    $<?=number_format($item['price'],2,'.','');?>
+                                                    $<?=number_format($item['price'],2,'.',',');?>
                                                 </span>
                                             </li>
                                         
@@ -181,12 +196,12 @@
                                     <div class="col-md-12 col-xs-12 col-sm-12 show-amount">
                                         <ul class="receipt-text">
                                             <li class="pull-left">Subtotal</li>
-                                            <li class="pull-right"><text class="subTotal">$<?=number_format($sale['RegisterSale']['total_price'],2,'.','');?></text></li>
+                                            <li class="pull-right"><text class="subTotal">$<?=number_format($sale['RegisterSale']['total_price'],2,'.',',');?></text></li>
                                         </ul>
                                         <ul class="receipt-text">
                                             <li class="pull-left">Tax (GST)</li>
                                             <li class="pull-right">
-                                                <text class="gst">$<?=number_format($sale['RegisterSale']['total_tax'],2,'.','');?></text>
+                                                <text class="gst">$<?=number_format($sale['RegisterSale']['total_tax'],2,'.',',');?></text>
                                             </li>
                                         </ul>
                                         <div class="dashed-line"></div>
@@ -195,7 +210,7 @@
                                                 <strong>TOTAL</strong>
                                             </li>
                                             <li class="pull-right h4">
-                                                <text class="total"><strong>$<?=number_format($sale['RegisterSale']['total_cost'],2,'.','');?></strong></text>
+                                                <text class="total"><strong>$<?=number_format($sale['RegisterSale']['total_cost'],2,'.',',');?></strong></text>
                                             </li>
                                         </ul>
                                         <div class="solid-line"></div>
@@ -206,7 +221,7 @@
                                             </li>
                                             <li class="pull-right col-md-5 col-xs-5 col-sm-5 col-omega" style="text-align:right;">
                                                 <div>
-                                                    <?='$'.number_format($payment['amount'],2,'.','');?>
+                                                    <?='$'.number_format($payment['amount'],2,'.',',');?>
                                                     <div class="glyphicon glyphicon-remove clickable"></div>
                                                 </div>
                                             </li>
@@ -225,9 +240,8 @@
                             </div>
                         </td>
                     </tr>
-                
                 <?php } ?>
-                
+
                 </tbody>
             </table>
             <div class="dataTables_wrapper">
@@ -279,8 +293,8 @@ jQuery(document).ready(function() {
     QuickSidebar.init() // init quick sidebar
     Index.init();
     
-    $("#date_from").datepicker();
-    $("#date_to").datepicker();
+    $("#date_from").datepicker({ dateFormat: 'yy-mm-dd' });
+    $("#date_to").datepicker({ dateFormat: 'yy-mm-dd' });
     
     $(".ShowMore").click(function(){
         $(this).parents(".history-detail").find(".hidden_product").toggle();
@@ -294,7 +308,7 @@ jQuery(document).ready(function() {
     var count = 0;
     var page = 1;
     var currentPage = 1;
-    $(".expandable").each(function(){
+    $("#historyTable").find(".expandable").each(function(){
         $(this).attr({'page':page});
         $(this).next('.expandable-child').attr({'page':page});
         count++;
@@ -394,11 +408,9 @@ $(".void-history").click(function(){
         type: 'POST',
         data: {
             id: $(this).attr("data-id"),
-            status: 'VOIDED',
+            status: 'voided',
         }
     });
-    $("#Date_from").datepicker();
-    $("#Date_to").datepicker();
 });
 </script>
 <!-- END JAVASCRIPTS -->

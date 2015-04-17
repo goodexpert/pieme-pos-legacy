@@ -165,19 +165,22 @@
                 </div>
                 <!-- END col-md-12-->
                 <!-- filter-->
-                <div class="col-md-12 col-xs-12 col-sm-12 line-box filter-box margin-top-20">
+                <form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box margin-top-20" action="<?php echo "$_SERVER[REQUEST_URI]";?>" method="get">
                     <div class="col-md-4 col-xs-4 col-sm-4">
                         <dl>
                             <dt>Period start</dt> 
                             <dd>
                                 <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                                <input type="text" id="Period_start">
+                                <input type="text" id="Period_start" name="from" value="<?php if(isset($_GET['from'])){echo $_GET['from'];}?>">
                             </dd>
                             <dt>User</dt>
                             <dd>
-                            <select>
-                            <option ></option>
-                            </select>
+	                            <select name="user_id">
+	                            	<option></option>
+	                            	<?php foreach($users as $user) { ?>
+	                            		<option value="<?php echo $user['MerchantUser']['id'];?>" <?php if(isset($_GET['user_id']) && $_GET['user_id'] == $user['MerchantUser']['id']){echo "selected";}?>><?php echo $user['MerchantUser']['display_name'];?></option>
+	                            	<?php } ?>
+	                            </select>
                             </dd>
                         </dl> 
                     </div>
@@ -186,13 +189,16 @@
                             <dt>Period end</dt>
                             <dd>
                                 <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                                <input type="text" id="Period_end">
+                                <input type="text" id="Period_end" name="to" value="<?php if(isset($_GET['to'])){echo $_GET['to'];}?>">
                             </dd>
                             <dt>Outlet</dt>
                             <dd>
-                            <select>
-                            <option ></option>
-                            </select>
+	                            <select name="outlet_id">
+	                            	<option></option>
+	                            	<?php foreach($outlets as $outlet) { ?>
+	                            		<option value="<?php echo $outlet['MerchantOutlet']['id'];?>" <?php if(isset($_GET['outlet_id']) && $_GET['outlet_id'] == $outlet['MerchantOutlet']['id']){echo "selected";}?>><?php echo $outlet['MerchantOutlet']['name'];?></option>
+	                            	<?php } ?>
+	                            </select>
                             </dd>
                         </dl>
                      </div>
@@ -200,34 +206,34 @@
                         <dl>
                             <dt>Action type</dt>
                             <dd>
-                            <select>
-                            <option value="" selected="selected"></option>
-                            <option value="back_order_placed">Back Order Placed</option>
-                            <option value="back_order_transfer_placed">Back Order Transfer Placed</option>
-                            <option value="order_cancelled">Order Cancelled</option>
-                            <option value="order_placed">Order Placed</option>
-                            <option value="order_received">Order Received</option>
-                            <option value="stocktake_complete">Inventory Count Complete</option>
-                            <option value="transfer_cancelled">Transfer Cancelled</option>
-                            <option value="transfer_placed">Transfer Placed</option>
-                            <option value="transfer_received">Transfer Received</option>
-                            <option value="sale">Sale</option>
-                            <option value="sale_layby">Layby Sale</option>
-                            <option value="sale_on_account">Account Sale</option>
-                            <option value="sale_voided">Voided Sale</option>
-                            <option value="component_deleted">Deleted</option>
-                            <option value="create">Created</option>
-                            <option value="delete">Deleted</option>
-                            <option value="update">Update</option>
-                            <option value="shopify">Shopify</option>
-                            </select>
+	                            <select name="action_type">
+		                            <option value="" selected="selected"></option>
+		                            <option value="back_order_placed">Back Order Placed</option>
+		                            <option value="back_order_transfer_placed">Back Order Transfer Placed</option>
+		                            <option value="order_cancelled">Order Cancelled</option>
+		                            <option value="order_placed">Order Placed</option>
+		                            <option value="order_received">Order Received</option>
+		                            <option value="stocktake_complete">Inventory Count Complete</option>
+		                            <option value="transfer_cancelled">Transfer Cancelled</option>
+		                            <option value="transfer_placed">Transfer Placed</option>
+		                            <option value="transfer_received">Transfer Received</option>
+		                            <option value="sale">Sale</option>
+		                            <option value="layby_sale">Layby Sale</option>
+		                            <option value="account_sale">Account Sale</option>
+		                            <option value="sale_voided">Voided Sale</option>
+		                            <option value="component_deleted">Deleted</option>
+		                            <option value="create">Created</option>
+		                            <option value="delete">Deleted</option>
+		                            <option value="update">Update</option>
+		                            <option value="shopify">Shopify</option>
+	                            </select>
                             </dd>
                         </dl>
                      </div>
                      <div class="col-md-12 col-xs-12 col-sm-12">
                          <button class="btn btn-primary filter pull-right">Update</button>
                      </div>
-                </div>
+                </form>
                 <!-- filter end-->
             <table id="transactionTable" class="table dataTable">
                 <thead>
@@ -361,8 +367,8 @@ jQuery(document).ready(function() {
    QuickSidebar.init() // init quick sidebar
    Index.init();
    
-    $("#Period_start").datepicker();
-    $("#Period_end").datepicker();
+    $("#Period_start").datepicker({ dateFormat: 'yy-mm-dd' });
+    $("#Period_end").datepicker({ dateFormat: 'yy-mm-dd' });
 });
 </script>
 <!-- END JAVASCRIPTS -->

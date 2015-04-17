@@ -82,7 +82,7 @@
                         <td class="supplier_name"><?=$supplier['MerchantSupplier']['name'];?></td>
                         <td><?=$supplier['MerchantSupplier']['description'];?></td>
                         <td>
-                            <a href="/product?supplier=<?=$supplier['MerchantSupplier']['id'];?>">View Products</a>
+                            <a href="/product?supplier_id=<?=$supplier['MerchantSupplier']['id'];?>">View Products</a>
                              | <a href="/supplier/edit?id=<?=$supplier['MerchantSupplier']['id'];?>" class="edit-supplier">Edit</a> 
                              | <span class="clickable delete-supplier" data-id="<?=$supplier['MerchantSupplier']['id'];?>">Delete</span>
                         </td>

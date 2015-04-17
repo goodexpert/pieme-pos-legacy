@@ -177,6 +177,65 @@ class ReportsController extends AppController {
  * @return void
  */
     public function closures() {
+    	$user = $this->Auth->user();
+    	
+    	$this->loadModel('MerchantOutlet');
+    	$outlets = $this->MerchantOutlet->find('all', array(
+    		'conditions' => array(
+    			'MerchantOutlet.merchant_id' => $user['merchant_id']
+    		)
+    	));
+    	$this->set('outlets',$outlets);
+    	
+    	$outlet_ids = array();
+    	foreach($outlets as $outlet) {
+        	array_push($outlet_ids,$outlet['MerchantOutlet']['id']);
+    	}
+    	
+    	$this->loadModel('MerchantRegister');
+        $registers = $this->MerchantRegister->find('all', array(
+            'conditions' => array(
+                'MerchantRegister.outlet_id' => $outlet_ids
+            )
+        ));
+        $this->set('registers',$registers);
+        
+        $register_ids = array();
+        foreach($registers as $register) {
+            array_push($register_ids,$register['MerchantRegister']['id']);
+        }
+        
+        $this->loadModel('MerchantRegisterOpen');
+        $this->MerchantRegisterOpen->bindModel(array(
+            'belongsTo' => array(
+                'MerchantRegister' => array(
+                    'className' => 'MerchantRegister',
+                    'foreignKey' => 'register_id'
+                )
+            )
+        ));
+        
+        $criteria = array(
+            'MerchantRegisterOpen.register_id' => $register_ids
+        );
+        
+        if(isset($_GET)) {
+            foreach($_GET as $key => $value) {
+                if(!empty($value)) {
+                    if($key == 'register_id') {
+                        $criteria['MerchantRegisterOpen.'.$key] = $value;
+                    } else if($key == 'outlet_id') {
+                        $criteria['MerchantRegister.'.$key] = $value;
+                    }
+                }
+            }
+        }
+        
+        $closures = $this->MerchantRegisterOpen->find('all', array(
+            'conditions' => $criteria
+        ));
+        $this->set('closures',$closures);
+
     }
 
 }

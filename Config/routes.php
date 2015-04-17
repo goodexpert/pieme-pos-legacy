@@ -127,6 +127,18 @@
     Router::connect('/receipt_template/:id/edit',
         array('controller' => 'receipttemplate', 'action' => 'edit'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
+        
+    Router::connect('/customer/:id',
+        array('controller' => 'customer', 'action' => 'view'),
+        array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
+
+    Router::connect('/customer/:id/edit',
+        array('controller' => 'customer', 'action' => 'edit'),
+        array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
+
+    Router::connect('/customer/:id/delete',
+        array('controller' => 'customer', 'action' => 'delete'),
+        array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
 /**
  * ...and connect the rest of 'Pages' controller's URLs.

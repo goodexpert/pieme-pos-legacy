@@ -311,6 +311,10 @@ class HomeController extends AppController {
                     	$data['status'] = 'layby_closed';
                     if($currentStatus == 'onaccount')
                     	$data['status'] = 'onaccount_closed';
+                    	
+                    $this->MerchantCustomer->id = $data['customer_id'];
+                    $cBalance['MerchantCustomer']['balance'] = $this->MerchantCustomer->findById($data['customer_id'])['MerchantCustomer']['balance'] + $data['total_cost'];
+                    $this->MerchantCustomer->save($cBalance);
                 } else {
                     $this->RegisterSale->create();
                     $data['status'] = 'closed';
@@ -671,22 +675,23 @@ class HomeController extends AppController {
     public function select_register() {
         if($this->request->is('post')) {
             $this->loadModel("MerchantRegister");
-            
-            $data = $this->request->data;
-            
-            $_SESSION["Auth"]["User"]["outlet_id"] = $data['outlet_id'];
-            
-            $outlet = $this->MerchantOutlet->findById($data['outlet_id']);
-            $_SESSION["Auth"]["User"]["MerchantOutlet"] = $outlet['MerchantOutlet'];
-            
-            $register = $this->MerchantRegister->findById($data['register_id']);
-            $_SESSION["Auth"]["User"]["MerchantRegister"] = $register['MerchantRegister'];
-            
-        }
-    }
-    public function edit_sale() {
-        if($this->request->is('post')) {
-            
+            $result = array(
+                'success' => false
+            );
+            try {
+                $data = $this->request->data;
+                
+                $_SESSION["Auth"]["User"]["outlet_id"] = $data['outlet_id'];
+                
+                $outlet = $this->MerchantOutlet->findById($data['outlet_id']);
+                $_SESSION["Auth"]["User"]["MerchantOutlet"] = $outlet['MerchantOutlet'];
+                
+                $register = $this->MerchantRegister->findById($data['register_id']);
+                $_SESSION["Auth"]["User"]["MerchantRegister"] = $register['MerchantRegister'];
+            } catch (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+            $this->serialize($result);
         }
     }
 }

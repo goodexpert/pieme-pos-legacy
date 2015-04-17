@@ -245,6 +245,7 @@
                   <ul class="feeds">
                     <li>
                     <?php
+                    if(!empty($key_layout)) {
                     foreach($key_layout as $product) { ?>
                         <div class="col-md-4 col-xs-12 col-sm-6 product clickable col-alpha col-omega" data-id="<?php echo $key_items[$product['product_id']]['MerchantProduct']['id'];?>" page="<?php echo $product['page'];?>">
                             <div class="product-container">
@@ -332,7 +333,7 @@
                                 <input type="hidden" class="product-tax" value="<?=$key_items[$product['product_id']]['MerchantProduct']['tax'];?>">
                             </div>
                         </div>
-                    <?php } ?>
+                    <?php }} ?>
                     </li>
                   </ul>
               </div>
@@ -351,12 +352,13 @@
               <span class="pull-left clickable prev"><i class="glyphicon glyphicon-chevron-left"></i></span>
               <span class="pull-right clickable next"><i class="glyphicon glyphicon-chevron-right"></i></span>
               <span class="page clickable selected">1</span>
-              <?php $last_page = $key_layout[count($key_layout) - 1]['page'];
+              <?php if(!empty($key_layout)) {
+                  $last_page = $key_layout[count($key_layout) - 1]['page'];
                   if($last_page > 1) {
                       for($i = 2;$i <= $last_page;$i++)
                         echo '<span class="page clickable">'.$i.'</span>';
                   }
-              ?>
+              }?>
           </div>
         </div>
       </div>
@@ -1347,12 +1349,12 @@ jQuery(document).ready(function() {
         var outlet_id = $(this).attr("outlet-id");
         var register_id = $(this).attr("register-id");
         $.ajax({  
-           url: "/home/select_register.json",
-           type: "POST",
-           data: {
-               outlet_id: outlet_id,
-               register_id: register_id
-           }
+            url: "/home/select_register.json",
+            type: "POST",
+            data: {
+                outlet_id: outlet_id,
+                register_id: register_id
+            }
         });
         location.reload();
     });

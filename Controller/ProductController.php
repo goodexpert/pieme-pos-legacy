@@ -71,6 +71,13 @@ class ProductController extends AppController {
             }
         }
 
+        $categories = $this->MerchantProductTag->find('all', array(
+            'conditions' => array(
+                'MerchantProductTag.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('categories',$categories);
+
         $this->MerchantProduct->bindModel(array(
             'belongsTo' => array(
                 'MerchantProductBrand' => array(
@@ -614,13 +621,43 @@ class ProductController extends AppController {
             )
         ));
         
+        $criteria = array(
+            'MerchantProductLog.product_id' => $id
+        );
+        
+        if(isset($_GET)) {
+            foreach($_GET as $key => $value) {
+                if(!empty($value)) {
+                    if($key == "from") {
+                        $criteria['MerchantProductLog.created >='] = $value;
+                    } else if($key == "to") {
+                        $criteria['MerchantProductLog.created <='] = $value;
+                    } else {
+                        $criteria['MerchantProductLog.'.$key] = $value;
+                    }
+                }
+            }
+        }
+        
         $logs = $this->MerchantProductLog->find('all', array(
-            'conditions' => array(
-                'MerchantProductLog.product_id' => $id
-            ),
+            'conditions' => $criteria,
             'order' => array('MerchantProductLog.created DESC')
         ));
         $this->set('logs',$logs);
+
+        $users = $this->MerchantUser->find('all', array(
+            'conditions' => array(
+                'MerchantUser.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('users',$users);
+        
+        $outlets = $this->MerchantOutlet->find('all', array(
+            'conditions' => array(
+                'MerchantOutlet.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('outlets',$outlets);
 
         $this->MerchantProduct->bindModel(array(
             'belongsTo' => array(

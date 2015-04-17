@@ -74,7 +74,7 @@
                         <div class="dashed-line-gr"></div>
                         <div class="receipt-body">
                             <div class="receipt-body-customer">
-                                <?php if($sales[0]['RegisterSale']['customer_id'] !== null){ ?>
+                                <?php if($sales['RegisterSale']['customer_id'] !== null){ ?>
                                 <span class="receipt-customer-name">customer name</span><br>
                                 <?php } ?>
                                 <span class="receupt-customer-region">New Zealand</span>
@@ -83,14 +83,14 @@
                                 Receipt / Tax Invoice
                             </h4>
                             <div class="receipt-body-info">
-                                Invoice #: <span class="invoice-id"><?=$_GET['r'];?></span><br>
-                                <span class="invoice-date"><?=$sales[0]['RegisterSale']['sale_date'];?></span><br>
+                                Invoice #: <?php echo $sales['RegisterSale']['receipt_number'];?><br>
+                                <span class="invoice-date"><?=$sales['RegisterSale']['sale_date'];?></span><br>
                                 Served by: sales person on register: Register
                             </div>
                             <div class="dashed-line-gr"></div>
                             <div class="col-md-12 col-xs-12 col-sm-12 col-omega col-alpha receipt-body-sales">
                                 <table class="col-md-12 col-xs-12 col-sm-12 col-omega col-alpha receipt-product-table">
-                                    <?php foreach($sales[0]['RegisterSaleItem'] as $item){ ?>
+                                    <?php foreach($sales['RegisterSaleItem'] as $item){ ?>
                                     <tr>
                                         <td class="receipt-product-qty"><?=$item['quantity'];?></td>
                                         <td class="receipt-product-name"><?=$item['MerchantProduct']['name'];?></td>
@@ -102,15 +102,15 @@
                                 <table class="col-md-12 col-xs-12 col-sm-12 col-omega col-alpha receipt-product-table-total">
                                     <tr>
                                         <th>Subtotal</th>
-                                        <td class="total-amount receipt-subtotal pull-right">$<?=$sales[0]['RegisterSale']['total_price'] - $sales[0]['RegisterSale']['total_tax'];?></td>
+                                        <td class="total-amount receipt-subtotal pull-right">$<?=number_format($sales['RegisterSale']['total_price'],2,'.',',');?></td>
                                     </tr>
                                     <tr>
                                         <th>Tax (GST)</th>
-                                        <td class="total-amount receipt-tax pull-right">$<?=number_format($sales[0]['RegisterSale']['total_tax'],3,'.','');?></td>
+                                        <td class="total-amount receipt-tax pull-right">$<?=number_format($sales['RegisterSale']['total_tax'],2,'.',',');?></td>
                                     </tr>
                                     <tr>
                                         <th>TOTAL</th>
-                                        <td class="total-amount receipt-total pull-right">$<?=number_format($sales[0]['RegisterSale']['total_price'],2,'.','');?></td>
+                                        <td class="total-amount receipt-total pull-right">$<?=number_format($sales['RegisterSale']['total_cost'],2,'.',',');?></td>
                                     </tr>
                                 </table>
                             </div>

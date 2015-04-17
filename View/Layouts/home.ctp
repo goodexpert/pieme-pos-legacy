@@ -28,7 +28,7 @@
 <link href="/css/custom.keypad.css" rel="stylesheet" type="text/css">
 <link href="/css/dataTable.css" rel="stylesheet" type="text/css">
 <!-- END THEME STYLES -->
-<link rel="shortcut icon" href="onzsa.ico"/>
+<link rel="shortcut icon" href="/onzsa.ico"/>
 
 </head>
 <!-- END HEAD -->

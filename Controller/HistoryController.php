@@ -23,7 +23,7 @@ class HistoryController extends AppController {
  *
  * @var array
  */
-    public $uses = array('MerchantProduct', 'RegisterSale', 'RegisterSaleItem', 'MerchantCustomer');
+    public $uses = array('MerchantProduct', 'RegisterSale', 'RegisterSaleItem', 'MerchantCustomer', 'MerchantUser', 'SaleStatus');
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -35,6 +35,18 @@ class HistoryController extends AppController {
     }
 
     public function index() {
+        $user = $this->Auth->user();
+        
+        $this->loadModel('MerchantRegister');
+        $registers = $this->MerchantRegister->find('all',array(
+            'conditions' => array(
+                'MerchantRegister.outlet_id' => $user['MerchantOutlet']['id']
+            )
+        ));
+        $this->set('registers',$registers);
+        
+        $status = $this->SaleStatus->find('all');
+        $this->set('status',$status);
         
         $this->RegisterSaleItem->bindModel(array(
             'belongsTo' => array(
@@ -65,14 +77,33 @@ class HistoryController extends AppController {
         ));
 
         $this->RegisterSale->recursive = 2;
+        
+        $criteria = array(
+            'RegisterSale.register_id' => $user['MerchantRegister']['id']
+        );
+        
+        if(isset($_GET)) {
+            foreach($_GET as $key => $value) {
+                if(!empty($value)) {
+                    if($key == 'from') {
+                        $criteria['RegisterSale.created >='] = $value;
+                    } else if($key == 'to') {
+                        $criteria['RegisterSale.created <='] = $value;
+                    } else if($key == 'customer') {
+                        $criteria['MerchantCustomer.name LIKE'] = '%'.$value.'%';
+                    } else {
+                        $criteria['RegisterSale.'.$key] = $value;
+                    }
+                }
+            }
+        }
+        
         $sales = $this->RegisterSale->find('all', array(
             'fields' => array(
                 'RegisterSale.*',
                 'MerchantCustomer.*'
             ),
-            'conditions' => array(
-                'RegisterSale.register_id' => $this->Auth->user()['MerchantRegister']['id']
-            ),
+            'conditions' => $criteria,
             'joins' => array(
                 array(
                     'table' => 'merchant_customers',
@@ -86,6 +117,13 @@ class HistoryController extends AppController {
             'order' => array('RegisterSale.created' => 'DESC')
         ));
         $this->set('sales', $sales);
+        
+        $users = $this->MerchantUser->find('all', array(
+            'conditions' => array(
+                'MerchantUser.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('users',$users);
     }
 
     public function receipt() {
@@ -109,12 +147,7 @@ class HistoryController extends AppController {
         ));
 
         $this->RegisterSale->recursive = 2;
-        $sales = $this->RegisterSale->find('all', array(
-            'conditions' => array(
-                'RegisterSale.register_id' => $this->Auth->user()['MerchantRegister']['id'],
-                'RegisterSale.id' => $_GET['r']
-            )
-        ));
+        $sales = $this->RegisterSale->findById($_GET['r']);
         $this->set('sales', $sales);
     }
 
@@ -170,11 +203,21 @@ class HistoryController extends AppController {
 
     public function void(){
         if($this->request->is('post')){
-            $data = $this->request->data;
-            $data['modified'] = date('Y-m-d H:i:s');
-            
-            $this->RegisterSale->id = $data['id'];
-            $this->RegisterSale->save($data);
+            $result = array(
+                'success' => false
+            );
+            try {
+                $data = $this->request->data;
+                $data['modified'] = date('Y-m-d H:i:s');
+                
+                $this->RegisterSale->id = $data['id'];
+                $this->RegisterSale->save($data);
+                
+                $result['success'] = true;
+            } catch (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+            $this->serialize($result);
         }
     }
 

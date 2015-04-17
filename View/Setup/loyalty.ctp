@@ -94,7 +94,7 @@
                     <dt>Email subject</dt>
                     <dd><input type="text" style="width:300px;" name="merchant_loyalty[welcome_email_subject]" id="merchant_loyalty_welcome_email_subject" value="<?php echo $loyalty['MerchantLoyalty']['welcome_email_subject'];?>"></dd>
                     <dt>Email message</dt>
-                    <dd style="height: inherit;"><textarea name="merchant_loyalty[welcome_email_body]" id="merchant_loyalty_welcome_email_body"><?php echo $loyalty['MerchantLoyalty']['welcome_email_body'];?></textarea></dd>
+                    <dd style="height: inherit;"><textarea name="merchant_loyalty[welcome_email_body]" id="merchant_loyalty_welcome_email_body"><?php echo base64_decode($loyalty['MerchantLoyalty']['welcome_email_body']);?></textarea></dd>
                     <dt></dt>
                     <dd class="margin-top-10">
                         <Button id="Preview_email" class="btn btn-sm btn-default">Preview Welcome Email</Button>

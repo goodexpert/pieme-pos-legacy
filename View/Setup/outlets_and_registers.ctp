@@ -66,9 +66,9 @@
                     Outlets and Registers
                 </h2>
                 <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
-                    <button id="import" class="btn btn-white pull-right btn-right" style="color:black">
+                    <a href="/receipt_template/add"><button class="btn btn-white pull-right btn-right" style="color:black">
                         <div class="glyphicon glyphicon-import"></div>&nbsp;
-                    Add Receipt Template</button>
+                    Add Receipt Template</button></a>
                     <a href="/outlet/add"><button class="btn btn-white pull-right btn-left">
                         <div class="glyphicon glyphicon-plus"></div>&nbsp;
                     Add Outlet</button></a> 

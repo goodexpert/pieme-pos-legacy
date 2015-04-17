@@ -219,7 +219,115 @@ class CustomerController extends AppController {
         }
     }
 
-    public function view() {
+    public function view($id) {
+        $user = $this->Auth->user();
+
+        $this->MerchantCustomer->bindModel(array(
+            'belongsTo' => array(
+                'MerchantCustomerGroup' => array(
+                    'className' => 'MerchantCustomerGroup',
+                    'foreignKey' => 'customer_group_id'
+                )
+            )
+        ));
+        
+        $customer = $this->MerchantCustomer->findById($id);
+        $this->set('customer',$customer);
+        
+        $this->loadModel('RegisterSale');
+        $sales_history = $this->RegisterSale->find('all', array(
+            'conditions' => array(
+                'RegisterSale.customer_id' => $id
+            )
+        ));
+        $this->set('salesHistory',$sales_history);
+        
+        $total_cost = 0;
+        $total_paid = 0;
+        
+        foreach($sales_history as $sh) {
+            if($sh['RegisterSale']['status'] !== 'voided' && $sh['RegisterSale']['status'] !== 'saved')
+                $total_cost += $sh['RegisterSale']['total_cost'];
+            if($sh['RegisterSale']['status'] == 'layby_closed' || $sh['RegisterSale']['status'] == 'onaccount_closed' || $sh['RegisterSale']['status'] == 'closed')
+                $total_paid += $sh['RegisterSale']['total_cost'];
+        }
+        $this->set('cost',$total_cost);
+        $this->set('paid',$total_paid);
+    }
+    
+    public function edit($id) {
+        $user = $this->Auth->user();
+        
+        if($this->request->is('post')) {
+            $result = array(
+            	'success' => false
+            );
+            try {
+                $data = $this->request->data;
+                if(empty($data['physical_country_id']))
+                    unset($data['physical_country_id']);
+                if(empty($data['postal_country_id']))
+                    unset($data['postal_country_id']);
+                if($data['birthday'] == '--')
+                    unset($data['birthday']);
+
+                $this->Contact->id = $this->MerchantCustomer->findById($id)['MerchantCustomer']['contact_id'];
+                $this->Contact->save($data);
+
+                $data['merchant_id'] = $this->Auth->user()['merchant_id'];
+                $data['contact_id'] = $this->Contact->id;
+                
+                $this->MerchantCustomer->id = $id;
+                $this->MerchantCustomer->save($data);
+                
+                $result['success'] = true;
+            } catch (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+            $this->serialize($result);
+            return;
+        }
+
+        $groups = $this->MerchantCustomerGroup->find('all', array(
+            'conditions' => array(
+                'MerchantCustomerGroup.merchant_id' => $this->Auth->user()['merchant_id']
+            ),
+        ));
+        $this->set("groups",$groups);
+
+        $this->MerchantCustomer->bindModel(array(
+            'belongsTo' => array(
+                'Contact' => array(
+                    'className' => 'Contact',
+                    'foreignKey' => 'contact_id'
+                )
+            )
+        ));
+        
+        $customer = $this->MerchantCustomer->findById($id);
+        $this->set('customer',$customer);
+    }
+    
+    public function delete($id) {
+        $user = $this->Auth->user();
+        
+        if($this->request->is('post')) {
+            $result = array(
+                'success' => false
+            );
+            try {
+                $data = $this->request->data;
+                if(isset($data['request']) && $data['request'] == 'delete') {
+                    $this->MerchantCustomer->delete($id);
+                    
+                    $result['success'] = true;
+                }
+            } catch (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+            $this->serialize($result);
+            return;
+        }
     }
 
 }

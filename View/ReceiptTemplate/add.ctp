@@ -35,7 +35,7 @@
   <!-- BEGIN CONTENT -->
   <div class="page-content-wrapper">
     <div class="page-content">
-      <div class="col-md-12 col-xs-12 col-sm-12"><h3>Edit Receipt Template</h3></div>
+      <div class="col-md-12 col-xs-12 col-sm-12"><h3>Add Receipt Template</h3></div>
       <div class="portlet-body form"> 
         <!-- BEGIN FORM-->
         <div class="form-horizontal col-md-12 col-xs-12 col-sm-12">
@@ -47,20 +47,20 @@
                 <dl>
                   <dt>Receipt name</dt>
                   <dd>
-                    <input type="text" id="name" value="<?php echo $template['MerchantReceiptTemplate']['name'];?>">
+                    <input type="text" id="name">
                   </dd>
                   <dt>Receipt style</dt>
                   <dd>
                     <select id="receipt_style_id">
                     	<?php foreach($styles as $style) { ?>
-                    		<option value="<?php echo $style['ReceiptStyle']['id'];?>" <?php if($template['MerchantReceiptTemplate']['receipt_style_id'] == $style['ReceiptStyle']['id']){echo "selected";}?>><?php echo $style['ReceiptStyle']['name'];?></option>
+                    		<option value="<?php echo $style['ReceiptStyle']['id'];?>"><?php echo $style['ReceiptStyle']['name'];?></option>
                     	<?php } ?>
 					</select>
                   </dd>
                   <dt>Print receipt barcode</dt>
                   <dd>
-                    <input type="radio" value="1" name="MerchantReceiptTemplate[receipt_barcode]" <?php if($template['MerchantReceiptTemplate']['receipt_barcode'] == 1){echo "checked";}?>> Yes <span class="margin-right-10"></span>
-                    <input type="radio" value="0" name="MerchantReceiptTemplate[receipt_barcode]" <?php if($template['MerchantReceiptTemplate']['receipt_barcode'] == 0){echo "checked";}?>> No
+                    <input type="radio" value="1" name="MerchantReceiptTemplate[receipt_barcode]"> Yes <span class="margin-right-10"></span>
+                    <input type="radio" value="0" name="MerchantReceiptTemplate[receipt_barcode]"> No
                   </dd>
                 </dl>
               </div>
@@ -80,48 +80,48 @@
                   </dd>
                   <dt>Header text</dt>
                   <dd class="height-inherit">
-                    <textarea id="receipt_header"><?php echo $template['MerchantReceiptTemplate']['receipt_header'];?></textarea>
+                    <textarea id="receipt_header"></textarea>
 					<h6>Limit this to around one paragraph or no more than 15 lines.</h6>
                   </dd>
                   <dt>Invoice.no.prefix</dt>
                   <dd>
-                    <input type="text" id="label_invoice" value="<?php echo $template['MerchantReceiptTemplate']['label_invoice'];?>">
+                    <input type="text" id="label_invoice">
                   </dd>
                   <dt>Invoice heading</dt>
                   <dd>
-                    <input type="text" id="label_invoice_title" value="<?php echo $template['MerchantReceiptTemplate']['label_invoice_title'];?>">
+                    <input type="text" id="label_invoice_title">
                   </dd>
                   <dt>Served by label</dt>
                   <dd>
-                    <input type="text" id="label_served_by" value="<?php echo $template['MerchantReceiptTemplate']['label_served_by'];?>">
+                    <input type="text" id="label_served_by">
                   </dd>
                   <dt>Discount label</dt>
                   <dd>
-                    <input type="text" id="label_line_discount" value="<?php echo $template['MerchantReceiptTemplate']['label_line_discount'];?>">
+                    <input type="text" id="label_line_discount">
                   </dd>
                   <dt>Sub total label</dt>
                   <dd>
-                    <input type="text" id="label_sub_total" value="<?php echo $template['MerchantReceiptTemplate']['label_sub_total'];?>">
+                    <input type="text" id="label_sub_total">
                   </dd>
                   <dt>Tax label</dt>
                   <dd>
-                    <input type="text" id="label_tax" value="<?php echo $template['MerchantReceiptTemplate']['label_tax'];?>">
+                    <input type="text" id="label_tax">
                   </dd>
                   <dt>To pay label</dt>
                   <dd>
-                    <input type="text" id="label_to_pay" value="<?php echo $template['MerchantReceiptTemplate']['label_to_pay'];?>">
+                    <input type="text" id="label_to_pay">
                   </dd>
                   <dt>Total label</dt>
                   <dd>
-                    <input type="text" id="label_total" value="<?php echo $template['MerchantReceiptTemplate']['label_total'];?>">
+                    <input type="text" id="label_total">
                   </dd>
                   <dt>Change label</dt>
                   <dd>
-                    <input type="text" id="label_change" value="<?php echo $template['MerchantReceiptTemplate']['label_change'];?>">
+                    <input type="text" id="label_change">
                   </dd>
                   <dt>Footer text</dt>
                   <dd class="height-inherit">
-                    <textarea id="receipt_footer"><?php echo $template['MerchantReceiptTemplate']['receipt_footer'];?></textarea>
+                    <textarea id="receipt_footer"></textarea>
 					<h6>Limit this to around one paragraph or no more than 15 lines.</h6>
                   </dd>
                 </dl>
@@ -130,7 +130,6 @@
         </div>
         <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
             <button class="btn btn-primary btn-wide save pull-right">Save</button>
-            <button class="btn btn-default btn-wide delete pull-right margin-right-10">Delete</button>
             <button class="btn btn-default btn-wide cancel pull-right margin-right-10">Cancel</button>
         </div>
         </div>
@@ -161,17 +160,16 @@
 <script src="/assets/global/scripts/metronic.js" type="text/javascript"></script>
 <script src="/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
 <script src="/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
-<script type="text/javascript" src="/js/jquery.confirm.js"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
 jQuery(document).ready(function() {    
     Metronic.init(); // init metronic core componets
     Layout.init(); // init layout
     Index.init();
-    
+
     $(".save").click(function(){
         $.ajax({
-            url: location.href+'.json',
+            url: '/receipt_template/add.json',
             type: 'POST',
             data: {
                 name: $("#name").val(),
@@ -197,39 +195,6 @@ jQuery(document).ready(function() {
                 }
             }
         });
-    });
-    
-    $(".delete").click(function(){
-        $.confirm({
-            text: "Are you sure you want to delete this template?",
-    	    title: "Confirmation required",
-    	    confirm: function(button) {
-                $.ajax({
-                    url: location.href+'.json',
-                    type: 'POST',
-                    data: {
-                        request: 'delete'
-                    },
-                    success: function(result) {
-                        if(result.success) {
-                            window.location.href = "/setup/outlets_and_registers";
-                        } else {
-                            alert(result.message);
-                        }
-                    },
-                    error: function(jqXHR, textStatus, errorThrown) {
-                        console.log(textStatus, errorThrown);
-                    }
-                });
-    	    },
-    	    cancel: function(button) {
-    	    },
-    	    confirmButton: "Delete",
-    	    cancelButton: "Cancel",
-    	    confirmButtonClass: "btn-danger",
-    	    cancelButtonClass: "btn-default",
-    	    dialogClass: "modal-dialog modal-lg" // Bootstrap classes for large modal
-	    });
     });
     
     $(".cancel").click(function(){

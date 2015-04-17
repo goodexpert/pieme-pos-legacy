@@ -90,7 +90,7 @@
                             <dd class="explain">
                                 <select class="register_receipt_template">
                                 <?php foreach($receipt_templates as $receipt) : ?>
-                                    <option value="<?php echo $receipt['id'];?>"><?php echo $receipt['name'];?></option>
+                                    <option value="<?php echo $receipt['id'];?>" <?php if($receipt['id'] == $register['receipt_template_id']){echo "selected";}?>><?php echo $receipt['name'];?></option>
                                 <?php endforeach; ?>
                                 </select>
                             </dd>

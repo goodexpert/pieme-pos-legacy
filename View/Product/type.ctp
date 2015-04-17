@@ -73,7 +73,7 @@
                         <td><?=$type['MerchantProductType']['name'];?></td>
                         <td><?=count($type['MerchantProduct']);?></td>
                         <td>
-                        View Products | 
+                        <a href="/product?product_type_id=<?php echo $type['MerchantProductType']['id'];?>">View Products</a> | 
                         <a href="javascript:;" class="edit-type" data-id="<?=$type['MerchantProductType']['id'];?>">Edit</a> | 
                         <a href="javascript:;" class="delete-type" data-id="<?=$type['MerchantProductType']['id'];?>">Delete</a>
                         </td>

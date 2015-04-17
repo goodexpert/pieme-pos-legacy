@@ -54,6 +54,7 @@
         <div class="page-content">
             
             <div id="close-register-wrapper" class="line-box">
+            	<div class="col-md-12 col-sm-12 col-xs-12 col-omega col-alpha to_print">
                 <div id="close-register-header" class="col-md-12 col-sm-12 col-xs-12">
                 
                     <h3><strong>Closing totals to verify</strong></h3>
@@ -212,8 +213,8 @@
                             <?php
                             $total_layby_amount += $layby['RegisterSale']['total_cost'];
                             } ?>
-                            <tr style="background:yellow">
-                            	<th style="border:0;" colspan="6">Total new laybys</th>
+                            <tr style="background:#FFF7D6">
+                            	<th style="border:0; text-align:right;" colspan="6">Total new laybys</th>
                         		<td style="border:0;"><?php echo '$'.number_format($total_layby_amount,2,'.','');?></td>
                         	</tr>
                         	<?php } ?>
@@ -247,8 +248,8 @@
 		                            }
 		                        }
 		                    }?>
-                            <tr style="background:yellow">
-                            	<th style="border:0;" colspan="6">Total layby payments</th>
+                            <tr style="background:#FFF7D6">
+                            	<th style="border:0; text-align:right;" colspan="6">Total layby payments</th>
                         		<td style="border:0;"><?php echo '$'.number_format($total_layby_payment,2,'.','');?></td>
                         	</tr>
                         	<?php } ?>
@@ -274,8 +275,8 @@
                             <?php
                             $total_onaccount_amount += $onaccount['RegisterSale']['total_cost'];
                             } ?>
-                            <tr style="background:yellow">
-                            	<th style="border:0;" colspan="6">Total new account sales</th>
+                            <tr style="background:#FFF7D6">
+                            	<th style="border:0; text-align:right;" colspan="6">Total new account sales</th>
                         		<td style="border:0;"><?php echo '$'.number_format($total_onaccount_amount,2,'.','');?></td>
                         	</tr>
                         	<?php } ?>
@@ -308,8 +309,8 @@
 	                            $total_onaccount_payment += $payment['amount'];
 	                            }
                             }?>
-                            <tr style="background:yellow">
-                            	<th style="border:0;" colspan="6">Total account sale payments</th>
+                            <tr style="background:#FFF7D6">
+                            	<th style="border:0; text-align:right;" colspan="6">Total account sale payments</th>
                         		<td style="border:0;"><?php echo '$'.number_format($total_onaccount_payment,2,'.','');?></td>
                         	</tr>
                         	<?php } ?>
@@ -318,12 +319,12 @@
                     </table>
                 </div>
                 <?php } ?>
-                
+            	</div>
                 <div class="dashed-line"></div>
                 
                 <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
                     <button class="btn btn-primary save pull-right close-register">Close Register</button>
-                    <button class="btn btn-default pull-right margin-right-10">Print</button>
+                    <button class="btn btn-default pull-right margin-right-10 print">Print</button>
                 </div>
             </div>
                     
@@ -424,7 +425,7 @@
 <script src="/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 
-<script src="/js/notify.js" type="text/javascript"></script>
+<script src="/js/jquery.jqprint-0.3.js" type="text/javascript"></script>
 <script>
 jQuery(document).ready(function() {    
     Metronic.init(); // init metronic core componets
@@ -447,6 +448,9 @@ jQuery(document).ready(function() {
 	            }
             }
         });
+    });
+    $(".print").click(function(){
+	    $(".to_print").jqprint();
     });
 });
 </script>

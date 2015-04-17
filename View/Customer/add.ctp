@@ -141,7 +141,7 @@
                             <dt>State</dt>
                             <dd><input type="text" class="physical_state"></dd>
                             <dt>Country</dt>
-                            <dd><select class="physical_country"><option>Select a country</option><option value="1">NZ</option></select></dd>
+                            <dd><select class="physical_country"><option>Select a country</option><option value="NZ">NZ</option></select></dd>
                         </dl>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6">
@@ -343,15 +343,15 @@ $(".save").click(function(){
                 mobile: $(".mobile").val(),
                 email: $(".email").val(),
                 website: $(".website").val(),
-                physical_address_1: $(".physical_street_1").val(),
-                physical_address_2: $(".physical_street_2").val(),
+                physical_address1: $(".physical_street_1").val(),
+                physical_address2: $(".physical_street_2").val(),
                 physical_suburb: $(".physical_suburb").val(),
                 physical_city: $(".physical_city").val(),
                 physical_state: $(".physical_state").val(),
                 physical_postcode: $(".physical_postcode").val(),
                 physical_country: $(".physical_country").val(),
-                postal_address_1: $(".postal_street_1").val(),
-                postal_address_2: $(".postal_street_2").val(),
+                postal_address1: $(".postal_street_1").val(),
+                postal_address2: $(".postal_street_2").val(),
                 postal_suburb: $(".postal_suburb").val(),
                 postal_city: $(".postal_city").val(),
                 postal_state: $(".postal_state").val(),

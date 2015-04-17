@@ -79,7 +79,7 @@
                         <td class="brand_name"><?=$brand['MerchantProductBrand']['name'];?></td>
                         <td class="brand_desc"><?=$brand['MerchantProductBrand']['description'];?></td>
                         <td>
-                            <a href="/product?brand=<?=$brand['MerchantProductBrand']['id'];?>" class="view-brand">View Products</a> | 
+                            <a href="/product?product_brand_id=<?=$brand['MerchantProductBrand']['id'];?>" class="view-brand">View Products</a> | 
                             <a href="javascript:;" class="edit-brand">Edit</a> | 
                             <a href="javascript:;" class="delete-brand" data-id="<?=$brand['MerchantProductBrand']['id'];?>">Delete</a>
                         </td>

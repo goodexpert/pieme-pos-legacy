@@ -116,7 +116,7 @@
                 <tbody>
                     <?php foreach($customers as $customer){ ?>
                         <tr>
-                            <td><?=$customer['Contact']['first_name'].' '.$customer['Contact']['last_name'];?></td>
+                            <td><a href="/customer/<?php echo $customer['MerchantCustomer']['id'];?>"><?=$customer['Contact']['first_name'].' '.$customer['Contact']['last_name'];?></a></td>
                             <td><?=$customer['Contact']['company_name'];?></td>
                             <td><?=$customer['Contact']['physical_suburb'];?></td>
                             <td><?=$customer['Contact']['physical_city'];?></td>
