@@ -1204,7 +1204,10 @@ jQuery(document).ready(function() {
             dpsClient.connect(function (connected, error) {
                 if (connected) {
                     dpsClient.payment('TXN12345', paying, function(data, error) {
+                        console.log('Call callback:');
+                        console.log(data);
                     });
+                } else {
                 }
             });
         }

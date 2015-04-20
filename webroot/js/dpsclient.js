@@ -48,13 +48,30 @@ DpsClient.prototype.connect = function (callback) {
 
     self.socket.onmessage = function (message) {
         var xmlDoc = new DOMParser().parseFromString(message.data, "text/xml");
-        var jObject = JXON.build(xmlDoc);
+        var response = JXON.build(xmlDoc);
 
-        console.log(JSON.stringify(jObject));
-        console.log('======================================================================');
+        if (null != response.message) {
+            var messageType = response.message['@type'];
 
-        if (callback) {
-            callback(true);
+            if ('Status' == messageType) {
+                var ready = response.message.ready;
+                var readylink = response.message.readylink;
+                var readypinpad = response.message.readypinpad;
+                var dpsReady = (1 == ready && 1 == readylink && 1 == readypinpad);
+
+                if (dpsReady) {
+                    
+                } else {
+                    
+                }
+
+                if (callback) {
+                    callback(dpsReady);
+                }
+            }
+
+            console.log(response.message);
+            console.log('-------------------------------------------------------');
         }
     };
 
@@ -81,12 +98,34 @@ DpsClient.prototype.payment = function (txnRef, amount, callback) {
 
     self.socket.onmessage = function (message) {
         var xmlDoc = new DOMParser().parseFromString(message.data, "text/xml");
-        var jObject = JXON.build(xmlDoc);
+        var response = JXON.build(xmlDoc);
 
-        console.log(JSON.stringify(jObject));
+        if (null != response.message) {
+            var messageType = response.message['@type'];
 
-        if (callback) {
-            callback(message.data, null);
+            if ('Display' == messageType) {
+                var text1 = response.message.text1;
+                var text2 = response.message.text2;
+
+                if ("SIGNATURE REQD" == text1) {
+                } else if ("SIGNATURE OK Y/N?" == text1) {
+                    presssButton(self.socket, 'No');
+                }
+            } else if ('ClearDisplay' == messageType) {
+            } else if ('Transaction' == messageType) {
+                var responsetext = response.message.responsetext;
+                var txndatetime = response.message.txndatetime;
+                var txndatetime = response.message.txndatetime;
+                var txnref = response.message.txnref;
+                var txntype = response.message.txntype;
+
+                if (callback) {
+                    callback(response.message, null);
+                }
+            }
+
+            console.log(response.message);
+            console.log('======================================================================');
         }
     };
 
@@ -128,5 +167,12 @@ function purchase(socket, txnRef, amount) {
     message += '<TxnRef>' + txnRef + '</TxnRef>';
     message += '<AmountPurchase>' + amount + '</AmountPurchase>';
     message += '</Message>\n';
+    socket.send(message);
+}
+
+function presssButton(socket, button) {
+    var message = '<Message type="Button" id="1234">';
+    message += '<Button>' + button + '</Button>';
+    message += '</Message>';
     socket.send(message);
 }
