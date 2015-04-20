@@ -66,13 +66,13 @@
             </div>
                 
             <!-- FILTER -->
-            <div class="col-md-12 col-xs-12 col-sm-12 line-box filter-box">
+            <form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box" action="/reports/sales/sales_by_day" method="get">
                 <div class="col-md-4 col-xs-6 col-sm-6">
                     <dl>
                         <dt>Date from</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="date_from">
+                            <input type="text" id="date_from" name="from" value="<?php if(isset($_GET['from'])){echo $_GET['from'];}?>">
                         </dd>
                     </dl> 
                 </div>
@@ -81,14 +81,14 @@
                         <dt>Date to</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="date_to">
+                            <input type="text" id="date_to" name="to" value="<?php if(isset($_GET['to'])){echo $_GET['to'];}?>">
                         </dd>
                     </dl>
                  </div>
                  <div class="col-md-12 col-xs-12 col-sm-12">
-                     <button class="btn btn-primary filter pull-right">Update</button>
+                     <button type="submit" class="btn btn-primary filter pull-right">Update</button>
                  </div>
-            </div>
+            </form>
 
             <table id="productTable" class="table-bordered dataTable table-price">
                 <colgroup>
@@ -98,38 +98,117 @@
                 <thead>
                 <tr>
                     <th></th>
-                    <th class="text-right">Oct 01 - Mar 19</th>
+                    <?php if(!empty($sales)) {
+                    foreach($sales as $date => $data) { ?>
+                    	<th class="text-right"><?php echo $date;?></th>
+                    <?php }} ?>
                 </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Sales incl. tax ($)</td>
-                        <td class="text-right">64.35</td>
-                    </tr>
-                    <tr>
-                        <td>Tax ($)</td>
-                        <td class="text-right">64.35</td>
-                    </tr>
-                    <tr>
-                        <td>Sales exc. tax ($)</td>
-                        <td class="text-right">64.35</td>
-                    </tr>
-                    <tr>
-                        <td>Cost of goods ($)</td>
-                        <td class="text-right">64.35</td>
-                    </tr>
-                    <tr>
-                        <td>Discounts ($)</td>
-                        <td class="text-right">64.35</td>
-                    </tr>
-                    <tr class="table-color">
-                        <td>Gross Profit ($)</td>
-                        <td class="text-right">64.35</td>
-                    </tr>
-                    <tr class="table-color">
-                        <td>Gross Margin</td>
-                        <td class="text-right">64.3%</td>
-                    </tr>
+                    <?php if(isset($_GET['from'])) {
+                        $salesIncl = 0;
+                        $tax = 0;
+                        $salesExc = 0;
+                        $cost = 0;
+                        $discounts = 0; ?>
+                        <tr>
+                            <td>Sales incl. tax ($)</td>
+                            <?php foreach($sales as $sale){
+                                if(!empty($sale)) {
+                                    foreach($sale as $data) {
+                                        $salesIncl += $data['RegisterSale']['total_price_incl_tax'];
+                                    }
+                                }?>
+                                <td class="text-right">
+        	                        <?php echo number_format($salesIncl,2,'.',',');?>
+                                </td>
+                            <?php $salesIncl = 0; } ?>
+                        </tr>
+                        <tr>
+                            <td>Tax ($)</td>
+                            <?php foreach($sales as $sale){
+                                if(!empty($sale)) {
+                                    foreach($sale as $data) {
+                                        $tax += $data['RegisterSale']['total_tax'];
+                                    }
+                                }?>
+                                <td class="text-right">
+        	                        <?php echo number_format($tax,2,',','.');?>
+                                </td>
+                            <?php $tax = 0; } ?>
+                        </tr>
+                        <tr>
+                            <td>Sales exc. tax ($)</td>
+                            <?php foreach($sales as $sale){
+                                if(!empty($sale)) {
+                                    foreach($sale as $data) {
+                                        $salesExc += $data['RegisterSale']['total_price'];
+                                    }
+                                }?>
+                                <td class="text-right">
+        	                        <?php echo number_format($salesExc,2,'.',',');?>
+                                </td>
+                            <?php $salesExc = 0; } ?>
+                        </tr>
+                        <tr>
+                            <td>Cost of goods ($)</td>
+                            <?php foreach($sales as $sale){
+                                if(!empty($sale)) {
+                                    foreach($sale as $data) {
+                                        $cost += $data['RegisterSale']['total_cost'];
+                                    }
+                                }?>
+                                <td class="text-right">
+        	                        <?php echo number_format($cost,2,'.',',');?>
+                                </td>
+                            <?php $cost = 0; } ?>
+                        </tr>
+                        <tr>
+                            <td>Discounts ($)</td>
+                            <?php foreach($sales as $sale){
+                                if(!empty($sale)) {
+                                    foreach($sale as $data) {
+                                        $discounts += $data['RegisterSale']['total_discount'];
+                                    }
+                                }?>
+                                <td class="text-right">
+        	                        <?php echo number_format($discounts,2,'.',',');?>
+                                </td>
+                            <?php $discounts = 0; } ?>
+                        </tr>
+                        <tr class="table-color">
+                            <td>Gross Profit ($)</td>
+                            <?php foreach($sales as $sale){
+                                if(!empty($sale)) {
+                                    foreach($sale as $data) {
+                                        $salesExc += $data['RegisterSale']['total_price'];
+                                        $cost += $data['RegisterSale']['total_cost'];
+                                    }
+                                }?>
+                                <td class="text-right">
+        	                        <?php echo number_format($salesExc - $cost,2,'.',',');?>
+                                </td>
+                            <?php $salesExc = 0; $cost = 0; } ?>
+                        </tr>
+                        <tr class="table-color">
+                            <td>Gross Margin</td>
+                            <?php foreach($sales as $sale){
+                                if(!empty($sale)) {
+                                    foreach($sale as $data) {
+                                        $salesExc += $data['RegisterSale']['total_price'];
+                                        $cost += $data['RegisterSale']['total_cost'];
+                                    }
+                                }?>
+                                <td class="text-right">
+        	                        <?php if($salesExc > 0){echo number_format(($salesExc - $cost) / $salesExc * 100,1,'.','').'%';} else {echo "0%";}?>
+                                </td>
+                            <?php $salesExc = 0; $cost = 0; } ?>
+                        </tr>
+                    <?php } else { ?>
+                        <tr>
+                        	<td style="text-align:center">Select your criteria above to update the table.</td>
+                        </tr>
+                    <?php } ?>
                 </tbody>
             </table>
         </div>
@@ -236,7 +315,7 @@ jQuery(document).ready(function() {
     QuickSidebar.init(); // init quick sidebar
     Index.init();
     
-    $("#date_from").datepicker();
-    $("#date_to").datepicker();
+    $("#date_from").datepicker({ dateFormat: 'yy-mm-dd' });
+    $("#date_to").datepicker({ dateFormat: 'yy-mm-dd' });
 });
 </script>

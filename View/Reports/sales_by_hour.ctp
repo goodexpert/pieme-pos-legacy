@@ -64,13 +64,13 @@
             </div>
                 
             <!-- FILTER -->
-            <div class="col-md-12 col-xs-12 col-sm-12 line-box filter-box">
+            <form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box" action="/reports/sales/sales_by_hour" method="get">
                 <div class="col-md-4 col-xs-6 col-sm-6">
                     <dl>
                         <dt>Date from</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="date_from">
+                            <input type="text" id="date_from" name="from" value="<?php if(isset($_GET['from'])){echo $_GET['from'];}?>">
                         </dd>
                     </dl> 
                 </div>
@@ -79,7 +79,7 @@
                         <dt>Date to</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="date_to">
+                            <input type="text" id="date_to" name="to"  value="<?php if(isset($_GET['to'])){echo $_GET['to'];}?>">
                         </dd>
                     </dl>
                  </div>
@@ -87,8 +87,11 @@
                     <dl>
                         <dt>Register</dt>
                         <dd>
-                            <select>
-                            <option value="1"></option>
+                            <select name="register_id">
+                            	<option value=""></option>
+                            	<?php foreach($registers as $register) { ?>
+                            		<option value="<?php echo $register['MerchantRegister']['id'];?>" <?php if(isset($_GET['register_id']) && $_GET['register_id'] == $register['MerchantRegister']['id']){echo "selected";}?>><?php echo $register['MerchantRegister']['name'];?></option>
+                            	<?php } ?>
                             </select>
                         </dd>
                     </dl>
@@ -97,8 +100,11 @@
                     <dl>
                         <dt>Outlet</dt>
                         <dd>
-                            <select>
-                            <option value="1"></option>
+                            <select name="outlet_id">
+                            	<option value=""></option>
+                            	<?php foreach($outlets as $outlet) { ?>
+                            		<option value="<?php echo $outlet['MerchantOutlet']['id'];?>" <?php if(isset($_GET['outlet_id']) && $_GET['outlet_id'] == $outlet['MerchantOutlet']['id']){echo "selected";}?>><?php echo $outlet['MerchantOutlet']['name'];?></option>
+                            	<?php } ?>
                             </select>
                         </dd>
                     </dl>
@@ -107,16 +113,19 @@
                     <dl>
                         <dt>User</dt>
                         <dd>
-                            <select>
-                            <option value="1"></option>
+                            <select name="user_id">
+                            	<option value=""></option>
+                            	<?php foreach($users as $user) { ?>
+                            		<option value="<?php echo $user['MerchantUser']['id'];?>" <?php if(isset($_GET['user_id']) && $_GET['user_id'] == $user['MerchantUser']['id']){echo "selected";}?>><?php echo $user['MerchantUser']['display_name'];?></option>
+                            	<?php } ?>
                             </select>
                         </dd>
                     </dl>
                  </div>
                  <div class="col-md-12 col-xs-12 col-sm-12">
-                     <button class="btn btn-primary filter pull-right">Update</button>
+                     <button type="submit" class="btn btn-primary filter pull-right">Update</button>
                  </div>
-            </div>
+            </form>
                     <div class="col-md-2 col-sm-2 col-xs-2 col-alpha col-omega">
                         <table class="table-bordered dataTable">
                             <thead>
@@ -126,10 +135,10 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class="text-limit">March 25, 2015 6:12 PM</td>
+                                    <td class="text-limit">March 25, 2015</td>
                                 </tr>
                                 <tr>
-                                    <td class="text-limit">March 25, 2015 6:12 PM</td>
+                                    <td class="text-limit">March 25, 2015</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -139,30 +148,30 @@
                 <table class="table-bordered dataTable ">
                     <thead>
                         <tr class="text-right">
-                            <th>00:00 - 01:00</th>
-                            <th>01:00 - 02:00</th>
-                            <th>02:00 - 03:00</th>
-                            <th>03:00 - 04:00</th>
-                            <th>04:00 - 05:00</th>
-                            <th>05:00 - 06:00</th>
-                            <th>06:00 - 07:00</th>
-                            <th>07:00 - 08:00</th>
-                            <th>08:00 - 09:00</th>
-                            <th>09:00 - 10:00</th>
-                            <th>10:00 - 11:00</th>
-                            <th>11:00 - 12:00</th>
-                            <th>12:00 - 13:00</th>
-                            <th>13:00 - 14:00</th>
-                            <th>14:00 - 15:00</th>
-                            <th>15:00 - 16:00</th>
-                            <th>16:00 - 17:00</th>
-                            <th>17:00 - 18:00</th>
-                            <th>18:00 - 19:00</th>
-                            <th>19:00 - 20:00</th>
-                            <th>20:00 - 21:00</th>
-                            <th>21:00 - 22:00</th>
-                            <th>22:00 - 23:00</th>
-                            <th>23:00 - 24:00</th>
+                            <th>00:00 - 00:59</th>
+                            <th>01:00 - 01:59</th>
+                            <th>02:00 - 02:59</th>
+                            <th>03:00 - 03:59</th>
+                            <th>04:00 - 04:59</th>
+                            <th>05:00 - 05:59</th>
+                            <th>06:00 - 06:59</th>
+                            <th>07:00 - 07:59</th>
+                            <th>08:00 - 08:59</th>
+                            <th>09:00 - 09:59</th>
+                            <th>10:00 - 10:59</th>
+                            <th>11:00 - 11:59</th>
+                            <th>12:00 - 12:59</th>
+                            <th>13:00 - 13:59</th>
+                            <th>14:00 - 14:59</th>
+                            <th>15:00 - 15:59</th>
+                            <th>16:00 - 16:59</th>
+                            <th>17:00 - 17:59</th>
+                            <th>18:00 - 18:59</th>
+                            <th>19:00 - 19:59</th>
+                            <th>20:00 - 20:59</th>
+                            <th>21:00 - 21:59</th>
+                            <th>22:00 - 22:59</th>
+                            <th>23:00 - 23:59</th>
                         </tr>
                         </thead>
                         <tbody class="text-right">
@@ -326,7 +335,7 @@ jQuery(document).ready(function() {
     QuickSidebar.init(); // init quick sidebar
     Index.init();
     
-    $("#date_from").datepicker();
-    $("#date_to").datepicker();
+    $("#date_from").datepicker({ dateFormat: 'yy-mm-dd' });
+    $("#date_to").datepicker({ dateFormat: 'yy-mm-dd' });
 });
 </script>

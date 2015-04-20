@@ -35,42 +35,43 @@ class ReportsController extends AppController {
     public function sales_by_period() {
         $user = $this->Auth->user();
         
-        $outlets = $this->MerchantOutlet->find('all', array(
-            'conditions' => array(
-                'MerchantOutlet.merchant_id' => $user['merchant_id']
-            )
-        ));
+        if(isset($_GET['from'])) {
         
-        $outlet_ids = array();
-        foreach($outlets as $outlet) {
-            array_push($outlet_ids, $outlet['MerchantOutlet']['id']);
-        }
-        
-        $registers = $this->MerchantRegister->find('all', array(
-            'conditions' => array(
-               'MerchantRegister.outlet_id' => $outlet_ids
-            )
-        ));
-        
-        $register_ids = array();
-        foreach($registers as $register) {
-            array_push($register_ids, $register['MerchantRegister']['id']);
-        }
-        
-        $criteria = array(
-            'RegisterSale.register_id' => $register_ids
-        );
-        
-        $this->RegisterSale->bindModel(array(
-            'hasMany' => array(
-                'RegisterSaleItem' => array(
-                    'className' => 'RegisterSaleItem',
-                    'foreignKey' => 'sale_id'
+            $outlets = $this->MerchantOutlet->find('all', array(
+                'conditions' => array(
+                    'MerchantOutlet.merchant_id' => $user['merchant_id']
                 )
-            )
-        ));
-        
-        if(isset($_GET)) {
+            ));
+            
+            $outlet_ids = array();
+            foreach($outlets as $outlet) {
+                array_push($outlet_ids, $outlet['MerchantOutlet']['id']);
+            }
+            
+            $registers = $this->MerchantRegister->find('all', array(
+                'conditions' => array(
+                   'MerchantRegister.outlet_id' => $outlet_ids
+                )
+            ));
+            
+            $register_ids = array();
+            foreach($registers as $register) {
+                array_push($register_ids, $register['MerchantRegister']['id']);
+            }
+            
+            $criteria = array(
+                'RegisterSale.register_id' => $register_ids
+            );
+            
+            $this->RegisterSale->bindModel(array(
+                'hasMany' => array(
+                    'RegisterSaleItem' => array(
+                        'className' => 'RegisterSaleItem',
+                        'foreignKey' => 'sale_id'
+                    )
+                )
+            ));
+            
             foreach($_GET as $key => $value) {
                 if(!empty($value)) {
                     if($key == 'from')
@@ -79,13 +80,13 @@ class ReportsController extends AppController {
                         $criteria['RegisterSale.sale_date <='] = $value;
                 }
             }
+            
+            $sales = $this->RegisterSale->find('all', array(
+                'conditions' => $criteria
+            ));
+            
+            $this->set('sales',$sales);
         }
-        
-        $sales = $this->RegisterSale->find('all', array(
-            'conditions' => $criteria
-        ));
-        
-        $this->set('sales',$sales);
     }
 
 /**
@@ -96,42 +97,43 @@ class ReportsController extends AppController {
     public function sales_by_month() {
         $user = $this->Auth->user();
 
-        $outlets = $this->MerchantOutlet->find('all', array(
-            'conditions' => array(
-                'MerchantOutlet.merchant_id' => $user['merchant_id']
-            )
-        ));
-        
-        $outlet_ids = array();
-        foreach($outlets as $outlet) {
-            array_push($outlet_ids, $outlet['MerchantOutlet']['id']);
-        }
-        
-        $registers = $this->MerchantRegister->find('all', array(
-            'conditions' => array(
-               'MerchantRegister.outlet_id' => $outlet_ids
-            )
-        ));
-        
-        $register_ids = array();
-        foreach($registers as $register) {
-            array_push($register_ids, $register['MerchantRegister']['id']);
-        }
-        
-        $criteria = array(
-            'RegisterSale.register_id' => $register_ids
-        );
-        
-        $this->RegisterSale->bindModel(array(
-            'hasMany' => array(
-                'RegisterSaleItem' => array(
-                    'className' => 'RegisterSaleItem',
-                    'foreignKey' => 'sale_id'
-                )
-            )
-        ));
-        
         if(isset($_GET['period'])) {
+
+            $outlets = $this->MerchantOutlet->find('all', array(
+                'conditions' => array(
+                    'MerchantOutlet.merchant_id' => $user['merchant_id']
+                )
+            ));
+            
+            $outlet_ids = array();
+            foreach($outlets as $outlet) {
+                array_push($outlet_ids, $outlet['MerchantOutlet']['id']);
+            }
+            
+            $registers = $this->MerchantRegister->find('all', array(
+                'conditions' => array(
+                   'MerchantRegister.outlet_id' => $outlet_ids
+                )
+            ));
+            
+            $register_ids = array();
+            foreach($registers as $register) {
+                array_push($register_ids, $register['MerchantRegister']['id']);
+            }
+            
+            $criteria = array(
+                'RegisterSale.register_id' => $register_ids
+            );
+            
+            $this->RegisterSale->bindModel(array(
+                'hasMany' => array(
+                    'RegisterSaleItem' => array(
+                        'className' => 'RegisterSaleItem',
+                        'foreignKey' => 'sale_id'
+                    )
+                )
+            ));
+
             $sales = array();
             $year = $_GET['year'];
             $month = $_GET['month'];
@@ -151,7 +153,6 @@ class ReportsController extends AppController {
             }
             $this->set('sales',$sales);
         }
-
     }
 
 /**
@@ -160,6 +161,83 @@ class ReportsController extends AppController {
  * @return void
  */
     public function sales_by_day() {
+        $user = $this->Auth->user();
+        
+        if(isset($_GET['from'])) {
+        
+            $outlets = $this->MerchantOutlet->find('all', array(
+                'conditions' => array(
+                    'MerchantOutlet.merchant_id' => $user['merchant_id']
+                )
+            ));
+            
+            $outlet_ids = array();
+            foreach($outlets as $outlet) {
+                array_push($outlet_ids, $outlet['MerchantOutlet']['id']);
+            }
+            
+            $registers = $this->MerchantRegister->find('all', array(
+                'conditions' => array(
+                   'MerchantRegister.outlet_id' => $outlet_ids
+                )
+            ));
+            
+            $register_ids = array();
+            foreach($registers as $register) {
+                array_push($register_ids, $register['MerchantRegister']['id']);
+            }
+            
+            $criteria = array(
+                'RegisterSale.register_id' => $register_ids
+            );
+            
+            $interval = new DateInterval('P1D');
+            $begin = new DateTime(date('Y-m-d'));
+            $begin = $begin->modify( '-60 day' );
+            $end = new DateTime(date('Y-m-d'));
+            
+            foreach($_GET as $key => $value) {
+                if(!empty($value)) {
+                    if($key == 'from') {
+                        $criteria['RegisterSale.sale_date >='] = $value;
+                        $begin = new DateTime($value);
+                    }
+                    if($key == 'to') {
+                        $criteria['RegisterSale.sale_date <='] = $value;
+                        $end = new DateTime($value);
+                    }
+                }
+            }
+            
+            $end = $end->modify( '+1 day' );
+
+            $daterange = new DatePeriod($begin, $interval ,$end);
+
+            $sales = array();
+
+            foreach($daterange as $date) {
+                $sales[$date->format("Y-m-d")] = array();
+                $targetSale = $this->RegisterSale->find('all', array(
+                    'conditions' => array(
+                        'RegisterSale.sale_date >=' => $date->format("Y-m-d 00:00:00"),
+                        'RegisterSale.sale_date <=' => $date->format("Y-m-d 23:59:59")
+                    )
+                ));
+                if(!empty($targetSale))
+                    foreach($targetSale as $saleData)
+                        array_push($sales[$date->format("Y-m-d")], $saleData);
+            }
+
+            $this->RegisterSale->bindModel(array(
+                'hasMany' => array(
+                    'RegisterSaleItem' => array(
+                        'className' => 'RegisterSaleItem',
+                        'foreignKey' => 'sale_id'
+                    )
+                )
+            ));
+            $this->set('sales',$sales);
+        }
     }
 
 /**
@@ -168,6 +246,92 @@ class ReportsController extends AppController {
  * @return void
  */
     public function sales_by_hour() {
+        $user = $this->Auth->user();
+        
+        $this->loadModel('MerchantUser');
+        
+        $users = $this->MerchantUser->find('all', array(
+            'conditions' => array(
+                'MerchantUser.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('users',$users);
+        
+        $outlets = $this->MerchantOutlet->find('all', array(
+            'conditions' => array(
+                'MerchantOutlet.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('outlets',$outlets);
+        
+        $outlet_ids = array();
+        foreach($outlets as $outlet) {
+            array_push($outlet_ids, $outlet['MerchantOutlet']['id']);
+        }
+        
+        $registers = $this->MerchantRegister->find('all', array(
+            'conditions' => array(
+               'MerchantRegister.outlet_id' => $outlet_ids
+            )
+        ));
+        $this->set('registers',$registers);
+
+        if(isset($_GET['from'])) {
+
+            $register_ids = array();
+            foreach($registers as $register) {
+                array_push($register_ids, $register['MerchantRegister']['id']);
+            }
+
+            $criteria = array(
+                'RegisterSale.register_id' => $register_ids
+            );
+
+            $interval = new DateInterval('P1D');
+            $begin = new DateTime('2015-04-10');
+            $end = new DateTime('2015-04-30');
+            
+            foreach($_GET as $key => $value) {
+                if(!empty($value)) {
+                    if($key == 'from') {
+                        $criteria['RegisterSale.sale_date >='] = $value;
+                        $begin = new DateTime($value);
+                    }
+                    if($key == 'to') {
+                        $criteria['RegisterSale.sale_date <='] = $value;
+                        $end = new DateTime($value);
+                    }
+                }
+            }
+
+            $end = $end->modify( '+1 day' );
+            $daterange = new DatePeriod($begin, $interval ,$end);
+
+            $sales = array();
+
+            foreach($daterange as $date) {
+                $sales[$date->format("Y-m-d")] = array();
+                $targetSale = $this->RegisterSale->find('all', array(
+                    'conditions' => array(
+                        'RegisterSale.sale_date >=' => $date->format("Y-m-d 00:00:00"),
+                        'RegisterSale.sale_date <=' => $date->format("Y-m-d 23:59:59")
+                    )
+                ));
+                if(!empty($targetSale))
+                    foreach($targetSale as $saleData)
+                        array_push($sales[$date->format("Y-m-d")], $saleData);
+            }
+
+            $this->RegisterSale->bindModel(array(
+                'hasMany' => array(
+                    'RegisterSaleItem' => array(
+                        'className' => 'RegisterSaleItem',
+                        'foreignKey' => 'sale_id'
+                    )
+                )
+            ));
+            $this->set('sales',$sales);
+        }
     }
 
 /**

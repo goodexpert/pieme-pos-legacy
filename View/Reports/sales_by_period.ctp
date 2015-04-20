@@ -185,7 +185,7 @@
                     <tr class="table-color">
                         <td>Gross Margin</td>
                         <td class="text-right">
-	                        <?php echo number_format(($salesExc - $cost) / $salesExc * 100,1,'.','').'%';?>
+	                        <?php if($salesExc > 0){echo number_format(($salesExc - $cost) / $salesExc * 100,1,'.','').'%';} else {echo "0%";}?>
                         </td>
                     </tr>
                     <?php } else { ?>
