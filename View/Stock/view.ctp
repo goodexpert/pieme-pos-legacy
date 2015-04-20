@@ -62,10 +62,10 @@
                         'value' => $data['MerchantStockOrder']['id']
                     ));
                  ?>
-                <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
+                <h2 class="pull-left col-md-6 col-xs-6 col-sm-6 col-alpha col-omega">
                     <?php echo $data['MerchantStockOrder']['name'] . ' (' . $data['MerchantStockOrder']['status'] . ')'; ?>
                 </h2>
-                <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
+                <div class="pull-right col-md-6 col-xs-6 col-sm-6 col-alpha col-omega margin-top-20">
                     <button class="btn btn-white pull-right btn-right">
                         <div class="glyphicon glyphicon-import"></div>&nbsp;
                     Import Products</button>
@@ -100,13 +100,13 @@
                 <div class="col-md-3 col-omega">
                     <table class="table-bordered dataTable">
                         <colgroup>
-                            <col width="15%">
-                            <col width="15%">
+                            <col width="20%">
+                            <col width="">
                         </colgroup>
                         <thead>
                         <tr>
                             <th>Order</th>
-                            <th>Product</th>
+                            <th class="no-radius">Product</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -115,7 +115,7 @@
                             ?>
                             <tr>
                                 <td><?php echo $idx+1; ?></td>
-                                <td><?php echo $item['name']; ?></td>
+                                <td><span class="text-limit"><?php echo $item['name']; ?></span></td>
                             </tr>
                             <?php
                                 endforeach;
@@ -167,7 +167,7 @@
                                         $inventory = isset($inventories[$item['product_id']]) ? $inventories[$item['product_id']] : null;
                                 ?>
                                 <tr>
-                                    <td><?php echo $item['MerchantProduct']['sku']; ?></td>
+                                    <td><span class="text-limit"><?php echo $item['MerchantProduct']['sku']; ?></span></td>
                                     <td><?php echo $item['MerchantProduct']['supplier_code']; ?></td>
                                     <td>
                                         <?php echo empty($inventory) ? '<i class="icon-general-infinity"></i>' : $inventory['count']; ?>

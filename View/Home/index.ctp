@@ -455,7 +455,7 @@
                   
                       <?php foreach($payments as $payment){ ?>
                       
-                          <li class="col-lg-6 col-md-6 col-sm-6 col-xs-6 col-omega col-alpha btn-left payment_method" payment-id="<?=$payment['MerchantPaymentType']['id'];?>" payment-name="<?php echo $payment['MerchantPaymentType']['name'];?>">
+                          <li class="col-lg-6 col-md-6 col-sm-6 col-xs-6 col-omega col-alpha btn-left payment_method" payment-id="<?=$payment['MerchantPaymentType']['id'];?>" payment-type-id="<?php echo $payment['PaymentType']['id'];?>" payment-type="<?php echo $payment['PaymentType']['name'];?>">
                           <button class="btn btn-primary col-lg-12 col-md-12 col-sm-12 col-xs-12 col-omega col-alpha">
                               <span class="co-md-12"><img src="/img/<?php if($payment['PaymentType']['name'] == 'Credit Card'){echo 'card';}else if($payment['PaymentType']['name'] == 'Cheque'){echo 'cheque';}else{echo 'cash';}?>.png" alt="cash"></span>
                               <p class="co-md-12"><?=$payment['MerchantPaymentType']['name'];?></p>
@@ -829,6 +829,8 @@
 <script src="assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
 <script src="/js/jquery.jqprint-0.3.js" type="text/javascript"></script>
 <script src="/js/dataTable.js" type="text/javascript"></script>
+<script src="/js/dpsclient.js" type="text/javascript"></script>
+<script src="/js/jxon.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS --> 
 <script>
 jQuery(document).ready(function() {
@@ -1184,16 +1186,32 @@ jQuery(document).ready(function() {
     var payments = {};
     // Pay
     $(document).on("click",".payment_method",function(){
-        payment_id = $(this).attr("payment-id");
-        payment_name = $(this).find("p").text();
-        payment_type_name = $(this).attr("payment-name");
+        var payment_id = $(this).attr("payment-id");
+        var payment_name = $(this).find("p").text();
+        var payment_type_id = parseInt($(this).attr("payment-type-id"));
+        var payment_type = $(this).attr("payment-type");
+        var paying = parseFloat($("#set-pay-amount").val()).toFixed(2);
 
         //Payment Method Identifier
-        if(payment_type_name !== "Cash") {
+        if (payment_type !== "Cash") {
             //Call Function Here
         }
+        
+        // case payment_type_id eq 5 or payment_type eq 'Integrated EFTPOS (DPS)'
+        if (5 == payment_type_id || 'Integrated EFTPOS (DPS)' == payment_type) {
+            var dpsClient = new DpsClient();
 
-        var paying = parseFloat($("#set-pay-amount").val()).toFixed(2);
+            dpsClient.connect(function (connected, error) {
+                if (connected) {
+                    dpsClient.payment('TXN12345', paying, function(data, error) {
+                        console.log('Call callback:');
+                        console.log(data);
+                    });
+                } else {
+                }
+            });
+        }
+        return;
 
         payments.push([payment_id, paying]);
 
