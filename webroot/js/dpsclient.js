@@ -50,7 +50,7 @@ DpsClient.prototype.connect = function (callback) {
         var xmlDoc = new DOMParser().parseFromString(message.data, "text/xml");
         var jObject = JXON.build(xmlDoc);
 
-        console.log('received message: \n' + xmlDoc);
+        console.log(JSON.stringify(jObject));
         console.log('======================================================================');
 
         if (callback) {
@@ -80,10 +80,9 @@ DpsClient.prototype.payment = function (txnRef, amount, callback) {
     };
 
     self.socket.onmessage = function (message) {
-        var xmlDoc = new DOMParser().parseFromString(message.data,"text/xml");
+        var xmlDoc = new DOMParser().parseFromString(message.data, "text/xml");
         var jObject = JXON.build(xmlDoc);
 
-        console.log(xmlDoc);
         console.log(JSON.stringify(jObject));
 
         if (callback) {
@@ -117,6 +116,12 @@ DpsClient.prototype.close = function () {
     };
 };
 
+function getLastTransaction(socket) {
+    var message = '<Message type="LastTransaction" id="1234">';
+    message += '</Message>\n';
+    socket.send(message);
+}
+
 function purchase(socket, txnRef, amount) {
     var message = '<Message type="Transaction" id="1234">';
     message += '<TxnType>Purchase</TxnType>';
@@ -125,58 +130,3 @@ function purchase(socket, txnRef, amount) {
     message += '</Message>\n';
     socket.send(message);
 }
-
-function parseXML(message) {
-}
-
-/*
-    // Host we are connecting to
-    var host_url = 'ws://localhost:1337';
-
-    var socket = new WebSocket(host_url);
-
-
-    $(document).ready(function () {
-        $('#purchase').click(function (e) {
-            purchase(socket, 'TNX12345', 10);
-        });
-
-        $('#button1').click(function (e) {
-            presssButton(socket, 'Yes');
-        });
-
-        $('#button2').click(function (e) {
-            presssButton(socket, 'No');
-        });
-
-        $('#button3').click(function (e) {
-            presssButton(socket, 'Cancel');
-        });
-
-        $('#last_transaction').click(function (e) {
-            getLastTransaction(socket);
-        });
-    });
-
-    function purchase(socket, txnRef, amount) {
-        var message = '<Message type="Transaction" id="1234">';
-        message += '<TxnType>Purchase</TxnType>';
-        message += '<TxnRef>' + txnRef + '</TxnRef>';
-        message += '<AmountPurchase>' + amount + '</AmountPurchase>';
-        message += '</Message>\n';
-        socket.send(message);
-    }
-
-    function presssButton(socket, button) {
-        var message = '<Message type="Button" id="1234">';
-        message += '<Button>' + button + '</Button>';
-        message += '</Message>\n';
-        socket.send(message);
-    }
-
-    function getLastTransaction(socket) {
-        var message = '<Message type="LastTransaction" id="1234">';
-        message += '</Message>\n';
-        socket.send(message);
-    }
-*/
