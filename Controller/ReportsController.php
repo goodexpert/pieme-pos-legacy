@@ -9,7 +9,7 @@ class ReportsController extends AppController {
  *
  * @var array
  */
-    public $uses = array();
+    public $uses = array('MerchantOutlet', 'MerchantRegister', 'RegisterSale', 'RegisterSaleItem');
 
 /**
  * Name of layout to use with this View.
@@ -33,6 +33,59 @@ class ReportsController extends AppController {
  * @return void
  */
     public function sales_by_period() {
+        $user = $this->Auth->user();
+        
+        $outlets = $this->MerchantOutlet->find('all', array(
+            'conditions' => array(
+                'MerchantOutlet.merchant_id' => $user['merchant_id']
+            )
+        ));
+        
+        $outlet_ids = array();
+        foreach($outlets as $outlet) {
+            array_push($outlet_ids, $outlet['MerchantOutlet']['id']);
+        }
+        
+        $registers = $this->MerchantRegister->find('all', array(
+            'conditions' => array(
+               'MerchantRegister.outlet_id' => $outlet_ids
+            )
+        ));
+        
+        $register_ids = array();
+        foreach($registers as $register) {
+            array_push($register_ids, $register['MerchantRegister']['id']);
+        }
+        
+        $criteria = array(
+            'RegisterSale.register_id' => $register_ids
+        );
+        
+        $this->RegisterSale->bindModel(array(
+            'hasMany' => array(
+                'RegisterSaleItem' => array(
+                    'className' => 'RegisterSaleItem',
+                    'foreignKey' => 'sale_id'
+                )
+            )
+        ));
+        
+        if(isset($_GET)) {
+            foreach($_GET as $key => $value) {
+                if(!empty($value)) {
+                    if($key == 'from')
+                        $criteria['RegisterSale.sale_date >='] = $value;
+                    if($key == 'to')
+                        $criteria['RegisterSale.sale_date <='] = $value;
+                }
+            }
+        }
+        
+        $sales = $this->RegisterSale->find('all', array(
+            'conditions' => $criteria
+        ));
+        
+        $this->set('sales',$sales);
     }
 
 /**
@@ -41,6 +94,64 @@ class ReportsController extends AppController {
  * @return void
  */
     public function sales_by_month() {
+        $user = $this->Auth->user();
+
+        $outlets = $this->MerchantOutlet->find('all', array(
+            'conditions' => array(
+                'MerchantOutlet.merchant_id' => $user['merchant_id']
+            )
+        ));
+        
+        $outlet_ids = array();
+        foreach($outlets as $outlet) {
+            array_push($outlet_ids, $outlet['MerchantOutlet']['id']);
+        }
+        
+        $registers = $this->MerchantRegister->find('all', array(
+            'conditions' => array(
+               'MerchantRegister.outlet_id' => $outlet_ids
+            )
+        ));
+        
+        $register_ids = array();
+        foreach($registers as $register) {
+            array_push($register_ids, $register['MerchantRegister']['id']);
+        }
+        
+        $criteria = array(
+            'RegisterSale.register_id' => $register_ids
+        );
+        
+        $this->RegisterSale->bindModel(array(
+            'hasMany' => array(
+                'RegisterSaleItem' => array(
+                    'className' => 'RegisterSaleItem',
+                    'foreignKey' => 'sale_id'
+                )
+            )
+        ));
+        
+        if(isset($_GET['period'])) {
+            $sales = array();
+            $year = $_GET['year'];
+            $month = $_GET['month'];
+
+            for($i = 1;$i <= $_GET['period'];$i++) {
+                if($month < 1) {
+                    $year = $year - 1;
+                    $month = 12;
+                }
+                $criteria['RegisterSale.sale_date >='] = $year.'-'.$month.'-01';
+                $criteria['RegisterSale.sale_date <='] = $year.'-'.$month.'-31';
+            
+                $sales[$month] = $this->RegisterSale->find('all', array(
+                    'conditions' => $criteria
+                ));
+                $month = $month - 1;
+            }
+            $this->set('sales',$sales);
+        }
+
     }
 
 /**
@@ -65,6 +176,49 @@ class ReportsController extends AppController {
  * @return void
  */
     public function sales_by_category() {
+        $user = $this->Auth->user();
+
+        $this->loadModel('MerchantProductCategory');
+        $this->loadModel('MerchantProduct');
+        $this->loadModel('MerchantProductTag');
+
+        $this->MerchantProductCategory->bindModel(array(
+            'belongsTo' => array(
+                'MerchantProduct' => array(
+                    'className' => 'MerchantProduct',
+                    'foreignKey' => 'product_id'
+                ),
+                'MerchantProductTag' => array(
+                    'className' => 'MerchantProductTag',
+                    'foreignKey' => 'product_tag_id'
+                )
+            )
+        ));
+        
+        $category = $this->MerchantProductCategory->find('all', array(
+            'conditions' => array(
+                'MerchantProduct.merchant_id' => $user['merchant_id']
+            )
+        ));
+        
+        $tagArray = [];
+        
+        $tags = $this->MerchantProductTag->find('all', array(
+            'conditions' => array(
+                'MerchantProductTag.merchant_id' => $user['merchant_id']
+            )
+        ));
+        
+        foreach($tags as $tag) {
+            $tagArray[$tag['MerchantProductTag']['name']] = array();
+        }
+        
+        foreach($category as $ct) {
+            array_push($tagArray[$ct['MerchantProductTag']['name']], $ct);
+        }
+    
+        $this->set('tag',$tagArray);
+    
     }
 
 /**

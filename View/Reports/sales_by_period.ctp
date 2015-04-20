@@ -56,7 +56,7 @@
         
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                 <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
-                    Sales Totals by Period
+                    Sales Totals by Month
                 </h2>
                 <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
                     <a href="#" id="export"><button class="btn btn-white pull-right">
@@ -66,13 +66,13 @@
             </div>
                 
             <!-- FILTER -->
-            <div class="col-md-12 col-xs-12 col-sm-12 line-box filter-box">
+            <form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box" action="/reports/sales/sales_by_period" method="get">
                 <div class="col-md-4 col-xs-6 col-sm-6">
                     <dl>
                         <dt>Date from</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="date_from">
+                            <input type="text" id="date_from" name="from" value="<?php if(isset($_GET['from'])){echo $_GET['from'];}?>">
                         </dd>
                     </dl> 
                 </div>
@@ -81,7 +81,7 @@
                         <dt>Date to</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="date_to">
+                            <input type="text" id="date_to" name="to" value="<?php if(isset($_GET['to'])){echo $_GET['to'];}?>">
                         </dd>
                     </dl>
                  </div>
@@ -89,7 +89,7 @@
                     <dl>
                         <dt>Compare to the last</dt>
                         <dd>
-                            <select>
+                            <select disabled>
                                 <option value="1">1 Period</option>
                                 <option value="2">2 Periods</option>
                                 <option value="3">3 Periods</option>
@@ -109,48 +109,90 @@
                  <div class="col-md-12 col-xs-12 col-sm-12">
                      <button class="btn btn-primary filter pull-right">Update</button>
                  </div>
-            </div>
+            </form>
 
             <table id="productTable" class="table-bordered dataTable table-price">
                 <colgroup>
                     <col width="">
-                    <col width="20%">
+                    <?php if(isset($_GET['from'])) { ?>
+                    	<col width="20%">
+                    <?php } ?>
                 </colgroup>
                 <thead>
                 <tr>
-                    <th></th>
-                    <th class="text-right">Oct 01 - Mar 19</th>
+                    <th>&nbsp;</th>
+                    <?php if(isset($_GET['from'])) {
+	                    $dateRangeFrom = date('M d', strtotime($_GET['from']));
+	                    $dateRangeTo = date('M d', strtotime($_GET['to']));
+                    ?>
+                    	<th class="text-right">
+	                    	<?php echo $dateRangeFrom.' - '.$dateRangeTo;?>
+                    	</th>
+                    <?php } ?>
                 </tr>
                 </thead>
                 <tbody>
+                	<?php if(isset($_GET['from'])) {
+	                	$salesIncl = 0;
+	                	$tax = 0;
+	                	$salesExc = 0;
+	                	$cost = 0;
+	                	$discounts = 0;
+	                	foreach($sales as $sale) {
+		                	$salesIncl += $sale['RegisterSale']['total_price_incl_tax'];
+		                	$tax += $sale['RegisterSale']['total_tax'];
+		                	$salesExc += $sale['RegisterSale']['total_price'];
+		                	$cost += $sale['RegisterSale']['total_cost'];
+		                	$discounts += $sale['RegisterSale']['total_discount'];
+	                	}
+                	?>
                     <tr>
                         <td>Sales incl. tax ($)</td>
-                        <td class="text-right">64.35</td>
+                        <td class="text-right">
+	                        <?php echo $salesIncl;?>
+                        </td>
                     </tr>
                     <tr>
                         <td>Tax ($)</td>
-                        <td class="text-right">64.35</td>
+                        <td class="text-right">
+	                        <?php echo $tax;?>
+                        </td>
                     </tr>
                     <tr>
                         <td>Sales exc. tax ($)</td>
-                        <td class="text-right">64.35</td>
+                        <td class="text-right">
+	                        <?php echo $salesExc;?>
+                        </td>
                     </tr>
                     <tr>
                         <td>Cost of goods ($)</td>
-                        <td class="text-right">64.35</td>
+                        <td class="text-right">
+	                        <?php echo $cost;?>
+                        </td>
                     </tr>
                     <tr>
                         <td>Discounts ($)</td>
-                        <td class="text-right">64.35</td>
+                        <td class="text-right">
+	                        <?php echo $discounts;?>
+                        </td>
                     </tr>
                     <tr class="table-color">
                         <td>Gross Profit ($)</td>
-                        <td class="text-right">64.35</td>
+                        <td class="text-right">
+	                        <?php echo $salesExc - $cost;?>
+                        </td>
                     </tr>
                     <tr class="table-color">
                         <td>Gross Margin</td>
-                        <td class="text-right">64.3%</td>
+                        <td class="text-right">
+	                        <?php echo number_format(($salesExc - $cost) / $salesExc * 100,1,'.','').'%';?>
+                        </td>
                     </tr>
+                    <?php } else { ?>
+                    <tr>
+                    	<td style="text-align:center">Select your criteria above to update the table.</td>
+                    </tr>
+                    <?php } ?>
                 </tbody>
             </table>
         </div>
@@ -257,7 +299,7 @@ jQuery(document).ready(function() {
     QuickSidebar.init(); // init quick sidebar
     Index.init();
     
-    $("#date_from").datepicker();
-    $("#date_to").datepicker();
+    $("#date_from").datepicker({ dateFormat: 'yy-mm-dd' });
+    $("#date_to").datepicker({ dateFormat: 'yy-mm-dd' });
 });
 </script>

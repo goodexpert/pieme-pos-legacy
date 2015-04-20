@@ -331,6 +331,7 @@
                                 </div>
                                 <input type="hidden" class="product-retail_price" value="<?=$key_items[$product['product_id']]['MerchantProduct']['price'];?>">
                                 <input type="hidden" class="product-tax" value="<?=$key_items[$product['product_id']]['MerchantProduct']['tax'];?>">
+                                <input type="hidden" class="product-supply_price" value="<?=$key_items[$product['product_id']]['MerchantProduct']['supply_price'];?>">
                             </div>
                         </div>
                     <?php }} ?>
@@ -454,7 +455,7 @@
                   
                       <?php foreach($payments as $payment){ ?>
                       
-                          <li class="col-lg-6 col-md-6 col-sm-6 col-xs-6 col-omega col-alpha btn-left payment_method" payment-id="<?=$payment['MerchantPaymentType']['id'];?>">
+                          <li class="col-lg-6 col-md-6 col-sm-6 col-xs-6 col-omega col-alpha btn-left payment_method" payment-id="<?=$payment['MerchantPaymentType']['id'];?>" payment-name="<?php echo $payment['MerchantPaymentType']['name'];?>">
                           <button class="btn btn-primary col-lg-12 col-md-12 col-sm-12 col-xs-12 col-omega col-alpha">
                               <span class="co-md-12"><img src="/img/<?php if($payment['PaymentType']['name'] == 'Credit Card'){echo 'card';}else if($payment['PaymentType']['name'] == 'Cheque'){echo 'cheque';}else{echo 'cash';}?>.png" alt="cash"></span>
                               <p class="co-md-12"><?=$payment['MerchantPaymentType']['name'];?></p>
@@ -1026,15 +1027,45 @@ jQuery(document).ready(function() {
      *Transaction Control From Here
      **/
 
+     var total_discount = 0;
+     var total_cost = 0;
+
     function save_line_order() {
         var sequence = 0;
         line_array = [];
         
         $(".order-product").each(function(){
-            line_array.push([$(this).children(".added-code").val(), $(this).children(".added-qty").children("a").text(), $(this).children(".added-amount").text(), sequence]);
+            var pId = $(this).children(".added-code").val();
+            var pQty = $(this).children(".added-qty").children("a").text();
+            var pAmount = $(this).children(".added-amount").text();
+            var pSupplyPrice = $(this).children(".hidden-supply_price").val() * pQty;
+            var pPrice = $(this).children(".hidden-retail_price").val() * pQty;
+            var pTax = $(this).children(".hidden-tax").val() * pQty;
+            var pDiscount = $(this).find(".added-price").text().split("$")[1] * pQty - pAmount;
+            
+            var line_order = {
+                'product_id': pId,
+                'quantity': pQty,
+                'price': pPrice,
+                'supply_price': pSupplyPrice,
+                'tax': pTax,
+                'price_include_tax': pAmount,
+                'sequence': sequence,
+                'discount': pDiscount,
+                'status': 'VALID'
+            }
+            
+            line_array.push(line_order);
             sequence++;
+            total_discount += pDiscount;
+            total_cost += pSupplyPrice;
+        });
+        
+        $(".order-discount").each(function(){
+            total_discount += parseFloat($(this).find(".amount").text());
         });
     }
+
     var sale_id;
     var invoice_sequence = $(".invoice-id").text();
     function save_register_sale(amount) {
@@ -1049,8 +1080,9 @@ jQuery(document).ready(function() {
                     sale_id: $("#retrieve_sale_id").val(),
                     customer_id: $("#customer-selected-id").val(),
                     total_price: $(".subTotal").text(),
-                    total_cost: $(".toPay").text(),
-                    total_discount: '',
+                    total_price_incl_tax: $(".toPay").text(),
+                    total_discount: total_discount,
+                    total_cost: total_cost,
                     total_tax: $(".gst").text(),
                     note: '',
                     merchant_payment_type_id: payment_id,
@@ -1072,8 +1104,9 @@ jQuery(document).ready(function() {
                     customer_id: $("#customer-selected-id").val(),
                     receipt_number: invoice_sequence,
                     total_price: $(".subTotal").text(),
-                    total_cost: $(".toPay").text(),
-                    total_discount: '',
+                    total_price_incl_tax: $(".toPay").text(),
+                    total_discount: total_discount,
+                    total_cost: total_cost,
                     total_tax: $(".gst").text(),
                     note: '',
                     merchant_payment_type_id: payment_id,
@@ -1100,9 +1133,8 @@ jQuery(document).ready(function() {
                 data: {
                     sale_id: $("#retrieve_sale_id").val(),
                     customer_id: $("#customer-selected-id").val(),
-                    receipt_number: '0',
                     total_price: $(".subTotal").text(),
-                    total_cost: $(".toPay").text(),
+                    total_price_incl_tax: $(".toPay").text(),
                     total_discount: '',
                     total_tax: $(".gst").text(),
                     note: $("#leave_note").val(),
@@ -1127,9 +1159,9 @@ jQuery(document).ready(function() {
                 type: "POST",
                 data: {
                     customer_id: $("#customer-selected-id").val(),
-                    receipt_number: '0',
+                    receipt_number: invoice_sequence,
                     total_price: $(".subTotal").text(),
-                    total_cost: $(".toPay").text(),
+                    total_price_incl_tax: $(".toPay").text(),
                     total_discount: '',
                     total_tax: $(".gst").text(),
                     note: $("#leave_note").val(),
@@ -1140,6 +1172,7 @@ jQuery(document).ready(function() {
                 },
                 success: function(result){
                     console.log(result);
+                    invoice_sequence++;
                 }
             });
     
@@ -1152,7 +1185,13 @@ jQuery(document).ready(function() {
     // Pay
     $(document).on("click",".payment_method",function(){
         payment_id = $(this).attr("payment-id");
-        payment_name = $(this).find("p").text()
+        payment_name = $(this).find("p").text();
+        payment_type_name = $(this).attr("payment-name");
+
+        //Payment Method Identifier
+        if(payment_type_name !== "Cash") {
+            //Call Function Here
+        }
 
         var paying = parseFloat($("#set-pay-amount").val()).toFixed(2);
 
@@ -1573,7 +1612,7 @@ function priceCalculator() {
 <script>
 var listCount = 0;
 $(document).on('click', '.product', function(){
-    $(".added-body").prepend('<tr class="order-product"><input type="hidden" class="added-code" value="'+$(this).attr("data-id")+'"><input type="hidden" class="hidden-retail_price" value="'+$(this).children().children(".product-retail_price").val()+'"><input type="hidden" class="hidden-tax" value="'+$(this).children().children(".product-tax").val()+'"><td class="added-product">'+$(this).children(".product-container").children(".product-info").children(".product-name").text()+'<br><span class="added-price">$'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</span></td><td class="added-qty"><a qty-id="'+listCount+'" class="qty-control btn btn-white">1</a></td><td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="'+listCount+'">@'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</a></td><td class="added-amount" style="text-align:right;">'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');
+    $(".added-body").prepend('<tr class="order-product"><input type="hidden" class="added-code" value="'+$(this).attr("data-id")+'"><input type="hidden" class="hidden-retail_price" value="'+$(this).children().children(".product-retail_price").val()+'"><input type="hidden" class="hidden-tax" value="'+$(this).children().children(".product-tax").val()+'"><input type="hidden" class="hidden-supply_price" value="'+$(this).children().children(".product-supply_price").val()+'"><td class="added-product">'+$(this).children(".product-container").children(".product-info").children(".product-name").text()+'<br><span class="added-price">$'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</span></td><td class="added-qty"><a qty-id="'+listCount+'" class="qty-control btn btn-white">1</a></td><td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="'+listCount+'">@'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</a></td><td class="added-amount" style="text-align:right;">'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');
     listCount++;
     $(".added-null").hide();
 });

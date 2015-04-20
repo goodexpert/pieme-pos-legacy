@@ -201,16 +201,19 @@ class SetupController extends AppController {
         $this->set('loyalty',$loyalty);
         
         if($this->request->is('post')) {
-            $data = $this->request->data;
-            $data['merchant_id'] = $user['merchant_id'];
-            $result = array();
+            $result = array(
+                'success' => false
+            );
             try {
-                if(empty($loyalty)){
-                    $this->MerchantLoyalty->create();
-                } else {
-                    $this->MerchantLoyalty->id = $loyalty['MerchantLoyalty']['id'];
-                }
+                $data = $this->request->data;
+                $data['merchant_id'] = $user['merchant_id'];
+                if(isset($data['welcome_email_body']))
+                    $data['welcome_email_body'] = base64_encode($data['welcome_email_body']);
+                
+                $this->MerchantLoyalty->id = $loyalty['MerchantLoyalty']['id'];
                 $this->MerchantLoyalty->save($data);
+                
+                $result['success'] = true;
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
             }

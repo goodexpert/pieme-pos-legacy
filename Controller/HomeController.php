@@ -334,22 +334,17 @@ class HomeController extends AppController {
 
                 }
 
-                $array = json_decode($_POST['items']);
                 $generalQuantity = 0;
                 $outletQuantity = 0;
-                foreach($array as $item) {
+                $items = json_decode($_POST['items'],true);
+                foreach($items as $item) {
                     $this->RegisterSaleItem->create();
-                    $line->RegisterSaleItem['sale_id'] = $this->RegisterSale->id;
-                    $line->RegisterSaleItem['product_id'] = $item[0];
-                    $line->RegisterSaleItem['quantity'] = $item[1];
-                    $line->RegisterSaleItem['price'] = $item[2];
-                    $line->RegisterSaleItem['sequence'] = $item[3];
-                    $line->RegisterSaleItem['status'] = 'VALID';
-                    $this->RegisterSaleItem->save($line);
+                    $item['sale_id'] = $this->RegisterSale->id;
+                    $this->RegisterSaleItem->save($item);
                     
                     $quantities = $this->MerchantProductInventory->find('all', array(
                         'conditions' => array(
-                            'MerchantProductInventory.product_id' => $item[0]
+                            'MerchantProductInventory.product_id' => $item['product_id']
                         )
                     ));
                     foreach($quantities as $quantity) {
@@ -358,19 +353,19 @@ class HomeController extends AppController {
                             $outletQuantity = $quantity['MerchantProductInventory']['count'];
                             
                             $this->MerchantProductInventory->id = $quantity['MerchantProductInventory']['id'];
-                            $update['MerchantProductInventory']['count'] = $outletQuantity - $item[1];
+                            $update['MerchantProductInventory']['count'] = $outletQuantity - $item['quantity'];
                             $this->MerchantProductInventory->save($update);
                         }
                     }
                     
                     if($data['status'] == 'closed') {
                         $this->MerchantProductLog->create();
-                        $log['MerchantProductLog']['product_id'] = $item[0];
+                        $log['MerchantProductLog']['product_id'] = $item['product_id'];
                         $log['MerchantProductLog']['user_id'] = $user['id'];
                         $log['MerchantProductLog']['outlet_id'] = $user['outlet_id'];
-                        $log['MerchantProductLog']['quantity'] = $generalQuantity - $item[1];
-                        $log['MerchantProductLog']['outlet_quantity'] = $outletQuantity - $item[1];
-                        $log['MerchantProductLog']['change'] = -$item[1];
+                        $log['MerchantProductLog']['quantity'] = $generalQuantity - $item['quantity'];
+                        $log['MerchantProductLog']['outlet_quantity'] = $outletQuantity - $item['quantity'];
+                        $log['MerchantProductLog']['change'] = -$item['quantity'];
                         $log['MerchantProductLog']['action_type'] = 'sale';
                         $this->MerchantProductLog->save($log);
                         
@@ -408,21 +403,16 @@ class HomeController extends AppController {
                 }
                 $this->RegisterSale->save($data);
                 
-                $array = json_decode($_POST['items']);
+                $array = json_decode($_POST['items'],true);
                 
                 foreach($array as $item) {
                     $this->RegisterSaleItem->create();
-                    $line->RegisterSaleItem['sale_id'] = $this->RegisterSale->id;
-                    $line->RegisterSaleItem['product_id'] = $item[0];
-                    $line->RegisterSaleItem['quantity'] = $item[1];
-                    $line->RegisterSaleItem['price'] = $item[2];
-                    $line->RegisterSaleItem['sequence'] = $item[3];
-                    $line->RegisterSaleItem['status'] = 'VALID';
-                    $this->RegisterSaleItem->save($line);
+                    $item['sale_id'] = $this->RegisterSale->id;
+                    $this->RegisterSaleItem->save($item);
                     
                     $quantities = $this->MerchantProductInventory->find('all', array(
                         'conditions' => array(
-                            'MerchantProductInventory.product_id' => $item[0]
+                            'MerchantProductInventory.product_id' => $item['product_id']
                         )
                     ));
                     
@@ -434,19 +424,19 @@ class HomeController extends AppController {
                             $outletQuantity = $quantity['MerchantProductInventory']['count'];
                             
                             $this->MerchantProductInventory->id = $quantity['MerchantProductInventory']['id'];
-                            $update['MerchantProductInventory']['count'] = $outletQuantity - $item[1];
+                            $update['MerchantProductInventory']['count'] = $outletQuantity - $item['quantity'];
                             $this->MerchantProductInventory->save($update);
                         }
                     }
                     
                     if($data['status'] !== 'saved') {
                         $this->MerchantProductLog->create();
-                        $log['MerchantProductLog']['product_id'] = $item[0];
+                        $log['MerchantProductLog']['product_id'] = $item['product_id'];
                         $log['MerchantProductLog']['user_id'] = $user['id'];
                         $log['MerchantProductLog']['outlet_id'] = $user['outlet_id'];
-                        $log['MerchantProductLog']['quantity'] = $generalQuantity - $item[1];
-                        $log['MerchantProductLog']['outlet_quantity'] = $outletQuantity - $item[1];
-                        $log['MerchantProductLog']['change'] = -$item[1];
+                        $log['MerchantProductLog']['quantity'] = $generalQuantity - $item['quantity'];
+                        $log['MerchantProductLog']['outlet_quantity'] = $outletQuantity - $item['quantity'];
+                        $log['MerchantProductLog']['change'] = -$item['quantity'];
                         if($data['status'] == 'layby')
                            $log['MerchantProductLog']['action_type'] = 'layby_sale';
                         if($data['status'] == 'onaccount')
