@@ -64,13 +64,13 @@
             </div>
                 
             <!-- FILTER -->
-            <div class="col-md-12 col-xs-12 col-sm-12 line-box filter-box">
+            <form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box" action="/reports/sales/register_sales_detail" method="get">
                 <div class="col-md-4 col-xs-6 col-sm-6">
                     <dl>
                         <dt>Date from</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="date_from">
+                            <input type="text" id="date_from" name="from">
                         </dd>
                     </dl> 
                 </div>
@@ -79,7 +79,7 @@
                         <dt>Date to</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="date_to">
+                            <input type="text" id="date_to" name="to">
                         </dd>
                     </dl>
                  </div>
@@ -87,8 +87,11 @@
                     <dl>
                         <dt>Register</dt>
                         <dd>
-                            <select>
-                            <option value="1"></option>
+                            <select name="register_id">
+                            	<option value=""></option>
+                            	<?php foreach($registers as $register) { ?>
+                            		<option value="<?php echo $register['MerchantRegister']['id'];?>"><?php echo $register['MerchantRegister']['name'];?></option>
+                            	<?php } ?>
                             </select>
                         </dd>
                     </dl>
@@ -97,8 +100,11 @@
                     <dl>
                         <dt>Outlet</dt>
                         <dd>
-                            <select>
-                            <option value="1"></option>
+                            <select name="outlet_id">
+                            	<option value=""></option>
+                            	<?php foreach($outlets as $outlet) { ?>
+                            		<option value="<?php echo $outlet['MerchantOutlet']['id'];?>"><?php echo $outlet['MerchantOutlet']['name'];?></option>
+                            	<?php } ?>
                             </select>
                         </dd>
                     </dl>
@@ -107,16 +113,19 @@
                     <dl>
                         <dt>Customer group</dt>
                         <dd>
-                            <select>
-                            <option value="1"></option>
+                            <select name="customer_group_id">
+                            	<option value=""></option>
+                            	<?php foreach($customerGroups as $customerGroup) { ?>
+                            		<option value="<?php echo $customerGroup['MerchantCustomerGroup']['id'];?>"><?php echo $customerGroup['MerchantCustomerGroup']['name'];?></option>
+                            	<?php } ?>
                             </select>
                         </dd>
                     </dl>
                  </div>
                  <div class="col-md-12 col-xs-12 col-sm-12">
-                     <button class="btn btn-primary filter pull-right">Update</button>
+                     <button type="submit" class="btn btn-primary filter pull-right">Update</button>
                  </div>
-            </div>
+            </form>
                     <div class="col-md-3 col-sm-3 col-xs-3 col-omega">
                         <table class="table-bordered dataTable">
                             <colgroup>

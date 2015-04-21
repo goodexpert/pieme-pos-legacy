@@ -247,7 +247,7 @@
                     <?php
                     if(!empty($key_layout)) {
                     foreach($key_layout as $product) { ?>
-                        <div class="col-md-4 col-xs-12 col-sm-6 product clickable col-alpha col-omega" data-id="<?php echo $key_items[$product['product_id']]['MerchantProduct']['id'];?>" page="<?php echo $product['page'];?>">
+                        <div class="col-md-4 col-xs-12 col-sm-6 product clickable col-alpha col-omega" data-id="<?php echo $key_items[$product['product_id']]['MerchantProduct']['id'];?>" page="<?php echo $product['page'];?>" data-uom="<?php if(!empty($key_items[$product['product_id']]['ProductUom'])){echo $key_items[$product['product_id']]['ProductUom']['ProductUomCategory']['name'];}?>">
                             <div class="product-container">
                                 <div class="product-img">
                                     <img src="img/<?php if($key_items[$product['product_id']]['MerchantProduct']['image'] == null){echo 'no-image.png';} else {echo $key_items[$product['product_id']]['MerchantProduct']['image'];}?>" alt="<?php echo $key_items[$product['product_id']]['MerchantProduct']['name'];?>">
@@ -476,6 +476,17 @@
       </div>
   </div>
   <!-- PAY POPUP BOX END -->
+ 
+  <!-- EFTPOS TRANSACTION BOX -->
+  <div class="confirmation-modal modal fade in eftpos_status" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-body display-msg" style="text-align:center;">
+              </div>
+          </div>
+      </div>
+  </div>
+  <!-- EFTPOS TRANSACTION BOX END -->
  
   <!-- VOID POPUP BOX -->
   <div class="confirmation-modal modal fade in void" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;">
@@ -1633,6 +1644,9 @@ $(document).on('click', '.product', function(){
     $(".added-body").prepend('<tr class="order-product"><input type="hidden" class="added-code" value="'+$(this).attr("data-id")+'"><input type="hidden" class="hidden-retail_price" value="'+$(this).children().children(".product-retail_price").val()+'"><input type="hidden" class="hidden-tax" value="'+$(this).children().children(".product-tax").val()+'"><input type="hidden" class="hidden-supply_price" value="'+$(this).children().children(".product-supply_price").val()+'"><td class="added-product">'+$(this).children(".product-container").children(".product-info").children(".product-name").text()+'<br><span class="added-price">$'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</span></td><td class="added-qty"><a qty-id="'+listCount+'" class="qty-control btn btn-white">1</a></td><td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="'+listCount+'">@'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</a></td><td class="added-amount" style="text-align:right;">'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');
     listCount++;
     $(".added-null").hide();
+    if($(this).attr("data-uom") == "Weight"){
+        //Call function here
+    }
 });
 
 $(document).on('click', '.page', function(){

@@ -60,9 +60,8 @@ DpsClient.prototype.connect = function (callback) {
                 var dpsReady = (1 == ready && 1 == readylink && 1 == readypinpad);
 
                 if (dpsReady) {
-                    
                 } else {
-                    
+
                 }
 
                 if (callback) {
@@ -106,8 +105,25 @@ DpsClient.prototype.payment = function (txnRef, amount, callback) {
             if ('Display' == messageType) {
                 var text1 = response.message.text1;
                 var text2 = response.message.text2;
-
+                if(text1 == true) {
+	                text1 = "";
+                }
+                if(text2 == true) {
+	                text2 = "";
+                }
+                //Show status box
+                $(".pay").hide();
+                $(".eftpos_status").show();
+                $(".display-msg").text(text1 +' '+ text2);
+                
+                //IF transaction cancelled
+                if("TRANS. CANCELLED" == text1) {
+	                $(".pay").show();
+	                $(".eftpos_status").hide();
+                }
+                
                 if ("SIGNATURE REQD" == text1) {
+                
                 } else if ("SIGNATURE OK Y/N?" == text1) {
                     presssButton(self.socket, 'No');
                 }
@@ -119,6 +135,13 @@ DpsClient.prototype.payment = function (txnRef, amount, callback) {
                 var txnref = response.message.txnref;
                 var txntype = response.message.txntype;
 
+                if("INCORRECT PIN" == responsetext) {
+                	$(".eftpos_status").hide();
+	                $(".pay").show();
+                } else if("ACCEPTED" == responsetext) {
+	                $(".modal-backdrop").hide();
+	                $(".eftpos_status").hide();
+	            }
                 if (callback) {
                     callback(response.message, null);
                 }

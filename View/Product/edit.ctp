@@ -137,10 +137,11 @@
                   <dl class="form-group">
                     <dt class="col-md-3">Unit</dt>
                     <dd class="col-md-9">
-                      <select>
+                      <select id="product_uom">
                           <option selected></option>
-                          <option value="kg">kg</option>
-                          <option value="g">g</option>
+                          <?php foreach($uoms as $uom) { ?>
+                          <option value="<?php echo $uom['productUom']['id'];?>" <?php if($uom['productUom']['id'] == $product['MerchantProduct']['product_uom']){echo "selected";}?>><?php echo $uom['productUom']['name'].' ('.$uom['productUom']['symbol'].')';?></option>
+                          <?php } ?>
                       </select>
                     </dd>
                   </dl>
@@ -751,6 +752,7 @@ $(document).ready(function(){
         } else {
             var supplier;
         }
+        var product_uom = $("#product_uom").val();
         
         var supplier_code = $("#supplier_code").val();
         var supply_price = $("#supply_price").val();
@@ -852,6 +854,7 @@ $(document).ready(function(){
                     image: image,
                     stock_type: stock_type,
                     sku: sku,
+                    product_uom: product_uom,
                     is_active: availability,
                     has_variants: has_variants,
                     variant_option_one_name: variant_option_one_name,

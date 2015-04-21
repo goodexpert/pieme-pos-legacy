@@ -64,24 +64,24 @@
             </div>
                 
             <!-- FILTER -->
-            <div class="col-md-12 col-xs-12 col-sm-12 line-box filter-box">
+            <form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box" action="/reports/sales/payments_by_month" method="get">
                 <div class="col-md-4 col-xs-6 col-sm-6">
                     <dl>
                         <dt>Start month</dt> 
                         <dd>
-                            <select>
-                            <option value="1">January</option>
-                            <option value="2" selected="selected">February</option>
-                            <option value="3">March</option>
-                            <option value="4">April</option>
-                            <option value="5">May</option>
-                            <option value="6">June</option>
-                            <option value="7">July</option>
-                            <option value="8">August</option>
-                            <option value="9">September</option>
-                            <option value="10">October</option>
-                            <option value="11">November</option>
-                            <option value="12">December</option>
+                            <select name="month">
+                                <option value="1" <?php if(isset($_GET['month']) && $_GET['month'] == 1){echo "selected";}?>>January</option>
+                                <option value="2" <?php if(isset($_GET['month']) && $_GET['month'] == 2){echo "selected";}?>>February</option>
+                                <option value="3" <?php if(isset($_GET['month']) && $_GET['month'] == 3){echo "selected";}?>>March</option>
+                                <option value="4" <?php if(isset($_GET['month']) && $_GET['month'] == 4){echo "selected";}?>>April</option>
+                                <option value="5" <?php if(isset($_GET['month']) && $_GET['month'] == 5){echo "selected";}?>>May</option>
+                                <option value="6" <?php if(isset($_GET['month']) && $_GET['month'] == 6){echo "selected";}?>>June</option>
+                                <option value="7" <?php if(isset($_GET['month']) && $_GET['month'] == 7){echo "selected";}?>>July</option>
+                                <option value="8" <?php if(isset($_GET['month']) && $_GET['month'] == 8){echo "selected";}?>>August</option>
+                                <option value="9" <?php if(isset($_GET['month']) && $_GET['month'] == 9){echo "selected";}?>>September</option>
+                                <option value="10" <?php if(isset($_GET['month']) && $_GET['month'] == 10){echo "selected";}?>>October</option>
+                                <option value="11" <?php if(isset($_GET['month']) && $_GET['month'] == 11){echo "selected";}?>>November</option>
+                                <option value="12" <?php if(isset($_GET['month']) && $_GET['month'] == 12){echo "selected";}?>>December</option>
                             </select>
                         </dd>
                     </dl> 
@@ -90,13 +90,8 @@
                     <dl>
                         <dt>Year</dt> 
                         <dd>
-                            <select>
-                            <option value="2015" selected="selected">2015</option>
-                            <option value="2014">2014</option>
-                            <option value="2013">2013</option>
-                            <option value="2012">2012</option>
-                            <option value="2011">2011</option>
-                            <option value="2010">2010</option>
+                            <select name="year">
+                                <option value="2015" <?php if(isset($_GET['year']) && $_GET['year'] == 2015){echo "selected";}?>>2015</option>
                             </select>
                         </dd>
                     </dl>
@@ -105,27 +100,27 @@
                     <dl>
                         <dt>Periods</dt>
                         <dd>
-                            <select>
-                            <option value="1">1 Month</option>
-                            <option value="2">2 Months</option>
-                            <option value="3">3 Months</option>
-                            <option value="4">4 Months</option>
-                            <option value="5">5 Months</option>
-                            <option value="6">6 Months</option>
-                            <option value="7">7 Months</option>
-                            <option value="8">8 Months</option>
-                            <option value="9">9 Months</option>
-                            <option value="10">10 Months</option>
-                            <option value="11">11 Months</option>
-                            <option value="12" selected="selected">12 Months</option>
+                            <select name="period">
+                                <option value="1" <?php if(isset($_GET['period']) && $_GET['period'] == 1){echo "selected";}?>>1 Month</option>
+                                <option value="2" <?php if(isset($_GET['period']) && $_GET['period'] == 2){echo "selected";}?>>2 Months</option>
+                                <option value="3" <?php if(isset($_GET['period']) && $_GET['period'] == 3){echo "selected";}?>>3 Months</option>
+                                <option value="4" <?php if(isset($_GET['period']) && $_GET['period'] == 4){echo "selected";}?>>4 Months</option>
+                                <option value="5" <?php if(isset($_GET['period']) && $_GET['period'] == 5){echo "selected";}?>>5 Months</option>
+                                <option value="6" <?php if(isset($_GET['period']) && $_GET['period'] == 6){echo "selected";}?>>6 Months</option>
+                                <option value="7" <?php if(isset($_GET['period']) && $_GET['period'] == 7){echo "selected";}?>>7 Months</option>
+                                <option value="8" <?php if(isset($_GET['period']) && $_GET['period'] == 8){echo "selected";}?>>8 Months</option>
+                                <option value="9" <?php if(isset($_GET['period']) && $_GET['period'] == 9){echo "selected";}?>>9 Months</option>
+                                <option value="10" <?php if(isset($_GET['period']) && $_GET['period'] == 10){echo "selected";}?>>10 Months</option>
+                                <option value="11" <?php if(isset($_GET['period']) && $_GET['period'] == 11){echo "selected";}?>>11 Months</option>
+                                <option value="12" <?php if(isset($_GET['period']) && $_GET['period'] == 12){echo "selected";}?>>12 Months</option>
                             </select>
                         </dd>
                     </dl>
                  </div>
                  <div class="col-md-12 col-xs-12 col-sm-12">
-                     <button class="btn btn-primary filter pull-right">Update</button>
+                     <button type="submit" class="btn btn-primary filter pull-right">Update</button>
                  </div>
-            </div>
+            </form>
                     <div class="col-md-3 col-omega">
                         <table class="table-bordered dataTable">
                             <colgroup>
@@ -137,60 +132,44 @@
                             </tr>
                             </thead>
                             <tbody>
+                                <?php foreach($sales as $paymentType => $sale) {?>
                                 <tr>
-                                    <td class="first-child">Cash ($) </td>
+                                    <td class="first-child"><?php echo $paymentType;?> ($) </td>
                                 </tr>
+                                <?php } ?>
                             </tbody>
                         </table>
                     </div>
         <div class="col-md-9 col-alpha">
             <div class="scroll-table">
                 <table class="table-bordered dataTable">
-                        <colgroup>
-                        <col width="8%">
-                        <col width="8%">
-                        <col width="8%">
-                        <col width="8%">
-                        <col width="8%">
-                        <col width="8%">
-                        <col width="8%">
-                        <col width="8%">
-                        <col width="8%">
-                        <col width="8%">
-                        <col width="8%">
-                        <col width="8%">
-                    </colgroup>
                     <thead>
                         <tr>
-                            <th>March</th>
-                            <th>February</th>
-                            <th>January</th>
-                            <th>December</th>
-                            <th>November</th>
-                            <th>October</th>
-                            <th>September</th>
-                            <th>August</th>
-                            <th>July</th>
-                            <th>June</th>
-                            <th>May</th>
-                            <th>April</th>
+                            <?php foreach($sales as $sale) {
+                                foreach($sale as $month => $data) {?>
+                                <th><?php echo date("M",strtotime('2015-'.$month));?></th>
+                            <?php }break;} ?>
                         </tr>
-                        </thead>
+                    </thead>
                         <tbody>
-                            <tr>
-                                <td> -</td>
-                                <td> -</td>
-                                <td> -</td>
-                                <td> -</td>
-                                <td> -</td>
-                                <td> -</td>
-                                <td> -</td>
-                                <td> -</td>
-                                <td> -</td>
-                                <td> -</td>
-                                <td> -</td>
-                                <td> -</td>
-                            </tr>
+                            <?php foreach($sales as $sale) { ?>
+                                <tr>
+                                <?php foreach($sale as $data) { ?>
+                                    <td>
+                                    <?php
+                                    if(empty($data)){
+                                        echo " -";
+                                    } else {
+                                        $amount = 0;
+                                        foreach($data as $price) {
+                                            $amount += $price['RegisterSalePayment']['amount'];
+                                        }
+                                        echo number_format($amount,2,'.',',');
+                                    }?>
+                                    </td>
+                                <?php } ?>
+                                </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>

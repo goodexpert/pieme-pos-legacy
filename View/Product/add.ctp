@@ -136,7 +136,12 @@
                   <dl>
                     <dt class="col-md-4">Unit</dt>
                     <dd class="col-md-8">
-                      <select></select>
+                      <select id="product_uom">
+                          <option></option>
+                          <?php foreach($uoms as $uom) { ?>
+                          <option value="<?php echo $uom['productUom']['id'];?>"><?php echo $uom['productUom']['name'].' ('.$uom['productUom']['symbol'].')';?></option>
+                          <?php } ?>
+                      </select>
                     </dd>
                   </dl>
                 </div>
@@ -669,6 +674,7 @@ $(document).ready(function(){
         } else {
             var supplier;
         }
+        var product_uom = $("#product_uom").val();
 
         var supplier_code = $("#supplier_code").val();
         var supply_price = $("#supply_price").val();
@@ -778,6 +784,7 @@ $(document).ready(function(){
                     stock_type: stock_type,
                     sku: sku,
                     is_active: availability,
+                    product_uom: product_uom,
                     has_variants: has_variants,
                     variant_option_one_name: variant_option_one_name,
                     variant_option_one_value: variant_option_one_value,

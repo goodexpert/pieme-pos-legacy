@@ -52,8 +52,16 @@ class HomeController extends AppController {
                         'className' => 'MerchantProductInventory',
                         'foreignKey' => 'product_id'
                     )
+                ),
+                'belongsTo' => array(
+                    'ProductUom' => array(
+                        'className' => 'ProductUom',
+                        'foreignKey' => 'product_uom'
+                    )
                 )
             ));
+            
+            $this->MerchantProduct->recursive = 2;
 
             $items = $this->MerchantProduct->find('all', array(
                 'fields' => array(

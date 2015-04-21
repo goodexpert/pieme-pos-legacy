@@ -89,7 +89,7 @@
                     <dl>
                         <dt>Compare to the last</dt>
                         <dd>
-                            <select disabled>
+                            <select name="period">
                                 <option value="1">1 Period</option>
                                 <option value="2">2 Periods</option>
                                 <option value="3">3 Periods</option>
@@ -107,86 +107,117 @@
                     </dl>
                  </div>
                  <div class="col-md-12 col-xs-12 col-sm-12">
-                     <button class="btn btn-primary filter pull-right">Update</button>
+                     <button type="submit" class="btn btn-primary filter pull-right">Update</button>
                  </div>
             </form>
 
             <table id="productTable" class="table-bordered dataTable table-price">
-                <colgroup>
-                    <col width="">
-                    <?php if(isset($_GET['from'])) { ?>
-                    	<col width="20%">
-                    <?php } ?>
-                </colgroup>
                 <thead>
-                <tr>
-                    <th>&nbsp;</th>
-                    <?php if(isset($_GET['from'])) {
-	                    $dateRangeFrom = date('M d', strtotime($_GET['from']));
-	                    $dateRangeTo = date('M d', strtotime($_GET['to']));
-                    ?>
-                    	<th class="text-right">
-	                    	<?php echo $dateRangeFrom.' - '.$dateRangeTo;?>
-                    	</th>
-                    <?php } ?>
-                </tr>
+	                <tr>
+	                    <th>&nbsp;</th>
+	                    <?php if(isset($_GET['from'])) {
+		                    $dateRangeFrom = date('M d', strtotime($_GET['from']));
+		                    $dateRangeTo = date('M d', strtotime($_GET['to']));
+		                    foreach($sales as $date => $sale) {
+			                    $from = date("M d",strtotime(explode("~", $date)[0]));
+			                    $to = date("M d",strtotime(explode("~", $date)[1]));?>
+		                    
+		                    	<th class="text-right">
+			                    	<?php echo $from.' - '.$to;?>
+		                    	</th>
+		                    <?php }
+	                    } ?>
+	                </tr>
                 </thead>
                 <tbody>
-                	<?php if(isset($_GET['from'])) {
-	                	$salesIncl = 0;
-	                	$tax = 0;
-	                	$salesExc = 0;
-	                	$cost = 0;
-	                	$discounts = 0;
-	                	foreach($sales as $sale) {
-		                	$salesIncl += $sale['RegisterSale']['total_price_incl_tax'];
-		                	$tax += $sale['RegisterSale']['total_tax'];
-		                	$salesExc += $sale['RegisterSale']['total_price'];
-		                	$cost += $sale['RegisterSale']['total_cost'];
-		                	$discounts += $sale['RegisterSale']['total_discount'];
-	                	}
-                	?>
+                	<?php if(isset($_GET['from'])) {?>
                     <tr>
                         <td>Sales incl. tax ($)</td>
-                        <td class="text-right">
-	                        <?php echo $salesIncl;?>
-                        </td>
+                        <?php foreach($sales as $sale) {
+                        	$salesIncl = 0;
+                        	foreach($sale as $data) { 
+	                        	$salesIncl += $data['RegisterSale']['total_price_incl_tax'];
+	                        }?>
+	                        <td class="text-right">
+		                        <?php echo number_format($salesIncl,2,'.',',');?>
+	                        </td>
+	                    <?php } ?>
                     </tr>
                     <tr>
                         <td>Tax ($)</td>
-                        <td class="text-right">
-	                        <?php echo $tax;?>
-                        </td>
+                        <?php foreach($sales as $sale) {
+                        	$tax = 0;
+                        	foreach($sale as $data) { 
+	                        	$tax += $data['RegisterSale']['total_tax'];
+	                        }?>
+	                        <td class="text-right">
+		                        <?php echo number_format($tax,2,'.',',');?>
+	                        </td>
+	                    <?php } ?>
                     </tr>
                     <tr>
                         <td>Sales exc. tax ($)</td>
-                        <td class="text-right">
-	                        <?php echo $salesExc;?>
-                        </td>
+                        <?php foreach($sales as $sale) {
+                        	$salesExc = 0;
+                        	foreach($sale as $data) { 
+	                        	$salesExc += $data['RegisterSale']['total_price'];
+	                        }?>
+	                        <td class="text-right">
+		                        <?php echo number_format($salesExc,2,'.',',');?>
+	                        </td>
+	                    <?php } ?>
                     </tr>
                     <tr>
                         <td>Cost of goods ($)</td>
-                        <td class="text-right">
-	                        <?php echo $cost;?>
-                        </td>
+                        <?php foreach($sales as $sale) {
+                        	$cost = 0;
+                        	foreach($sale as $data) { 
+	                        	$cost += $data['RegisterSale']['total_cost'];
+	                        }?>
+	                        <td class="text-right">
+		                        <?php echo number_format($cost,2,'.',',');?>
+	                        </td>
+	                    <?php } ?>
                     </tr>
                     <tr>
                         <td>Discounts ($)</td>
-                        <td class="text-right">
-	                        <?php echo $discounts;?>
-                        </td>
+                        <?php foreach($sales as $sale) {
+                        	$discount = 0;
+                        	foreach($sale as $data) { 
+	                        	$discount += $data['RegisterSale']['total_discount'];
+	                        }?>
+	                        <td class="text-right">
+		                        <?php echo number_format($discount,2,'.',',');?>
+	                        </td>
+	                    <?php } ?>
                     </tr>
                     <tr class="table-color">
                         <td>Gross Profit ($)</td>
-                        <td class="text-right">
-	                        <?php echo $salesExc - $cost;?>
-                        </td>
+                        <?php foreach($sales as $sale) {
+                        	$salesExc = 0;
+                        	$cost = 0;
+                        	foreach($sale as $data) {
+                        		$salesExc += $data['RegisterSale']['total_price'];
+	                        	$cost += $data['RegisterSale']['total_cost'];
+	                        }?>
+	                        <td class="text-right">
+		                        <?php echo number_format($salesExc - $cost,2,'.',',');?>
+	                        </td>
+	                    <?php } ?>
                     </tr>
                     <tr class="table-color">
                         <td>Gross Margin</td>
-                        <td class="text-right">
-	                        <?php if($salesExc > 0){echo number_format(($salesExc - $cost) / $salesExc * 100,1,'.','').'%';} else {echo "0%";}?>
-                        </td>
+                        <?php foreach($sales as $sale) {
+                        	$salesExc = 0;
+                        	$cost = 0;
+                        	foreach($sale as $data) {
+                        		$salesExc += $data['RegisterSale']['total_price'];
+	                        	$cost += $data['RegisterSale']['total_cost'];
+	                        }?>
+	                        <td class="text-right">
+		                        <?php if($salesExc > 0){echo number_format(($salesExc - $cost) / $salesExc * 100,2,'.',',').'%';}else{echo '0%';}?>
+	                        </td>
+	                    <?php } ?>
                     </tr>
                     <?php } else { ?>
                     <tr>

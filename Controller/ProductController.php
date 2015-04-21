@@ -158,6 +158,8 @@ class ProductController extends AppController {
                     unset($data['product_type_id']);
                 if(empty($data['product_brand_id']))
                     unset($data['product_brand_id']);
+                if(empty($data['product_uom']))
+                    unset($data['product_uom']);
 
                 $this->MerchantProduct->create();
                 $this->MerchantProduct->save(array('MerchantProduct' => $data));
@@ -252,6 +254,10 @@ class ProductController extends AppController {
             $this->serialize($result);
             return;
         }
+        $this->loadModel("productUom");
+        
+        $uoms = $this->productUom->find('all');
+        $this->set('uoms',$uoms);
         
         $this->loadModel("MerchantOutlet");
         $outlets = $this->MerchantOutlet->find('all', array(
@@ -337,6 +343,8 @@ class ProductController extends AppController {
                     $data['product_type_id'] = null;
                 if(empty($data['product_brand_id']))
                     $data['product_brand_id'] = null;
+                if(empty($data['product_uom']))
+                    $data['product_uom'] = null;
 
                 $this->MerchantProduct->id = $id;
                 $this->MerchantProduct->save(array('MerchantProduct' => $data));
@@ -484,10 +492,16 @@ class ProductController extends AppController {
             } catch (Exception $e) {
                 $dataSource->rollback();
                 $result['message'] = $e->getMessage();
+                $result['data'] = $data;
             }
             $this->serialize($result);
             return;
         }
+        
+        $this->loadModel("productUom");
+        
+        $uoms = $this->productUom->find('all');
+        $this->set('uoms',$uoms);
         
         $categories = $this->MerchantProductTag->find('all', array(
             'joins' => array(
