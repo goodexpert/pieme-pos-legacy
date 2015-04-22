@@ -134,10 +134,16 @@
                             </tr>
                             </thead>
                             <tbody>
-                            	<?php foreach($sales as $date => $value) { ?>
-                                <tr>
-                                    <td class="text-limit"><?php echo date('d M, Y', strtotime($date));?></td>
-                                </tr>
+                            	<?php if(!empty($sales)) {
+	                            	foreach($sales as $date => $value) { ?>
+	                                <tr>
+	                                    <td class="text-limit"><?php echo date('d M, Y', strtotime($date));?></td>
+	                                </tr>
+	                                <?php }
+                                } else {?>
+                                	<tr>
+                                		<td style="border: 0">&nbsp;</td>
+                                	</tr>
                                 <?php } ?>
                             </tbody>
                         </table>
@@ -174,181 +180,187 @@
                         </tr>
                         </thead>
                         <tbody class="text-right">
-                        	<?php foreach($sales as $sale) { ?>
-                            <tr>
-                                <td>
-	                                <?php if(!empty($sale[0])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[0] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?>
-                                </td>
-                                <td>
-	                                <?php if(!empty($sale[1])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[1] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?>
-                                </td>
-                                <td><?php if(!empty($sale[2])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[2] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td><?php if(!empty($sale[3])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[3] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td><?php if(!empty($sale[4])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[4] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td><?php if(!empty($sale[5])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[5] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td class="td-color-green"><?php if(!empty($sale[6])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[6] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td><?php if(!empty($sale[7])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[7] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td><?php if(!empty($sale[8])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[8] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td><?php if(!empty($sale[9])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[9] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td><?php if(!empty($sale[10])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[10] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td><?php if(!empty($sale[11])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[11] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td><?php if(!empty($sale[12])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[12] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td><?php if(!empty($sale[13])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[13] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td><?php if(!empty($sale[14])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[14] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td><?php if(!empty($sale[15])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[15] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td><?php if(!empty($sale[16])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[16] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td><?php if(!empty($sale[17])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[17] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td><?php if(!empty($sale[18])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[18] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td><?php if(!empty($sale[19])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[19] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td><?php if(!empty($sale[20])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[20] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td><?php if(!empty($sale[21])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[21] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td><?php if(!empty($sale[22])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[22] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                                <td><?php if(!empty($sale[23])) {
-	                                	$totalSale = 0;
-		                                foreach($sale[23] as $data) {
-			                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
-		                                }
-		                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
-	                                } else { echo '&nbsp;';}?></td>
-                            </tr>
+                        	<?php if(!empty($sales)) {
+	                        	foreach($sales as $sale) { ?>
+	                            <tr>
+	                                <td>
+		                                <?php if(!empty($sale[0])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[0] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?>
+	                                </td>
+	                                <td>
+		                                <?php if(!empty($sale[1])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[1] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?>
+	                                </td>
+	                                <td><?php if(!empty($sale[2])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[2] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td><?php if(!empty($sale[3])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[3] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td><?php if(!empty($sale[4])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[4] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td><?php if(!empty($sale[5])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[5] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td class="td-color-green"><?php if(!empty($sale[6])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[6] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td><?php if(!empty($sale[7])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[7] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td><?php if(!empty($sale[8])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[8] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td><?php if(!empty($sale[9])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[9] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td><?php if(!empty($sale[10])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[10] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td><?php if(!empty($sale[11])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[11] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td><?php if(!empty($sale[12])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[12] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td><?php if(!empty($sale[13])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[13] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td><?php if(!empty($sale[14])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[14] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td><?php if(!empty($sale[15])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[15] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td><?php if(!empty($sale[16])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[16] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td><?php if(!empty($sale[17])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[17] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td><?php if(!empty($sale[18])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[18] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td><?php if(!empty($sale[19])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[19] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td><?php if(!empty($sale[20])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[20] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td><?php if(!empty($sale[21])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[21] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td><?php if(!empty($sale[22])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[22] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                                <td><?php if(!empty($sale[23])) {
+		                                	$totalSale = 0;
+			                                foreach($sale[23] as $data) {
+				                                $totalSale += $data['RegisterSale']['total_price_incl_tax'];
+			                                }
+			                                echo number_format($totalSale,2,'.',',').' ('.count($data).')';
+		                                } else { echo '&nbsp;';}?></td>
+	                            </tr>
+                            <?php }
+                            } else {?>
+                            	<tr>
+                            		<td colspan="24" style="border: 0; text-align: left;">Select your criteria above to update the table.</td>
+                            	</tr>
                             <?php } ?>
                         </tbody>
                     </table>

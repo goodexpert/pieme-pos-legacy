@@ -208,10 +208,10 @@
                                 <td><?php echo $layby['MerchantCustomer']['name'];?></td>
                                 <td><?php echo $layby['RegisterSale']['note'];?></td>
                                 <td></td>
-                                <td><?php echo '$'.number_format($layby['RegisterSale']['total_cost'],2,'.','');?></td>
+                                <td><?php echo '$'.number_format($layby['RegisterSale']['total_price_incl_tax'],2,'.','');?></td>
                             </tr>
                             <?php
-                            $total_layby_amount += $layby['RegisterSale']['total_cost'];
+                            $total_layby_amount += $layby['RegisterSale']['total_price_incl_tax'];
                             } ?>
                             <tr style="background:#FFF7D6">
                                 <th style="border:0; text-align:right;" colspan="6">Total new laybys</th>
@@ -270,14 +270,14 @@
                                 <td><?php echo $onaccount['MerchantCustomer']['name'];?></td>
                                 <td><?php echo $onaccount['RegisterSale']['note'];?></td>
                                 <td></td>
-                                <td><?php echo '$'.number_format($onaccount['RegisterSale']['total_cost'],2,'.','');?></td>
+                                <td><?php echo '$'.number_format($onaccount['RegisterSale']['total_price_incl_tax'],2,'.',',');?></td>
                             </tr>
                             <?php
-                            $total_onaccount_amount += $onaccount['RegisterSale']['total_cost'];
+                            $total_onaccount_amount += $onaccount['RegisterSale']['total_price_incl_tax'];
                             } ?>
                             <tr style="background:#FFF7D6">
                                 <th style="border:0; text-align:right;" colspan="6">Total new account sales</th>
-                                <td style="border:0;"><?php echo '$'.number_format($total_onaccount_amount,2,'.','');?></td>
+                                <td style="border:0;"><?php echo '$'.number_format($total_onaccount_amount,2,'.',',');?></td>
                             </tr>
                             <?php } ?>
                             <!-- New account sales END -->
@@ -303,7 +303,7 @@
                                     <td><?php echo $onaccount['MerchantCustomer']['name'];?></td>
                                     <td></td>
                                     <td></td>
-                                    <td><?php echo '$'.number_format($payment['amount'],2,'.','');?></td>
+                                    <td><?php echo '$'.number_format($payment['amount'],2,'.',',');?></td>
                                 </tr>
                                 <?php
                                 $total_onaccount_payment += $payment['amount'];
@@ -311,7 +311,7 @@
                             }?>
                             <tr style="background:#FFF7D6">
                                 <th style="border:0; text-align:right;" colspan="6">Total account sale payments</th>
-                                <td style="border:0;"><?php echo '$'.number_format($total_onaccount_payment,2,'.','');?></td>
+                                <td style="border:0;"><?php echo '$'.number_format($total_onaccount_payment,2,'.',',');?></td>
                             </tr>
                             <?php } ?>
                             <!-- Account sale payments -->

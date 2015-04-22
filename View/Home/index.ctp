@@ -247,7 +247,7 @@
                     <?php
                     if(!empty($key_layout)) {
                     foreach($key_layout as $product) { ?>
-                        <div class="col-md-4 col-xs-12 col-sm-6 product clickable col-alpha col-omega" data-id="<?php echo $key_items[$product['product_id']]['MerchantProduct']['id'];?>" page="<?php echo $product['page'];?>" data-uom="<?php if(!empty($key_items[$product['product_id']]['ProductUom'])){echo $key_items[$product['product_id']]['ProductUom']['ProductUomCategory']['name'];}?>">
+                        <div class="col-md-4 col-xs-12 col-sm-6 product clickable col-alpha col-omega" data-id="<?php echo $key_items[$product['product_id']]['MerchantProduct']['id'];?>" page="<?php echo $product['page'];?>" data-uom="<?php if(!empty($key_items[$product['product_id']]['ProductUom'])){echo $key_items[$product['product_id']]['ProductUom']['ProductUomCategory']['name'];}?>" data-symbol="<?php if(!empty($key_items[$product['product_id']]['ProductUom'])){echo $key_items[$product['product_id']]['ProductUom']['symbol'];}?>">
                             <div class="product-container">
                                 <div class="product-img">
                                     <img src="img/<?php if($key_items[$product['product_id']]['MerchantProduct']['image'] == null){echo 'no-image.png';} else {echo $key_items[$product['product_id']]['MerchantProduct']['image'];}?>" alt="<?php echo $key_items[$product['product_id']]['MerchantProduct']['name'];?>">
@@ -397,15 +397,17 @@
                         <td><?=$sale['MerchantUser']['username'];?></td>
                         <td><?=$sale['MerchantCustomer']['name'];?></td>
                         <td><?=$sale['MerchantCustomer']['customer_code'];?></td>
-                        <td><?=number_format($sale['RegisterSale']['total_price'],2,'.','');?></td>
+                        <td><?=number_format($sale['RegisterSale']['total_price_incl_tax'],2,'.','');?></td>
                         <td><?=$sale['RegisterSale']['note'];?></td>
                         <td>
                             <?php foreach($sale['RegisterSaleItem'] as $get) { ?>
                             <span class="hidden retrieve-child-products">
                                 <span class="retrieve-child-id"><?=$get['MerchantProduct']['id'];?></span>
                                 <span class="retrieve-child-name"><?=$get['MerchantProduct']['name'];?></span>
-                                <span class="retrieve-child-price"><?=$get['MerchantProduct']['price'];?></span>
-                                <span class="retrieve-child-tax"><?=$get['MerchantProduct']['tax'];?></span>
+                                <span class="retrieve-child-supply-price"><?=number_format($get['MerchantProduct']['supply_price'],2,'.',',');?></span>
+                                <span class="retrieve-child-price"><?=number_format($get['MerchantProduct']['price'],2,'.',',');?></span>
+                                <span class="retrieve-child-price-incl-tax"><?=number_format($get['MerchantProduct']['price_include_tax'],2,'.',',');?></span>
+                                <span class="retrieve-child-tax"><?=number_format($get['MerchantProduct']['tax'],2,'.',',');?></span>
                                 <span class="retrieve-child-qty"><?php echo $get['quantity'];?></span>
                             </span>
                             <?php } ?>
@@ -916,11 +918,7 @@ jQuery(document).ready(function() {
             $("#retrieve_sale_id").val($(this).attr("data-id"));
             $(this).find(".retrieve-child-products").each(function(){
 
-                var comp_1 = $(this).children(".retrieve-child-price").text();
-                var comp_2 = $(this).children(".retrieve-child-tax").text();
-                var price_including_tax = parseFloat(comp_1) + parseFloat(comp_2);
-
-                $(".added-body").prepend('<tr class="order-product"><input type="hidden" class="added-code" value="'+$(this).children(".retrieve-child-id").text()+'"><td class="added-product">'+$(this).children(".retrieve-child-name").text()+'<br><span class="added-price">$'+parseFloat($(this).children(".retrieve-child-price").text()).toFixed(2)+'</span></td><td class="added-qty"><a qty-id="'+retCount+'" class="qty-control btn btn-white">'+$(this).find(".retrieve-child-qty").text()+'</a></td><td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="'+retCount+'">@'+price_including_tax.toFixed(2)+'</a></td><td class="added-amount"></td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');
+                $(".added-body").prepend('<tr class="order-product"><input type="hidden" class="added-code" value="'+$(this).children(".retrieve-child-id").text()+'"><input type="hidden" class="hidden-retail_price" value="'+$(this).find(".retrieve-child-price").text()+'"><input type="hidden" class="hidden-tax" value="'+$(this).find(".retrieve-child-tax").text()+'"><input type="hidden" class="hidden-supply_price" value="'+$(this).find(".retrieve-child-supply-price").text()+'"><td class="added-product">'+$(this).children(".retrieve-child-name").text()+'<br><span class="added-price">$'+parseFloat($(this).children(".retrieve-child-price").text()).toFixed(2)+'</span></td><td class="added-qty"><a qty-id="'+retCount+'" class="qty-control btn btn-white">'+$(this).find(".retrieve-child-qty").text()+'</a></td><td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="'+retCount+'">@'+$(this).find(".retrieve-child-price-incl-tax").text()+'</a></td><td class="added-amount"></td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');/*COME HERE*/
                 retCount++;
             });
             if(customer_name == ''){
@@ -950,21 +948,33 @@ jQuery(document).ready(function() {
     });
     var to_pay;
     $("#pay").click(function(){
-        $(".pay").show();
-        $(".modal-backdrop").show();
-        $("#set-pay-amount").val($(".toPay").text());
-        to_pay = $(".toPay").text();
-        $(".split_attr").remove();
-        $(".payment-display").find(".total_cost").children(".pull-right").text('$'+$(".toPay").text());
-        payments = [];
+        if($(".added-null").is(':visible')){
+            
+        } else {
+            $(".pay").show();
+            $(".modal-backdrop").show();
+            $("#set-pay-amount").val($(".toPay").text());
+            to_pay = $(".toPay").text();
+            $(".split_attr").remove();
+            $(".payment-display").find(".total_cost").children(".pull-right").text('$'+$(".toPay").text());
+            payments = [];
+        }
     });
     $("#park").click(function(){
-        $(".park").show();
-        $(".modal-backdrop").show();
+        if($(".added-null").is(':visible')){
+            
+        } else {
+            $(".park").show();
+            $(".modal-backdrop").show();
+        }
     });
     $(".void").click(function(){
-        $(".void").show();
-        $(".modal-backdrop").show();
+        if($(".added-null").is(':visible')){
+            
+        } else {
+            $(".void").show();
+            $(".modal-backdrop").show();
+        }
     })
     $(".confirm-close").click(function(){
         $(".fade").hide();
@@ -1127,7 +1137,11 @@ jQuery(document).ready(function() {
                     amount: JSON.stringify(amount)
                 },
                 success: function(result){
-                    $("#retrieve_sale_id").val('');
+                    if(result.success) {
+                        //sale
+                    } else {
+                        alert(result.message);
+                    }
                 }
             });
         } else {
@@ -1180,8 +1194,12 @@ jQuery(document).ready(function() {
                     actual_amount: amount,
                     payments: JSON.stringify(pays)
                 },
-                success: function() {
-                    $("#retrieve_sale_id").val('');
+                success: function(result) {
+                    if(result.success) {
+                        $("#retrieve_sale_id").val('');
+                    } else {
+                        alert(result.message);
+                    }
                 }
             });
             $(".customer-search-result").children().hide();
@@ -1208,8 +1226,11 @@ jQuery(document).ready(function() {
                     payments: JSON.stringify(pays)
                 },
                 success: function(result){
-                    console.log(result);
-                    invoice_sequence++;
+                    if(result.success) {
+                        invoice_sequence++;
+                    } else {
+                        console.log(result);
+                    }
                 }
             });
     
@@ -1267,7 +1288,7 @@ jQuery(document).ready(function() {
 
     // Park
     $(document).on("click",".park-sale",function(){
-        park_register_sale('saved');
+        park_register_sale('saved',0,0);
         $(".fade").hide();
         $(".order-product").remove();
         $(".order-discount").remove();
@@ -1644,7 +1665,12 @@ function priceCalculator() {
 <script>
 var listCount = 0;
 $(document).on('click', '.product', function(){
-    $(".added-body").prepend('<tr class="order-product"><input type="hidden" class="added-code" value="'+$(this).attr("data-id")+'"><input type="hidden" class="hidden-retail_price" value="'+$(this).children().children(".product-retail_price").val()+'"><input type="hidden" class="hidden-tax" value="'+$(this).children().children(".product-tax").val()+'"><input type="hidden" class="hidden-supply_price" value="'+$(this).children().children(".product-supply_price").val()+'"><td class="added-product">'+$(this).children(".product-container").children(".product-info").children(".product-name").text()+'<br><span class="added-price">$'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</span></td><td class="added-qty"><a qty-id="'+listCount+'" class="qty-control btn btn-white">1</a></td><td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="'+listCount+'">@'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</a></td><td class="added-amount" style="text-align:right;">'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');
+    if($(this).attr("data-symbol") !== '') {
+        var symbol = '/'+$(this).attr("data-symbol");
+    } else {
+        var symbol = "";
+    }
+    $(".added-body").prepend('<tr class="order-product"><input type="hidden" class="added-code" value="'+$(this).attr("data-id")+'"><input type="hidden" class="hidden-retail_price" value="'+$(this).children().children(".product-retail_price").val()+'"><input type="hidden" class="hidden-tax" value="'+$(this).children().children(".product-tax").val()+'"><input type="hidden" class="hidden-supply_price" value="'+$(this).children().children(".product-supply_price").val()+'"><td class="added-product">'+$(this).children(".product-container").children(".product-info").children(".product-name").text()+'<br><span class="added-price">$'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</span>'+symbol+'</td><td class="added-qty"><a qty-id="'+listCount+'" class="qty-control btn btn-white">1</a></td><td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="'+listCount+'">@'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</a></td><td class="added-amount" style="text-align:right;">'+$(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text()+'</td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');/*COME HERE*/
     listCount++;
     $(".added-null").hide();
     if($(this).attr("data-uom") == "Weight"){

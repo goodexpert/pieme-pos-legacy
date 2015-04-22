@@ -140,6 +140,7 @@ DpsClient.prototype.payment = function (txnRef, amount, callback) {
                 if("INCORRECT PIN" == responsetext) {
                 	$(".eftpos_status").hide();
 	                $(".pay").show();
+	                $(".modal-backdrop").show();
                 }
 
                 if (callback) {

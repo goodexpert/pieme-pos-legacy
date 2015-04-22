@@ -157,7 +157,11 @@
 		                        </tr>
 		                    <?php }
 		                    }
-                        } ?>
+                        } else {?>
+                        	<tr>
+                        		<td colspan="2">&nbsp;</td>
+                        	</tr>
+                        <?php } ?>
                     </tbody>
                 </table>
             </div>
@@ -235,7 +239,11 @@
 		                            </tr>
 		                            <?php }
 	                            }
-	                        } ?>
+	                        } else {?>
+	                        	<tr>
+	                        		<td colspan="8">Select your criteria above to update the table.</td>
+	                        	</tr>
+	                        <?php } ?>
                         </tbody>
                     </table>
                 </div>

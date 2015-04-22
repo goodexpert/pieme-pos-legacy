@@ -125,7 +125,7 @@
                                 <?php echo $month;?>
                             </th>
                         <?php }
-                    } ?>
+                    }?>
                 </tr>
                 </thead>
                 <tbody>

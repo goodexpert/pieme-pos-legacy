@@ -132,10 +132,16 @@
                             </tr>
                             </thead>
                             <tbody>
-                                <?php foreach($sales as $paymentType => $sale) {?>
-                                <tr>
-                                    <td class="first-child"><?php echo $paymentType;?> ($) </td>
-                                </tr>
+                                <?php if(!empty($sales)) {
+                                    foreach($sales as $paymentType => $sale) {?>
+                                    <tr>
+                                        <td class="first-child"><?php echo $paymentType;?> ($) </td>
+                                    </tr>
+                                    <?php }
+                                } else {?>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                    </tr>
                                 <?php } ?>
                             </tbody>
                         </table>
@@ -145,29 +151,39 @@
                 <table class="table-bordered dataTable">
                     <thead>
                         <tr>
-                            <?php foreach($sales as $sale) {
-                                foreach($sale as $month => $data) {?>
-                                <th><?php echo date("M",strtotime('2015-'.$month));?></th>
-                            <?php }break;} ?>
+                            <?php if(!empty($sales)) {
+                                foreach($sales as $sale) {
+                                    foreach($sale as $month => $data) {?>
+                                    <th><?php echo date("M",strtotime('2015-'.$month));?></th>
+                                <?php }break;}
+                            } else { ?>
+                                <th>&nbsp;</th>
+                            <?php } ?>
                         </tr>
                     </thead>
                         <tbody>
-                            <?php foreach($sales as $sale) { ?>
+                            <?php if(!empty($sales)) {
+                                foreach($sales as $sale) { ?>
+                                    <tr>
+                                    <?php foreach($sale as $data) { ?>
+                                        <td>
+                                        <?php
+                                        if(empty($data)){
+                                            echo " -";
+                                        } else {
+                                            $amount = 0;
+                                            foreach($data as $price) {
+                                                $amount += $price['RegisterSalePayment']['amount'];
+                                            }
+                                            echo number_format($amount,2,'.',',');
+                                        }?>
+                                        </td>
+                                    <?php } ?>
+                                    </tr>
+                                <?php }
+                            } else {?>
                                 <tr>
-                                <?php foreach($sale as $data) { ?>
-                                    <td>
-                                    <?php
-                                    if(empty($data)){
-                                        echo " -";
-                                    } else {
-                                        $amount = 0;
-                                        foreach($data as $price) {
-                                            $amount += $price['RegisterSalePayment']['amount'];
-                                        }
-                                        echo number_format($amount,2,'.',',');
-                                    }?>
-                                    </td>
-                                <?php } ?>
+                                    <td>Select your criteria above to update the table.</td>
                                 </tr>
                             <?php } ?>
                         </tbody>

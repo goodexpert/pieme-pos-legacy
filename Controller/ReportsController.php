@@ -606,6 +606,154 @@ class ReportsController extends AppController {
  * @return void
  */
     public function popular_products() {
+        $user = $this->Auth->user();
+        
+        $this->loadModel('MerchantUser');
+        $this->loadModel('MerchantProductType');
+        $this->loadModel('MerchantProductBrand');
+        $this->loadModel('MerchantSupplier');
+        $this->loadModel('MerchantCustomerGroup');
+        $this->loadModel('MerchantProduct');
+        $this->loadModel('MerchantProductCategory');
+        
+        $outlets = $this->MerchantOutlet->find('all', array(
+            'conditions' => array(
+                'MerchantOutlet.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('outlets',$outlets);
+        $outlet_ids = array();
+        foreach($outlets as $outlet)
+            array_push($outlet_ids,$outlet['MerchantOutlet']['id']);
+        
+        $registers = $this->MerchantRegister->find('all', array(
+            'conditions' => array(
+                'MerchantRegister.outlet_id' => $outlet_ids
+            )
+        ));
+        $this->set('registers',$registers);
+        $users = $this->MerchantUser->find('all', array(
+            'conditions' => array(
+                'MerchantUser.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('users',$users);
+        
+        $types = $this->MerchantProductType->find('all', array(
+            'conditions' => array(
+                'MerchantProductType.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('types',$types);
+        
+        $brands = $this->MerchantProductBrand->find('all', array(
+            'conditions' => array(
+                'MerchantProductBrand.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('brands',$brands);
+        
+        $suppliers = $this->MerchantSupplier->find('all', array(
+            'conditions' => array(
+                'MerchantSupplier.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('suppliers',$suppliers);
+        
+        $groups = $this->MerchantCustomerGroup->find('all', array(
+            'conditions' => array(
+                'MerchantCustomerGroup.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('groups',$groups);
+        if(isset($_GET['from'])) {
+            $criteriaMerchantOutlet = array(
+                'MerchantOutlet.merchant_id' => $user['merchant_id']
+            );
+            if(!empty($_GET['outlet_id']))
+                $criteriaMerchantOutlet['MerchantOutlet.id'] = $_GET['outlet_id'];
+            
+            $outletFilter_ids = array();
+            $outletFilter = $this->MerchantOutlet->find('all', array(
+                'conditions' => $criteriaMerchantOutlet
+            ));
+            foreach($outletFilter as $otf)
+                array_push($outletFilter_ids, $otf['MerchantOutlet']['id']);
+
+
+            $criteriaRegister = array(
+                'MerchantRegister.outlet_id' => $outletFilter_ids
+            );
+            if(!empty($_GET['register_id']))
+                $criteriaRegister['MerchantRegister.id'] = $_GET['register_id'];
+
+            $registerFilter_ids = array();
+            $registerFilter = $this->MerchantRegister->find('all', array(
+                'conditions' => $criteriaRegister
+            ));
+            foreach($registerFilter as $rgf)
+                array_push($registerFilter_ids, $rgf['MerchantRegister']['id']);
+
+            $criteriaRegisterSale = array(
+                'RegisterSale.register_id' => $registerFilter_ids
+            );
+            if(!empty($_GET['user_id']))
+                $criteriaRegisterSale['RegisterSale.user_id'] = $_GET['user_id'];
+            if(!empty($_GET['from']))
+                $criteriaRegisterSale['RegisterSale.sale_date >='] = $_GET['from'];
+            if(!empty($_GET['to']))
+                $criteriaRegisterSale['RegisterSale.sale_date <='] = $_GET['to'];
+
+            $this->MerchantProductCategory->bindModel(array(
+                'belongsTo' => array(
+                    'MerchantProductTag' => array(
+                        'className' => 'MerchantProductTag',
+                        'foreignKey' => 'product_tag_id'
+                    )
+                )
+            ));
+            
+            $this->RegisterSaleItem->bindModel(array(
+                'belongsTo' => array(
+                    'RegisterSale' => array(
+                        'className' => 'RegisterSale',
+                        'foreignKey' => 'sale_id',
+                        'conditions' => $criteriaRegisterSale
+                    )
+                )
+            ));
+        
+            $this->MerchantProduct->bindModel(array(
+                'hasMany' => array(
+                    'RegisterSaleItem' => array(
+                        'className' => 'RegisterSaleItem',
+                        'foreignKey' => 'product_id'
+                    ),
+                    'MerchantProductCategory' => array(
+                        'className' => 'MerchantProductCategory',
+                        'foreignKey' => 'product_id'
+                    )
+                )
+            ));
+            
+            $this->MerchantProduct->recursive = 2;
+            
+            $criteriaMerchantProduct = array(
+                'MerchantProduct.merchant_id' => $user['merchant_id']
+            );
+            if(!empty($_GET['product_brand_id']))
+                $criteriaMerchantProduct['MerchantProduct.product_brand_id'] = $_GET['product_brand_id'];
+            if(!empty($_GET['product_type_id']))
+                $criteriaMerchantProduct['MerchantProduct.product_type_id'] = $_GET['product_type_id'];
+            if(!empty($_GET['supplier_id']))
+                $criteriaMerchantProduct['MerchantProduct.supplier_id'] = $_GET['supplier_id'];
+        
+            $products = $this->MerchantProduct->find('all', array(
+                'conditions' => $criteriaMerchantProduct
+            ));
+
+            $this->set('products',$products);
+        }
     }
 
 /**

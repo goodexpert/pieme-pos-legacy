@@ -251,10 +251,11 @@ class HomeController extends AppController {
         $this->loadModel('MerchantRegisterOpen');
         $this->loadModel("MerchantRegister");
         $user = $this->Auth->user();
-        $result = array();
 
-
-        if ($this->request->is('post')) {
+        if ($this->request->is('post') || $this->request->is('ajax')) {
+            $result = array(
+                'success' => false
+            );
             try {
                 $data = $this->request->data;
                 $data['register_id'] = $this->Auth->user()['MerchantRegister']['id'];
@@ -319,9 +320,11 @@ class HomeController extends AppController {
                         $data['status'] = 'layby_closed';
                     if($currentStatus == 'onaccount')
                         $data['status'] = 'onaccount_closed';
-                        
+                    if($currentStatus == 'saved')
+                        $data['status'] = 'closed';
+
                     $this->MerchantCustomer->id = $data['customer_id'];
-                    $cBalance['MerchantCustomer']['balance'] = $this->MerchantCustomer->findById($data['customer_id'])['MerchantCustomer']['balance'] + $data['total_cost'];
+                    $cBalance['MerchantCustomer']['balance'] = $this->MerchantCustomer->findById($data['customer_id'])['MerchantCustomer']['balance'] + $data['total_price_incl_tax'];
                     $this->MerchantCustomer->save($cBalance);
                 } else {
                     $this->RegisterSale->create();
@@ -384,6 +387,7 @@ class HomeController extends AppController {
                 $this->MerchantRegister->id = $user['MerchantRegister']['id'];
                 $increase->MerchantRegister['invoice_sequence'] = $this->MerchantRegister->findById($user['MerchantRegister']['id'])['MerchantRegister']['invoice_sequence'] + 1;
                 $this->MerchantRegister->save($increase);
+                $result['success'] = true;
                 
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
@@ -394,10 +398,11 @@ class HomeController extends AppController {
     
     public function park() {
         $user = $this->Auth->user();
-    
-        $result = array();
 
-        if ($this->request->is('post')) {
+        if ($this->request->is('post') || $this->request->is('ajax')) {
+            $result = array(
+                'success' => false
+            );
             try {
                 $data = $this->request->data;
                 $data['register_id'] = $this->Auth->user()['MerchantRegister']['id'];
@@ -456,17 +461,20 @@ class HomeController extends AppController {
                     }
                 }
                 
-                $paymentArray = json_decode($data['payments']);
-
-                foreach($paymentArray as $pay) {
-
-                    $this->RegisterSalePayment->create();
-                    $payment['sale_id'] = $this->RegisterSale->id;
-                    $payment['merchant_payment_type_id'] = $pay[0];
-                    $payment['amount'] = $pay[1];
-                    $payment['payment_date'] = date('Y-m-d H:i:s');
-                    $this->RegisterSalePayment->save($payment);
-
+                if(!empty($paymentArray)) {
+                
+                    $paymentArray = json_decode($data['payments']);
+    
+                    foreach($paymentArray as $pay) {
+    
+                        $this->RegisterSalePayment->create();
+                        $payment['sale_id'] = $this->RegisterSale->id;
+                        $payment['merchant_payment_type_id'] = $pay[0];
+                        $payment['amount'] = $pay[1];
+                        $payment['payment_date'] = date('Y-m-d H:i:s');
+                        $this->RegisterSalePayment->save($payment);
+    
+                    }
                 }
                 
                 if($data['status'] !== 'saved') {
@@ -533,6 +541,7 @@ class HomeController extends AppController {
                         $this->MerchantRegisterOpen->save($open);
                     }
                 }
+                $result['success'] = true;
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
             }

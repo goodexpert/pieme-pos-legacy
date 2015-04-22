@@ -64,13 +64,13 @@
             </div>
                 
             <!-- FILTER -->
-            <div class="col-md-12 col-xs-12 col-sm-12 line-box filter-box">
+            <form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box" action="/reports/sales/popular_products" method="get">
                 <div class="col-md-4 col-xs-6 col-sm-6">
                     <dl>
                         <dt>Date from</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="date_from">
+                            <input type="text" id="date_from" name="from" value="<?php if(isset($_GET['from'])){echo $_GET['from'];}?>">
                         </dd>
                     </dl> 
                 </div>
@@ -79,7 +79,7 @@
                         <dt>Date to</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="date_to">
+                            <input type="text" id="date_to" name="to"  value="<?php if(isset($_GET['to'])){echo $_GET['to'];}?>">
                         </dd>
                     </dl>
                  </div>
@@ -98,8 +98,11 @@
                     <dl>
                         <dt>Outlet</dt> 
                         <dd>
-                            <select>
-                                <option value="0"></option>
+                            <select name="outlet_id">
+                                <option value=""></option>
+                                <?php foreach($outlets as $outlet) { ?>
+                                    <option value="<?php echo $outlet['MerchantOutlet']['id'];?>" <?php if(isset($_GET['outlet_id']) && $_GET['outlet_id'] == $outlet['MerchantOutlet']['id']){echo "selected";}?>><?php echo $outlet['MerchantOutlet']['name'];?></option>
+                                <?php } ?>
                             </select>
                         </dd>
                     </dl> 
@@ -108,8 +111,11 @@
                     <dl>
                         <dt>Register</dt> 
                         <dd>
-                            <select>
-                                <option value="0"></option>
+                            <select name="register_id">
+                                <option value=""></option>
+                                <?php foreach($registers as $register) { ?>
+                                    <option value="<?php echo $register['MerchantRegister']['id'];?>" <?php if(isset($_GET['register_id']) && $_GET['register_id'] == $register['MerchantRegister']['id']){echo "selected";}?>><?php echo $register['MerchantRegister']['name'];?></option>
+                                <?php } ?>
                             </select>
                         </dd>
                     </dl>
@@ -118,8 +124,11 @@
                     <dl>
                         <dt>User</dt>
                         <dd>
-                            <select>
-                                <option value="0"></option>
+                            <select name="user_id">
+                                <option value=""></option>
+                                <?php foreach($users as $user) { ?>
+                                    <option value="<?php echo $user['MerchantUser']['id'];?>" <?php if(isset($_GET['user_id']) && $_GET['user_id'] == $user['MerchantUser']['id']){echo "selected";}?>><?php echo $user['MerchantUser']['display_name'];?></option>
+                                <?php } ?>
                             </select>
                         </dd>
                     </dl>
@@ -128,8 +137,11 @@
                     <dl>
                         <dt>Product type</dt> 
                         <dd>
-                            <select>
-                                <option value="0"></option>
+                            <select name="product_type_id">
+                                <option value=""></option>
+                                <?php foreach($types as $type) { ?>
+                                    <option value="<?php echo $type['MerchantProductType']['id'];?>" <?php if(isset($_GET['product_type_id']) && $_GET['product_type_id'] == $type['MerchantProductType']['id']){echo "selected";}?>><?php echo $type['MerchantProductType']['name'];?></option>
+                                <?php } ?>
                             </select>
                         </dd>
                     </dl> 
@@ -138,8 +150,11 @@
                     <dl>
                         <dt>Supplier</dt> 
                         <dd>
-                            <select>
-                                <option value="0"></option>
+                            <select name="supplier_id">
+                                <option value=""></option>
+                                <?php foreach($suppliers as $supplier) { ?>
+                                    <option value="<?php echo $supplier['MerchantSupplier']['id'];?>" <?php if(isset($_GET['supplier_id']) && $_GET['supplier_id'] == $supplier['MerchantSupplier']['id']){echo "selected";}?>><?php echo $supplier['MerchantSupplier']['name'];?></option>
+                                <?php } ?>
                             </select>
                         </dd>
                     </dl>
@@ -148,8 +163,11 @@
                     <dl>
                         <dt>Brand</dt>
                         <dd>
-                            <select>
-                                <option value="0"></option>
+                            <select name="product_brand_id">
+                                <option value=""></option>
+                                <?php foreach($brands as $brand) { ?>
+                                    <option value="<?php echo $brand['MerchantProductBrand']['id'];?>" <?php if(isset($_GET['product_brand_id']) && $_GET['product_brand_id'] == $brand['MerchantProductBrand']['id']){echo "selected";}?>><?php echo $brand['MerchantProductBrand']['name'];?></option>
+                                <?php } ?>
                             </select>
                         </dd>
                     </dl>
@@ -158,8 +176,11 @@
                     <dl>
                         <dt>Customer group</dt> 
                         <dd>
-                            <select>
-                                <option value="0"></option>
+                            <select name="customer_group_id">
+                                <option value=""></option>
+                                <?php foreach($groups as $group) { ?>
+                                    <option value="<?php echo $group['MerchantCustomerGroup']['id'];?>" <?php if(isset($_GET['customer_group_id']) && $_GET['customer_group_id'] == $group['MerchantCustomerGroup']['id']){echo "selected";}?>><?php echo $group['MerchantCustomerGroup']['name'];?></option>
+                                <?php } ?>
                             </select>
                         </dd>
                     </dl> 
@@ -173,9 +194,9 @@
                     </dl>
                  </div>
                  <div class="col-md-12 col-xs-12 col-sm-12">
-                     <button class="btn btn-primary filter pull-right">Update</button>
+                     <button type="submit" class="btn btn-primary filter pull-right">Update</button>
                 </div>
-            </div>
+            </form>
             <div class="col-md-12 col-xs-12 col-sm-12 filter-ShowMore text-center margin-bottom-20">
                 <button class="ShowMore btn btn-default">
                     Show More<span class="glyphicon glyphicon-chevron-down"></span>
@@ -415,7 +436,7 @@ jQuery(document).ready(function() {
     QuickSidebar.init(); // init quick sidebar
     Index.init();
     
-    $("#date_from").datepicker();
-    $("#date_to").datepicker();
+    $("#date_from").datepicker({ dateFormat:'yy-mm-dd' });
+    $("#date_to").datepicker({ dateFormat:'yy-mm-dd' });
 });
 </script>

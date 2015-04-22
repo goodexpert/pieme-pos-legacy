@@ -254,9 +254,19 @@ class ProductController extends AppController {
             $this->serialize($result);
             return;
         }
-        $this->loadModel("productUom");
+        $this->loadModel("ProductUom");
+        $this->loadModel("ProductUomCategory");
         
-        $uoms = $this->productUom->find('all');
+        $this->ProductUomCategory->bindModel(array(
+            'hasMany' => array(
+                'ProductUom' => array(
+                    'className' => 'ProductUom',
+                    'foreignKey' => 'category_id'
+                )
+            )
+        ));
+        
+        $uoms = $this->ProductUomCategory->find('all');
         $this->set('uoms',$uoms);
         
         $this->loadModel("MerchantOutlet");
@@ -499,8 +509,17 @@ class ProductController extends AppController {
         }
         
         $this->loadModel("productUom");
+        $this->loadModel("ProductUomCategory");
         
-        $uoms = $this->productUom->find('all');
+        $this->ProductUomCategory->bindModel(array(
+            'hasMany' => array(
+                'ProductUom' => array(
+                    'className' => 'ProductUom',
+                    'foreignKey' => 'category_id'
+                )
+            )
+        ));
+        $uoms = $this->ProductUomCategory->find('all');
         $this->set('uoms',$uoms);
         
         $categories = $this->MerchantProductTag->find('all', array(
@@ -922,6 +941,47 @@ class ProductController extends AppController {
         ));
         $this->set('tags',$tags);
         
+    }
+    
+    public function tag_edit(){
+        $user = $this->Auth->user();
+        
+        if($this->request->is('post') || $this->request->is('ajax')) {
+            $result = array(
+                'success' => false
+            );
+            try {
+                $data = $this->request->data;
+                
+                $this->MerchantProductTag->id = $data['tag_id'];
+                $this->MerchantProductTag->save($data);
+                
+                $result['success'] = true;
+            } catch  (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+            $this->serialize($result);
+        }
+    }
+    
+    public function tag_delete() {
+        $user = $this->Auth->user();
+        
+        if($this->request->is('post') || $this->request->is('ajax')) {
+            $result = array(
+                'success' => false
+            );
+            try {
+                $data = $this->request->data;
+                
+                $this->MerchantProductTag->delete($data['tag_id']);
+                
+                $result['success'] = true;
+            } catch  (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+            $this->serialize($result);
+        }
     }
     
     function addpics() {

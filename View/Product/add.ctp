@@ -139,8 +139,11 @@
                       <select id="product_uom">
                           <option></option>
                           <?php foreach($uoms as $uom) { ?>
-                          <option value="<?php echo $uom['productUom']['id'];?>"><?php echo $uom['productUom']['name'].' ('.$uom['productUom']['symbol'].')';?></option>
-                          <?php } ?>
+                            <optgroup label="<?php echo $uom['ProductUomCategory']['name'];?>">
+                                <?php foreach($uom['ProductUom'] as $unit) { ?>
+                                    <option value="<?php echo $unit['id'];?>"><?php echo $unit['name'].' ('.$unit['symbol'].')';?></option>
+                                <?php }
+                          } ?>
                       </select>
                     </dd>
                   </dl>

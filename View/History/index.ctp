@@ -139,7 +139,7 @@
                         <td><?php echo $sale['MerchantCustomer']['name'];?></td>
                         <td><?=$sale['RegisterSale']['note'];?></td>
                         <td class="history_status"><?=$sale['RegisterSale']['status'];?></td>
-                        <td class="tdTotal">$<?=number_format($sale['RegisterSale']['total_cost'],2,'.',',');?></td>
+                        <td class="tdTotal">$<?=number_format($sale['RegisterSale']['total_price_incl_tax'],2,'.',',');?></td>
                         <td><?=$sale['RegisterSale']['created'];?></td>
                     </tr>
                     <tr class="expandable-child" data-parent-id="<?=$sale['RegisterSale']['id'];?>">
@@ -210,7 +210,7 @@
                                                 <strong>TOTAL</strong>
                                             </li>
                                             <li class="pull-right h4">
-                                                <text class="total"><strong>$<?=number_format($sale['RegisterSale']['total_cost'],2,'.',',');?></strong></text>
+                                                <text class="total"><strong>$<?=number_format($sale['RegisterSale']['total_price_incl_tax'],2,'.',',');?></strong></text>
                                             </li>
                                         </ul>
                                         <div class="solid-line"></div>
@@ -230,10 +230,6 @@
                                         <div class="dashed-line-gr"></div>
                                         <button class="btn btn-default pull-right">Apply payment / refund</button>
                                         <div class="solid-line"></div>
-                                        <ul class="receipt-text">
-                                            <li class="pull-left">Balance</li>
-                                            <li class="pull-right"><strong>$0.00</strong></li>
-                                        </ul>
                                     </div>
                                     <div class="receipt-bt"></div>
                                 </div>

@@ -141,7 +141,11 @@
                         $tax = 0;
                         $cost = 0;
                         }
-                    } ?>
+                    } else {?>
+                        <tr>
+                            <td colspan="7" style="text-align:center;">Select your criteria above to update the table.</td>
+                        </tr>
+                    <?php } ?>
                 </tbody>
             </table>
         </div>
