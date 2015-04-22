@@ -374,55 +374,66 @@ class ReportsController extends AppController {
  */
     public function sales_by_category() {
         $user = $this->Auth->user();
+        
+        if(isset($_GET['from'])) {
 
-        $this->loadModel('MerchantProductCategory');
-        $this->loadModel('MerchantProduct');
-        $this->loadModel('MerchantProductTag');
-
-        $this->MerchantProductCategory->bindModel(array(
-            'belongsTo' => array(
-                'MerchantProduct' => array(
-                    'className' => 'MerchantProduct',
-                    'foreignKey' => 'product_id'
-                ),
-                'MerchantProductTag' => array(
-                    'className' => 'MerchantProductTag',
-                    'foreignKey' => 'product_tag_id'
-                )
-            )
-        ));
-        
-        $category = $this->MerchantProductCategory->find('all', array(
-            'conditions' => array(
-                'MerchantProduct.merchant_id' => $user['merchant_id']
-            )
-        ));
-        
-        $tagArray = array();
-        
-        $tags = $this->MerchantProductTag->find('all', array(
-            'conditions' => array(
-                'MerchantProductTag.merchant_id' => $user['merchant_id']
-            )
-        ));
-        
-        foreach($tags as $tag) {
-            $tagArray[$tag['MerchantProductTag']['id']] = array();
-        }
-        
-        foreach($category as $cat) {
-            $tagArray[$cat['MerchantProductCategory']['product_tag_id']][$cat['MerchantProductCategory']['product_id']] = array();
-            
-            $sales = $this->RegisterSaleItem->find('all', array(
-                'conditions' => array(
-                    'RegisterSaleItem.product_id' => $cat['MerchantProductCategory']['product_id']
+            $this->loadModel('MerchantProductCategory');
+            $this->loadModel('MerchantProduct');
+            $this->loadModel('MerchantProductTag');
+    
+            $this->MerchantProductCategory->bindModel(array(
+                'belongsTo' => array(
+                    'MerchantProduct' => array(
+                        'className' => 'MerchantProduct',
+                        'foreignKey' => 'product_id'
+                    ),
+                    'MerchantProductTag' => array(
+                        'className' => 'MerchantProductTag',
+                        'foreignKey' => 'product_tag_id'
+                    )
                 )
             ));
             
-            array_push($tagArray[$cat['MerchantProductCategory']['product_tag_id']][$cat['MerchantProductCategory']['product_id']], $sales);
-        }
+            $category = $this->MerchantProductCategory->find('all', array(
+                'conditions' => array(
+                    'MerchantProduct.merchant_id' => $user['merchant_id']
+                )
+            ));
+            
+            $tagArray = array();
+            
+            $tags = $this->MerchantProductTag->find('all', array(
+                'conditions' => array(
+                    'MerchantProductTag.merchant_id' => $user['merchant_id']
+                )
+            ));
+            
+            foreach($tags as $tag) {
+                $tagArray[$tag['MerchantProductTag']['id']] = array(
+                    'name' => $tag['MerchantProductTag']['name']
+                );
+            }
+            
+            foreach($category as $cat) {
+                $tagArray[$cat['MerchantProductCategory']['product_tag_id']]['products'][$cat['MerchantProductCategory']['product_id']] = array();
+    
+                $criteria = array(
+                    'RegisterSaleItem.product_id' => $cat['MerchantProductCategory']['product_id']
+                );
+                if(!empty($_GET['from']))
+                    $criteria['RegisterSaleItem.created >='] = $_GET['from'];
+                if(!empty($_GET['to']))
+                    $criteria['RegisterSaleItem.created <='] = $_GET['to'];
 
-        $this->set('tag',$tagArray);
+                $sales = $this->RegisterSaleItem->find('all', array(
+                    'conditions' => $criteria
+                ));
+                
+                array_push($tagArray[$cat['MerchantProductCategory']['product_tag_id']]['products'][$cat['MerchantProductCategory']['product_id']], $sales);
+            }
+    
+            $this->set('tags',$tagArray);
+        }
     }
 
 /**
@@ -442,6 +453,7 @@ class ReportsController extends AppController {
         $user = $this->Auth->user();
         
         $this->loadModel("MerchantCustomerGroup");
+        $this->loadModel("MerchantCustomer");
         
         $outlets = $this->MerchantOutlet->find('all', array(
             'conditions' => array(
@@ -470,7 +482,75 @@ class ReportsController extends AppController {
         $this->set('customerGroups',$customerGroups);
         
         if(isset($_GET['from'])) {
+            $criteriaOutlet = array(
+                'MerchantOutlet.merchant_id' => $user['merchant_id']
+            );
+            if(!empty($_GET['outlet_id']))
+                $criteriaOutlet['MerchantOutlet.id'] = $_GET['outlet_id'];
+            $outletFilter = $this->MerchantOutlet->find('all', array(
+                'conditions' => $criteriaOutlet
+            ));
+            $outletFilter_ids = array();
+            foreach($outletFilter as $otf)
+                array_push($outletFilter_ids, $otf['MerchantOutlet']['id']);
+
+            $criteriaRegister = array(
+                'MerchantRegister.outlet_id' => $outletFilter_ids
+            );
+            if(!empty($_GET['register_id']))
+                $criteriaRegister['MerchantRegister.id'] = $_GET['register_id'];
+            $registerFilter = $this->MerchantRegister->find('all', array(
+                'conditions' => $criteriaRegister
+            ));
+            $registerFilter_ids = array();
+            foreach($registerFilter as $rgf)
+                array_push($registerFilter_ids, $rgf['MerchantRegister']['id']);
             
+            $customer_ids = array();
+            if(!empty($_GET['customer_group_id'])) {
+                $customers = $this->MerchantCustomer->find('all', array(
+                    'conditions' => array(
+                        'MerchantCustomer.customer_group_id' => $_GET['customer_group_id']
+                    )
+                ));
+                foreach($customers as $customer)
+                    array_push($customer_ids, $customer['MerchantCustomer']['id']);
+            }
+            
+            $this->RegisterSaleItem->bindModel(array(
+                'belongsTo' => array(
+                    'MerchantProduct' => array(
+                        'className' => 'MerchantProduct',
+                        'foreignKey' => 'product_id'
+                    )
+                )
+            ));
+
+            $this->RegisterSale->bindModel(array(
+                'hasMany' => array(
+                    'RegisterSaleItem' => array(
+                        'className' => 'RegisterSaleItem',
+                        'foreignKey' => 'sale_id'
+                    ),
+                    'RegisterSalePayment' => array(
+                        'className' => 'RegisterSalePayment',
+                        'foreignKey' => 'sale_id'
+                    )
+                )
+            ));
+            
+            $this->RegisterSale->recursive = 2;
+
+            $criteria = array(
+                'RegisterSale.register_id' => $registerFilter_ids
+            );
+            if(!empty($customer_ids))
+                $criteria['RegisterSale.customer_id'] = $customer_ids;
+            $sales = $this->RegisterSale->find('all', array(
+                'conditions' => $criteria
+            ));
+
+            $this->set('sales',$sales);
         }
     }
 

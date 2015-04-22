@@ -221,13 +221,18 @@ jQuery(document).ready(function() {
             confirmButton: "Add",
             confirm: function(button){
                 $.ajax({
-                    url: "/product/tag",
+                    url: "/product/tag.json",
                     type: "POST",
                     data: {
                         name: $("#tag_name").val()
+                    },
+                    success: function(result) {
+	                    if(result.success) {
+		                    location.reload();
+	                    } else {
+		                    alert(result.message);
+	                    }
                     }
-                }).done(function(){
-                    location.reload();
                 });
             },
             confirmButtonClass: "tag-add pull-right btn-success margin-left-10",

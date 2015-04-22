@@ -1040,9 +1040,33 @@ jQuery(document).ready(function() {
      *Transaction Control From Here
      **/
 
-     var total_discount = 0;
-     var total_cost = 0;
-
+    var total_discount = 0;
+    var total_cost = 0;
+    function clear_order() {
+        $(".customer-search-result").children().hide();
+        $("#customer-result-name").val('');
+        $("#customer-selected-id").val($("#customer-null").val());
+        $(".order-product").remove();
+        $(".order-discount").remove();
+    }
+    function print_receipt(payment_name, paying) {
+        $(".fade").hide();
+        $(".receipt-product-table").children("tbody").text('');
+        $(".order-product").each(function(){
+            $(".receipt-product-table").children("tbody").append('<tr><td class="receipt-product-qty">'+$(this).children(".added-qty").children("a").text()+'</td><td class="receipt-product-name">'+$(this).children(".added-product").text().split("$")[0]+'</td><td class="receipt-price pull-right">$'+$(this).children(".added-amount").text()+'</td></tr>');
+        });
+        $(".order-discount").each(function(){
+            $(".receipt-product-table").append('<tr><td class="receipt-product-qty"></td><td class="receipt-product-name">Discount</td><td class="receipt-price pull-right">- $'+$(this).find(".amount").text()+'</td></tr>'); 
+        });
+        $('<tr class="split_attr"><td>'+payment_name+'</td><td class="pull-right">$'+paying+'</td></tr>').insertBefore('.receipt_total');
+        $(".receipt-customer-name").text($("#customer-result-name").text());
+        $(".receipt-subtotal").text('$'+ $(".subTotal").text());
+        $(".receipt-tax").text('$'+ $(".gst").text());
+        $(".receipt-total").text('$'+ $(".toPay").text());
+        
+        $(".receipt-parent").show('blind');
+        $(".modal-backdrop").show();
+    }
     function save_line_order() {
         var sequence = 0;
         line_array = [];
@@ -1197,17 +1221,12 @@ jQuery(document).ready(function() {
     var payments = {};
     // Pay
     $(document).on("click",".payment_method",function(){
-        var payment_id = $(this).attr("payment-id");
+        payment_id = $(this).attr("payment-id");
         var payment_name = $(this).find("p").text();
         var payment_type_id = parseInt($(this).attr("payment-type-id"));
         var payment_type = $(this).attr("payment-type");
         var paying = parseFloat($("#set-pay-amount").val()).toFixed(2);
 
-        //Payment Method Identifier
-        if (payment_type !== "Cash") {
-            //Call Function Here
-        }
-        
         // case payment_type_id eq 5 or payment_type eq 'Integrated EFTPOS (DPS)'
         if (5 == payment_type_id || 'Integrated EFTPOS (DPS)' == payment_type) {
             var dpsClient = new DpsClient();
@@ -1221,34 +1240,18 @@ jQuery(document).ready(function() {
                 } else {
                 }
             });
+            
+            return;
         }
-        return;
 
         payments.push([payment_id, paying]);
 
         if(parseFloat(to_pay).toFixed(2) == parseFloat(paying).toFixed(2)){
             save_register_sale(payments);
 
-            $(".fade").hide();
-            $(".receipt-product-table").children("tbody").text('');
-            $(".order-product").each(function(){
-                $(".receipt-product-table").children("tbody").append('<tr><td class="receipt-product-qty">'+$(this).children(".added-qty").children("a").text()+'</td><td class="receipt-product-name">'+$(this).children(".added-product").text().split("$")[0]+'</td><td class="receipt-price pull-right">$'+$(this).children(".added-amount").text()+'</td></tr>');
-            });
-            $(".order-discount").each(function(){
-                $(".receipt-product-table").append('<tr><td class="receipt-product-qty"></td><td class="receipt-product-name">Discount</td><td class="receipt-price pull-right">- $'+$(this).find(".amount").text()+'</td></tr>'); 
-            });
-            $(".order-product").remove();
-            $(".order-discount").remove();
-            $(".receipt-parent").show('blind');
-            $(".modal-backdrop").show();
-            $('<tr class="split_attr"><td>'+payment_name+'</td><td class="pull-right">$'+paying+'</td></tr>').insertBefore('.receipt_total');
-            $(".receipt-customer-name").text($("#customer-result-name").text());
-            $(".receipt-subtotal").text('$'+ $(".subTotal").text());
-            $(".receipt-tax").text('$'+ $(".gst").text());
-            $(".receipt-total").text('$'+ $(".toPay").text());
-            $(".customer-search-result").children().hide();
-            $("#customer-result-name").val('');
-            $("#customer-selected-id").val($("#customer-null").val());
+            print_receipt(payment_name, paying);
+
+            clear_order();
         } else {
             to_pay = to_pay - paying;
             $("#set-pay-amount").val(to_pay.toFixed(2));

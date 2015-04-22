@@ -127,6 +127,9 @@
                   <dd>
                     <input type="checkbox" name="merchant[allow_cashier_discount]" id="merchant_allow_cashier_discount" <?php if($merchant['Merchant']['allow_cashier_discount'] == 1){echo "checked";}?>>
                     Allow Cashires to apply discounts and perform returns on sales</dd>
+                  <dt>Use scale</dt>
+                  <dd>
+                    <input type="checkbox" name="merchant[use_scale]" id="merchant_use_scale"></dd>
                 </dl>
               </div>
           </div>

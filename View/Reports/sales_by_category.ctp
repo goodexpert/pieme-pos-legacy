@@ -64,13 +64,13 @@
             </div>
                 
             <!-- FILTER -->
-            <div class="col-md-12 col-xs-12 col-sm-12 line-box filter-box">
+            <form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box" action="/reports/sales/sales_by_category" method="get">
                 <div class="col-md-4 col-xs-6 col-sm-6">
                     <dl>
                         <dt>Date from</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="date_from">
+                            <input type="text" id="date_from" name="from" value="<?php if(isset($_GET['from'])){echo $_GET['from'];}?>">
                         </dd>
                     </dl> 
                 </div>
@@ -79,14 +79,14 @@
                         <dt>Date to</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="date_to">
+                            <input type="text" id="date_to" name="to" value="<?php if(isset($_GET['to'])){echo $_GET['to'];}?>">
                         </dd>
                     </dl>
                  </div>
                  <div class="col-md-12 col-xs-12 col-sm-12">
-                     <button class="btn btn-primary filter pull-right">Update</button>
+                     <button type="submit" class="btn btn-primary filter pull-right">Update</button>
                  </div>
-            </div>
+            </form>
 
             <table class="table-bordered dataTable table-price">
                 <colgroup>
@@ -110,15 +110,38 @@
                 </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>General</td>
-                        <td class="text-right">64.35</td>
-                        <td class="text-right">64.35</td>
-                        <td class="text-right">64.35</td>
-                        <td class="text-right">64.35</td>
-                        <td class="text-right">64.35</td>
-                        <td class="text-right">64.3%</td>
-                    </tr>
+                	<?php
+                	if(!empty($tags)) {
+                    	$salesIncl = 0;
+                    	$tax = 0;
+                    	$cost = 0;
+                    	foreach($tags as $tag) {
+    	                	if(!empty($tag['products'])) {
+    		                	foreach($tag['products'] as $products) {
+    			                	foreach($products as $product) {
+    				                	foreach($product as $sale) {
+    				                		$salesIncl += $sale['RegisterSaleItem']['price_include_tax'];
+    				                		$tax += $sale['RegisterSaleItem']['tax'];
+    				                		$cost += $sale['RegisterSaleItem']['supply_price'];
+    				                	}
+    			                	}
+    		                	}
+    	                	?>
+    	                    <tr>
+    	                        <td><?php echo $tag['name'];?></td>
+    	                        <td class="text-right"><?php echo count($tag['products']);?></td>
+    	                        <td class="text-right"><?php echo number_format($salesIncl,2,'.',',');?></td>
+    	                        <td class="text-right"><?php echo number_format($tax,2,'.',',');?></td>
+    	                        <td class="text-right"><?php echo number_format($cost,2,'.',',');?></td>
+    	                        <td class="text-right"><?php echo number_format($salesIncl - $tax - $cost,2,'.',',');?></td>
+    	                        <td class="text-right"><?php if($salesIncl > 0){echo number_format(($salesIncl - $tax - $cost)/$salesIncl * 100,2,'.',',');} else {echo "0%";}?></td>
+    	                    </tr>
+                        <?php }
+                        $salesIncl = 0;
+                        $tax = 0;
+                        $cost = 0;
+                        }
+                    } ?>
                 </tbody>
             </table>
         </div>
@@ -225,7 +248,7 @@ jQuery(document).ready(function() {
     QuickSidebar.init(); // init quick sidebar
     Index.init();
     
-    $("#date_from").datepicker();
-    $("#date_to").datepicker();
+    $("#date_from").datepicker({ dateFormat: 'yy-mm-dd' });
+    $("#date_to").datepicker({ dateFormat: 'yy-mm-dd' });
 });
 </script>

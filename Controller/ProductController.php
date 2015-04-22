@@ -886,6 +886,26 @@ class ProductController extends AppController {
     }
 
     public function tag() {
+        $user = $this->Auth->user();
+    
+        if($this->request->is('post') || $this->request->is('ajax')) {
+            $result = array(
+                'success' => false
+            );
+            try {
+                $data = $this->request->data;
+                $data['merchant_id'] = $user['merchant_id'];
+                $this->MerchantProductTag->create();
+                $this->MerchantProductTag->save($data);
+                
+                $result['success'] = true;
+            } catch  (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+            $this->serialize($result);
+            
+            return;
+        }
     
         $this->MerchantProductTag->bindModel(array(
             'hasMany' => array(
@@ -897,7 +917,7 @@ class ProductController extends AppController {
         ));
         $tags = $this->MerchantProductTag->find('all', array(
             'conditions' => array(
-                'MerchantProductTag.merchant_id' => $this->Auth->user()['merchant_id']
+                'MerchantProductTag.merchant_id' => $user['merchant_id']
             ),
         ));
         $this->set('tags',$tags);

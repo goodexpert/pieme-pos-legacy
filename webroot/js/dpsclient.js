@@ -61,7 +61,7 @@ DpsClient.prototype.connect = function (callback) {
 
                 if (dpsReady) {
                 } else {
-
+	                alert("ERROR: "+response.message.description);
                 }
 
                 if (callback) {
@@ -128,6 +128,8 @@ DpsClient.prototype.payment = function (txnRef, amount, callback) {
                     presssButton(self.socket, 'No');
                 }
             } else if ('ClearDisplay' == messageType) {
+            	$(".eftpos_status").hide();
+            	$(".modal-backdrop").hide();
             } else if ('Transaction' == messageType) {
                 var responsetext = response.message.responsetext;
                 var txndatetime = response.message.txndatetime;
@@ -138,15 +140,12 @@ DpsClient.prototype.payment = function (txnRef, amount, callback) {
                 if("INCORRECT PIN" == responsetext) {
                 	$(".eftpos_status").hide();
 	                $(".pay").show();
-                } else if("ACCEPTED" == responsetext) {
-	                $(".modal-backdrop").hide();
-	                $(".eftpos_status").hide();
-	            }
+                }
+
                 if (callback) {
                     callback(response.message, null);
                 }
             }
-
             console.log(response.message);
             console.log('======================================================================');
         }

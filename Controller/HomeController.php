@@ -330,16 +330,16 @@ class HomeController extends AppController {
                 $this->RegisterSale->save($data);
 
                 $paymentArray = json_decode($data['amount']);
-
+                $seq = 0;
                 foreach($paymentArray as $pay) {
-
                     $this->RegisterSalePayment->create();
                     $payment['sale_id'] = $this->RegisterSale->id;
                     $payment['merchant_payment_type_id'] = $pay[0];
                     $payment['amount'] = $pay[1];
                     $payment['payment_date'] = date('Y-m-d H:i:s');
+                    $payment['sequence'] = $seq;
                     $this->RegisterSalePayment->save($payment);
-
+                    $seq++;
                 }
 
                 $generalQuantity = 0;

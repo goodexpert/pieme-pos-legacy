@@ -126,29 +126,41 @@
                      <button type="submit" class="btn btn-primary filter pull-right">Update</button>
                  </div>
             </form>
-                    <div class="col-md-3 col-sm-3 col-xs-3 col-omega">
-                        <table class="table-bordered dataTable">
-                            <colgroup>
-                                <col width="60%">
-                                <col width="40%">
-                            </colgroup>
-                            <thead>
-                            <tr>
-                                <th class="first-child">Date</th>
-                                <th class="no-radius">Receipt</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="text-limit">March 25, 2015 6:12 PM</td>
-                                    <td>0</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">&nbsp;</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+            <div class="col-md-3 col-sm-3 col-xs-3 col-omega">
+                <table class="table-bordered dataTable">
+                    <colgroup>
+                        <col width="60%">
+                        <col width="40%">
+                    </colgroup>
+                    <thead>
+                    <tr>
+                        <th class="first-child">Date</th>
+                        <th class="no-radius">Receipt</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    	<?php if(!empty($sales)) {
+	                    	foreach($sales as $sale) { ?>
+		                        <tr>
+		                            <td class="text-limit"><?php echo $sale['RegisterSale']['sale_date'];?></td>
+		                            <td><?php echo $sale['RegisterSale']['receipt_number'];?></td>
+		                        </tr>
+		                        <?php $emptyRow = 0;
+		                        if(count($sale['RegisterSaleItem']) > count($sale['RegisterSalePayment'])) {
+			                        $emptyRow = count($sale['RegisterSaleItem']);
+		                        } else {
+			                        $emptyRow = count($sale['RegisterSalePayment']);
+		                        }
+		                        for($i = 0;$i <= $emptyRow - 1;$i++) { ?>
+		                        <tr>
+		                            <td colspan="2" style="border: 0">&nbsp;</td>
+		                        </tr>
+		                    <?php }
+		                    }
+                        } ?>
+                    </tbody>
+                </table>
+            </div>
         <div class="col-md-9 col-sm-9 col-xs-9 col-alpha">
             <div class="scroll-table">
                 <table class="table-bordered dataTable">
@@ -175,23 +187,55 @@
                         </tr>
                         </thead>
                         <tbody>
-                            <tr class="table-color-gr">
-                                <td>takapuna #1</td>
-                                <td>seongwuk.park@emcormedia.co.nz</td>
-                                <td> </td>
-                                <td class="discrete tiny"></td>
-                                <td class="strong">Total sale</td>
-                                <td class="strong currency">9.90</td>
-                                <td class="strong">Total paid</td>
-                                <td class="strong currency">9.90</td>
-                            </tr>
-                            <tr>
-                                <td colspan="4"> </td>
-                                <td class="strong">1 Coffee</td>
-                                <td class="strong currency">9.90</td>
-                                <td class="strong">1 Coffee</td>
-                                <td class="strong currency">9.90</td>
-                            </tr>
+                        	<?php if(!empty($sales)) {
+	                        	foreach($sales as $sale) { ?>
+		                            <tr class="table-color-gr">
+		                                <td>Register Name</td>
+		                                <td>User Name</td>
+		                                <td>Customer Name</td>
+		                                <td class="discrete tiny"><?php echo $sale['RegisterSale']['note'];?></td>
+		                                <td class="strong">Total sale</td>
+		                                <td class="strong currency"><?php echo number_format($sale['RegisterSale']['total_price_incl_tax'],2,'.',',');?></td>
+		                                <td class="strong">Total paid</td>
+		                                <td class="strong currency">
+		                                	<?php $totalPayment = 0;
+		                                	foreach($sale['RegisterSalePayment'] as $payment){
+		                                		$totalPayment += $payment['amount'];
+		                                	}
+		                                	echo number_format($totalPayment,2,'.',',');?>
+		                                </td>
+		                            </tr>
+		                            <?php
+		                            if(count($sale['RegisterSaleItem']) > count($sale['RegisterSalePayment'])) {
+				                        $emptyRow = count($sale['RegisterSaleItem']);
+			                        } else {
+				                        $emptyRow = count($sale['RegisterSalePayment']);
+			                        }
+		                            for($i = 0;$i <= $emptyRow - 1;$i++) { ?>
+		                            <tr>
+		                                <td colspan="4" style="border: 0">&nbsp;</td>
+		                                <?php if(!empty($sale['RegisterSaleItem'][$i])) { ?>
+			                                <td class="strong"><?php echo $sale['RegisterSaleItem'][$i]['MerchantProduct']['name'];?></td>
+			                                <td class="strong currency">
+			                                	<?php echo number_format($sale['RegisterSaleItem'][$i]['MerchantProduct']['price_include_tax'],2,'.',',');?>
+			                                </td>
+		                                <?php } else { ?>
+			                                <td style="border: 0; border-left:1px solid #ddd;">&nbsp;</td>
+			                                <td style="border: 0">&nbsp;</td>
+		                                <?php }
+		                                if(!empty($sale['RegisterSalePayment'][$i])) { ?>
+			                                <td class="strong"><?php echo $sale['RegisterSalePayment'][$i]['MerchantPaymentType']['name'];?></td>
+			                                <td class="strong currency">
+			                                	<?php echo number_format($sale['RegisterSalePayment'][$i]['amount'],2,'.',',');?>
+			                                </td>
+		                                <?php } else { ?>
+		                                	<td style="border: 0; border-left:1px solid #ddd;">&nbsp;</td>
+			                                <td style="border: 0">&nbsp;</td>
+		                                <?php } ?>
+		                            </tr>
+		                            <?php }
+	                            }
+	                        } ?>
                         </tbody>
                     </table>
                 </div>
