@@ -37,7 +37,6 @@
         
     </div>
 
-
   <div id="notify"></div>
   <!-- BEGIN SIDEBAR -->
   <div class="page-sidebar-wrapper"> 
@@ -83,7 +82,25 @@
           <div class="form-horizontal">
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title">Detail</div>
             <!-- START col-md-12-->
-            <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega"> 
+            <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+              <div class="col-md-6">
+                  <dl class="form-group">
+                    <dt class="col-md-3">Product name</dt>
+                    <dd class="col-md-9">
+                      <input type="text" class="form-control required" id="product_name" value="<?=$product['MerchantProduct']['name'];?>">
+                      <span class="help-block">
+                      <input type="checkbox" id="availability" value="1" <?php if($product['MerchantProduct']['is_active'] == 1){echo "checked";}?>>
+                      This product can be sold </span> </dd>
+                  </dl>
+                </div>
+                <div class="col-md-6">
+                  <dl class="form-group">
+                    <dt class="col-md-3">Product handle</dt>
+                    <dd class="col-md-9">
+                      <input type="text" class="form-control required" id="product_handle" value="<?=$product['MerchantProduct']['handle'];?>">
+                      <span class="help-block"> A unique identifier for this product </span> </dd>
+                  </dl>
+                </div> 
               <!-- START col-md-12-->
               <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega"> 
                 <!-- START col-md-6-->
@@ -156,24 +173,6 @@
               <!-- START col-md-12-->
               <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-top-20"> 
                 <!-- START col-md-6-->
-                <div class="col-md-6">
-                  <dl class="form-group">
-                    <dt class="col-md-3">Product name</dt>
-                    <dd class="col-md-9">
-                      <input type="text" class="form-control required" id="product_name" value="<?=$product['MerchantProduct']['name'];?>">
-                      <span class="help-block">
-                      <input type="checkbox" id="availability" value="1" <?php if($product['MerchantProduct']['is_active'] == 1){echo "checked";}?>>
-                      This product can be sold </span> </dd>
-                  </dl>
-                </div>
-                <div class="col-md-6">
-                  <dl class="form-group">
-                    <dt class="col-md-3">Product handle</dt>
-                    <dd class="col-md-9">
-                      <input type="text" class="form-control required" id="product_handle" value="<?=$product['MerchantProduct']['handle'];?>">
-                      <span class="help-block"> A unique identifier for this product </span> </dd>
-                  </dl>
-                </div>
                 <!-- END col-md-6-->
                 <div class="col-md-12 col-xs-12 col-sm-12">
                   <dl class="form-group">
@@ -422,13 +421,13 @@
                         <div class="info"><?php echo $outlet['MerchantOutlet']['name'];?></div>
                       </div>
                       <div class="col-md-2 col-xs-4 col-sm-4">
-                        <input type="text" class="form-control stock_count" value="<?php if(!empty($outlet['MerchantProductInventory'])){echo $outlet['MerchantProductInventory']['count'];}?>">
+                        <input type="text" class="form-control stock_count" value="<?php if(!empty($outlet['MerchantProductInventory'])){echo $outlet['MerchantProductInventory']['count'];}?>" placeholder="0">
                       </div>
                       <div class="col-md-3 col-xs-4 col-sm-4">
-                        <input type="text" class="form-control stock_reorder_point" value="<?php if(!empty($outlet['MerchantProductInventory'])){echo $outlet['MerchantProductInventory']['reorder_point'];}?>">
+                        <input type="text" class="form-control stock_reorder_point" value="<?php if(!empty($outlet['MerchantProductInventory'])){echo $outlet['MerchantProductInventory']['reorder_point'];}?>" placeholder="0">
                       </div>
                       <div class="col-md-3 col-xs-4 col-sm-4">
-                        <input type="text" class="form-control stock_reorder_amount" value="<?php if(!empty($outlet['MerchantProductInventory'])){echo $outlet['MerchantProductInventory']['restock_level'];}?>">
+                        <input type="text" class="form-control stock_reorder_amount" value="<?php if(!empty($outlet['MerchantProductInventory'])){echo $outlet['MerchantProductInventory']['restock_level'];}?>" placeholder="0">
                       </div>
                   </div>
                   <?php } ?>
@@ -457,16 +456,15 @@
                   <div class="col-md-2 col-xs-2 col-sm-2">
                     <h5><strong>Quantity:</strong></h5>
                     <div class="input-group">
-                        <input type="number" id="composite_qty">
+                        <input type="number" id="composite_qty" placeholder="1">
                         <span class="input-group-btn">
                             <button type="button" id="composite_attr_add" class="btn btn-default" style="height:29px;padding-top:4px;">Add</button>
                         </span>
                     </div>
                   </div>
                   <div class="dashed-line-gr"></div>
-                  
-                  <?php foreach($composites as $composite) { ?>
                   <div id="composite_added_list" class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
+                  <?php foreach($composites as $composite) { ?>
                         <div class="col-md-12 col-sm-12 col-xs-12 composite-attr" data-id="<?php echo $composite['MerchantProductComposite']['product_id'];?>">
                             <div class="col-md-4 col-sm-4 col-xs-4"><?php echo $composite['MerchantProduct']['name'];?></div>
                             <div class="col-md-2 col-xs-2 col-sm-2 col-alpha"><input type="number" class="form-control composite_quantity" value="<?php echo $composite['MerchantProductComposite']['quantity'];?>">
@@ -475,8 +473,8 @@
                                 </button>
                             </div>
                         </div>
-                  </div>
                   <?php } ?>
+                  </div>
                   
                 </div>
               </div>
@@ -975,11 +973,16 @@ $(document).ready(function(){
     });
     
     $("#composite_attr_add").click(function(){
-        if($("#composite_search").val() !== ''){
-       $("#composite_added_list").prepend('<div class="col-md-12 col-sm-12 col-xs-12 composite-attr" data-id="'+$("#selected_composite_id").val()+'"><div class="col-md-4 col-sm-4 col-xs-4">'+$("#composite_search").val()+'</div><div class="col-md-2 col-xs-2 col-sm-2 col-alpha"><input type="number" class="form-control composite_quantity" value="'+$("#composite_qty").val()+'"><button type="button" class="btn remove remove_composite_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button></div></div>');
-       }
-       $("#composite_search").val('');
-       $("#composite_qty").val('');
+        if($("#composite_qty").val() > 0){
+            var quantity = $("#composite_qty").val();
+        } else {
+            var quantity = 1;
+        }
+        if($("#composite_search").val().length > 0){
+            $("#composite_added_list").prepend('<div class="col-md-12 col-sm-12 col-xs-12 composite-attr" data-id="'+$("#selected_composite_id").val()+'"><div class="col-md-4 col-sm-4 col-xs-4">'+$("#composite_search").val()+'</div><div class="col-md-2 col-xs-2 col-sm-2 col-alpha"><input type="number" class="form-control composite_quantity" value="'+quantity+'"><button type="button" class="btn remove remove_composite_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button></div></div>');
+            $("#composite_search").val('');
+            $("#composite_qty").val('');
+        }
     });
 
 });

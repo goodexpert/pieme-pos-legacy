@@ -70,7 +70,7 @@
                         <dt>Date from</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="date_from" name="from">
+                            <input type="text" id="date_from" name="from" value="<?php if(isset($_GET['from'])){echo $_GET['from'];}?>")>
                         </dd>
                     </dl> 
                 </div>
@@ -79,7 +79,7 @@
                         <dt>Date to</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="date_to" name="to">
+                            <input type="text" id="date_to" name="to" value="<?php if(isset($_GET['to'])){echo $_GET['to'];}?>">
                         </dd>
                     </dl>
                  </div>
@@ -90,7 +90,7 @@
                             <select name="register_id">
                             	<option value=""></option>
                             	<?php foreach($registers as $register) { ?>
-                            		<option value="<?php echo $register['MerchantRegister']['id'];?>"><?php echo $register['MerchantRegister']['name'];?></option>
+                            		<option value="<?php echo $register['MerchantRegister']['id'];?>" <?php if(isset($_GET['register_id']) && $_GET['register_id'] == $register['MerchantRegister']['id']){echo "selected";}?>><?php echo $register['MerchantRegister']['name'];?></option>
                             	<?php } ?>
                             </select>
                         </dd>
@@ -103,7 +103,7 @@
                             <select name="outlet_id">
                             	<option value=""></option>
                             	<?php foreach($outlets as $outlet) { ?>
-                            		<option value="<?php echo $outlet['MerchantOutlet']['id'];?>"><?php echo $outlet['MerchantOutlet']['name'];?></option>
+                            		<option value="<?php echo $outlet['MerchantOutlet']['id'];?>" <?php if(isset($_GET['outlet_id']) && $_GET['outlet_id'] == $outlet['MerchantOutlet']['id']){echo "selected";}?>><?php echo $outlet['MerchantOutlet']['name'];?></option>
                             	<?php } ?>
                             </select>
                         </dd>
@@ -116,7 +116,7 @@
                             <select name="customer_group_id">
                             	<option value=""></option>
                             	<?php foreach($customerGroups as $customerGroup) { ?>
-                            		<option value="<?php echo $customerGroup['MerchantCustomerGroup']['id'];?>"><?php echo $customerGroup['MerchantCustomerGroup']['name'];?></option>
+                            		<option value="<?php echo $customerGroup['MerchantCustomerGroup']['id'];?>" <?php if(isset($_GET['customer_group_id']) && $_GET['customer_group_id'] == $customerGroup['MerchantCustomerGroup']['id']){echo "selected";}?>><?php echo $customerGroup['MerchantCustomerGroup']['name'];?></option>
                             	<?php } ?>
                             </select>
                         </dd>
@@ -194,9 +194,9 @@
                         	<?php if(!empty($sales)) {
 	                        	foreach($sales as $sale) { ?>
 		                            <tr class="table-color-gr">
-		                                <td>Register Name</td>
-		                                <td>User Name</td>
-		                                <td>Customer Name</td>
+		                                <td><?php echo $sale['MerchantRegister']['name'];?></td>
+		                                <td><?php echo $sale['MerchantUser']['display_name'];?></td>
+		                                <td><?php echo $sale['MerchantCustomer']['name'];?></td>
 		                                <td class="discrete tiny"><?php echo $sale['RegisterSale']['note'];?></td>
 		                                <td class="strong">Total sale</td>
 		                                <td class="strong currency"><?php echo number_format($sale['RegisterSale']['total_price_incl_tax'],2,'.',',');?></td>
@@ -352,6 +352,7 @@ jQuery(document).ready(function() {
     QuickSidebar.init(); // init quick sidebar
     Index.init();
     
-    $("#date_from").datepicker();
+    $("#date_from").datepicker({ dateFormat: 'yy-mm-dd' });
+    $("#date_to").datepicker({ dateFormat: 'yy-mm-dd' });
 });
 </script>

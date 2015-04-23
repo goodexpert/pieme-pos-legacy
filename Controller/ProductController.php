@@ -63,6 +63,25 @@ class ProductController extends AppController {
                                 'MerchantProduct.sku LIKE' => "%".$filtering_option_value."%",
                                 'MerchantProduct.handle LIKE' => "%".$filtering_option_value."%"
                             );
+                        } else if($filtering_option_name == 'tag') {
+                            $product_ids = array();
+                            foreach($filtering_option_value as $tagF) {
+                                $tag_id = $this->MerchantProductTag->find('all', array(
+                                    'conditions' => array(
+                                        'MerchantProductTag.merchant_id' => $user['merchant_id'],
+                                        'MerchantProductTag.name' => $tagF
+                                    )
+                                ))[0]['MerchantProductTag']['id'];
+                                $categ = $this->MerchantProductCategory->find('all', array(
+                                    'conditions' => array(
+                                        'MerchantProductCategory.product_tag_id' => $tag_id
+                                    )  
+                                ));
+                                foreach($categ as $ca) {
+                                    array_push($product_ids, $ca['MerchantProductCategory']['product_id']);
+                                }
+                            }
+                            $filter['MerchantProduct.id'] = $product_ids;
                         } else {
                             $filter['MerchantProduct.'.$filtering_option_name] = $filtering_option_value;
                         }
@@ -132,11 +151,18 @@ class ProductController extends AppController {
                 'MerchantProductBrand.merchant_id' => $user['merchant_id']
             ),
         ));
+        
+        $tags = $this->MerchantProductTag->find('all', array(
+            'conditions' => array(
+                'MerchantProductTag.merchant_id' => $user['merchant_id']
+            )
+        ));
 
         $this->set('items', $items);
         $this->set('suppliers',$suppliers);
         $this->set('types', $types);
         $this->set('brands', $brands);
+        $this->set('tags', $tags);
     }
 
     public function add() {
@@ -928,7 +954,7 @@ class ProductController extends AppController {
     
         $this->MerchantProductTag->bindModel(array(
             'hasMany' => array(
-                'MerchantProudctCategory' => array(
+                'MerchantProductCategory' => array(
                     'className' => 'MerchantProductCategory',
                     'foreignKey' => 'product_tag_id'
                 )

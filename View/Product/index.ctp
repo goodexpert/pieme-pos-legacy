@@ -1,3 +1,11 @@
+<style>
+.added_tag {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #eee;
+    padding: 5px 10px;
+}
+</style>
 <link href="/css/dataTable.css" rel="stylesheet" type="text/css">
 
 <div class="clearfix">
@@ -94,7 +102,13 @@
                         <dd><input type="text" name="name" value="<?php if(isset($_GET['name'])){echo $_GET['name'];}?>"></dd>
                         <dt>Tag</dt>
                         <dd>
-                            <input type="text">
+                            <input type="search" list="tag" id="tag_search" class="col-md-8" autocomplete="off">
+                            <datalist id="tag">
+                                <?php foreach($tags as $tag) { ?>
+                                <option value="<?php echo $tag['MerchantProductTag']['name'];?>">
+                                <?php } ?>
+                            </datalist>
+                            <button type="button" class="col-md-4" id="add_tag">ADD</button>
                         </dd>
                     </dl> 
                 </div>
@@ -126,6 +140,16 @@
                             <?php } ?>
                         </select></dd>
                     </dl>
+                 </div>
+                 <div class="col-md-12 col-xs-12 col-sm-12 tag_list" style="margin-top:15px;">
+                     <?php if(!empty($_GET['tag'])) {
+                         foreach($_GET['tag'] as $key => $tag) { ?>
+                             <div class="tag_wrap" sqn="<?php echo $key;?>">
+                                 <div class="added_tag" style="width:8%; text-align:center; float:left"><?php echo $tag;?> <span class="remove_tag clickable"><i class="glyphicon glyphicon-remove"></i></span></div>
+                                 <input type="hidden" name="tag[<?php echo $key;?>]" value="<?php echo $tag;?>">
+                             </div>
+                         <?php }
+                     } ?>
                  </div>
                  <div class="col-md-12 col-xs-12 col-sm-12">
                      <button class="btn btn-primary filter pull-right">Update</button>
@@ -464,6 +488,26 @@ $(document).ready(function () {
             }
             reader.readAsText(e.target.files.item(0));
         }
+    });
+    var i = $(".tag_wrap").length;
+    $("#add_tag").click(function() {
+        var tag_name = $("#tag_search").val();
+        var tag_available = false;
+        $("datalist option").each(function(){
+            if($(this).val() == tag_name) {
+                tag_available = true;
+            }
+        });
+        if(tag_available) {
+            $(".tag_list").append('<div class="tag_wrap" sqn="'+i+'"></div>');
+            $(".tag_wrap[sqn="+i+"]").append('<div class="added_tag" style="width:8%; text-align:center; float:left">'+tag_name+' <span class="remove_tag clickable"><i class="glyphicon glyphicon-remove"></i></span></div>');
+            $(".tag_wrap[sqn="+i+"]").append('<input type="hidden" name="tag['+i+']" value="'+tag_name+'">');
+            i++;
+        }
+    });
+    $(document).on("click",".remove_tag",function() {
+        $(this).parents(".tag_wrap").remove();
+        i--;
     });
 });
 </script>

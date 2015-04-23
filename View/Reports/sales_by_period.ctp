@@ -56,7 +56,7 @@
         
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                 <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
-                    Sales Totals by Month
+                    Sales Totals by Period
                 </h2>
                 <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
                     <a href="#" id="export"><button class="btn btn-white pull-right">
@@ -91,17 +91,9 @@
                         <dd>
                             <select name="period">
                                 <option value="1">1 Period</option>
-                                <option value="2">2 Periods</option>
-                                <option value="3">3 Periods</option>
-                                <option value="4">4 Periods</option>
-                                <option value="5">5 Periods</option>
-                                <option value="6">6 Periods</option>
-                                <option value="7">7 Periods</option>
-                                <option value="8">8 Periods</option>
-                                <option value="9">9 Periods</option>
-                                <option value="10">10 Periods</option>
-                                <option value="11">11 Periods</option>
-                                <option value="12">12 Periods</option>
+                                <?php for($i = 0;$i <= 12;$i++) { ?>
+                                	<option value="<?php echo $i;?>" <?php if(isset($_GET['period']) && $_GET['period'] == $i){echo "selected";}?>><?php echo $i;?> Periods</option>
+                                <?php } ?>
                             </select>
                         </dd>
                     </dl>

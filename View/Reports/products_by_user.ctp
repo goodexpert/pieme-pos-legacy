@@ -1,3 +1,15 @@
+<style>
+.added_tag {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #eee;
+    padding: 5px 10px;
+}
+.user_row {
+    background: #eee;
+}
+</style>
+
 <div class="clearfix">
 </div>
 <!-- BEGIN CONTAINER -->
@@ -54,7 +66,7 @@
         <div class="page-content">
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                 <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
-                    Product Sales by User
+                    Products by User
                 </h2>
                 <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
                     <a href="#" id="export"><button class="btn btn-white pull-right">
@@ -64,13 +76,13 @@
             </div>
                 
             <!-- FILTER -->
-            <div class="col-md-12 col-xs-12 col-sm-12 line-box filter-box">
+            <form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box" action="/reports/sales/products_by_user" method="get">
                 <div class="col-md-4 col-xs-6 col-sm-6">
                     <dl>
                         <dt>Date from</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="date_from">
+                            <input type="text" id="date_from" name="from" value="<?php if(isset($_GET['from'])){echo $_GET['from'];}?>">
                         </dd>
                     </dl> 
                 </div>
@@ -79,7 +91,7 @@
                         <dt>Date to</dt> 
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
-                            <input type="text" id="date_to">
+                            <input type="text" id="date_to" name="to"  value="<?php if(isset($_GET['to'])){echo $_GET['to'];}?>">
                         </dd>
                     </dl>
                  </div>
@@ -98,8 +110,11 @@
                     <dl>
                         <dt>Outlet</dt> 
                         <dd>
-                            <select>
-                                <option value="0"></option>
+                            <select name="outlet_id">
+                                <option value=""></option>
+                                <?php foreach($outlets as $outlet) { ?>
+                                    <option value="<?php echo $outlet['MerchantOutlet']['id'];?>" <?php if(isset($_GET['outlet_id']) && $_GET['outlet_id'] == $outlet['MerchantOutlet']['id']){echo "selected";}?>><?php echo $outlet['MerchantOutlet']['name'];?></option>
+                                <?php } ?>
                             </select>
                         </dd>
                     </dl> 
@@ -108,8 +123,11 @@
                     <dl>
                         <dt>Register</dt> 
                         <dd>
-                            <select>
-                                <option value="0"></option>
+                            <select name="register_id">
+                                <option value=""></option>
+                                <?php foreach($registers as $register) { ?>
+                                    <option value="<?php echo $register['MerchantRegister']['id'];?>" <?php if(isset($_GET['register_id']) && $_GET['register_id'] == $register['MerchantRegister']['id']){echo "selected";}?>><?php echo $register['MerchantRegister']['name'];?></option>
+                                <?php } ?>
                             </select>
                         </dd>
                     </dl>
@@ -118,8 +136,11 @@
                     <dl>
                         <dt>User</dt>
                         <dd>
-                            <select>
-                                <option value="0"></option>
+                            <select name="user_id">
+                                <option value=""></option>
+                                <?php foreach($users as $user) { ?>
+                                    <option value="<?php echo $user['MerchantUser']['id'];?>" <?php if(isset($_GET['user_id']) && $_GET['user_id'] == $user['MerchantUser']['id']){echo "selected";}?>><?php echo $user['MerchantUser']['display_name'];?></option>
+                                <?php } ?>
                             </select>
                         </dd>
                     </dl>
@@ -128,8 +149,11 @@
                     <dl>
                         <dt>Product type</dt> 
                         <dd>
-                            <select>
-                                <option value="0"></option>
+                            <select name="product_type_id">
+                                <option value=""></option>
+                                <?php foreach($types as $type) { ?>
+                                    <option value="<?php echo $type['MerchantProductType']['id'];?>" <?php if(isset($_GET['product_type_id']) && $_GET['product_type_id'] == $type['MerchantProductType']['id']){echo "selected";}?>><?php echo $type['MerchantProductType']['name'];?></option>
+                                <?php } ?>
                             </select>
                         </dd>
                     </dl> 
@@ -138,8 +162,11 @@
                     <dl>
                         <dt>Supplier</dt> 
                         <dd>
-                            <select>
-                                <option value="0"></option>
+                            <select name="supplier_id">
+                                <option value=""></option>
+                                <?php foreach($suppliers as $supplier) { ?>
+                                    <option value="<?php echo $supplier['MerchantSupplier']['id'];?>" <?php if(isset($_GET['supplier_id']) && $_GET['supplier_id'] == $supplier['MerchantSupplier']['id']){echo "selected";}?>><?php echo $supplier['MerchantSupplier']['name'];?></option>
+                                <?php } ?>
                             </select>
                         </dd>
                     </dl>
@@ -148,8 +175,11 @@
                     <dl>
                         <dt>Brand</dt>
                         <dd>
-                            <select>
-                                <option value="0"></option>
+                            <select name="product_brand_id">
+                                <option value=""></option>
+                                <?php foreach($brands as $brand) { ?>
+                                    <option value="<?php echo $brand['MerchantProductBrand']['id'];?>" <?php if(isset($_GET['product_brand_id']) && $_GET['product_brand_id'] == $brand['MerchantProductBrand']['id']){echo "selected";}?>><?php echo $brand['MerchantProductBrand']['name'];?></option>
+                                <?php } ?>
                             </select>
                         </dd>
                     </dl>
@@ -158,8 +188,11 @@
                     <dl>
                         <dt>Customer group</dt> 
                         <dd>
-                            <select>
-                                <option value="0"></option>
+                            <select name="customer_group_id">
+                                <option value=""></option>
+                                <?php foreach($groups as $group) { ?>
+                                    <option value="<?php echo $group['MerchantCustomerGroup']['id'];?>" <?php if(isset($_GET['customer_group_id']) && $_GET['customer_group_id'] == $group['MerchantCustomerGroup']['id']){echo "selected";}?>><?php echo $group['MerchantCustomerGroup']['name'];?></option>
+                                <?php } ?>
                             </select>
                         </dd>
                     </dl> 
@@ -168,19 +201,60 @@
                     <dl>
                         <dt>Tag</dt> 
                         <dd>
-                            <input type="text">
+                            <input type="search" list="tag" id="tag_search" class="col-md-8" autocomplete="off">
+                            <datalist id="tag">
+                                <?php foreach($tags as $tag) { ?>
+                                <option value="<?php echo $tag['MerchantProductTag']['name'];?>">
+                                <?php } ?>
+                            </datalist>
+                            <button type="button" class="col-md-4" id="add_tag">ADD</button>
                         </dd>
                     </dl>
                  </div>
+                 <div class="col-md-12 col-xs-12 col-sm-12 tag_list" style="margin-top:15px;">
+                     <?php if(!empty($_GET['tag'])) {
+                         foreach($_GET['tag'] as $key => $tag) { ?>
+                             <div class="tag_wrap" sqn="<?php echo $key;?>">
+                                 <div class="added_tag" style="width:8%; text-align:center; float:left"><?php echo $tag;?> <span class="remove_tag clickable"><i class="glyphicon glyphicon-remove"></i></span></div>
+                                 <input type="hidden" name="tag[<?php echo $key;?>]" value="<?php echo $tag;?>">
+                             </div>
+                         <?php }
+                     } ?>
+                 </div>
                  <div class="col-md-12 col-xs-12 col-sm-12">
-                     <button class="btn btn-primary filter pull-right">Update</button>
-                </div>
-            </div>
+                     <button type="submit" class="btn btn-primary filter pull-right">Update</button>
+                 </div>
+            </form>
             <div class="col-md-12 col-xs-12 col-sm-12 filter-ShowMore text-center margin-bottom-20">
                 <button class="ShowMore btn btn-default">
                     Show More<span class="glyphicon glyphicon-chevron-down"></span>
                 </button>
             </div>
+            <?php $salesCount = 0;
+            if(!empty($datas)) {
+                foreach($datas as $products) {
+    	            if(!empty($products)) {
+    	                foreach($products as $product) {
+    	                    if(!empty($_GET['tag'])) {
+    	                        if(!empty($product['RegisterSaleItem']) && !empty($product['MerchantProductCategory'])) {
+    	                            foreach($product['RegisterSaleItem'] as $saleItem) {
+    	                                if(!empty($saleItem['RegisterSale']))
+    	                                    $salesCount++;
+    	                            }
+    	                        }
+    	                    } else {
+    	                        if(!empty($product['RegisterSaleItem'])) {
+    	                            foreach($product['RegisterSaleItem'] as $saleItem) {
+    	                                if(!empty($saleItem['RegisterSale']))
+    	                                    $salesCount++;
+    	                            }
+    	                        }
+    	                    }
+    	                }
+    	            }
+    	        }
+	        }
+            if($salesCount > 0) {?>
             <div class="col-md-3 col-sm-3 col-xs-3 col-omega">
                 <table class="table-bordered dataTable">
                     <thead>
@@ -189,18 +263,43 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td class="table-color-gr"><strong>Main Outlet</strong></td>
-                        </tr>
-                        <tr>
-                            <td>Coffee (Demo)</td>
-                        </tr>
-                        <tr>
-                            <td>Coffee (Demo)</td>
-                        </tr>
-                        <tr class="table-color">
-                            <td><strong>Total</strong></td>
-                        </tr>
+                        <?php foreach($datas as $key => $products) {
+                            $len = count($products);
+                            $i = 0;
+                        ?>
+                            <tr>
+                                <td class="user_row"><?php echo $key;?></td>
+                            </tr>
+                            <?php foreach($products as $product) {
+                                $i++;
+                                $salesCount = 0;
+                                if(!empty($_GET['tag'])) {
+                                    if(!empty($product['RegisterSaleItem']) && !empty($product['MerchantProductCategory'])) {
+                                        foreach($product['RegisterSaleItem'] as $saleItem) {
+                                            if(!empty($saleItem['RegisterSale']))
+                                                $salesCount++;
+                                        }
+                                    }
+                                } else {
+                                    if(!empty($product['RegisterSaleItem'])) {
+                                        foreach($product['RegisterSaleItem'] as $saleItem) {
+                                            if(!empty($saleItem['RegisterSale']))
+                                                $salesCount++;
+                                        }
+                                    }
+                                }
+                                if($salesCount > 0) {?>
+                                    <tr>
+                                        <td><?php echo $product['MerchantProduct']['name'];?></td>
+                                    </tr>
+                                <?php }
+                                if($i == $len) { ?>
+                                <tr class="table-color">
+                                    <td><strong>Total</strong></td>
+                                </tr>
+                            <?php }
+                            }
+                        }?>
                         <tr class="table-color">
                             <td><strong>Grand Total</strong></td>
                         </tr>
@@ -243,79 +342,168 @@
                                 <th>Tags</th>
                                 <th>Supplier Code</th>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="14" class="table-color-gr">&nbsp;</td>
-                            </tr>
-                            <tr>
-                                <td class="text-right">6</td>
-                                <td class="text-right">15.65</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-limit">coffee-hot</td>
-                                <td class="text-limit">Generic Brand</td>
-                                <td>emcorpos</td>
-                                <td> </td>
-                                <td>General</td>
-                                <td> </td>
-                            </tr>
-                            <tr>
-                                <td class="text-right">6</td>
-                                <td class="text-right">15.65</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-limit">coffee-hot</td>
-                                <td class="text-limit">Generic Brand</td>
-                                <td>emcorpos</td>
-                                <td> </td>
-                                <td>General</td>
-                                <td> </td>
-                            </tr>
-                            <tr class="table-color">
-                                <td class="text-right">6</td>
-                                <td class="text-right">15.65</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-limit"> </td>
-                                <td class="text-limit"> </td>
-                                <td> </td>
-                                <td> </td>
-                                <td> </td>
-                                <td> </td>
-                            </tr>
-                            <tr class="table-color">
-                                <td class="text-right">6</td>
-                                <td class="text-right">15.65</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-right">0.00</td>
-                                <td class="text-limit"> </td>
-                                <td class="text-limit"> </td>
-                                <td> </td>
-                                <td> </td>
-                                <td> </td>
-                                <td> </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $grandTotalCount = 0;
+                                $grandTotalSales = 0;
+                                $grandTotalDiscount = 0;
+                                $grandTotalCost = 0;
+                                $grandTotalGrossProfit = 0;
+                                $grandTotalTax = 0;
+
+                                $totalCount = 0;
+                                $totalSales = 0;
+                                $totalDiscount = 0;
+                                $totalCost = 0;
+                                $totalGrossProfit = 0;
+                                $totalTax = 0;
+                                foreach($datas as $products) {
+                                $len = count($products);
+                                $i = 0;
+                                ?>
+                                    <tr>
+                                        <td colspan="14" class="user_row">&nbsp;</td>
+                                    </tr>
+                                    <?php foreach($products as $product) {
+                                        $i++;
+                                        $count = 0;
+                                        $sales = 0;
+                                        $discount = 0;
+                                        $cost = 0;
+                                        $margin = 0;
+                                        $tax = 0;
+                                        if(!empty($_GET['tag'])) {
+                                            if(!empty($product['RegisterSaleItem']) && !empty($product['MerchantProductCategory'])) {
+                                                foreach($product['RegisterSaleItem'] as $saleItem) {
+                                                    if(!empty($saleItem['RegisterSale'])) {
+                                                        $count++;
+                                                        $sales += $saleItem['price'];
+                                                        $discount += $saleItem['discount'];
+                                                        $cost += $saleItem['supply_price'];
+                                                        $tax += $saleItem['tax'];
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            if(!empty($product['RegisterSaleItem'])) {
+                                                foreach($product['RegisterSaleItem'] as $saleItem) {
+                                                    if(!empty($saleItem['RegisterSale'])) {
+                                                        $count++;
+                                                        $sales += $saleItem['price'];
+                                                        $discount += $saleItem['discount'];
+                                                        $cost += $saleItem['supply_price'];
+                                                        $tax += $saleItem['tax'];
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if($count > 0) { ?>
+                                        <tr>
+                                            <td class="text-right"><?php echo $count;?></td>
+                                            <td class="text-right"><?php echo number_format($sales,2,'.',',');?></td>
+                                            <td class="text-right"><?php echo number_format($discount,2,'.',',');?></td>
+                                            <td class="text-right"><?php echo number_format($cost,2,'.',',');?></td>
+                                            <td class="text-right"><?php echo number_format($sales - $cost,2,'.',',');?></td>
+                                            <td class="text-right"><?php echo number_format(($sales - $cost) / $sales * 100,2,'.',',');?></td>
+                                            <td class="text-right"><?php echo number_format($tax,2,'.',',');?></td>
+                                            <td class="text-right"><?php echo number_format($sales + $tax,2,'.',',');?></td>
+                                            <td class="text-limit"><?php echo $product['MerchantProduct']['sku'];?></td>
+                                            <td class="text-limit"><?php echo $product['MerchantProductBrand']['name'];?></td>
+                                            <td><?php echo $product['MerchantSupplier']['name'];?></td>
+                                            <td><?php echo $product['MerchantProductType']['name'];?></td>
+                                            <td>
+                                                <?php if(!empty($product['MerchantProductCategory'])) {
+                                                    $tagCount = 0;
+                                                    foreach($product['MerchantProductCategory'] as $category) {
+                                                        if($tagCount > 0) {
+                                                            echo ', '.$category['MerchantProductTag']['name'];
+                                                        } else {
+                                                            echo $category['MerchantProductTag']['name'];
+                                                            $tagCount++;
+                                                        }
+                                                    }
+                                                }?>
+                                            </td>
+                                            <td><?php echo $product['MerchantProduct']['supplier_code'];?></td>
+                                        </tr>
+                                    <?php }
+                                        $totalCount += $count;
+                                        $totalSales += $sales;
+                                        $totalDiscount += $discount;
+                                        $totalCost += $cost;
+                                        $totalGrossProfit += $sales - $cost;
+                                        $totalTax += $tax;
+                                        if($len == $i) { ?>
+                                            <tr class="table-color">
+                                                <td class="text-right"><?php echo $totalCount;?></td>
+                                                <td class="text-right"><?php echo number_format($totalSales,2,'.',',');?></td>
+                                                <td class="text-right"><?php echo number_format($totalDiscount,2,'.',',');?></td>
+                                                <td class="text-right"><?php echo number_format($totalCost,2,'.',',');?></td>
+                                                <td class="text-right"><?php echo number_format($totalGrossProfit,2,'.',',');?></td>
+                                                <td class="text-right"><?php if($totalSales > 0){echo number_format(($totalSales - $totalCost) / $totalSales * 100,2,'.',',');} else {echo "0.00";}?></td>
+                                                <td class="text-right"><?php echo number_format($totalTax,2,'.',',');?></td>
+                                                <td class="text-right"><?php echo number_format($totalSales + $totalTax,2,'.',',');?></td>
+                                                <td class="text-limit"> </td>
+                                                <td class="text-limit"> </td>
+                                                <td> </td>
+                                                <td> </td>
+                                                <td> </td>
+                                                <td> </td>
+                                            </tr>
+                                        <?php
+                                        $grandTotalCount += $totalCount;
+                                        $grandTotalSales += $totalSales;
+		                                $grandTotalDiscount += $totalDiscount;
+		                                $grandTotalCost += $totalCost;
+		                                $grandTotalGrossProfit += $totalGrossProfit;
+		                                $grandTotalTax += $totalTax;
+		                                
+                                        $totalCount = 0;
+		                                $totalSales = 0;
+		                                $totalDiscount = 0;
+		                                $totalCost = 0;
+		                                $totalGrossProfit = 0;
+		                                $totalTax = 0;
+                                        }
+                                    }
+                                }?>
+                                <tr class="table-color">
+                                    <td class="text-right"><?php echo $grandTotalCount;?></td>
+                                    <td class="text-right"><?php echo number_format($grandTotalSales,2,'.',',');?></td>
+                                    <td class="text-right"><?php echo number_format($grandTotalDiscount,2,'.',',');?></td>
+                                    <td class="text-right"><?php echo number_format($grandTotalCost,2,'.',',');?></td>
+                                    <td class="text-right"><?php echo number_format($grandTotalGrossProfit,2,'.',',');?></td>
+                                    <td class="text-right"><?php echo number_format(($grandTotalSales - $grandTotalCost) / $grandTotalSales * 100,2,'.',',');?></td>
+                                    <td class="text-right"><?php echo number_format($grandTotalTax,2,'.',',');?></td>
+                                    <td class="text-right"><?php echo number_format($grandTotalSales + $grandTotalTax,2,'.',',');?></td>
+                                    <td class="text-limit"> </td>
+                                    <td class="text-limit"> </td>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td> </td>
+                                    <td> </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
+                <?php } else { ?>
+                    <div class="col-md-12 col-sm-12 col-xs-12 col-alpha">
+                        <table class="table-bordered dataTable">
+                            <thead>
+                                <tr>
+                                    <th>Popular Products</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="text-align:center">No results. Try broadening your criteria above.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php } ?>
             </div>
         </div>
     </div>
@@ -415,13 +603,34 @@
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
-jQuery(document).ready(function() {    
+jQuery(document).ready(function() {
     Metronic.init(); // init metronic core componets
     Layout.init(); // init layout
     QuickSidebar.init(); // init quick sidebar
     Index.init();
-    
-    $("#date_from").datepicker();
-    $("#date_to").datepicker();
+
+    $("#date_from").datepicker({ dateFormat:'yy-mm-dd' });
+    $("#date_to").datepicker({ dateFormat:'yy-mm-dd' });
+
+    var i = $(".tag_wrap").length;
+    $("#add_tag").click(function() {
+        var tag_name = $("#tag_search").val();
+        var tag_available = false;
+        $("datalist option").each(function(){
+            if($(this).val() == tag_name) {
+                tag_available = true;
+            }
+        });
+        if(tag_available) {
+            $(".tag_list").append('<div class="tag_wrap" sqn="'+i+'"></div>');
+            $(".tag_wrap[sqn="+i+"]").append('<div class="added_tag" style="width:8%; text-align:center; float:left">'+tag_name+' <span class="remove_tag clickable"><i class="glyphicon glyphicon-remove"></i></span></div>');
+            $(".tag_wrap[sqn="+i+"]").append('<input type="hidden" name="tag['+i+']" value="'+tag_name+'">');
+            i++;
+        }
+    });
+    $(document).on("click",".remove_tag",function() {
+        $(this).parents(".tag_wrap").remove();
+        i--;
+    });
 });
 </script>
