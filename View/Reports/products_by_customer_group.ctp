@@ -233,27 +233,27 @@
             <?php $salesCount = 0;
             if(!empty($datas)) {
                 foreach($datas as $products) {
-    	            if(!empty($products)) {
-    	                foreach($products as $product) {
-    	                    if(!empty($_GET['tag'])) {
-    	                        if(!empty($product['RegisterSaleItem']) && !empty($product['MerchantProductCategory'])) {
-    	                            foreach($product['RegisterSaleItem'] as $saleItem) {
-    	                                if(!empty($saleItem['RegisterSale']))
-    	                                    $salesCount++;
-    	                            }
-    	                        }
-    	                    } else {
-    	                        if(!empty($product['RegisterSaleItem'])) {
-    	                            foreach($product['RegisterSaleItem'] as $saleItem) {
-    	                                if(!empty($saleItem['RegisterSale']))
-    	                                    $salesCount++;
-    	                            }
-    	                        }
-    	                    }
-    	                }
-    	            }
-    	        }
-	        }
+                    if(!empty($products)) {
+                        foreach($products as $product) {
+                            if(!empty($_GET['tag'])) {
+                                if(!empty($product['RegisterSaleItem']) && !empty($product['MerchantProductCategory'])) {
+                                    foreach($product['RegisterSaleItem'] as $saleItem) {
+                                        if(!empty($saleItem['RegisterSale']))
+                                            $salesCount++;
+                                    }
+                                }
+                            } else {
+                                if(!empty($product['RegisterSaleItem'])) {
+                                    foreach($product['RegisterSaleItem'] as $saleItem) {
+                                        if(!empty($saleItem['RegisterSale']))
+                                            $salesCount++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             if($salesCount > 0) {?>
             <div class="col-md-3 col-sm-3 col-xs-3 col-omega">
                 <table class="table-bordered dataTable">
@@ -454,17 +454,17 @@
                                         <?php
                                         $grandTotalCount += $totalCount;
                                         $grandTotalSales += $totalSales;
-		                                $grandTotalDiscount += $totalDiscount;
-		                                $grandTotalCost += $totalCost;
-		                                $grandTotalGrossProfit += $totalGrossProfit;
-		                                $grandTotalTax += $totalTax;
-		                                
+                                        $grandTotalDiscount += $totalDiscount;
+                                        $grandTotalCost += $totalCost;
+                                        $grandTotalGrossProfit += $totalGrossProfit;
+                                        $grandTotalTax += $totalTax;
+                                        
                                         $totalCount = 0;
-		                                $totalSales = 0;
-		                                $totalDiscount = 0;
-		                                $totalCost = 0;
-		                                $totalGrossProfit = 0;
-		                                $totalTax = 0;
+                                        $totalSales = 0;
+                                        $totalDiscount = 0;
+                                        $totalCost = 0;
+                                        $totalGrossProfit = 0;
+                                        $totalTax = 0;
                                         }
                                     }
                                 }?>

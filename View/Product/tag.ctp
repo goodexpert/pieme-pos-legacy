@@ -82,8 +82,8 @@
                         <td><?php echo $tag['MerchantProductTag']['name'];?></td>
                         <td><?php echo count($tag['MerchantProudctCategory']);?></td>
                         <td>
-	                        <span data-id="<?php echo $tag['MerchantProductTag']['id'];?>" class="clickable edit-tag">Edit</span> | 
-	                        <span data-id="<?php echo $tag['MerchantProductTag']['id'];?>" class="clickable delete-tag">Delete</span>
+                            <span data-id="<?php echo $tag['MerchantProductTag']['id'];?>" class="clickable edit-tag">Edit</span> | 
+                            <span data-id="<?php echo $tag['MerchantProductTag']['id'];?>" class="clickable delete-tag">Delete</span>
                         </td>
                     </tr>
                     <?php } ?>
@@ -224,9 +224,9 @@ $(document).ready(function(){
                 },
                 success: function(result) {
                     if(result.success) {
-	                    location.reload();
+                        location.reload();
                     } else {
-	                    alert(result.message);
+                        alert(result.message);
                     }
                 }
             });
@@ -239,66 +239,66 @@ $(document).ready(function(){
     });
     
     $(".edit-tag").click(function(){
-    	var current_name = $(this).parents("tr").find(".sorting_1").text();
-    	var current_id = $(this).attr("data-id");
-	    $.confirm({
-		    title:'Edit tag',
-	        text:'<input type="text" id="tag_name" placeholder="Tag name" value="'+current_name+'">',
-	        confirmButton: "Save",
-	        confirm: function(button){
-	            $.ajax({
-	                url: "/product/tag_edit.json",
-	                type: "POST",
-	                data: {
-	                	tag_id: current_id,
-	                    name: $("#tag_name").val()
-	                },
-	                success: function(result) {
-	                    if(result.success) {
-		                    location.reload();
-	                    } else {
-		                    alert(result.message);
-	                    }
-	                }
-	            });
-	        },
-	        confirmButtonClass: "tag-add pull-right btn-success margin-left-10",
-	        cancel: function(button){
-	            $("input").val('');
-	        },
-	        cancelButton: "Cancel",
-	    })
+        var current_name = $(this).parents("tr").find(".sorting_1").text();
+        var current_id = $(this).attr("data-id");
+        $.confirm({
+            title:'Edit tag',
+            text:'<input type="text" id="tag_name" placeholder="Tag name" value="'+current_name+'">',
+            confirmButton: "Save",
+            confirm: function(button){
+                $.ajax({
+                    url: "/product/tag_edit.json",
+                    type: "POST",
+                    data: {
+                        tag_id: current_id,
+                        name: $("#tag_name").val()
+                    },
+                    success: function(result) {
+                        if(result.success) {
+                            location.reload();
+                        } else {
+                            alert(result.message);
+                        }
+                    }
+                });
+            },
+            confirmButtonClass: "tag-add pull-right btn-success margin-left-10",
+            cancel: function(button){
+                $("input").val('');
+            },
+            cancelButton: "Cancel",
+        })
     });
     
     $(".delete-tag").click(function(){
-    	var current_name = $(this).parents("tr").find(".sorting_1").text();
-    	var current_id = $(this).attr("data-id");
-	    $.confirm({
-	        text:'Are you sure want to delete this tag?',
-	        confirmButton: "Delete",
-	        confirm: function(button){
-	            $.ajax({
-	                url: "/product/tag_delete.json",
-	                type: "POST",
-	                data: {
-	                	tag_id: current_id,
-	                    name: $("#tag_name").val()
-	                },
-	                success: function(result) {
-	                    if(result.success) {
-		                    location.reload();
-	                    } else {
-		                    alert(result.message);
-	                    }
-	                }
-	            });
-	        },
-	        confirmButtonClass: "tag-add pull-right btn-success margin-left-10",
-	        cancel: function(button){
-	            $("input").val('');
-	        },
-	        cancelButton: "Cancel",
-	    })
+        var current_name = $(this).parents("tr").find(".sorting_1").text();
+        var current_id = $(this).attr("data-id");
+        $.confirm({
+            text:'Are you sure want to delete this tag?',
+            confirmButton: "Delete",
+            confirm: function(button){
+                $.ajax({
+                    url: "/product/tag_delete.json",
+                    type: "POST",
+                    data: {
+                        tag_id: current_id,
+                        name: $("#tag_name").val()
+                    },
+                    success: function(result) {
+                        if(result.success) {
+                            location.reload();
+                        } else {
+                            alert(result.message);
+                        }
+                    }
+                });
+            },
+            confirmButtonClass: "tag-add pull-right btn-success margin-left-10",
+            cancel: function(button){
+                $("input").val('');
+            },
+            cancelButton: "Cancel",
+        })
     });
 });
 </script>

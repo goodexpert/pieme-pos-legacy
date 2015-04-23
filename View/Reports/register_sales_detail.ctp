@@ -88,10 +88,10 @@
                         <dt>Register</dt>
                         <dd>
                             <select name="register_id">
-                            	<option value=""></option>
-                            	<?php foreach($registers as $register) { ?>
-                            		<option value="<?php echo $register['MerchantRegister']['id'];?>" <?php if(isset($_GET['register_id']) && $_GET['register_id'] == $register['MerchantRegister']['id']){echo "selected";}?>><?php echo $register['MerchantRegister']['name'];?></option>
-                            	<?php } ?>
+                                <option value=""></option>
+                                <?php foreach($registers as $register) { ?>
+                                    <option value="<?php echo $register['MerchantRegister']['id'];?>" <?php if(isset($_GET['register_id']) && $_GET['register_id'] == $register['MerchantRegister']['id']){echo "selected";}?>><?php echo $register['MerchantRegister']['name'];?></option>
+                                <?php } ?>
                             </select>
                         </dd>
                     </dl>
@@ -101,10 +101,10 @@
                         <dt>Outlet</dt>
                         <dd>
                             <select name="outlet_id">
-                            	<option value=""></option>
-                            	<?php foreach($outlets as $outlet) { ?>
-                            		<option value="<?php echo $outlet['MerchantOutlet']['id'];?>" <?php if(isset($_GET['outlet_id']) && $_GET['outlet_id'] == $outlet['MerchantOutlet']['id']){echo "selected";}?>><?php echo $outlet['MerchantOutlet']['name'];?></option>
-                            	<?php } ?>
+                                <option value=""></option>
+                                <?php foreach($outlets as $outlet) { ?>
+                                    <option value="<?php echo $outlet['MerchantOutlet']['id'];?>" <?php if(isset($_GET['outlet_id']) && $_GET['outlet_id'] == $outlet['MerchantOutlet']['id']){echo "selected";}?>><?php echo $outlet['MerchantOutlet']['name'];?></option>
+                                <?php } ?>
                             </select>
                         </dd>
                     </dl>
@@ -114,10 +114,10 @@
                         <dt>Customer group</dt>
                         <dd>
                             <select name="customer_group_id">
-                            	<option value=""></option>
-                            	<?php foreach($customerGroups as $customerGroup) { ?>
-                            		<option value="<?php echo $customerGroup['MerchantCustomerGroup']['id'];?>" <?php if(isset($_GET['customer_group_id']) && $_GET['customer_group_id'] == $customerGroup['MerchantCustomerGroup']['id']){echo "selected";}?>><?php echo $customerGroup['MerchantCustomerGroup']['name'];?></option>
-                            	<?php } ?>
+                                <option value=""></option>
+                                <?php foreach($customerGroups as $customerGroup) { ?>
+                                    <option value="<?php echo $customerGroup['MerchantCustomerGroup']['id'];?>" <?php if(isset($_GET['customer_group_id']) && $_GET['customer_group_id'] == $customerGroup['MerchantCustomerGroup']['id']){echo "selected";}?>><?php echo $customerGroup['MerchantCustomerGroup']['name'];?></option>
+                                <?php } ?>
                             </select>
                         </dd>
                     </dl>
@@ -139,28 +139,28 @@
                     </tr>
                     </thead>
                     <tbody>
-                    	<?php if(!empty($sales)) {
-	                    	foreach($sales as $sale) { ?>
-		                        <tr>
-		                            <td class="text-limit"><?php echo $sale['RegisterSale']['sale_date'];?></td>
-		                            <td><?php echo $sale['RegisterSale']['receipt_number'];?></td>
-		                        </tr>
-		                        <?php $emptyRow = 0;
-		                        if(count($sale['RegisterSaleItem']) > count($sale['RegisterSalePayment'])) {
-			                        $emptyRow = count($sale['RegisterSaleItem']);
-		                        } else {
-			                        $emptyRow = count($sale['RegisterSalePayment']);
-		                        }
-		                        for($i = 0;$i <= $emptyRow - 1;$i++) { ?>
-		                        <tr>
-		                            <td colspan="2" style="border: 0">&nbsp;</td>
-		                        </tr>
-		                    <?php }
-		                    }
+                        <?php if(!empty($sales)) {
+                            foreach($sales as $sale) { ?>
+                                <tr>
+                                    <td class="text-limit"><?php echo $sale['RegisterSale']['sale_date'];?></td>
+                                    <td><?php echo $sale['RegisterSale']['receipt_number'];?></td>
+                                </tr>
+                                <?php $emptyRow = 0;
+                                if(count($sale['RegisterSaleItem']) > count($sale['RegisterSalePayment'])) {
+                                    $emptyRow = count($sale['RegisterSaleItem']);
+                                } else {
+                                    $emptyRow = count($sale['RegisterSalePayment']);
+                                }
+                                for($i = 0;$i <= $emptyRow - 1;$i++) { ?>
+                                <tr>
+                                    <td colspan="2" style="border: 0">&nbsp;</td>
+                                </tr>
+                            <?php }
+                            }
                         } else {?>
-                        	<tr>
-                        		<td colspan="2">&nbsp;</td>
-                        	</tr>
+                            <tr>
+                                <td colspan="2">&nbsp;</td>
+                            </tr>
                         <?php } ?>
                     </tbody>
                 </table>
@@ -191,59 +191,59 @@
                         </tr>
                         </thead>
                         <tbody>
-                        	<?php if(!empty($sales)) {
-	                        	foreach($sales as $sale) { ?>
-		                            <tr class="table-color-gr">
-		                                <td><?php echo $sale['MerchantRegister']['name'];?></td>
-		                                <td><?php echo $sale['MerchantUser']['display_name'];?></td>
-		                                <td><?php echo $sale['MerchantCustomer']['name'];?></td>
-		                                <td class="discrete tiny"><?php echo $sale['RegisterSale']['note'];?></td>
-		                                <td class="strong">Total sale</td>
-		                                <td class="strong currency"><?php echo number_format($sale['RegisterSale']['total_price_incl_tax'],2,'.',',');?></td>
-		                                <td class="strong">Total paid</td>
-		                                <td class="strong currency">
-		                                	<?php $totalPayment = 0;
-		                                	foreach($sale['RegisterSalePayment'] as $payment){
-		                                		$totalPayment += $payment['amount'];
-		                                	}
-		                                	echo number_format($totalPayment,2,'.',',');?>
-		                                </td>
-		                            </tr>
-		                            <?php
-		                            if(count($sale['RegisterSaleItem']) > count($sale['RegisterSalePayment'])) {
-				                        $emptyRow = count($sale['RegisterSaleItem']);
-			                        } else {
-				                        $emptyRow = count($sale['RegisterSalePayment']);
-			                        }
-		                            for($i = 0;$i <= $emptyRow - 1;$i++) { ?>
-		                            <tr>
-		                                <td colspan="4" style="border: 0">&nbsp;</td>
-		                                <?php if(!empty($sale['RegisterSaleItem'][$i])) { ?>
-			                                <td class="strong"><?php echo $sale['RegisterSaleItem'][$i]['MerchantProduct']['name'];?></td>
-			                                <td class="strong currency">
-			                                	<?php echo number_format($sale['RegisterSaleItem'][$i]['MerchantProduct']['price_include_tax'],2,'.',',');?>
-			                                </td>
-		                                <?php } else { ?>
-			                                <td style="border: 0; border-left:1px solid #ddd;">&nbsp;</td>
-			                                <td style="border: 0">&nbsp;</td>
-		                                <?php }
-		                                if(!empty($sale['RegisterSalePayment'][$i])) { ?>
-			                                <td class="strong"><?php echo $sale['RegisterSalePayment'][$i]['MerchantPaymentType']['name'];?></td>
-			                                <td class="strong currency">
-			                                	<?php echo number_format($sale['RegisterSalePayment'][$i]['amount'],2,'.',',');?>
-			                                </td>
-		                                <?php } else { ?>
-		                                	<td style="border: 0; border-left:1px solid #ddd;">&nbsp;</td>
-			                                <td style="border: 0">&nbsp;</td>
-		                                <?php } ?>
-		                            </tr>
-		                            <?php }
-	                            }
-	                        } else {?>
-	                        	<tr>
-	                        		<td colspan="8">Select your criteria above to update the table.</td>
-	                        	</tr>
-	                        <?php } ?>
+                            <?php if(!empty($sales)) {
+                                foreach($sales as $sale) { ?>
+                                    <tr class="table-color-gr">
+                                        <td><?php echo $sale['MerchantRegister']['name'];?></td>
+                                        <td><?php echo $sale['MerchantUser']['display_name'];?></td>
+                                        <td><?php echo $sale['MerchantCustomer']['name'];?></td>
+                                        <td class="discrete tiny"><?php echo $sale['RegisterSale']['note'];?></td>
+                                        <td class="strong">Total sale</td>
+                                        <td class="strong currency"><?php echo number_format($sale['RegisterSale']['total_price_incl_tax'],2,'.',',');?></td>
+                                        <td class="strong">Total paid</td>
+                                        <td class="strong currency">
+                                            <?php $totalPayment = 0;
+                                            foreach($sale['RegisterSalePayment'] as $payment){
+                                                $totalPayment += $payment['amount'];
+                                            }
+                                            echo number_format($totalPayment,2,'.',',');?>
+                                        </td>
+                                    </tr>
+                                    <?php
+                                    if(count($sale['RegisterSaleItem']) > count($sale['RegisterSalePayment'])) {
+                                        $emptyRow = count($sale['RegisterSaleItem']);
+                                    } else {
+                                        $emptyRow = count($sale['RegisterSalePayment']);
+                                    }
+                                    for($i = 0;$i <= $emptyRow - 1;$i++) { ?>
+                                    <tr>
+                                        <td colspan="4" style="border: 0">&nbsp;</td>
+                                        <?php if(!empty($sale['RegisterSaleItem'][$i])) { ?>
+                                            <td class="strong"><?php echo $sale['RegisterSaleItem'][$i]['MerchantProduct']['name'];?></td>
+                                            <td class="strong currency">
+                                                <?php echo number_format($sale['RegisterSaleItem'][$i]['MerchantProduct']['price_include_tax'],2,'.',',');?>
+                                            </td>
+                                        <?php } else { ?>
+                                            <td style="border: 0; border-left:1px solid #ddd;">&nbsp;</td>
+                                            <td style="border: 0">&nbsp;</td>
+                                        <?php }
+                                        if(!empty($sale['RegisterSalePayment'][$i])) { ?>
+                                            <td class="strong"><?php echo $sale['RegisterSalePayment'][$i]['MerchantPaymentType']['name'];?></td>
+                                            <td class="strong currency">
+                                                <?php echo number_format($sale['RegisterSalePayment'][$i]['amount'],2,'.',',');?>
+                                            </td>
+                                        <?php } else { ?>
+                                            <td style="border: 0; border-left:1px solid #ddd;">&nbsp;</td>
+                                            <td style="border: 0">&nbsp;</td>
+                                        <?php } ?>
+                                    </tr>
+                                    <?php }
+                                }
+                            } else {?>
+                                <tr>
+                                    <td colspan="8">Select your criteria above to update the table.</td>
+                                </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                 </div>

@@ -87,19 +87,21 @@
                     <dl>
                         <dt>Due at</dt>
                         <dd>
-                            <?php echo date('d F Y', strtotime($order['MerchantStockOrder']['due_date'])); ?>
+                            <?php echo date('d F Y', strtotime($data['MerchantStockOrder']['due_date'])); ?>
                         </dd>
                         <dt>Supplier invoice</dt>
                         <dd>
-                            <?php echo $order['MerchantStockOrder']['supplier_invoice']; ?>
+                            <?php echo $data['MerchantStockOrder']['supplier_invoice']; ?>
                         </dd>
                     </dl>
 -->
                 </div>
             </div>
+<!--
+            <form action="/stock/<?php echo $data['MerchantStockOrder']['id']; ?>/edit" method="post" id="stock_order_item_form">
+-->
+            <form id="stock_order_item_form">
             <div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">Order Products</div>
-                <!--<form action="/stock/<?php echo $order['MerchantStockOrder']['id']; ?>/edit" method="post" id="stock_order_item_form">-->
-                <form id="stock_order_item_form">
                 <?php
                     echo $this->Form->input('MerchantStockOrder.id', array(
                         'id' => 'id',
@@ -207,6 +209,7 @@
     </div>
     <!-- Save&Send POPUP BOX END -->
     <!-- BEGIN QUICK SIDEBAR -->
+<!--
     <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
     <div class="page-quick-sidebar-wrapper">
         <div class="page-quick-sidebar">            
@@ -251,7 +254,8 @@
             </div>
         </div>
     </div>
-<!-- END QUICK SIDEBAR -->
+-->
+    <!-- END QUICK SIDEBAR -->
 </div>
 <!-- END CONTAINER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
@@ -303,7 +307,7 @@
 <script>
 var orderItems = JSON.parse($("#hidden-data1").val());
 var inventories = JSON.parse($("#hidden-data2").val());
-var selectedProduct = null;
+var searchItem = null;
 
 jQuery(document).ready(function() {    
     Metronic.init(); // init metronic core componets
@@ -316,11 +320,15 @@ jQuery(document).ready(function() {
     $(".datepicker").datepicker({ dateFormat: 'yy-mm-dd' });
 
     $(".add-order-item").click(function(e) {
-        if (selectedProduct == null) {
+        if (searchItem == null) {
             return;
         }
 
-        addOrderItem($("#id").val(), selectedProduct['id'], selectedProduct['name'], parseInt($("#quantity").val()), selectedProduct['supply_price'], selectedProduct['price_include_tax']);
+        addOrderItem($("#id").val(), searchItem['id'], searchItem['name'], parseInt($("#quantity").val()),
+            searchItem['supply_price'], searchItem['price_include_tax'], searchItem['subitems']);
+
+        $("#search-items").val('');
+        searchItem= null;
     });
 
     $("#search-items").autocomplete({
@@ -333,9 +341,10 @@ jQuery(document).ready(function() {
                     keyword: request.term
                 },
                 success: function (data) {
-                    selectedProduct = null;
+                    searchItem = null;
                     if (!data.success)
                         return;
+                    console.log(data);
 
                     response($.map(data.products, function (item) {
                         return ({
@@ -350,7 +359,7 @@ jQuery(document).ready(function() {
         },
         minLength: 2,
         select: function( event, ui ) {
-            selectedProduct = ui.item.data;
+            searchItem = ui.item.data;
 
             $(this).val(ui.item.sku);
             return false;
@@ -468,7 +477,7 @@ jQuery(document).ready(function() {
     });
 });
 
-function addOrderItem(order_id, product_id, name, count, supply_price, price_include_tax) {
+function addOrderItem(order_id, product_id, name, count, supply_price, price_include_tax, subitems) {
     for (var idx in orderItems) {
         if (orderItems[idx]['product_id'] == product_id) {
             return;
@@ -483,7 +492,8 @@ function addOrderItem(order_id, product_id, name, count, supply_price, price_inc
         supply_price: supply_price,
         total_cost: supply_price * count,
         price_include_tax: price_include_tax,
-        total_price_incl_tax: price_include_tax * count
+        total_price_incl_tax: price_include_tax * count,
+        subitems: subitems
     };
 
     $.ajax({
@@ -516,27 +526,28 @@ function updateView() {
         appendString += '</tr>';
         $("#orderItemTable").find('tbody').append(appendString);
     } else {
+        var sequence = 1.0;
         for (var idx in orderItems) {
-            var index = parseInt(idx) + 1;
             var order_item_id = orderItems[idx]['id'];
             var order_id = orderItems[idx]['order_id'];
             var product_id = orderItems[idx]['product_id'];
             var name = orderItems[idx]['name'];
             var inventory = inventories[orderItems[idx]['product_id']];
-            var stock_on_hand = ((inventory == null || inventory == '') ? '<i class="icon-general-infinity"></i>' : inventory['count']);
+            //var stock_on_hand = ((inventory == null || inventory == '') ? '<i class="icon-general-infinity"></i>' : inventory['count']);
+            var stock_on_hand = ((inventory == null || inventory == '') ? '&infin;' : inventory['count']);
             var count = orderItems[idx]['count'];
             var supply_price = parseFloat(orderItems[idx]['supply_price']).toFixed(2);
             var price_include_tax = parseFloat(orderItems[idx]['price_include_tax']).toFixed(2);
             var total_cost = parseFloat(orderItems[idx]['total_cost']).toFixed(2);
             var total_price_incl_tax = parseFloat(orderItems[idx]['total_price_incl_tax']).toFixed(2);
+            var subitems = orderItems[idx]['subitems'];
 
+            /*
             var appendString = '<tr data-id="' + order_item_id + '">'
             appendString +=  '<input type="hidden" name="data[MerchantStockOrderItem][' + idx + '][id]" id="order_item_' + order_item_id + '_id" value="' + order_item_id +'" />';
             appendString +=  '<input type="hidden" name="data[MerchantStockOrderItem][' + idx + '][price_include_tax]" id="order_item_' + order_item_id + '_price_include_tax" value="' + price_include_tax +'" />';
-/*
             appendString +=  '<input type="hidden" name="data[MerchantStockOrderItem][' + idx + '][total_cost]" id="order_item_' + order_item_id + '_total_cost" value="' + total_cost +'" />';
             appendString +=  '<input type="hidden" name="data[MerchantStockOrderItem][' + idx + '][total_price_incl_tax]" id="order_item_' + order_item_id + '_total_price_incl_tax" value="' + total_price_incl_tax +'" />';
-*/
             appendString += '<td>' + index + '</td>';
             appendString += '<td>' + name + '</td>';
             appendString += '<td>' + stock_on_hand + '</td>';
@@ -545,8 +556,26 @@ function updateView() {
             appendString += '<td><strong class="calculated-total font-xl">' + total_cost + '</strong></td>';
             appendString += '</tr>';
             $("#orderItemTable").find('tbody').append(appendString);
+             */
+            appendTableRow(idx, sequence, order_item_id, order_id, name, stock_on_hand, count, supply_price, price_include_tax, total_cost, total_price_incl_tax);
         }
     }
+}
+
+function appendTableRow(idx, sequence, order_item_id, order_id, name, stock_on_hand, count, supply_price, price_include_tax, total_cost, total_price_incl_tax) {
+    var appendString = '<tr data-id="' + order_item_id + ' data-group-id="' + order_item_id + '">';
+    appendString +=  '<input type="hidden" name="data[MerchantStockOrderItem][' + idx + '][id]" id="order_item_' + order_item_id + '_id" value="' + order_item_id +'" />';
+    appendString +=  '<input type="hidden" name="data[MerchantStockOrderItem][' + idx + '][price_include_tax]" id="order_item_' + order_item_id + '_price_include_tax" value="' + price_include_tax +'" />';
+    appendString +=  '<input type="hidden" name="data[MerchantStockOrderItem][' + idx + '][total_cost]" id="order_item_' + order_item_id + '_total_cost" value="' + total_cost +'" />';
+    appendString +=  '<input type="hidden" name="data[MerchantStockOrderItem][' + idx + '][total_price_incl_tax]" id="order_item_' + order_item_id + '_total_price_incl_tax" value="' + total_price_incl_tax +'" />';
+    appendString += '<td>' + sequence + '</td>';
+    appendString += '<td>' + name + '</td>';
+    appendString += '<td>' + stock_on_hand + '</td>';
+    appendString += '<td><input type="text" class="count changable" name="data[MerchantStockOrderItem][' + idx + '][count]" id="order_item_' + order_item_id + '_count" value="' + count +'" /></td>';
+    appendString += '<td><input type="text" class="cost changable" name="data[MerchantStockOrderItem][' + idx + '][supply_price]" id="order_item_' + order_item_id + '_supply_price" value="' + supply_price +'" /></td>';
+    appendString += '<td><strong class="calculated-total font-xl">' + total_cost + '</strong></td>';
+    appendString += '</tr>';
+    $("#orderItemTable").find('tbody').append(appendString);
 }
 </script>
 <!-- END JAVASCRIPTS -->

@@ -92,7 +92,7 @@
                             <select name="period">
                                 <option value="1">1 Period</option>
                                 <?php for($i = 0;$i <= 12;$i++) { ?>
-                                	<option value="<?php echo $i;?>" <?php if(isset($_GET['period']) && $_GET['period'] == $i){echo "selected";}?>><?php echo $i;?> Periods</option>
+                                    <option value="<?php echo $i;?>" <?php if(isset($_GET['period']) && $_GET['period'] == $i){echo "selected";}?>><?php echo $i;?> Periods</option>
                                 <?php } ?>
                             </select>
                         </dd>
@@ -105,115 +105,115 @@
 
             <table id="productTable" class="table-bordered dataTable table-price">
                 <thead>
-	                <tr>
-	                    <th>&nbsp;</th>
-	                    <?php if(isset($_GET['from'])) {
-		                    $dateRangeFrom = date('M d', strtotime($_GET['from']));
-		                    $dateRangeTo = date('M d', strtotime($_GET['to']));
-		                    foreach($sales as $date => $sale) {
-			                    $from = date("M d",strtotime(explode("~", $date)[0]));
-			                    $to = date("M d",strtotime(explode("~", $date)[1]));?>
-		                    
-		                    	<th class="text-right">
-			                    	<?php echo $from.' - '.$to;?>
-		                    	</th>
-		                    <?php }
-	                    } ?>
-	                </tr>
+                    <tr>
+                        <th>&nbsp;</th>
+                        <?php if(isset($_GET['from'])) {
+                            $dateRangeFrom = date('M d', strtotime($_GET['from']));
+                            $dateRangeTo = date('M d', strtotime($_GET['to']));
+                            foreach($sales as $date => $sale) {
+                                $from = date("M d",strtotime(explode("~", $date)[0]));
+                                $to = date("M d",strtotime(explode("~", $date)[1]));?>
+                            
+                                <th class="text-right">
+                                    <?php echo $from.' - '.$to;?>
+                                </th>
+                            <?php }
+                        } ?>
+                    </tr>
                 </thead>
                 <tbody>
-                	<?php if(isset($_GET['from'])) {?>
+                    <?php if(isset($_GET['from'])) {?>
                     <tr>
                         <td>Sales incl. tax ($)</td>
                         <?php foreach($sales as $sale) {
-                        	$salesIncl = 0;
-                        	foreach($sale as $data) { 
-	                        	$salesIncl += $data['RegisterSale']['total_price_incl_tax'];
-	                        }?>
-	                        <td class="text-right">
-		                        <?php echo number_format($salesIncl,2,'.',',');?>
-	                        </td>
-	                    <?php } ?>
+                            $salesIncl = 0;
+                            foreach($sale as $data) { 
+                                $salesIncl += $data['RegisterSale']['total_price_incl_tax'];
+                            }?>
+                            <td class="text-right">
+                                <?php echo number_format($salesIncl,2,'.',',');?>
+                            </td>
+                        <?php } ?>
                     </tr>
                     <tr>
                         <td>Tax ($)</td>
                         <?php foreach($sales as $sale) {
-                        	$tax = 0;
-                        	foreach($sale as $data) { 
-	                        	$tax += $data['RegisterSale']['total_tax'];
-	                        }?>
-	                        <td class="text-right">
-		                        <?php echo number_format($tax,2,'.',',');?>
-	                        </td>
-	                    <?php } ?>
+                            $tax = 0;
+                            foreach($sale as $data) { 
+                                $tax += $data['RegisterSale']['total_tax'];
+                            }?>
+                            <td class="text-right">
+                                <?php echo number_format($tax,2,'.',',');?>
+                            </td>
+                        <?php } ?>
                     </tr>
                     <tr>
                         <td>Sales exc. tax ($)</td>
                         <?php foreach($sales as $sale) {
-                        	$salesExc = 0;
-                        	foreach($sale as $data) { 
-	                        	$salesExc += $data['RegisterSale']['total_price'];
-	                        }?>
-	                        <td class="text-right">
-		                        <?php echo number_format($salesExc,2,'.',',');?>
-	                        </td>
-	                    <?php } ?>
+                            $salesExc = 0;
+                            foreach($sale as $data) { 
+                                $salesExc += $data['RegisterSale']['total_price'];
+                            }?>
+                            <td class="text-right">
+                                <?php echo number_format($salesExc,2,'.',',');?>
+                            </td>
+                        <?php } ?>
                     </tr>
                     <tr>
                         <td>Cost of goods ($)</td>
                         <?php foreach($sales as $sale) {
-                        	$cost = 0;
-                        	foreach($sale as $data) { 
-	                        	$cost += $data['RegisterSale']['total_cost'];
-	                        }?>
-	                        <td class="text-right">
-		                        <?php echo number_format($cost,2,'.',',');?>
-	                        </td>
-	                    <?php } ?>
+                            $cost = 0;
+                            foreach($sale as $data) { 
+                                $cost += $data['RegisterSale']['total_cost'];
+                            }?>
+                            <td class="text-right">
+                                <?php echo number_format($cost,2,'.',',');?>
+                            </td>
+                        <?php } ?>
                     </tr>
                     <tr>
                         <td>Discounts ($)</td>
                         <?php foreach($sales as $sale) {
-                        	$discount = 0;
-                        	foreach($sale as $data) { 
-	                        	$discount += $data['RegisterSale']['total_discount'];
-	                        }?>
-	                        <td class="text-right">
-		                        <?php echo number_format($discount,2,'.',',');?>
-	                        </td>
-	                    <?php } ?>
+                            $discount = 0;
+                            foreach($sale as $data) { 
+                                $discount += $data['RegisterSale']['total_discount'];
+                            }?>
+                            <td class="text-right">
+                                <?php echo number_format($discount,2,'.',',');?>
+                            </td>
+                        <?php } ?>
                     </tr>
                     <tr class="table-color">
                         <td>Gross Profit ($)</td>
                         <?php foreach($sales as $sale) {
-                        	$salesExc = 0;
-                        	$cost = 0;
-                        	foreach($sale as $data) {
-                        		$salesExc += $data['RegisterSale']['total_price'];
-	                        	$cost += $data['RegisterSale']['total_cost'];
-	                        }?>
-	                        <td class="text-right">
-		                        <?php echo number_format($salesExc - $cost,2,'.',',');?>
-	                        </td>
-	                    <?php } ?>
+                            $salesExc = 0;
+                            $cost = 0;
+                            foreach($sale as $data) {
+                                $salesExc += $data['RegisterSale']['total_price'];
+                                $cost += $data['RegisterSale']['total_cost'];
+                            }?>
+                            <td class="text-right">
+                                <?php echo number_format($salesExc - $cost,2,'.',',');?>
+                            </td>
+                        <?php } ?>
                     </tr>
                     <tr class="table-color">
                         <td>Gross Margin</td>
                         <?php foreach($sales as $sale) {
-                        	$salesExc = 0;
-                        	$cost = 0;
-                        	foreach($sale as $data) {
-                        		$salesExc += $data['RegisterSale']['total_price'];
-	                        	$cost += $data['RegisterSale']['total_cost'];
-	                        }?>
-	                        <td class="text-right">
-		                        <?php if($salesExc > 0){echo number_format(($salesExc - $cost) / $salesExc * 100,2,'.',',').'%';}else{echo '0%';}?>
-	                        </td>
-	                    <?php } ?>
+                            $salesExc = 0;
+                            $cost = 0;
+                            foreach($sale as $data) {
+                                $salesExc += $data['RegisterSale']['total_price'];
+                                $cost += $data['RegisterSale']['total_cost'];
+                            }?>
+                            <td class="text-right">
+                                <?php if($salesExc > 0){echo number_format(($salesExc - $cost) / $salesExc * 100,2,'.',',').'%';}else{echo '0%';}?>
+                            </td>
+                        <?php } ?>
                     </tr>
                     <?php } else { ?>
                     <tr>
-                    	<td style="text-align:center">Select your criteria above to update the table.</td>
+                        <td style="text-align:center">Select your criteria above to update the table.</td>
                     </tr>
                     <?php } ?>
                 </tbody>

@@ -129,7 +129,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                	<?php if(isset($_GET['period'])) {
+                    <?php if(isset($_GET['period'])) {
                         $salesIncl = 0;
                         $tax = 0;
                         $salesExc = 0;
@@ -144,7 +144,7 @@
                                     }
                                 }?>
                                 <td class="text-right">
-        	                        <?php echo number_format($salesIncl,2,'.',',');?>
+                                    <?php echo number_format($salesIncl,2,'.',',');?>
                                 </td>
                             <?php $salesIncl = 0; } ?>
                         </tr>
@@ -157,7 +157,7 @@
                                     }
                                 }?>
                                 <td class="text-right">
-        	                        <?php echo number_format($tax,2,',','.');?>
+                                    <?php echo number_format($tax,2,',','.');?>
                                 </td>
                             <?php $tax = 0; } ?>
                         </tr>
@@ -170,7 +170,7 @@
                                     }
                                 }?>
                                 <td class="text-right">
-        	                        <?php echo number_format($salesExc,2,'.',',');?>
+                                    <?php echo number_format($salesExc,2,'.',',');?>
                                 </td>
                             <?php $salesExc = 0; } ?>
                         </tr>
@@ -183,7 +183,7 @@
                                     }
                                 }?>
                                 <td class="text-right">
-        	                        <?php echo number_format($cost,2,'.',',');?>
+                                    <?php echo number_format($cost,2,'.',',');?>
                                 </td>
                             <?php $cost = 0; } ?>
                         </tr>
@@ -196,7 +196,7 @@
                                     }
                                 }?>
                                 <td class="text-right">
-        	                        <?php echo number_format($discounts,2,'.',',');?>
+                                    <?php echo number_format($discounts,2,'.',',');?>
                                 </td>
                             <?php $discounts = 0; } ?>
                         </tr>
@@ -210,7 +210,7 @@
                                     }
                                 }?>
                                 <td class="text-right">
-        	                        <?php echo number_format($salesExc - $cost,2,'.',',');?>
+                                    <?php echo number_format($salesExc - $cost,2,'.',',');?>
                                 </td>
                             <?php $salesExc = 0; $cost = 0; } ?>
                         </tr>
@@ -224,13 +224,13 @@
                                     }
                                 }?>
                                 <td class="text-right">
-        	                        <?php if($salesExc > 0){echo number_format(($salesExc - $cost) / $salesExc * 100,1,'.','').'%';} else {echo "0%";}?>
+                                    <?php if($salesExc > 0){echo number_format(($salesExc - $cost) / $salesExc * 100,1,'.','').'%';} else {echo "0%";}?>
                                 </td>
                             <?php $salesExc = 0; $cost = 0; } ?>
                         </tr>
                     <?php } else { ?>
                         <tr>
-                        	<td style="text-align:center">Select your criteria above to update the table.</td>
+                            <td style="text-align:center">Select your criteria above to update the table.</td>
                         </tr>
                     <?php } ?>
                 </tbody>

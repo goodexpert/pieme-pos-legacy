@@ -61,7 +61,7 @@ DpsClient.prototype.connect = function (callback) {
 
                 if (dpsReady) {
                 } else {
-	                alert("ERROR: "+response.message.description);
+                    alert("ERROR: "+response.message.description);
                 }
 
                 if (callback) {
@@ -106,10 +106,10 @@ DpsClient.prototype.payment = function (txnRef, amount, callback) {
                 var text1 = response.message.text1;
                 var text2 = response.message.text2;
                 if(text1 == true) {
-	                text1 = "";
+                    text1 = "";
                 }
                 if(text2 == true) {
-	                text2 = "";
+                    text2 = "";
                 }
                 //Show status box
                 $(".pay").hide();
@@ -118,8 +118,8 @@ DpsClient.prototype.payment = function (txnRef, amount, callback) {
                 
                 //IF transaction cancelled
                 if("TRANS. CANCELLED" == text1) {
-	                $(".pay").show();
-	                $(".eftpos_status").hide();
+                    $(".pay").show();
+                    $(".eftpos_status").hide();
                 }
                 
                 if ("SIGNATURE REQD" == text1) {
@@ -128,8 +128,8 @@ DpsClient.prototype.payment = function (txnRef, amount, callback) {
                     presssButton(self.socket, 'No');
                 }
             } else if ('ClearDisplay' == messageType) {
-            	$(".eftpos_status").hide();
-            	$(".modal-backdrop").hide();
+                $(".eftpos_status").hide();
+                $(".modal-backdrop").hide();
             } else if ('Transaction' == messageType) {
                 var responsetext = response.message.responsetext;
                 var txndatetime = response.message.txndatetime;
@@ -138,9 +138,9 @@ DpsClient.prototype.payment = function (txnRef, amount, callback) {
                 var txntype = response.message.txntype;
 
                 if("INCORRECT PIN" == responsetext) {
-                	$(".eftpos_status").hide();
-	                $(".pay").show();
-	                $(".modal-backdrop").show();
+                    $(".eftpos_status").hide();
+                    $(".pay").show();
+                    $(".modal-backdrop").show();
                 }
 
                 if (callback) {

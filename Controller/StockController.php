@@ -29,6 +29,7 @@ class StockController extends AppController {
         'MerchantProductTag',
         'MerchantProductCategory',
         'MerchantProduct',
+        'MerchantProductComposite',
         'MerchantProductInventory',
         'MerchantOutlet',
         'MerchantSupplier',
@@ -46,6 +47,11 @@ class StockController extends AppController {
     public function beforeFilter() {
         parent::beforeFilter();
     }
+
+/**
+ * Stock order implementation
+ *
+ */
 
 /**
  * list of the merchant stock orders.
@@ -604,159 +610,37 @@ class StockController extends AppController {
 
         $products = Hash::map($products, "{n}", function($array) {
             $newArray = $array['MerchantProduct'];
+
+            if ('Composite' === $newArray['stock_type']) {
+                $subitems = $this->MerchantProductComposite->find('all', array(
+                    'fields' => array(
+                        'MerchantProductComposite.quantity',
+                        'MerchantProduct.*'
+                    ),
+                    'joins' => array(
+                        array(
+                            'table' => 'merchant_products',
+                            'alias' => 'MerchantProduct',
+                            'type' => 'INNER',
+                            'conditions' => array(
+                                'MerchantProduct.id = MerchantProductComposite.product_id'
+                            )
+                        )
+                    ),
+                    'conditions' => array(
+                        'MerchantProductComposite.parent_id' => $newArray['id']
+                    )
+                ));
+                $newArray['subitems'] = Hash::map($subitems, "{n}", function($array) {
+                    $array['quantity'] = $array['MerchantProductComposite']['quantity'];
+                    unset($array['MerchantProductComposite']);
+                    return $array;
+                });
+            }
             return $newArray;
         });
         $result['products'] = $products;
         $result['success'] = true;
-        $this->serialize($result);
-    }
-
-    public function searchInventoryCount() {
-        $result = array(
-            'success' => false
-        );
-        $user = $this->Auth->user();
-
-        if ($this->request->is('ajax')) {
-            $data = $this->request->data;
-            $keyword = $data['keyword'];
-            $showInactive = $data['show_inactive'];
-
-            $conditions = array();
-            if (!$showInactive) {
-                $conditions = array(
-                    'MerchantProduct.is_active' => '1'
-                );
-            }
-
-            $this->MerchantSupplier->bindModel(array(
-                'hasMany' => array(
-                    'MerchantProduct' => array(
-                        'classModel' => 'MerchantProduct',
-                        'foreignKey' => 'supplier_id',
-                        'conditions' => $conditions
-                    )
-                )
-            ));
-
-            $suppliers = $this->MerchantSupplier->find('all', array(
-                'conditions' => array(
-                    'MerchantSupplier.merchant_id' => $user['merchant_id'],
-                    'MerchantSupplier.name LIKE' => '%' . $keyword . '%'
-                )
-            ));
-
-            $suppliers = Hash::map($suppliers, "{n}", function($array) {
-                $newArray = $array['MerchantSupplier'];
-                $newArray['MerchantProduct'] = $array['MerchantProduct'];
-                return $newArray;
-            });
-            $result['suppliers'] = $suppliers;
-
-            $this->MerchantProductBrand->bindModel(array(
-                'hasMany' => array(
-                    'MerchantProduct' => array(
-                        'classModel' => 'MerchantProduct',
-                        'foreignKey' => 'product_brand_id',
-                        'conditions' => $conditions
-                    )
-                )
-            ));
-
-            $brands = $this->MerchantProductBrand->find('all', array(
-                'conditions' => array(
-                    'MerchantProductBrand.merchant_id' => $user['merchant_id'],
-                    'MerchantProductBrand.name LIKE' => '%' . $keyword . '%'
-                )
-            ));
-
-            $brands = Hash::map($brands, "{n}", function($array) {
-                $newArray = $array['MerchantProductBrand'];
-                $newArray['MerchantProduct'] = $array['MerchantProduct'];
-                return $newArray;
-            });
-            $result['brands'] = $brands;
-
-            $this->MerchantProductType->bindModel(array(
-                'hasMany' => array(
-                    'MerchantProduct' => array(
-                        'classModel' => 'MerchantProduct',
-                        'foreignKey' => 'product_type_id',
-                        'conditions' => $conditions
-                    )
-                )
-            ));
-
-            $types = $this->MerchantProductType->find('all', array(
-                'conditions' => array(
-                    'MerchantProductType.merchant_id' => $user['merchant_id'],
-                    'MerchantProductType.name LIKE' => '%' . $keyword . '%'
-                )
-            ));
-
-            $types = Hash::map($types, "{n}", function($array) {
-                $newArray = $array['MerchantProductType'];
-                $newArray['MerchantProduct'] = $array['MerchantProduct'];
-                return $newArray;
-            });
-            $result['types'] = $types;
-
-            $this->MerchantProductCategory->bindModel(array(
-                'belongsTo' => array(
-                    'MerchantProduct' => array(
-                        'classModel' => 'MerchantProduct',
-                        'foreignKey' => 'product_id',
-                        'conditions' => $conditions
-                    )
-                )
-            ));
-
-            $this->MerchantProductTag->bindModel(array(
-                'hasMany' => array(
-                    'MerchantProductCategory' => array(
-                        'classModel' => 'MerchantProduct',
-                        'foreignKey' => 'product_tag_id'
-                    )
-                )
-            ));
-
-            $tags = $this->MerchantProductTag->find('all', array(
-                'conditions' => array(
-                    'MerchantProductTag.merchant_id' => $user['merchant_id'],
-                    'MerchantProductTag.name LIKE' => '%' . $keyword . '%'
-                ),
-                'recursive' => 2
-            ));
-
-            $tags = Hash::map($tags, "{n}", function($array) {
-                $newArray = $array['MerchantProductTag'];
-                $newArray['MerchantProduct'] = Hash::map($array['MerchantProductCategory'], "{n}", function($array) {
-                    return $array['MerchantProduct'];
-                });
-                return $newArray;
-            });
-            $result['tags'] = $tags;
-
-            $products = $this->MerchantProduct->find('all', array(
-                'conditions' => array_merge($conditions,
-                    array(
-                        'MerchantProduct.merchant_id' => $user['merchant_id'],
-                        'MerchantProduct.track_inventory = 1',
-                        'OR' => array(
-                            'MerchantProduct.name LIKE' => '%' . $keyword . '%',
-                            'MerchantProduct.sku LIKE' => '%' . $keyword . '%'
-                        )
-                    )
-                )
-            ));
-
-            $products = Hash::map($products, "{n}", function($array) {
-                $newArray = $array['MerchantProduct'];
-                return $newArray;
-            });
-            $result['products'] = $products;
-            $result['success'] = true;
-        }
         $this->serialize($result);
     }
 
@@ -1211,6 +1095,38 @@ class StockController extends AppController {
             ),
             'recursive' => 2
         ));
+
+        $order['MerchantStockOrderItem'] = Hash::map($order['MerchantStockOrderItem'], "{n}", function($array) {
+            $product = $array['MerchantProduct'];
+
+            if ('Composite' === $product['stock_type']) {
+                $subitems = $this->MerchantProductComposite->find('all', array(
+                    'fields' => array(
+                        'MerchantProductComposite.quantity',
+                        'MerchantProduct.*'
+                    ),
+                    'joins' => array(
+                        array(
+                            'table' => 'merchant_products',
+                            'alias' => 'MerchantProduct',
+                            'type' => 'INNER',
+                            'conditions' => array(
+                                'MerchantProduct.id = MerchantProductComposite.product_id'
+                            )
+                        )
+                    ),
+                    'conditions' => array(
+                        'MerchantProductComposite.parent_id' => $product['id']
+                    )
+                ));
+                $array['MerchantProduct']['subitems'] = Hash::map($subitems, "{n}", function($array) {
+                    $array['quantity'] = $array['MerchantProductComposite']['quantity'];
+                    unset($array['MerchantProductComposite']);
+                    return $array;
+                });
+            }
+            return $array;
+        });
         return $order;
     }
 
@@ -1894,6 +1810,10 @@ class StockController extends AppController {
         $this->serialize($result);
     }
 
+/**
+ * Inventory count implementation
+ *
+ */
     public function inventoryCount() {
         $user = $this->Auth->user();
 
@@ -1940,48 +1860,6 @@ class StockController extends AppController {
             }
         }
         $this->set('inventoryCounts', $inventoryCounts);
-        /*
-        debug($inventoryCounts);
-
-        // get the list 
-        $this->loadModel('MerchantStockTake');
-        $this->MerchantStockTake->bindModel(array(
-            'belongsTo' => array(
-                'MerchantOutlet' => array(
-                    'className' => 'MerchantOutlet',
-                    'foreignKey' => 'outlet_id'
-                )
-            )
-        ));
-
-        $takes = $this->MerchantStockTake->find('all', array(
-            'conditions' => array(
-                'MerchantStockTake.type' => 'STOCKTAKE'
-            )
-        ));
-
-        $inventoryCounts = array();
-        foreach ($takes as $take) {
-            $count = array(
-                'id' => $take['MerchantStockTake']['id'],
-                'name' => $take['MerchantStockTake']['name'],
-                'status' => $take['MerchantStockTake']['status'],
-                'outlet' => $take['MerchantOutlet']['name'],
-                'count' => ($take['MerchantStockTake']['full_count'] == '1') ? 'Full' : 'Partial',
-            );
-
-            if ( $take['MerchantStockTake']['status'] == 'STOCKTAKE_SCHEDULED' || $take['MerchantStockTake']['status'] == 'STOCKTAKE_IN_PROGRESS_PROCESSED' ) {
-                $inventoryCounts['Due'][] = $count;
-            } elseif ( $take['MerchantStockTake']['status'] == 'STOCKTAKE_COMPLETE' ) {
-                $inventoryCounts['Completed'][] = $count;
-            } elseif ( $take['MerchantStockTake']['status'] == 'STOCKTAKE_CANCELLED' ) {
-                $inventoryCounts['Cancelled'][] = $count;
-            }
-        }
-        $this->set('inventoryCounts', $inventoryCounts);
-
-        $this->set('takes', $takes);
-        */
     }
 
     public function newInventoryCount() {
@@ -2003,7 +1881,8 @@ class StockController extends AppController {
                 $filters = $data['filters'];
                 $start_date = date('Y-m-d h:i:s', strtotime($data['start_date'] . ' ' . $data['start_time']));
 
-                $stock_take_id = $this->__saveInventoryCount($user['merchant_id'], $stock_take_id, $name, $outlet_id, $show_inactive, $full_count, $filters, $start_date, 'STOCKTAKE_SCHEDULED');
+                $stock_take_id = $this->__saveInventoryCount($user['merchant_id'], $stock_take_id, $name,
+                    $outlet_id, $show_inactive, $full_count, $filters, $start_date, 'STOCKTAKE_SCHEDULED');
 
                 $dataSource->commit();
 
@@ -2012,17 +1891,21 @@ class StockController extends AppController {
                 }
             } catch (Exception $e) {
                 $dataSource->rollback();
+                $this->Session->setFlash($e->getMessage());
             }
         }
 
-        $outlets = $this->__listMerchantOutlets($this->Auth->user()['merchant_id']);
+        $outlets = $this->__listMerchantOutlets($user['merchant_id']);
         $this->set('outlets', $outlets);
     }
 
     public function editInventoryCount($id) {
+        if (empty($id)) {
+            $this->redirect('/inventory_count');
+        }
         $user = $this->Auth->user();
 
-        if ($this->request->is('post')) {
+        if ($this->request->is('')) {
             $data = $this->request->data;
             $this->set('data', $data);
 
@@ -2038,7 +1921,8 @@ class StockController extends AppController {
                 $filters = $data['filters'];
                 $start_date = date('Y-m-d h:i:s', strtotime($data['start_date'] . ' ' . $data['start_time']));
 
-                $stock_take_id = $this->__saveInventoryCount($user['merchant_id'], $stock_take_id, $name, $outlet_id, $show_inactive, $full_count, $filters, $start_date, 'STOCKTAKE_SCHEDULED');
+                $stock_take_id = $this->__saveInventoryCount($user['merchant_id'], $stock_take_id, $name,
+                    $outlet_id, $show_inactive, $full_count, $filters, $start_date, 'STOCKTAKE_SCHEDULED');
 
                 $dataSource->commit();
 
@@ -2047,87 +1931,143 @@ class StockController extends AppController {
                 }
             } catch (Exception $e) {
                 $dataSource->rollback();
+                $this->Session->setFlash($e->getMessage());
             }
-        } else if ($this->request->is('get')) {
-            if (empty($id)) {
-                $this->redirect('/inventory_count');
-            }
+        }
 
-            $stock_take = $this->MerchantStockTake->findById($id);
-
-            $full_count = $stock_take['MerchantStockTake']['full_count'];
-            $filters = json_decode($stock_take['MerchantStockTake']['filters'], true);
-            $products = "";
-
-            if ($full_count == '0' && !empty($filters)) {
-                $show_inactive = $stock_take['MerchantStockTake']['show_inactive'];
-                $products = array();
-
-                foreach ($filters as $type => $value) {
-                    $conditions = array(
-                        'MerchantProduct.merchant_id' => $user['merchant_id']
-                    );
-                    $joins = array();
-
-                    if ($type === 'brands') {
-                        $conditions = array_merge($conditions,
-                            array(
-                                'MerchantProduct.product_brand_id' => $value
-                            )
-                        );
-                    } elseif ($type === 'types') {
-                        $conditions = array_merge($conditions,
-                            array(
-                                'MerchantProduct.product_type_id' => $value
-                            )
-                        );
-                    } elseif ($type === 'tags') {
-                        $joins = array(
-                            array(
-                                'table' => 'merchant_product_categories',
-                                'alias' => 'MerchantProductCategory',
-                                'conditions' => array(
-                                    'MerchantProductCategory.product_id = MerchantProduct.id',
-                                    'MerchantProductCategory.product_tag_id' => $value
-                                )
-                            )
-                        );
-                    } elseif ($type === 'products') {
-                        $conditions = array_merge($conditions,
-                            array(
-                                'MerchantProduct.id' => $value
-                            )
-                        );
-                    }
-
-                    if ($show_inactive == '0') {
-                        $conditions = array_merge($conditions,
-                            array(
-                                'MerchantProduct.is_active' => '1'
-                            )
-                        );
-                    }
-
-                    $result = $this->MerchantProduct->find('all', array(
-                        'joins' => $joins,
-                        'conditions' => $conditions
-                    ));
-
-                    foreach ($result as $product) {
-                        $newArray = $product['MerchantProduct'];
-                        $products = Hash::insert($products, $newArray['id'], $newArray);
-                    }
-                }
-                $products = json_encode($products);
-            }
-            $stock_take['MerchantStockTake']['products'] = $products;
-            $this->set('data', $stock_take['MerchantStockTake']);
-        } else {
+        $stockTake = $this->MerchantStockTake->find('first', array(
+            'fields' => array(
+                'MerchantStockTake.*',
+                'MerchantOutlet.name'
+            ),
+            'joins' => array(
+                array(
+                    'table' => 'merchant_outlets',
+                    'alias' => 'MerchantOutlet',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'MerchantOutlet.id = MerchantStockTake.outlet_id'
+                    )
+                )
+            ),
+            'conditions' => array(
+                'MerchantStockTake.id' => $id
+            )
+        ));
+        if (empty($stockTake) || !is_array($stockTake)) {
             $this->redirect('/inventory_count');
         }
 
-        $outlets = $this->__listMerchantOutlets($this->Auth->user()['merchant_id']);
-        $this->set('outlets', $outlets);
+        $data = $stockTake['MerchantStockTake'];
+        $data['outlet_name'] = $stockTake['MerchantOutlet']['name'];
+        $products = array();
+
+        if (0 == $data['full_count']) {
+            $filters = json_decode($data['filters'], true);
+            $showInactive = $data['show_inactive'];
+
+            foreach ($filters as $filter) {
+                $joins = array();
+                $conditions = array();
+
+                if ('brands' === $filter['type']) {
+                    $joins = array(
+                        array(
+                            'table' => 'merchant_product_brands',
+                            'alias' => 'MerchantProductBrand',
+                            'type' => 'INNER',
+                            'conditions' => array(
+                                'MerchantProductBrand.id = MerchantProduct.product_brand_id'
+                            )
+                        )
+                    );
+
+                    $conditions = array(
+                        'MerchantProductBrand.id' => $filter['value']
+                    );
+                } elseif ('tags' === $filter['type']) {
+                    $joins = array(
+                        array(
+                            'table' => 'merchant_product_categories',
+                            'alias' => 'MerchantProductCategory',
+                            'type' => 'INNER',
+                            'conditions' => array(
+                                'MerchantProductCategory.product_id = MerchantProduct.id'
+                            )
+                        ),
+                        array(
+                            'table' => 'merchant_product_tags',
+                            'alias' => 'MerchantProductTag',
+                            'type' => 'INNER',
+                            'conditions' => array(
+                                'MerchantProductTag.id = MerchantProductCategory.product_tag_id'
+                            )
+                        )
+                    );
+
+                    $conditions = array(
+                        'MerchantProductTag.id' => $filter['value']
+                    );
+                } elseif ('types' === $filter['type']) {
+                    $joins = array(
+                        array(
+                            'table' => 'merchant_product_types',
+                            'alias' => 'MerchantProductType',
+                            'type' => 'INNER',
+                            'conditions' => array(
+                                'MerchantProductType.id = MerchantProduct.product_type_id'
+                            )
+                        )
+                    );
+
+                    $conditions = array(
+                        'MerchantProductType.id' => $filter['value']
+                    );
+                } elseif ('suppliers' === $filter['type']) {
+                    $joins = array(
+                        array(
+                            'table' => 'merchant_suppliers',
+                            'alias' => 'MerchantSupplier',
+                            'type' => 'INNER',
+                            'conditions' => array(
+                                'MerchantSupplier.id = MerchantProduct.supplier_id'
+                            )
+                        )
+                    );
+
+                    $conditions = array(
+                        'MerchantSupplier.id' => $value
+                    );
+                } elseif ('products' === $filter['type']) {
+                    $conditions = array(
+                        'MerchantProduct.id' => $filter['value']
+                    );
+                }
+
+                $conditions = array_merge($conditions, array(
+                    'MerchantProduct.track_inventory = 1',
+                    'MerchantProduct.stock_type = "Standard"',
+                ));
+
+                if (0 == $showInactive) {
+                    $conditions = array_merge($conditions, array(
+                        'MerchantProduct.is_active = 1',
+                    ));
+                }
+
+                $items = $this->MerchantProduct->find('all', array(
+                    'joins' => $joins,
+                    'conditions' => $conditions
+                ));
+
+                $items = Hash::map($items, "{n}", function($array) {
+                    return $array['MerchantProduct'];
+                });
+                $products = array_merge($products, $items);
+            }
+        }
+        $data['products'] = $products;
+        $this->set('data', $data);
     }
 
     public function saveInventoryCount() {
@@ -2153,7 +2093,8 @@ class StockController extends AppController {
             $filters = $data['filters'];
             $start_date = date('Y-m-d h:i:s', strtotime($data['start_date'] . ' ' . $data['start_time']));
 
-            $stock_take_id = $this->__saveInventoryCount($user['merchant_id'], $stock_take_id, $name, $outlet_id, $show_inactive, $full_count, $filters, $start_date, 'STOCKTAKE_SCHEDULED');
+            $stock_take_id = $this->__saveInventoryCount($user['merchant_id'], $stock_take_id, $name,
+                $outlet_id, $show_inactive, $full_count, $filters, $start_date, 'STOCKTAKE_SCHEDULED');
 
             $dataSource->commit();
 
@@ -2190,7 +2131,8 @@ class StockController extends AppController {
             $filters = $data['filters'];
             $start_date = date('Y-m-d h:i:s', strtotime($data['start_date'] . ' ' . $data['start_time']));
 
-            $stock_take_id = $this->__saveInventoryCount($user['merchant_id'], $stock_take_id, $name, $outlet_id, $show_inactive, $full_count, $filters, $start_date, 'STOCKTAKE_IN_PROGRESS_PROCESSED');
+            $stock_take_id = $this->__saveInventoryCount($user['merchant_id'], $stock_take_id, $name,
+                $outlet_id, $show_inactive, $full_count, $filters, $start_date, 'STOCKTAKE_IN_PROGRESS_PROCESSED');
 
             $products_ids = array();
             foreach (json_decode($data['products']) as $id => $product) {
@@ -2209,6 +2151,156 @@ class StockController extends AppController {
             $result['message'] = $e->getMessage();
         }
 
+        $this->serialize($result);
+    }
+
+    public function searchInventoryCount() {
+        $result = array(
+            'success' => false
+        );
+        $user = $this->Auth->user();
+
+        if ($this->request->is('ajax')) {
+            $data = $this->request->data;
+            $keyword = $data['keyword'];
+            $showInactive = $data['show_inactive'];
+
+            $conditions = array();
+            if (!$showInactive) {
+                $conditions = array(
+                    'MerchantProduct.is_active' => '1'
+                );
+            }
+
+            $this->MerchantSupplier->bindModel(array(
+                'hasMany' => array(
+                    'MerchantProduct' => array(
+                        'classModel' => 'MerchantProduct',
+                        'foreignKey' => 'supplier_id',
+                        'conditions' => $conditions
+                    )
+                )
+            ));
+
+            $suppliers = $this->MerchantSupplier->find('all', array(
+                'conditions' => array(
+                    'MerchantSupplier.merchant_id' => $user['merchant_id'],
+                    'MerchantSupplier.name LIKE' => '%' . $keyword . '%'
+                )
+            ));
+
+            $suppliers = Hash::map($suppliers, "{n}", function($array) {
+                $newArray = $array['MerchantSupplier'];
+                $newArray['MerchantProduct'] = $array['MerchantProduct'];
+                return $newArray;
+            });
+            $result['suppliers'] = $suppliers;
+
+            $this->MerchantProductBrand->bindModel(array(
+                'hasMany' => array(
+                    'MerchantProduct' => array(
+                        'classModel' => 'MerchantProduct',
+                        'foreignKey' => 'product_brand_id',
+                        'conditions' => $conditions
+                    )
+                )
+            ));
+
+            $brands = $this->MerchantProductBrand->find('all', array(
+                'conditions' => array(
+                    'MerchantProductBrand.merchant_id' => $user['merchant_id'],
+                    'MerchantProductBrand.name LIKE' => '%' . $keyword . '%'
+                )
+            ));
+
+            $brands = Hash::map($brands, "{n}", function($array) {
+                $newArray = $array['MerchantProductBrand'];
+                $newArray['MerchantProduct'] = $array['MerchantProduct'];
+                return $newArray;
+            });
+            $result['brands'] = $brands;
+
+            $this->MerchantProductType->bindModel(array(
+                'hasMany' => array(
+                    'MerchantProduct' => array(
+                        'classModel' => 'MerchantProduct',
+                        'foreignKey' => 'product_type_id',
+                        'conditions' => $conditions
+                    )
+                )
+            ));
+
+            $types = $this->MerchantProductType->find('all', array(
+                'conditions' => array(
+                    'MerchantProductType.merchant_id' => $user['merchant_id'],
+                    'MerchantProductType.name LIKE' => '%' . $keyword . '%'
+                )
+            ));
+
+            $types = Hash::map($types, "{n}", function($array) {
+                $newArray = $array['MerchantProductType'];
+                $newArray['MerchantProduct'] = $array['MerchantProduct'];
+                return $newArray;
+            });
+            $result['types'] = $types;
+
+            $this->MerchantProductCategory->bindModel(array(
+                'belongsTo' => array(
+                    'MerchantProduct' => array(
+                        'classModel' => 'MerchantProduct',
+                        'foreignKey' => 'product_id',
+                        'conditions' => $conditions
+                    )
+                )
+            ));
+
+            $this->MerchantProductTag->bindModel(array(
+                'hasMany' => array(
+                    'MerchantProductCategory' => array(
+                        'classModel' => 'MerchantProduct',
+                        'foreignKey' => 'product_tag_id'
+                    )
+                )
+            ));
+
+            $tags = $this->MerchantProductTag->find('all', array(
+                'conditions' => array(
+                    'MerchantProductTag.merchant_id' => $user['merchant_id'],
+                    'MerchantProductTag.name LIKE' => '%' . $keyword . '%'
+                ),
+                'recursive' => 2
+            ));
+
+            $tags = Hash::map($tags, "{n}", function($array) {
+                $newArray = $array['MerchantProductTag'];
+                $newArray['MerchantProduct'] = Hash::map($array['MerchantProductCategory'], "{n}", function($array) {
+                    return $array['MerchantProduct'];
+                });
+                return $newArray;
+            });
+            $result['tags'] = $tags;
+
+            $products = $this->MerchantProduct->find('all', array(
+                'conditions' => array_merge($conditions,
+                    array(
+                        'MerchantProduct.merchant_id' => $user['merchant_id'],
+                        'MerchantProduct.track_inventory = 1',
+                        'MerchantProduct.stock_type = "Standard"',
+                        'OR' => array(
+                            'MerchantProduct.name LIKE' => '%' . $keyword . '%',
+                            'MerchantProduct.sku LIKE' => '%' . $keyword . '%'
+                        )
+                    )
+                )
+            ));
+
+            $products = Hash::map($products, "{n}", function($array) {
+                $newArray = $array['MerchantProduct'];
+                return $newArray;
+            });
+            $result['products'] = $products;
+            $result['success'] = true;
+        }
         $this->serialize($result);
     }
 

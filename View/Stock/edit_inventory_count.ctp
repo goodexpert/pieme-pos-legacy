@@ -1,26 +1,28 @@
 <?php
     $stock_take_id = "";
-    $filters = "";
-    $products = "";
     $name = "";
     $outlet_id = "";
+    $outlet_name = "";
     $current = time();
     $start_date = date('Y-m-d', $current);
     $start_time = date('h:i A', $current - $current % 3600 + 3600);
     $show_inactive = 0;
     $full_count = 0;
+    $filters = "";
+    $products = "";
 
     if (!empty($data) && is_array($data)) {
         $stock_take_id = $data['id'];
-        $filters = $data['filters'];
-        $products = $data['products'];
         $name = $data['name'];
         $outlet_id = $data['outlet_id'];
+        $outlet_name = $data['outlet_name'];
         $timestamp = $this->Time->fromString($data['start_date']);
         $start_date = date('Y-m-d', $timestamp);
         $start_time = date('h:i A', $timestamp);
         $show_inactive = $data['show_inactive'];
         $full_count = $data['full_count'];
+        $filters = $data['filters'];
+        $products = json_encode($data['products'], true);
     }
  ?>
 <style>
@@ -101,15 +103,7 @@
                     <dl>
                         <dt>Outlet</dt>
                         <dd>
-                            <?php
-                                foreach ($outlets as $key => $value) :
-                                    if ($outlet_id == $key) :
-                             ?>
-                            <input type="text" id="outlet_name" value="<?php echo $value; ?>" disabled="disabled" />
-                            <?php
-                                    endif;
-                                endforeach;
-                             ?>
+                            <input type="text" id="outlet_name" value="<?php echo $outlet_name; ?>" disabled="disabled" />
                         </dd>
                     </dl>
                 </div>
@@ -603,12 +597,12 @@ function updateData() {
     if (isFullCount == 0) {
         if ($("#filters").val() != "") {
             filters = JSON.parse($("#filters").val());
-            $("#filters").val("");
+            //$("#filters").val("");
         }
 
         if ($("#products").val() != "") {
             products = JSON.parse($("#products").val());
-            $("#products").val("");
+            //$("#products").val("");
         }
     }
     updateView();
