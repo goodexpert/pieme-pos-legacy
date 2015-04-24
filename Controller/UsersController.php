@@ -24,7 +24,7 @@ class UsersController extends AppController {
  *
  * @var array
  */
-    public $uses = array('MerchantUser', 'MerchantUserType', 'MerchantOutlet', 'MerchantRegister');
+    public $uses = array('MerchantUser', 'MerchantUserType', 'MerchantOutlet', 'MerchantRegister', 'Subscriber');
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -90,6 +90,8 @@ class UsersController extends AppController {
                 $user['last_ip_address'] = $_SERVER['REMOTE_ADDR'];
                 $user['last_logged'] = date("Y-m-d H:i:s");
                 $this->MerchantUser->save($user);
+                
+                $_SESSION["Auth"]["User"]["Subscriber"] = $this->Subscriber->findById($user['Merchant']['subscriber_id']);
 
                 // Create a cookie variable
                 $this->Cookie->write('session_id', rand());

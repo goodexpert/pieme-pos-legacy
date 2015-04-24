@@ -42,7 +42,7 @@ class PaymentsController extends AppController {
                 'PaymentType.is_active' => 1
             ),
             'order' => array(
-                'PaymentType.group ASC'
+                'PaymentType.payment_group_id ASC'
             )
         ));
         $this->set('payments', $payments);
@@ -50,7 +50,7 @@ class PaymentsController extends AppController {
         if($this->request->is('post')) {
             $data = $this->request->data;
             $data['merchant_id'] = $user['merchant_id'];
-            
+
             $this->MerchantPaymentType->create();
             $this->MerchantPaymentType->save($data);
             

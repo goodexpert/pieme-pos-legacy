@@ -17,7 +17,7 @@ class SignupController extends AppController {
  *
  * @var array
  */
-    public $uses = array('Contact', 'Merchant');
+    public $uses = array('Contact', 'Merchant', 'Subscriber');
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -73,11 +73,19 @@ class SignupController extends AppController {
             $contact['Contact'] = $data;
             $contact['Contact']['email'] = $data['username'];
             $this->Contact->save($contact);
+            
+            // create a subscriber
+            $this->Subscriber->create();
+            $subscriber['Subscriber']['contact_id'] = $this->Contact->id;
+            $subscriber['Subscriber']['username'] = $data['username'];
+            $subscriber['Subscriber']['password'] = $data['password'];
+            $this->Subscriber->save($subscriber);
 
             // create a merchant
             $this->Merchant->create();
             $merchant['Merchant'] = $data;
-            $merchant['Merchant']['contact_id'] = $this->Contact->id;
+            $merchant['Merchant']['subscriber_id'] = $this->Subscriber->id;
+            $merchant['Merchant']['plan_id'] = 'subscriber_plan_retailer_trial';
             $merchant['Merchant']['trial_ends'] = CakeTime::format('+30 days', '%Y-%m-%d');
             $this->Merchant->save($merchant);
             $merchant_id = $this->Merchant->id;

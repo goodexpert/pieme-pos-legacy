@@ -130,7 +130,7 @@
                       <dl class="col-md-6 col-xs-6 col-sm-6 col-alpha"> 
                         <dt class="col-md-4">Average cost</dt>
                         <dd class="col-md-8">
-                            <span class="product_average_cost"><?=$product['MerchantProduct']['supply_price'];?></span>
+                            <span class="product_average_cost"><?php echo number_format($product['MerchantProduct']['supply_price'],2,'.',',');?></span>
                         </dd>
                       </dl>
                       </div>

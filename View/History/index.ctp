@@ -146,18 +146,20 @@
                         <td colspan="8" class="expandable-child-td">
                             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega table-inner-btn">
                                 <div class="pull-left">
-                                    <?php if($sale['RegisterSale']['status'] !== "VOIDED") { ?>
+                                    <?php if($sale['RegisterSale']['status'] !== "voided") { ?>
                                     <a href="/history/edit?r=<?=$sale['RegisterSale']['id'];?>" class="edit_history"><button class="btn btn-default">Edit Sale</button></a>
                                     <?php } ?>
                                     <a href="/history/receipt?r=<?=$sale['RegisterSale']['id'];?>">
                                     <button class="btn btn-default">View Receipt</button>
                                     </a>
-                                    <?php if($sale['RegisterSale']['status'] !== "VOIDED") { ?>
+                                    <?php if($sale['RegisterSale']['status'] !== "voided") { ?>
                                     <button class="btn btn-default send_receipt">Send Receipt</button>
                                     <?php } ?>
                                 </div>
                                 <div class="pull-right">
+                                    <?php if($sale['RegisterSale']['status'] !== "voided") { ?>
                                     <button class="btn btn-default void-history" data-id="<?=$sale['RegisterSale']['id'];?>">Void</button>
+                                    <?php } ?>
                                     <?php if($sale['RegisterSale']['status'] == 'layby' or $sale['RegisterSale']['status'] == 'saved' or $sale['RegisterSale']['status'] == 'onaccount'){ ?>
                                     <button class="btn btn-default">Continue Sale</button>
                                     <?php } ?>
@@ -228,7 +230,7 @@
                                             <?php } ?>
                                         </ul>
                                         <div class="dashed-line-gr"></div>
-                                        <button class="btn btn-default pull-right">Apply payment / refund</button>
+                                        <button type="button" class="btn btn-default pull-right payment_action">Apply payment / refund</button>
                                         <div class="solid-line"></div>
                                     </div>
                                     <div class="receipt-bt"></div>
@@ -251,7 +253,85 @@
     </div>
     <!-- END CONTENT -->
 </div>
-
+<!-- VOID POPUP BOX -->
+<div class="confirmation-modal modal" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="confirm-close cancel" data-dismiss="modal" aria-hidden="true">
+              <i class="glyphicon glyphicon-remove"></i>
+              </button>
+              <h4 class="modal-title">Apply Payment / Refund</h4>
+          </div>
+          <div class="modal-body">
+              <div class="col-md-12 col-alpha col-omega">
+                  <div class="col-md-4 col-alpha col-omega">
+                  Payment type
+                  </div>
+                  <div class="col-md-8">
+                      <select class="payment_action_type">
+                          <?php foreach($payments as $paymentType) { ?>
+                          <option value="<?php echo $paymentType['MerchantPaymentType']['id'];?>"><?php echo $paymentType['MerchantPaymentType']['name'];?></option>
+                          <?php } ?>
+                      </select>
+                  </div>
+              </div>
+              <div class="col-md-12 col-alpha col-omega">
+                  <div class="col-md-4 col-alpha col-omega">
+                      Amount
+                  </div>
+                  <div class="col-md-8">
+                      <input type="text" class="payment_action_amount">
+                  </div>
+              </div>
+              <div class="col-md-12 col-alpha col-omega">
+                  <div class="col-md-4 col-alpha col-omega">
+                      Payment date
+                  </div>
+                  <div class="col-md-8">
+                      <input type="text" class="payment_action_date">
+                  </div>
+              </div>
+              <div class="col-md-12 col-alpha col-omega">
+                  <div class="col-md-4 col-alpha col-omega">
+                      Payment time
+                  </div>
+                  <div class="col-md-8">
+                      <select class="col-md-5 payment_action_h">
+                          <?php for($i=0;$i<=23;$i++) { ?>
+                          <option value="<?php echo $i;?>"><?php echo $i;?></option>
+                          <?php } ?>
+                      </select>
+                      <span class="col-md-2">:</span>
+                      <select class="col-md-5 payment_action_m">
+                          <?php for($i=0;$i<=59;$i++) { ?>
+                          <option value="<?php echo $i;?>"><?php echo $i;?></option>
+                          <?php } ?>
+                      </select>
+                  </div>
+              </div>
+              <div class="col-md-12 col-alpha col-omega">
+                  <div class="col-md-4 col-alpha col-omega">
+                      Register
+                  </div>
+                  <div class="col-md-8">
+                      <select class="payment_action_register">
+                          <?php foreach($registers as $register) { ?>
+                          <option value="<?php echo $register['MerchantRegister']['id'];?>"><?php echo $register['MerchantRegister']['name'];?></option>
+                          <?php } ?>
+                      </select>
+                  </div>
+              </div>
+          </div>
+          <div class="modal-footer">
+              <button class="cancel btn btn-primary" type="button" data-dismiss="modal">Cancel</button>
+              <button class="confirm btn btn-success" type="button" data-dismiss="modal">Save</button>
+          </div>
+      </div>
+  </div>
+</div>
+<!-- VOID POPUP BOX END -->
+<div class="fade in modal-backdrop" style="display: none;"></div>
 <!-- END CONTAINER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
@@ -291,6 +371,7 @@ jQuery(document).ready(function() {
     
     $("#date_from").datepicker({ dateFormat: 'yy-mm-dd' });
     $("#date_to").datepicker({ dateFormat: 'yy-mm-dd' });
+    $(".payment_action_date").datepicker({ dateFormat: 'yy-mm-dd' });
     
     $(".ShowMore").click(function(){
         $(this).parents(".history-detail").find(".hidden_product").toggle();
@@ -378,6 +459,18 @@ jQuery(document).ready(function() {
             $(this).addClass('disabled');
         }
     });
+    
+    $(".payment_action").click(function(){
+        $(".modal").show();
+        $(".modal-backdrop").show();
+        
+        $(".payment_action_amount").val($(this).parent().find(".total").text().split("$")[1]);
+    });
+    
+    $(".cancel").click(function(){
+        $(".modal").hide();
+        $(".modal-backdrop").hide();
+    });
 });
 </script>
 
@@ -398,7 +491,7 @@ $(".void-history").click(function(){
     $(this).parent().prev("div").children(".edit_history").remove();
     $(this).parent().prev("div").children(".send_receipt").remove();
     $(this).parent().remove();
-    
+
     $.ajax({
         url: '/history/void.json',
         type: 'POST',

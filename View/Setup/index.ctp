@@ -144,19 +144,19 @@
                   <dt>Contact name</dt>
                   <dd>
                     <div class="col-md-6 col-sm-6 col-xs-6 col-alpha">
-                      <input type="text" placeholder="First" name="merchant[contact][first_name]" value="<?php echo $merchant['Contact']['first_name']; ?>" id="merchant_contact_first_name">
+                      <input type="text" placeholder="First" name="merchant[contact][first_name]" value="<?php echo $merchant['Subscriber']['Contact']['first_name']; ?>" id="merchant_contact_first_name">
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6 col-omega">
-                      <input type="text" placeholder="Last" name="merchant[contact][last_name]" value="<?php echo $merchant['Contact']['last_name']; ?>" id="merchant_contact_last_name">
+                      <input type="text" placeholder="Last" name="merchant[contact][last_name]" value="<?php echo $merchant['Subscriber']['Contact']['last_name']; ?>" id="merchant_contact_last_name">
                     </div>
                   </dd>
                   <dt>Email</dt>
                   <dd>
-                    <input type="email" name="merchant[contact][email]" value="<?php echo $merchant['Contact']['email']; ?>" id="merchant_contact_email">
+                    <input type="email" name="merchant[contact][email]" value="<?php echo $merchant['Subscriber']['Contact']['email']; ?>" id="merchant_contact_email">
                   </dd>
                   <dt>Phone</dt>
                   <dd>
-                    <input type="text" name="merchant[contact][phone]" value="<?php echo $merchant['Contact']['phone']; ?>" id="merchant_contact_phone">
+                    <input type="text" name="merchant[contact][phone]" value="<?php echo $merchant['Subscriber']['Contact']['phone']; ?>" id="merchant_contact_phone">
                   </dd>
                 </dl>
               </div>
@@ -164,7 +164,7 @@
                 <dl>
                   <dt>Website</dt>
                   <dd>
-                    <input type="text" name="merchant[contact][website]" value="<?php echo $merchant['Contact']['website']; ?>" id="merchant_contact_website">
+                    <input type="text" name="merchant[contact][website]" value="<?php echo $merchant['Subscriber']['Contact']['website']; ?>" id="merchant_contact_website">
                   </dd>
                 </dl>
               </div>
@@ -180,34 +180,34 @@
                 <dl>
                   <dt>Street</dt>
                   <dd>
-                    <input type="text" name="merchant[contact][physical_address1]" value="<?php echo $merchant['Contact']['physical_address1']; ?>" id="merchant_contact_physical_address1">
+                    <input type="text" name="merchant[contact][physical_address1]" value="<?php echo $merchant['Subscriber']['Contact']['physical_address1']; ?>" id="merchant_contact_physical_address1">
                   </dd>
                   <dt>Street</dt>
                   <dd>
-                    <input type="text" name="merchant[contact][physical_address2]" value="<?php echo $merchant['Contact']['physical_address2']; ?>" id="merchant_contact_physical_address2">
+                    <input type="text" name="merchant[contact][physical_address2]" value="<?php echo $merchant['Subscriber']['Contact']['physical_address2']; ?>" id="merchant_contact_physical_address2">
                   </dd>
                   <dt>Suburb</dt>
                   <dd>
-                    <input type="text" name="merchant[contact][physical_suburb]" value="<?php echo $merchant['Contact']['physical_suburb']; ?>" id="merchant_contact_physical_suburb">
+                    <input type="text" name="merchant[contact][physical_suburb]" value="<?php echo $merchant['Subscriber']['Contact']['physical_suburb']; ?>" id="merchant_contact_physical_suburb">
                   </dd>
                   <dt>City</dt>
                   <dd>
-                    <input type="text" name="merchant[contact][physical_city]" value="<?php echo $merchant['Contact']['physical_city']; ?>"id="merchant_contact_physical_city">
+                    <input type="text" name="merchant[contact][physical_city]" value="<?php echo $merchant['Subscriber']['Contact']['physical_city']; ?>"id="merchant_contact_physical_city">
                   </dd>
                   <dt>Physical postcode</dt>
                   <dd>
-                    <input type="text" name="merchant[contact][physical_postcode]" value="<?php echo $merchant['Contact']['physical_postcode']; ?>" id="merchant_contact_physical_postcode">
+                    <input type="text" name="merchant[contact][physical_postcode]" value="<?php echo $merchant['Subscriber']['Contact']['physical_postcode']; ?>" id="merchant_contact_physical_postcode">
                   </dd>
                   <dt>State</dt>
                   <dd>
-                    <input type="text" name="merchant[contact][physical_state]" value="<?php echo $merchant['Contact']['physical_state']; ?>" id="merchant_contact_physical_state">
+                    <input type="text" name="merchant[contact][physical_state]" value="<?php echo $merchant['Subscriber']['Contact']['physical_state']; ?>" id="merchant_contact_physical_state">
                   </dd>
                   <dt>Country</dt>
                   <dd>
                     <select name="merchant[contact][physical_country_id]" id="merchant_contact_physical_country_id">
                       <option disabled>Select a country</option>
                       <?php foreach($countries as $country) {?>
-                      <option value="<?php echo $country['Country']['country_code'];?>" <?php if($merchant['Contact']['physical_country_id'] == $country['Country']['country_code']){echo "selected";}?>><?php echo $country['Country']['country_name'];?></option>
+                      <option value="<?php echo $country['Country']['country_code'];?>" <?php if($merchant['Subscriber']['Contact']['physical_country_id'] == $country['Country']['country_code']){echo "selected";}?>><?php echo $country['Country']['country_name'];?></option>
                       <?php } ?>
                     </select>
                   </dd>
@@ -218,34 +218,34 @@
                 <dl>
                   <dt>Street</dt>
                   <dd>
-                    <input type="text" name="merchant[contact][postal_address1]" value="<?php echo $merchant['Contact']['postal_address1']; ?>" id="merchant_contact_postal_address1">
+                    <input type="text" name="merchant[contact][postal_address1]" value="<?php echo $merchant['Subscriber']['Contact']['postal_address1']; ?>" id="merchant_contact_postal_address1">
                   </dd>
                   <dt>Street</dt>
                   <dd>
-                    <input type="text" name="merchant[contact][postal_address2]" value="<?php echo $merchant['Contact']['postal_address2']; ?>" id="merchant_contact_postal_address2">
+                    <input type="text" name="merchant[contact][postal_address2]" value="<?php echo $merchant['Subscriber']['Contact']['postal_address2']; ?>" id="merchant_contact_postal_address2">
                   </dd>
                   <dt>Suburb</dt>
                   <dd>
-                    <input type="text" name="merchant[contact][postal_suburb]" value="<?php echo $merchant['Contact']['postal_suburb']; ?>" id="merchant_contact_postal_suburb">
+                    <input type="text" name="merchant[contact][postal_suburb]" value="<?php echo $merchant['Subscriber']['Contact']['postal_suburb']; ?>" id="merchant_contact_postal_suburb">
                   </dd>
                   <dt>City</dt>
                   <dd>
-                    <input type="text" name="merchant[contact][postal_city]" value="<?php echo $merchant['Contact']['postal_city']; ?>" id="merchant_contact_postal_city">
+                    <input type="text" name="merchant[contact][postal_city]" value="<?php echo $merchant['Subscriber']['Contact']['postal_city']; ?>" id="merchant_contact_postal_city">
                   </dd>
                   <dt>Postal postcode</dt>
                   <dd>
-                    <input type="text" name="merchant[contact][postal_postcode]" value="<?php echo $merchant['Contact']['postal_postcode']; ?>" id="merchant_contact_postal_postcode">
+                    <input type="text" name="merchant[contact][postal_postcode]" value="<?php echo $merchant['Subscriber']['Contact']['postal_postcode']; ?>" id="merchant_contact_postal_postcode">
                   </dd>
                   <dt>State</dt>
                   <dd>
-                    <input type="text" name="merchant[contact][postal_state]" value="<?php echo $merchant['Contact']['postal_state']; ?>" id="merchant_contact_postal_state">
+                    <input type="text" name="merchant[contact][postal_state]" value="<?php echo $merchant['Subscriber']['Contact']['postal_state']; ?>" id="merchant_contact_postal_state">
                   </dd>
                   <dt>Country</dt>
                   <dd>
                     <select name="merchant[contact][postal_country_id]" id="merchant_contact_postal_country_id">
                       <option disabled>Select a country</option>
                       <?php foreach($countries as $country) {?>
-                      <option value="<?php echo $country['Country']['country_code'];?>" <?php if($merchant['Contact']['postal_country_id'] == $country['Country']['country_code']){echo "selected";}?>><?php echo $country['Country']['country_name'];?></option>
+                      <option value="<?php echo $country['Country']['country_code'];?>" <?php if($merchant['Subscriber']['Contact']['postal_country_id'] == $country['Country']['country_code']){echo "selected";}?>><?php echo $country['Country']['country_name'];?></option>
                       <?php } ?>
                     </select>
                   </dd>

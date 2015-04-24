@@ -461,7 +461,7 @@ class HomeController extends AppController {
                     }
                 }
                 
-                if(!empty($paymentArray)) {
+                if(!empty($data['payments'])) {
                 
                     $paymentArray = json_decode($data['payments']);
     

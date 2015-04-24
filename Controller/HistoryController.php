@@ -45,6 +45,14 @@ class HistoryController extends AppController {
         ));
         $this->set('registers',$registers);
         
+        $this->loadModel('MerchantPaymentType');
+        $payments = $this->MerchantPaymentType->find('all', array(
+            'conditions' => array(
+                'MerchantPaymentType.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('payments',$payments);
+        
         $status = $this->SaleStatus->find('all');
         $this->set('status',$status);
         

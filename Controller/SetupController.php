@@ -41,6 +41,7 @@ class SetupController extends AppController {
         $this->loadModel('Country');
         $this->loadModel('Merchant');
         $this->loadModel('MerchantTaxRate');
+        $this->loadModel('Subscriber');
 
         if ($this->request->is('ajax') || $this->request->is('post')) {
             $data = $this->request->data;
@@ -50,13 +51,33 @@ class SetupController extends AppController {
                 $this->Merchant->id = $user['merchant_id'];
                 $this->Merchant->save($data);
                 
-                $this->Contact->id = $user['Merchant']['contact_id'];
+                $this->Contact->id = $user['Subscriber']['Subscriber']['contact_id'];
                 $this->Contact->save($data);
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
             }
             $this->serialize($result);
         } else if ($this->request->is('get')){
+            $this->Subscriber->bindModel(array(
+                'belongsTo' => array(
+                    'Contact' => array(
+                        'className' => 'Contact',
+                        'foreignKey' => 'contact_id'
+                    )
+                )
+            ));
+            
+            $this->Merchant->bindModel(array(
+                'belongsTo ' => array(
+                    'Subscriber' => array(
+                        'className' => 'Subscriber',
+                        'foreignKey' => 'subscriber_id'
+                    )
+                )
+            ));
+            
+            $this->Merchant->recursive = 2;
+
             $merchant = $this->Merchant->find('first', array(
                 'conditions' => array(
                     'Merchant.id' => $user['merchant_id']
