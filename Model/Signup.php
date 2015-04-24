@@ -50,6 +50,7 @@ class Signup extends AppModel {
  * @var array
  */
     public $validate = array(
+        /*
         'name' => array(
             'notEmpty' => array(
                 'rule' => 'notEmpty',
@@ -74,6 +75,7 @@ class Signup extends AppModel {
                 'message' => 'This web address is unavailable.'
             ),
         ),
+         */
         'username' => array(
             'notEmpty' => array(
                 'rule' => 'notEmpty',
@@ -82,10 +84,6 @@ class Signup extends AppModel {
             'email' => array(
                 'rule' => 'email',
                 'message' => 'Please enter a valid email address.'
-            ),
-            'isUnique' => array(
-                'rule' => 'isUnique',
-                'message' => 'This email address is already registered.'
             ),
         ),
         'password' => array(

@@ -3,11 +3,11 @@
 App::uses('AppModel', 'Model');
 
 /**
- * MerchantVariant model for ONZSA.
+ * PaymentGroup model for ONZSA.
  *
  * @package       onzsa.Model
  */
-class MerchantVariant extends AppModel {
+class PaymentGroup extends AppModel {
 
 /**
  * The name of the database connection to use bind this model class.
@@ -21,7 +21,7 @@ class MerchantVariant extends AppModel {
  *
  * @var string
  */
-    public $useTable = "merchant_variants";
+    public $useTable = "payment_groups";
 
 /**
  * Primary key of the database table.
@@ -35,7 +35,7 @@ class MerchantVariant extends AppModel {
  *
  * @var string
  */
-    public $name = "MerchantVariant";
+    public $name = "PaymentGroup";
 
 /**
  * belongsTo property
@@ -50,14 +50,6 @@ class MerchantVariant extends AppModel {
  * @var array
  */
     public $validate = array(
-        'name' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty'
-            ),
-            'isUnique' => array(
-                'rule' => 'isUnique'
-            ),
-        ),
     );
 
 }

@@ -28,7 +28,7 @@ class Category extends AppModel {
  *
  * @var string
  */
-    public $primaryKey = "id";
+    public $primaryKey = "category";
 
 /**
  * Name of the Model.

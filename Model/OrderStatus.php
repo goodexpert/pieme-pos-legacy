@@ -28,7 +28,7 @@ class OrderStatus extends AppModel {
  *
  * @var string
  */
-    public $primaryKey = "id";
+    public $primaryKey = "status";
 
 /**
  * Name of the Model.

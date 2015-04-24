@@ -3,11 +3,11 @@
 App::uses('AppModel', 'Model');
 
 /**
- * Group model for ONZSA.
+ * BookingStatus model for ONZSA.
  *
  * @package       onzsa.Model
  */
-class Group extends AppModel {
+class BookingStatus extends AppModel {
 
 /**
  * The name of the database connection to use bind this model class.
@@ -21,21 +21,28 @@ class Group extends AppModel {
  *
  * @var string
  */
-    public $useTable = "groups";
+    public $useTable = "booking_status";
 
 /**
  * Primary key of the database table.
  *
  * @var string
  */
-    public $primaryKey = "id";
+    public $primaryKey = "status";
 
 /**
  * Name of the Model.
  *
  * @var string
  */
-    public $name = "Group";
+    public $name = "BookingStatus";
+
+/**
+ * belongsTo property
+ *
+ * @var array
+ */
+    public $belongsTo = array();
 
 /**
  * Validation rules.
@@ -43,14 +50,6 @@ class Group extends AppModel {
  * @var array
  */
     public $validate = array(
-        'name' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty'
-            ),
-            'isUnique' => array(
-                'rule' => 'isUnique'
-            ),
-        ),
     );
 
 }

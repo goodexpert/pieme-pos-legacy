@@ -28,7 +28,7 @@ class MerchantUserType extends AppModel {
  *
  * @var string
  */
-    public $primaryKey = "id";
+    public $primaryKey = "user_type";
 
 /**
  * Name of the Model.

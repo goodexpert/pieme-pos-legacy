@@ -42,7 +42,7 @@ class Merchant extends AppModel {
  *
  * @var array
  */
-    public $belongsTo = array('Contact', 'Plan');
+    public $belongsTo = array('Subscriber', 'Plan');
 
 /**
  * Validation rules.

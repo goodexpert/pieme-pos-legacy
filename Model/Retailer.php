@@ -3,11 +3,11 @@
 App::uses('AppModel', 'Model');
 
 /**
- * Group model for ONZSA.
+ * Retailer model for ONZSA.
  *
  * @package       onzsa.Model
  */
-class Group extends AppModel {
+class Retailer extends AppModel {
 
 /**
  * The name of the database connection to use bind this model class.
@@ -21,7 +21,7 @@ class Group extends AppModel {
  *
  * @var string
  */
-    public $useTable = "groups";
+    public $useTable = "retailers";
 
 /**
  * Primary key of the database table.
@@ -35,7 +35,14 @@ class Group extends AppModel {
  *
  * @var string
  */
-    public $name = "Group";
+    public $name = "Retailer";
+
+/**
+ * belongsTo property
+ *
+ * @var array
+ */
+    public $belongsTo = array('Subscriber', 'Plan');
 
 /**
  * Validation rules.
@@ -43,14 +50,6 @@ class Group extends AppModel {
  * @var array
  */
     public $validate = array(
-        'name' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty'
-            ),
-            'isUnique' => array(
-                'rule' => 'isUnique'
-            ),
-        ),
     );
 
 }

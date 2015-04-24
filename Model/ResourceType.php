@@ -3,11 +3,11 @@
 App::uses('AppModel', 'Model');
 
 /**
- * Group model for ONZSA.
+ * ResourceType model for ONZSA.
  *
  * @package       onzsa.Model
  */
-class Group extends AppModel {
+class ResourceType extends AppModel {
 
 /**
  * The name of the database connection to use bind this model class.
@@ -21,7 +21,7 @@ class Group extends AppModel {
  *
  * @var string
  */
-    public $useTable = "groups";
+    public $useTable = "resource_types";
 
 /**
  * Primary key of the database table.
@@ -35,7 +35,14 @@ class Group extends AppModel {
  *
  * @var string
  */
-    public $name = "Group";
+    public $name = "ResourceType";
+
+/**
+ * belongsTo property
+ *
+ * @var array
+ */
+    public $belongsTo = array();
 
 /**
  * Validation rules.
@@ -45,10 +52,8 @@ class Group extends AppModel {
     public $validate = array(
         'name' => array(
             'notEmpty' => array(
-                'rule' => 'notEmpty'
-            ),
-            'isUnique' => array(
-                'rule' => 'isUnique'
+                'rule' => 'notEmpty',
+                'message' => 'Please enter the resource type name.'
             ),
         ),
     );
