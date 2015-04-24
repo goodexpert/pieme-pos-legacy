@@ -588,7 +588,7 @@
                           <input type="text" id="add_customer-mm" style="width:50px;" placeholder="MM">
                           <input type="text" id="add_customer-yyyy" style="width:80px;" placeholder="YYYY">
                           <h5>Gender</h5>
-                            <div class="col-md-12">
+                            <div class="col-md-12 col-alpha col-omega">
                                 <input type="radio" name="gender" value="F" style="width:30px;" id="gender_female"> 
                                 <label for="gender_female">Female</label>
                                 <input type="radio" name="gender" value="M" style="width:30px;" id="gender_male"> 
