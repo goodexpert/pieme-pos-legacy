@@ -67,24 +67,15 @@
                          <dt>Payment type</dt>
                          <dd>
                             <select name="payment_type_id">
-                                <optgroup label="General"><option value="1">Cash</option>
-                                    <option value="2">Cheque</option>
-                                    <option value="3">Credit Card</option>
-                                    <option value="4">EFTPOS</option>
-                                    <option value="9" disabled>Finance</option>
-                                    <option value="10" disabled>Voucher</option>
-                                    <option value="11" disabled>Credit Note</option>
-                                    <option value="101" disabled>Cash (Concealed totals)</option>
-                                </optgroup>
-                                <optgroup label="Integrated"><option value="5">Integrated EFTPOS (DPS)</option>
-                                    <option value="7">Square</option>
-                                    <option value="102" disabled>Element</option>
-                                    <option value="8">PayPal</option>
-                                    <option value="105" disabled>Authorize.Net</option>
-                                    <option value="108" disabled>Tyro</option>
-                                    <option value="111" disabled>iZettle</option>
-                                    <option value="114" disabled>Smartpay</option>
-                                </optgroup>
+                            	<?php foreach($paymentGroups as $group) { ?>
+                            	   <optgroup label="<?php echo $group['PaymentGroup']['name'];?>">
+                                	   <?php foreach($payments as $payment) { 
+                                    	   if($payment['PaymentType']['payment_group_id'] == $group['PaymentGroup']['id']) { ?>
+                                    	       <option value="<?php echo $payment['PaymentType']['id'];?>"><?php echo $payment['PaymentType']['name'];?></option>
+                                	   <?php }
+                                	   } ?>
+                            	   </optgroup>
+                            	<?php } ?>
                             </select>
                         </dd>
                          <dt>Name</dt>

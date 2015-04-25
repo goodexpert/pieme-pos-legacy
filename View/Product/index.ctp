@@ -475,6 +475,7 @@ $(document).ready(function () {
                                 variant_option_three_name: variant_option_three_name,
                                 variant_option_three_value: variant_option_three_value,
                                 sku: sku,
+                                image: 'no-image.png',
                                 stock_type: stock_type,
                                 track_inventory: track_inventory,
                                 is_active: is_active

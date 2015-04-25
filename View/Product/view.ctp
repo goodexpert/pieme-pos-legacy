@@ -79,7 +79,7 @@
                 <div class="form-body line-box col-md-12 col-xs-12 col-sm-12 col-alpha col-omega product_tags-list margin-top-20"> 
                   <!-- START col-md-12-->
                   <div class="col-md-12 col-xs-12 col-sm-12">
-                      <h5>A cup of Coffee. You can delete this once you have some other products setup.</h5>
+                      <h5><?php echo $product['MerchantProduct']['description'];?></h5>
                       <?php foreach($tags as $tag) { ?>
                           <span class="btn btn-sm btn-default"><?php echo $tag['MerchantProductTag']['name'];?></span>
                       <?php } ?>

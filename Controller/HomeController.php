@@ -57,6 +57,10 @@ class HomeController extends AppController {
                     'ProductUom' => array(
                         'className' => 'ProductUom',
                         'foreignKey' => 'product_uom'
+                    ),
+                    'MerchantTaxRate' => array(
+                        'className' => 'MerchantTaxRate',
+                        'foreignKey' => 'tax_id'
                     )
                 )
             ));
@@ -66,8 +70,7 @@ class HomeController extends AppController {
             $items = $this->MerchantProduct->find('all', array(
                 'fields' => array(
                     'MerchantProduct.*',
-                    'Merchant.*',
-                    'MerchantTaxRate.*'
+                    'Merchant.*'
                 ),
                 'conditions' => array(
                     'MerchantProduct.merchant_id' => $user['merchant_id'],
@@ -80,14 +83,6 @@ class HomeController extends AppController {
                         'type' => 'INNER',
                         'conditions' => array(
                             'Merchant.id = MerchantProduct.merchant_id'
-                        )
-                    ),
-                    array(
-                        'table' => 'merchant_tax_rates',
-                        'alias' => 'MerchantTaxRate',
-                        'type' => 'INNER',
-                        'conditions' => array(
-                            'MerchantTaxRate.id = MerchantProduct.tax_id'
                         )
                     )
                 )
@@ -202,6 +197,10 @@ class HomeController extends AppController {
                 'hasMany' => array(
                     'RegisterSaleItem' => array(
                         'className' => 'RegisterSaleItem',
+                        'foreignKey' => 'sale_id'
+                    ),
+                    'RegisterSalePayment' => array(
+                        'className' => 'RegisterSalePayment',
                         'foreignKey' => 'sale_id'
                     )
                 ),

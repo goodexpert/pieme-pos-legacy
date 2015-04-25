@@ -36,16 +36,6 @@ class PaymentsController extends AppController {
 
     public function create() {
         $user = $this->Auth->user();
-
-        $payments = $this->PaymentType->find('all', array(
-            'conditions' => array(
-                'PaymentType.is_active' => 1
-            ),
-            'order' => array(
-                'PaymentType.payment_group_id ASC'
-            )
-        ));
-        $this->set('payments', $payments);
         
         if($this->request->is('post')) {
             $data = $this->request->data;
@@ -57,6 +47,21 @@ class PaymentsController extends AppController {
             header("Location: /setup/payments");
             exit();
         }
+        
+        $this->loadModel('PaymentGroup');
+        
+        $paymentGroups = $this->PaymentGroup->find('all');
+        $this->set('paymentGroups',$paymentGroups);
+
+        $payments = $this->PaymentType->find('all', array(
+            'conditions' => array(
+                'PaymentType.is_active' => 1
+            ),
+            'order' => array(
+                'PaymentType.payment_group_id ASC'
+            )
+        ));
+        $this->set('payments', $payments);
     }
 
     public function edit($id) {

@@ -296,7 +296,7 @@
                                                 ?>
                                             </span></b>
                                         </div>
-                                        <?php if($key_items[$product['product_id']]['MerchantProduct']['track_inventory'] == 1) { ?>
+                                        <?php if($key_items[$product['product_id']]['MerchantProduct']['track_inventory'] == 1 && !empty($key_items[$product['product_id']]['MerchantProductInventory'])) { ?>
                                         <div class="product-stock col-lg-7 col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                                             <small>In Stock: <?php echo $key_items[$product['product_id']]['MerchantProductInventory'][0]['count'];?></small>
                                         </div>
@@ -410,6 +410,12 @@
                                 <span class="retrieve-child-tax"><?=number_format($get['MerchantProduct']['tax'],2,'.',',');?></span>
                                 <span class="retrieve-child-qty"><?php echo $get['quantity'];?></span>
                             </span>
+                            <?php } ?>
+                            <?php foreach($sale['RegisterSalePayment'] as $paid) { ?>
+                                <span class="hidden retrieve-child-payments">
+                                    <input type="hidden" class="payments-name" value="<?php echo $paid['MerchantPaymentType']['name'];?>">
+                                    <input type="hidden" class="payments-amount" value="<?php echo number_format($paid['amount'],2,'.','');?>">
+                                </span>
                             <?php } ?>
                         </td>
                     
@@ -900,6 +906,9 @@ jQuery(document).ready(function() {
                         $(".added-body").prepend('<tr class="order-product"><input type="hidden" class="added-code" value="'+$(this).children(".retrieve-child-id").text()+'"><td class="added-product">'+$(this).children(".retrieve-child-name").text()+'<br><span class="added-price">$'+parseFloat($(this).children(".retrieve-child-price").text()).toFixed(2)+'</span></td><td class="added-qty"><a qty-id="'+retCount+'" class="qty-control btn btn-white">'+$(this).find(".retrieve-child-qty").text()+'</a></td><td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="'+retCount+'">@'+price_including_tax.toFixed(2)+'</a></td><td class="added-amount"></td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');
                         retCount++;
                     });
+                    targetSale.find(".retrieve-child-payments").each(function(){
+                        $('<ul class="split_attr"><li>'+$(this).find(".payments-name").val()+'</li><li class="pull-right">$'+$(this).find(".payments-amount").val()+'</li></ul>').insertBefore(".total_cost");
+                    });
                     if(customer_name == ''){
 
                     } else {
@@ -913,6 +922,7 @@ jQuery(document).ready(function() {
             }
 
         } else {
+            var targetSale = $(this);
             $(".added-null").hide();
             var retCount = 0;
             $("#retrieve_sale_id").val($(this).attr("data-id"));
@@ -920,6 +930,9 @@ jQuery(document).ready(function() {
 
                 $(".added-body").prepend('<tr class="order-product"><input type="hidden" class="added-code" value="'+$(this).children(".retrieve-child-id").text()+'"><input type="hidden" class="hidden-retail_price" value="'+$(this).find(".retrieve-child-price").text()+'"><input type="hidden" class="hidden-tax" value="'+$(this).find(".retrieve-child-tax").text()+'"><input type="hidden" class="hidden-supply_price" value="'+$(this).find(".retrieve-child-supply-price").text()+'"><td class="added-product">'+$(this).children(".retrieve-child-name").text()+'<br><span class="added-price">$'+parseFloat($(this).children(".retrieve-child-price").text()).toFixed(2)+'</span></td><td class="added-qty"><a qty-id="'+retCount+'" class="qty-control btn btn-white">'+$(this).find(".retrieve-child-qty").text()+'</a></td><td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="'+retCount+'">@'+$(this).find(".retrieve-child-price-incl-tax").text()+'</a></td><td class="added-amount"></td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');/*COME HERE*/
                 retCount++;
+            });
+            targetSale.find(".retrieve-child-payments").each(function(){
+                $('<ul class="split_attr"><li>'+$(this).find(".payments-name").val()+'</li><li class="pull-right">$'+$(this).find(".payments-amount").val()+'</li></ul>').insertBefore(".total_cost");
             });
             if(customer_name == ''){
                     
@@ -955,8 +968,17 @@ jQuery(document).ready(function() {
             $(".modal-backdrop").show();
             $("#set-pay-amount").val($(".toPay").text());
             to_pay = $(".toPay").text();
-            $(".split_attr").remove();
-            $(".payment-display").find(".total_cost").children(".pull-right").text('$'+$(".toPay").text());
+            if($(".split_attr").length > 0) {
+                current_amount = to_pay;
+                $(".split_attr").each(function(){
+                    current_amount = current_amount - $(this).find(".pull-right").text().split("$")[1];
+                    to_pay = to_pay - $(this).find(".pull-right").text().split("$")[1];
+                })
+                $("#set-pay-amount").val(current_amount.toFixed(2));
+                $(".payment-display").find(".total_cost").children(".pull-right").text('$'+current_amount.toFixed(2));
+            } else {
+                $(".payment-display").find(".total_cost").children(".pull-right").text('$'+$(".toPay").text());
+            }
             payments = [];
         }
     });
@@ -1171,6 +1193,7 @@ jQuery(document).ready(function() {
                 }
             });
         }
+        $(".split_attr").remove();
     }
 
     function park_register_sale(status,amount,pays) {
@@ -1237,6 +1260,7 @@ jQuery(document).ready(function() {
             $(".customer-search-result").children().hide();
             $("#customer-result-name").text('');
             $("#customer-selected-id").val($("#customer-null").val());
+            $(".split_attr").remove();
         }
     }
     var payments = {};

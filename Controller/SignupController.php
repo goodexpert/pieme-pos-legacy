@@ -59,6 +59,16 @@ class SignupController extends AppController {
     }
 
 /**
+ * Create random password
+ *
+ * @return string
+ */
+    function generate_password( $length = 8 ) {
+        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-=+;:,.?";
+        $password = substr( str_shuffle( $chars ), 0, $length );
+        return $password;
+    }
+/**
  * Create the merchant function.
  *
  * @return boolean
@@ -85,6 +95,7 @@ class SignupController extends AppController {
             $this->Merchant->create();
             $merchant['Merchant'] = $data;
             $merchant['Merchant']['subscriber_id'] = $this->Subscriber->id;
+            $merchant['Merchant']['merchant_code'] = $this->generate_password(6);
             $merchant['Merchant']['plan_id'] = 'subscriber_plan_retailer_trial';
             $merchant['Merchant']['trial_ends'] = CakeTime::format('+30 days', '%Y-%m-%d');
             $this->Merchant->save($merchant);

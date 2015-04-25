@@ -58,23 +58,6 @@ class SetupController extends AppController {
             }
             $this->serialize($result);
         } else if ($this->request->is('get')){
-            $this->Subscriber->bindModel(array(
-                'belongsTo' => array(
-                    'Contact' => array(
-                        'className' => 'Contact',
-                        'foreignKey' => 'contact_id'
-                    )
-                )
-            ));
-            
-            $this->Merchant->bindModel(array(
-                'belongsTo ' => array(
-                    'Subscriber' => array(
-                        'className' => 'Subscriber',
-                        'foreignKey' => 'subscriber_id'
-                    )
-                )
-            ));
             
             $this->Merchant->recursive = 2;
 
