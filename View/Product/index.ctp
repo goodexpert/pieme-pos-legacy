@@ -102,13 +102,13 @@
                         <dd><input type="text" name="name" value="<?php if(isset($_GET['name'])){echo $_GET['name'];}?>"></dd>
                         <dt>Tag</dt>
                         <dd>
-                            <input type="search" list="tag" id="tag_search" class="col-md-8" autocomplete="off">
+                            <input type="search" list="tag" id="tag_search" class="col-md-7" autocomplete="off">
                             <datalist id="tag">
                                 <?php foreach($tags as $tag) { ?>
                                 <option value="<?php echo $tag['MerchantProductTag']['name'];?>">
                                 <?php } ?>
                             </datalist>
-                            <button type="button" class="col-md-4" id="add_tag">ADD</button>
+                            <button type="button" class="col-md-4 btn btn-default pull-right" style="height: 30px;" id="add_tag">ADD</button>
                         </dd>
                     </dl> 
                 </div>

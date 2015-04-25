@@ -86,7 +86,29 @@
                     <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 signup-img">
                         <img src="/img/ipad.png" alt="signup-img" >
                     </div>
-                    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container">
+                    <div id="signup_account_type" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container">
+                        <div class="line-box col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <h1>Sign up</h1>
+                            <div class="dashed-line-gr"><?php echo $this->Session->flash(); ?></div>
+                                <h5>Please select an account type</h5>
+								<div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
+                            <button type="button" class="btn btn-white btn-right pull-right width-initial">
+                                <input type="radio" class="hidden" id="signup_account_type_open_franchise" value="0">
+                                <label for="signup_account_type_open_franchise">Open Franchise</label>
+                            </button>
+                            <button type="button" class="btn btn-white btn-center pull-right width-initial">
+                                <input type="radio" class="hidden" id="signup_account_type_join_franchise" value="1">
+                                <label for="signup_account_type_join_franchise">Join Franchise</label>
+                            </button>
+                            <button type="button" class="btn btn-white btn-left pull-right width-initial">
+                                <input type="radio" class="hidden" id="signup_account_type_single_merchant" value="2">
+                                <label for="signup_account_type_single_merchant">Single Merchant</label>
+                            </button>
+								</div>
+                        </div>
+                    </div>
+                    
+                    <div id="signup_info" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container" style="display: none;">
                         <div class="line-box">
                             <h1>Sign up</h1>
                             <div class="dashed-line-gr"><?php echo $this->Session->flash(); ?></div>
@@ -195,6 +217,16 @@
                     $("#time_zone").val(timezone);
                 });
                 */
+                
+                /*
+                 * Account Type Select
+                 */
+                $("#signup_account_type input[type=radio]").change(function(){
+                    if($(this).val() == 0 || $(this).val() == 2) {
+                        $(this).parents("#signup_account_type").hide();
+                        $("#signup_info").show();
+                    }
+                });
             });    
         </script>
     </div>

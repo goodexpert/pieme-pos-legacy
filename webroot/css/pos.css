@@ -193,7 +193,7 @@ a { cursor:pointer;}
 {
 	border-radius:3px 0 0 3px;
 	float: left;
-	margin-right: -1px;
+	margin-right: -1px !important;
 	}
 .btn-right{
 	border-radius:0 3px 3px 0;
@@ -201,7 +201,7 @@ a { cursor:pointer;}
 .btn-center{
 	border-radius:0;
 	float: left;
-	margin-right: -1px;
+	margin-right: -1px !important;
 }
 .text-align-center {text-align:center}
 
@@ -253,11 +253,14 @@ div.radio, div.checker {
 }
 
 .width-inherit {
-	width:inherit	
+	width:inherit !important;
+}
+.width-initial {
+	width:initial !important;
 }
 
 .height-inherit {
-	height:inherit	
+	height:inherit !important;
 }
 
 
