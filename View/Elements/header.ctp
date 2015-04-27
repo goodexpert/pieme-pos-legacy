@@ -1,4 +1,3 @@
-<!-- BEGIN HEADER INNER -->
 <div class="page-header navbar navbar-fixed-top">
     <div class="container">
         <div class="page-header-inner">
@@ -160,4 +159,3 @@
         </div>
     </div>
 </div>
-<!-- END HEADER INNER -->

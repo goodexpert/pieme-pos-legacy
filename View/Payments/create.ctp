@@ -67,15 +67,15 @@
                          <dt>Payment type</dt>
                          <dd>
                             <select name="payment_type_id">
-                            	<?php foreach($paymentGroups as $group) { ?>
-                            	   <optgroup label="<?php echo $group['PaymentGroup']['name'];?>">
-                                	   <?php foreach($payments as $payment) { 
-                                    	   if($payment['PaymentType']['payment_group_id'] == $group['PaymentGroup']['id']) { ?>
-                                    	       <option value="<?php echo $payment['PaymentType']['id'];?>"><?php echo $payment['PaymentType']['name'];?></option>
-                                	   <?php }
-                                	   } ?>
-                            	   </optgroup>
-                            	<?php } ?>
+                                <?php foreach($paymentGroups as $group) { ?>
+                                   <optgroup label="<?php echo $group['PaymentGroup']['name'];?>">
+                                       <?php foreach($payments as $payment) { 
+                                           if($payment['PaymentType']['payment_group_id'] == $group['PaymentGroup']['id']) { ?>
+                                               <option value="<?php echo $payment['PaymentType']['id'];?>"><?php echo $payment['PaymentType']['name'];?></option>
+                                       <?php }
+                                       } ?>
+                                   </optgroup>
+                                <?php } ?>
                             </select>
                         </dd>
                          <dt>Name</dt>

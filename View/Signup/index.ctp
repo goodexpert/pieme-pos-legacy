@@ -90,21 +90,21 @@
                         <div class="line-box col-lg-12 col-md-12 col-sm-12 col-xs-12">
                             <h1>Sign up</h1>
                             <div class="dashed-line-gr"><?php echo $this->Session->flash(); ?></div>
-                                <h5>Please select an account type</h5>
-								<div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
-                            <button type="button" class="btn btn-white btn-right pull-right width-initial">
-                                <input type="radio" class="hidden" id="signup_account_type_open_franchise" value="0">
-                                <label for="signup_account_type_open_franchise">Open Franchise</label>
-                            </button>
-                            <button type="button" class="btn btn-white btn-center pull-right width-initial">
-                                <input type="radio" class="hidden" id="signup_account_type_join_franchise" value="1">
-                                <label for="signup_account_type_join_franchise">Join Franchise</label>
-                            </button>
-                            <button type="button" class="btn btn-white btn-left pull-right width-initial">
-                                <input type="radio" class="hidden" id="signup_account_type_single_merchant" value="2">
-                                <label for="signup_account_type_single_merchant">Single Merchant</label>
-                            </button>
-								</div>
+                            <h5>Please select an account type</h5>
+                            <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
+                                <button type="button" class="btn btn-white btn-right pull-right width-initial">
+                                    <input type="radio" class="hidden" id="signup_account_type_open_franchise" value="0">
+                                    <label for="signup_account_type_open_franchise">Open Franchise</label>
+                                </button>
+                                <button type="button" class="btn btn-white btn-center pull-right width-initial">
+                                    <input type="radio" class="hidden" id="signup_account_type_join_franchise" value="1">
+                                    <label for="signup_account_type_join_franchise">Join Franchise</label>
+                                </button>
+                                <button type="button" class="btn btn-white btn-left pull-right width-initial">
+                                    <input type="radio" class="hidden" id="signup_account_type_single_merchant" value="2">
+                                    <label for="signup_account_type_single_merchant">Single Merchant</label>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     
