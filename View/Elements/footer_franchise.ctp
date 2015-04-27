@@ -1,4 +1,3 @@
-<!-- BEGIN FOOTER INNER -->
 <div class="page-footer">
     <div class="container">
         <div class="page-footer-inner col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -12,4 +11,3 @@
         </div>
     </div>
 </div>
-<!-- END FOOTER INNER -->
