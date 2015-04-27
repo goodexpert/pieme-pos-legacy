@@ -21,17 +21,7 @@
                         </a>
                     </li>
                     <li>
-                        <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
-                        Sell <i class="fa fa-angle-down"></i></a>
-                        <ul class="dropdown-menu pull-left">
-                            <li>
-                                <a href="/home">Sale</a>
-                            </li>
-                            <li>
-                                <a href="/home/close">Close Register</a>
-                            </li>
-                        </ul>
-                        </a>
+                        <a href="/home">Sell</a>
                     </li>
                     <li>
                         <a href="/history">

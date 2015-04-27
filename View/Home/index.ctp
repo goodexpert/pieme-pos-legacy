@@ -116,6 +116,7 @@
              <button class="btn btn-white mini pull-right" style="display:none;"><i class="icon-size-actual"></i></button>
              <button class="btn btn-white pull-right btn-right margin-right-5 current_open">CURRENT SALE</button>
              <button class="btn btn-white pull-right btn-left retrieve_open">RETRIEVE SALE</button>
+             <a href="/home/close"><button class="btn btn-white pull-right btn-left">CLOSE REGISTER</button></a>
         </div>
         <input type="hidden" id="retrieve_sale_id">
         <div id="block-left" class="col-md-6 col-xs-6">
@@ -372,6 +373,7 @@
             <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
                 <button class="btn btn-white pull-right btn-right margin-right-5 current_open">CURRENT SALE</button>
                 <button class="btn btn-white pull-right btn-left retrieve_open">RETRIEVE SALE</button>
+                <a href="/home/close"><button class="btn btn-white pull-right btn-left">CLOSE REGISTER</button></a>
             </div>
         </div>
         <table id="retrieveTable" class="table-bordered">
@@ -638,7 +640,7 @@
       <div class="modal-dialog">
           <div class="modal-content">
               <div class="modal-header">
-                  <button type="button" class="confirm-close cancel" data-dismiss="modal" aria-hidden="true">
+                  <button type="button" class="confirm-close cancel register-cancel" data-dismiss="modal" aria-hidden="true">
                   <i class="glyphicon glyphicon-remove"></i>
                   </button>
                   <h4 class="modal-title">Select a register</h4>
@@ -1004,6 +1006,9 @@ jQuery(document).ready(function() {
     $(document).on('click','.cancel',function(){
         $('.fade').hide();
     });
+    $(".register-cancel").click(function(){
+        window.location.href = "/dashboard";
+    });
 
 
     /**
@@ -1074,23 +1079,29 @@ jQuery(document).ready(function() {
 
     var total_discount = 0;
     var total_cost = 0;
-    function clear_order() {
+    function clear_sale() {
         $(".customer-search-result").children().hide();
         $("#customer-result-name").val('');
         $("#customer-selected-id").val($("#customer-null").val());
         $(".order-product").remove();
         $(".order-discount").remove();
+        $(".added-null").show();
+        $(".split_attr").remove();
+        $(".split_receipt_attr").remove();
     }
     function print_receipt(payment_name, paying) {
+        var now = new Date(Date.now());
+
+        $(".invoice-date").text($.datepicker.formatDate('yy/mm/dd', new Date())+' '+now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds());
         $(".fade").hide();
         $(".receipt-product-table").children("tbody").text('');
         $(".order-product").each(function(){
             $(".receipt-product-table").children("tbody").append('<tr><td class="receipt-product-qty">'+$(this).children(".added-qty").children("a").text()+'</td><td class="receipt-product-name">'+$(this).children(".added-product").text().split("$")[0]+'</td><td class="receipt-price pull-right">$'+$(this).children(".added-amount").text()+'</td></tr>');
         });
         $(".order-discount").each(function(){
-            $(".receipt-product-table").append('<tr><td class="receipt-product-qty"></td><td class="receipt-product-name">Discount</td><td class="receipt-price pull-right">- $'+$(this).find(".amount").text()+'</td></tr>'); 
+            $(".receipt-product-table").children("tbody").append('<tr><td class="receipt-product-qty"></td><td class="receipt-product-name">Discount</td><td class="receipt-price pull-right">- $'+$(this).find(".amount").text()+'</td></tr>'); 
         });
-        $('<tr class="split_attr"><td>'+payment_name+'</td><td class="pull-right">$'+paying+'</td></tr>').insertBefore('.receipt_total');
+        $('<tr class="split_receipt_attr"><td>'+payment_name+'</td><td class="pull-right">$'+paying+'</td></tr>').insertBefore('.receipt_total');
         $(".receipt-customer-name").text($("#customer-result-name").text());
         $(".receipt-subtotal").text('$'+ $(".subTotal").text());
         $(".receipt-tax").text('$'+ $(".gst").text());
@@ -1193,9 +1204,7 @@ jQuery(document).ready(function() {
                 }
             });
         }
-        $(".split_attr").remove();
     }
-
     function park_register_sale(status,amount,pays) {
         if(!$("#retrieve_sale_id").val() == ''){
             save_line_order();
@@ -1225,9 +1234,6 @@ jQuery(document).ready(function() {
                     }
                 }
             });
-            $(".customer-search-result").children().hide();
-            $("#customer-result-name").text('');
-            $("#customer-selected-id").val($("#customer-null").val());
         } else {
             save_line_order();
 
@@ -1256,21 +1262,18 @@ jQuery(document).ready(function() {
                     }
                 }
             });
-    
-            $(".customer-search-result").children().hide();
-            $("#customer-result-name").text('');
-            $("#customer-selected-id").val($("#customer-null").val());
-            $(".split_attr").remove();
         }
+        clear_sale();
     }
     var payments = {};
     // Pay
     $(document).on("click",".payment_method",function(){
         payment_id = $(this).attr("payment-id");
-        var payment_name = $(this).find("p").text();
+        payment_name = $(this).find("p").text();
         var payment_type_id = parseInt($(this).attr("payment-type-id"));
         var payment_type = $(this).attr("payment-type");
-        var paying = parseFloat($("#set-pay-amount").val()).toFixed(2);
+        paying = parseFloat($("#set-pay-amount").val()).toFixed(2);
+        console.log(payment_name+', '+paying);
 
         // case payment_type_id eq 5 or payment_type eq 'Integrated EFTPOS (DPS)'
         if (5 == payment_type_id || 'Integrated EFTPOS (DPS)' == payment_type) {
@@ -1281,6 +1284,24 @@ jQuery(document).ready(function() {
                     dpsClient.payment('TXN12345', paying, function(data, error) {
                         console.log('Call callback:');
                         console.log(data);
+                        if(data.responsetext == "ACCEPTED") {
+
+                            payments.push([payment_id, paying]);
+
+                            if(parseFloat(to_pay).toFixed(2) == parseFloat(paying).toFixed(2)){
+                                save_register_sale(payments);
+                                print_receipt(payment_name, paying);
+                                clear_sale();
+                            } else {
+                                to_pay = to_pay - paying;
+                                $(".pay").show();
+                                $(".modal-backdrop").show();
+                                $("#set-pay-amount").val(to_pay.toFixed(2));
+                                $(".payment-display").children("li").prepend('<ul class="split_attr"><li>'+payment_name+'</li><li class="pull-right">$'+paying+'</li></ul>');
+                                $(".payment-display").find(".total_cost").children(".pull-right").text('$'+to_pay.toFixed(2));
+                                $('<tr class="split_receipt_attr"><td>'+payment_name+'</td><td class="pull-right">$'+paying+'</td></tr>').insertBefore('.receipt_total');
+                            }
+                        }
                     });
                 } else {
                 }
@@ -1296,18 +1317,14 @@ jQuery(document).ready(function() {
 
             print_receipt(payment_name, paying);
 
-            clear_order();
+            clear_sale();
         } else {
             to_pay = to_pay - paying;
             $("#set-pay-amount").val(to_pay.toFixed(2));
             $(".payment-display").children("li").prepend('<ul class="split_attr"><li>'+payment_name+'</li><li class="pull-right">$'+paying+'</li></ul>');
             $(".payment-display").find(".total_cost").children(".pull-right").text('$'+to_pay.toFixed(2));
-            $('<tr class="split_attr"><td>'+payment_name+'</td><td class="pull-right">$'+paying+'</td></tr>').insertBefore('.receipt_total');
+            $('<tr class="split_receipt_attr"><td>'+payment_name+'</td><td class="pull-right">$'+paying+'</td></tr>').insertBefore('.receipt_total');
         }
-
-        var now = new Date(Date.now());
-
-        $(".invoice-date").text($.datepicker.formatDate('yy/mm/dd', new Date())+' '+now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds());
     });
 
     // Park

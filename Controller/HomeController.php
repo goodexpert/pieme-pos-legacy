@@ -128,9 +128,10 @@ class HomeController extends AppController {
             ));
             $this->set('pricebooks',$pricebooks);
         }
-        $merchant = $this->MerchantRegister->findById($user['MerchantRegister']['id']);
-        $this->set('merchant',$merchant);
-        
+        if(isset($user['MerchantRegister']['id']) && !empty($user['MerchantRegister']['id'])) {
+            $merchant = $this->MerchantRegister->findById($user['MerchantRegister']['id']);
+            $this->set('merchant',$merchant);
+        }
         $this->MerchantOutlet->bindModel(array(
             'hasMany' => array(
                 'MerchantRegister' => array(
