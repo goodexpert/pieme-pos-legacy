@@ -105,6 +105,7 @@ DpsClient.prototype.payment = function (txnRef, amount, callback) {
             if ('Display' == messageType) {
                 var text1 = response.message.text1;
                 var text2 = response.message.text2;
+                $(".eftpos_status").find("button").remove();
                 if(text1 == true) {
                     text1 = "";
                 }
@@ -123,9 +124,16 @@ DpsClient.prototype.payment = function (txnRef, amount, callback) {
                 }
                 
                 if ("SIGNATURE REQD" == text1) {
-                
+
                 } else if ("SIGNATURE OK Y/N?" == text1) {
-                    presssButton(self.socket, 'No');
+                    $(".eftpos_status").find("button").remove();
+                    $(".eftpos_status").find(".modal-content").append('<button class="btn btn-success accept-sign">Yes</button><button class="btn btn-primary decline-sign">No</button>');
+                	$(".accept-sign").click(function(){
+	                	presssButton(self.socket, 'Yes');
+                	});
+                	$(".decline-sign").click(function(){
+	                	presssButton(self.socket, 'No');
+                	});
                 }
             } else if ('ClearDisplay' == messageType) {
                 $(".eftpos_status").hide();

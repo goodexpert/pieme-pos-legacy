@@ -341,15 +341,6 @@
               </div>
 
           </div>
-          <div class="col-md-12 col-xs-12 col-sm-12 product-found-list col-alpha col-omega" style="display:none;">
-              <div class="scroller" data-always-visible="1" data-rail-visible="0">
-                  <ul class="feeds">
-                    <li>
-                    
-                    </li>
-                  </ul>
-              </div>
-          </div>
           <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega product-list-footer">
               <span class="pull-left clickable prev"><i class="glyphicon glyphicon-chevron-left"></i></span>
               <span class="pull-right clickable next"><i class="glyphicon glyphicon-chevron-right"></i></span>
@@ -361,6 +352,15 @@
                         echo '<span class="page clickable">'.$i.'</span>';
                   }
               }?>
+          </div>
+          <div class="col-md-12 col-xs-12 col-sm-12 product-found-list col-alpha col-omega" style="display: none;">
+              <div class="scroller" data-always-visible="1" data-rail-visible="0">
+                  <ul class="feeds">
+                    <li>
+                    
+                    </li>
+                  </ul>
+              </div>
           </div>
         </div>
       </div>
@@ -406,10 +406,10 @@
                             <span class="hidden retrieve-child-products">
                                 <span class="retrieve-child-id"><?=$get['MerchantProduct']['id'];?></span>
                                 <span class="retrieve-child-name"><?=$get['MerchantProduct']['name'];?></span>
-                                <span class="retrieve-child-supply-price"><?=number_format($get['MerchantProduct']['supply_price'],2,'.',',');?></span>
-                                <span class="retrieve-child-price"><?=number_format($get['MerchantProduct']['price'],2,'.',',');?></span>
-                                <span class="retrieve-child-price-incl-tax"><?=number_format($get['MerchantProduct']['price_include_tax'],2,'.',',');?></span>
-                                <span class="retrieve-child-tax"><?=number_format($get['MerchantProduct']['tax'],2,'.',',');?></span>
+                                <span class="retrieve-child-supply-price"><?php echo number_format($get['MerchantProduct']['supply_price'],2,'.','');?></span>
+                                <span class="retrieve-child-price"><?php echo number_format($get['MerchantProduct']['price'],2,'.','');?></span>
+                                <span class="retrieve-child-price-incl-tax"><?=number_format($get['MerchantProduct']['price_include_tax'],2,'.','');?></span>
+                                <span class="retrieve-child-tax"><?=number_format($get['MerchantProduct']['tax'],2,'.','');?></span>
                                 <span class="retrieve-child-qty"><?php echo $get['quantity'];?></span>
                             </span>
                             <?php } ?>
@@ -960,6 +960,7 @@ jQuery(document).ready(function() {
     $(".close-popup").click(function(){
         $(".receipt-parent").hide();
         $(".fade").hide();
+        $(".split_receipt_attr").remove();
     });
     var to_pay;
     $("#pay").click(function(){
@@ -1019,8 +1020,10 @@ jQuery(document).ready(function() {
     var found_count = 0;
     var found_page = 1;
     $(document).on("keyup","#product_search",function() {
+        found_count = 0;
+        found_page = 1;
         var val = $.trim(this.value).toUpperCase();
-        if (val === ""){
+        if (val == ""){
             $(".product").hide();
             $("div[page="+$(".selected").text()+"]").show();
             $(".product-list").show();
@@ -1034,7 +1037,7 @@ jQuery(document).ready(function() {
             $(".product-found-list").find('li').html('');
             $(".search_target").each(function(){
                 found_count++;
-                if(found_count == 7) {
+                if(found_count == 10) {
                     found_page++;
                     found_count = 0;
                     $(".product-found-list").find('li').append($(this).clone().attr("page", found_page));
@@ -1081,13 +1084,12 @@ jQuery(document).ready(function() {
     var total_cost = 0;
     function clear_sale() {
         $(".customer-search-result").children().hide();
-        $("#customer-result-name").val('');
+        $("#customer-result-name").text('');
         $("#customer-selected-id").val($("#customer-null").val());
         $(".order-product").remove();
         $(".order-discount").remove();
         $(".added-null").show();
         $(".split_attr").remove();
-        $(".split_receipt_attr").remove();
     }
     function print_receipt(payment_name, paying) {
         var now = new Date(Date.now());
@@ -1149,7 +1151,7 @@ jQuery(document).ready(function() {
     var sale_id;
     var invoice_sequence = $(".invoice-id").text();
     function save_register_sale(amount) {
-        if(!$("#retrieve_sale_id").val() == ''){
+        if($("#retrieve_sale_id").val() !== ''){
             save_line_order();
 
             line_array = JSON.stringify(line_array);
@@ -1171,9 +1173,9 @@ jQuery(document).ready(function() {
                 },
                 success: function(result){
                     if(result.success) {
-                        //sale
+                        $("#retrieve_sale_id").val('');
                     } else {
-                        alert(result.message);
+                        console.log(result);
                     }
                 }
             });
@@ -1198,7 +1200,6 @@ jQuery(document).ready(function() {
                     amount: JSON.stringify(amount)
                 },
                 success: function(result){
-                    console.log(result);
                     $(".invoice-id").text(invoice_sequence);
                     invoice_sequence++;
                 }
@@ -1206,7 +1207,7 @@ jQuery(document).ready(function() {
         }
     }
     function park_register_sale(status,amount,pays) {
-        if(!$("#retrieve_sale_id").val() == ''){
+        if($("#retrieve_sale_id").val() !== ''){
             save_line_order();
     
             line_array = JSON.stringify(line_array);
@@ -1273,8 +1274,6 @@ jQuery(document).ready(function() {
         var payment_type_id = parseInt($(this).attr("payment-type-id"));
         var payment_type = $(this).attr("payment-type");
         paying = parseFloat($("#set-pay-amount").val()).toFixed(2);
-        console.log(payment_name+', '+paying);
-
         // case payment_type_id eq 5 or payment_type eq 'Integrated EFTPOS (DPS)'
         if (5 == payment_type_id || 'Integrated EFTPOS (DPS)' == payment_type) {
             var dpsClient = new DpsClient();
@@ -1284,7 +1283,7 @@ jQuery(document).ready(function() {
                     dpsClient.payment('TXN12345', paying, function(data, error) {
                         console.log('Call callback:');
                         console.log(data);
-                        if(data.responsetext == "ACCEPTED") {
+                        if(data.responsetext == "ACCEPTED" || data.responsetext == "SIG ACCEPTED" || data.responsetext == "SIG DECLINED") {
 
                             payments.push([payment_id, paying]);
 
@@ -1331,8 +1330,7 @@ jQuery(document).ready(function() {
     $(document).on("click",".park-sale",function(){
         park_register_sale('saved',0,0);
         $(".fade").hide();
-        $(".order-product").remove();
-        $(".order-discount").remove();
+        clear_sale();
     });
 
     // Layby
@@ -1341,8 +1339,7 @@ jQuery(document).ready(function() {
             alert("Customer not selected");
         } else {
             park_register_sale('layby',$("#set-pay-amount").val(),payments);
-            $(".order-product").remove();
-            $(".order-discount").remove();
+            clear_sale();
         }
         $(".fade").hide();
     });
@@ -1354,8 +1351,7 @@ jQuery(document).ready(function() {
             alert("Customer not selected");
         } else {
             park_register_sale('onaccount',$("#set-pay-amount").val(),payments);
-            $(".order-product").remove();
-            $(".order-discount").remove();
+            clear_sale();
         }
         
         $(".fade").hide();
@@ -1363,10 +1359,9 @@ jQuery(document).ready(function() {
 
     // Void
     $(document).on("click",".void-sale",function(){
-        $(".order-product").remove();
-        $(".order-discount").remove();
-        $(".added-null").show();
+        park_register_sale('voided',$("#set-pay-amount").val(),payments);
         $(".fade").hide();
+        clear_sale();
     });
 
     /**
@@ -1606,7 +1601,7 @@ $(document).ready(function(){
 });
 
 function handleWindowResize() {
-    var height = $(window).height() - $(".page-header").height() - $("#footer").height();
+    var height = $(window).height() - $(".page-header").height() - $("#footer").height() - 200;
     var table = height - $(".commands").height() - $(".page-header").height() - $("#footer").height();
     var productTable = height - $(".commands").height() - $(".page-header").height() - $("#footer").height() + 90;
     var mq = window.matchMedia( "(min-width: 1280px)" );
@@ -1614,7 +1609,7 @@ function handleWindowResize() {
         productTable = productTable + 50;
     }
     $("#block-right").css({
-        "height": height - 60
+        "height": height + 11
     });
     $("#block-left").css({
        "height": height

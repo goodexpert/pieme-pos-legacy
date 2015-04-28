@@ -86,6 +86,7 @@
                     <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 signup-img">
                         <img src="/img/ipad.png" alt="signup-img" >
                     </div>
+                    <!--
                     <div id="signup_account_type" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container">
                         <div class="line-box col-lg-12 col-md-12 col-sm-12 col-xs-12">
                             <h1>Sign up</h1>
@@ -107,8 +108,8 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <div id="signup_info" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container" style="display: none;">
+                    -->
+                    <div id="signup_info" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container">
                         <div class="line-box">
                             <h1>Sign up</h1>
                             <div class="dashed-line-gr"><?php echo $this->Session->flash(); ?></div>

@@ -11,7 +11,7 @@ class HomeController extends AppController {
  *
  * @var array
  */
-    public $uses = array('MerchantCustomer','MerchantCustomerGroup','Country','MerchantProduct','TaxRate','RegisterSale','RegisterSaleItem','RegisterSalePayment','MerchantUser','MerchantOutlet','MerchantPaymentType','MerchantProductInventory','MerchantProductLog','MerchantRegisterOpen');
+    public $uses = array('MerchantCustomer','MerchantCustomerGroup','Country','MerchantProduct','TaxRate','RegisterSale','RegisterSaleItem','RegisterSalePayment','MerchantUser','MerchantOutlet','MerchantPaymentType','MerchantProductInventory','MerchantProductLog','MerchantRegisterOpen','MerchantRegister');
     public $layout = 'home';
 
 /**
@@ -28,7 +28,6 @@ class HomeController extends AppController {
         
         $this->loadModel('MerchantQuickKey');
         $this->loadModel('MerchantPriceBook');
-        $this->loadModel('MerchantRegister');
         
         if(!empty($this->Auth->user()['outlet_id'])) {
             $key_id = $this->MerchantRegister->findById($this->Auth->user()['MerchantRegister']['id'])['MerchantRegister']['quick_key_id'];
@@ -249,7 +248,6 @@ class HomeController extends AppController {
 
     public function pay() {
         $this->loadModel('MerchantRegisterOpen');
-        $this->loadModel("MerchantRegister");
         $user = $this->Auth->user();
 
         if ($this->request->is('post') || $this->request->is('ajax')) {
@@ -332,17 +330,19 @@ class HomeController extends AppController {
                 }
                 $this->RegisterSale->save($data);
 
-                $paymentArray = json_decode($data['amount']);
-                $seq = 0;
-                foreach($paymentArray as $pay) {
-                    $this->RegisterSalePayment->create();
-                    $payment['sale_id'] = $this->RegisterSale->id;
-                    $payment['merchant_payment_type_id'] = $pay[0];
-                    $payment['amount'] = $pay[1];
-                    $payment['payment_date'] = date('Y-m-d H:i:s');
-                    $payment['sequence'] = $seq;
-                    $this->RegisterSalePayment->save($payment);
-                    $seq++;
+                if(!empty($data['amount'])) {
+                    $paymentArray = json_decode($data['amount']);
+                    $seq = 0;
+                    foreach($paymentArray as $pay) {
+                        $this->RegisterSalePayment->create();
+                        $payment['sale_id'] = $this->RegisterSale->id;
+                        $payment['merchant_payment_type_id'] = $pay[0];
+                        $payment['amount'] = $pay[1];
+                        $payment['payment_date'] = date('Y-m-d H:i:s');
+                        $payment['sequence'] = $seq;
+                        $this->RegisterSalePayment->save($payment);
+                        $seq++;
+                    }
                 }
 
                 $generalQuantity = 0;
@@ -416,6 +416,12 @@ class HomeController extends AppController {
                 }
                 $this->RegisterSale->save($data);
                 
+                if(isset($data['receipt_number']) && !empty($data['receipt_number'])) {
+                    $this->MerchantRegister->id = $user['MerchantRegister']['id'];
+                    $rs['MerchantRegister']['invoice_sequence'] = $data['receipt_number'] + 1;
+                    $this->MerchantRegister->save($rs);
+                }
+                
                 $array = json_decode($_POST['items'],true);
                 
                 foreach($array as $item) {
@@ -442,7 +448,7 @@ class HomeController extends AppController {
                         }
                     }
                     
-                    if($data['status'] !== 'saved') {
+                    if($data['status'] !== 'saved' && $data['status'] !== 'voided') {
                         $this->MerchantProductLog->create();
                         $log['MerchantProductLog']['product_id'] = $item['product_id'];
                         $log['MerchantProductLog']['user_id'] = $user['id'];
