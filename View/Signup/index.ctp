@@ -86,37 +86,12 @@
                     <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 signup-img">
                         <img src="/img/ipad.png" alt="signup-img" >
                     </div>
-                    <!--
-                    <div id="signup_account_type" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container">
-                        <div class="line-box col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <h1>Sign up</h1>
-                            <div class="dashed-line-gr"><?php echo $this->Session->flash(); ?></div>
-                            <h5>Please select an account type</h5>
-                            <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
-                                <button type="button" class="btn btn-white btn-right pull-right width-initial">
-                                    <input type="radio" class="hidden" id="signup_account_type_open_franchise" value="0">
-                                    <label for="signup_account_type_open_franchise">Open Franchise</label>
-                                </button>
-                                <button type="button" class="btn btn-white btn-center pull-right width-initial">
-                                    <input type="radio" class="hidden" id="signup_account_type_join_franchise" value="1">
-                                    <label for="signup_account_type_join_franchise">Join Franchise</label>
-                                </button>
-                                <button type="button" class="btn btn-white btn-left pull-right width-initial">
-                                    <input type="radio" class="hidden" id="signup_account_type_single_merchant" value="2">
-                                    <label for="signup_account_type_single_merchant">Single Merchant</label>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    -->
-                    <div id="signup_info" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container">
+                    <!-- General Information -->
+                    <div id="signup_general_info" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container">
                         <div class="line-box">
                             <h1>Sign up</h1>
                             <div class="dashed-line-gr"><?php echo $this->Session->flash(); ?></div>
-                            <form action="/signup/index.json" method="post" id="register_form">
                             <dl>
-                                <dt>Store name</dt> 
-                                <dd><input type="text" name="name" id="name" required></dd>
                                 <dt class="hidden">Private web address</dt>
                                 <dd class="hidden"><input type="hidden" name="domain_prefix" id="domain_prefix"></dd>
                                 <dt>First name</dt>
@@ -139,8 +114,81 @@
                                 <dd class="hidden"><input type="text" name="time_zone" id="time_zone" value="Pacific/Auckland"></dd>
                             </dl>
                             <div class="dashed-line-gr"></div>
-                            <button type="submit" class="btn btn-success"><img src="/img/ONZSA_eye.png">Start onzsa</button>
-                            </form>
+                            <dl>
+                                <dt>Type</dt>
+                                <dd>
+									<select>
+										<option>Single Merchant</option>
+										<option>Join Franchise</option>
+										<option>Open Franchise</option>
+										<option>Trial</option>
+									</select>
+								</dd>
+                                <dt>Plan</dt>
+                                <dd>
+									<select>
+										<option>Franchise HQ</option>
+										<option>Franchise Large</option>
+										<option>Franchise Medium</option>
+										<option>Franchise Extra Small</option>
+										<option>Franchise Extra Large</option>
+										<option>Large</option>
+										<option>Medium</option>
+										<option>Extra Small</option>
+										<option>Trial</option>
+										<option>Extra Large</option>
+									</select>
+									<h5><a>Detail about our plan</a></h5>
+								</dd>
+                                <dt>Store name</dt>
+                                <dd><input type="text" name="storename" id="storename" required></dd>
+                            </dl>
+                            <div class="dashed-line-gr"></div>
+							
+                            <button type="button" id="continue" class="btn btn-success">Continue</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Account Type -->
+                    <div id="signup_account_type" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container" style="display: none;">
+                        <div class="line-box col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <h1>Sign up</h1>
+                            <div class="dashed-line-gr"><?php echo $this->Session->flash(); ?></div>
+                            <h5>Please select an account type</h5>
+							<div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
+                                <button type="button" class="btn btn-white btn-right pull-right width-initial">
+                                    <input type="radio" class="hidden" id="signup_account_type_open_franchise" value="0">
+                                    <label for="signup_account_type_open_franchise" style="width:100%; height:100%;">Open Franchise</label>
+                                </button>
+                                <button type="button" class="btn btn-white btn-center pull-right width-initial">
+                                    <input type="radio" class="hidden" id="signup_account_type_join_franchise" value="1">
+                                    <label for="signup_account_type_join_franchise" style="width:100%; height:100%;">Join Franchise</label>
+                                </button>
+                                <button type="button" class="btn btn-white btn-left pull-right width-initial">
+                                    <input type="radio" class="hidden" id="signup_account_type_single_merchant" value="2">
+                                    <label for="signup_account_type_single_merchant" style="width:100%; height:100%;">Single Merchant</label>
+                                </button>
+                                <button type="button" class="btn btn-white btn-left pull-right width-initial">
+                                    <input type="radio" class="hidden" id="signup_account_type_trial" value="3">
+                                    <label for="signup_account_type_trial" style="width:100%; height:100%;">Trial</label>
+                                </button>
+							</div>
+                        </div>
+                    </div>
+                    
+                    <!-- Store Information -->
+                    <div id="signup_store_info" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container" style="display: none;">
+                        <div class="line-box">
+                            <h1>Sign up</h1>
+                            <div class="dashed-line-gr"><?php echo $this->Session->flash(); ?></div>
+                            <dl>
+                                <dt>Store name</dt> 
+                                <dd><input type="text" name="name" id="name" required></dd>
+                                <dt class="hidden">Private web address</dt>
+                                <dd class="hidden"><input type="hidden" name="domain_prefix" id="domain_prefix"></dd>
+                            </dl>
+                            <div class="dashed-line-gr"></div>
+                            <button id="signup" class="btn btn-success"><img src="/img/ONZSA_eye.png">Start onzsa</button>
                         </div>
                     </div>
                 </div>
@@ -222,11 +270,24 @@
                 /*
                  * Account Type Select
                  */
+                $("#continue").click(function() {
+                    $("#signup_general_info").hide();
+                    $("#signup_account_type").show();
+                });
                 $("#signup_account_type input[type=radio]").change(function(){
-                    if($(this).val() == 0 || $(this).val() == 2) {
+                    if($(this).val() == 0 || $(this).val() == 2 || $(this).val() == 3) {
                         $(this).parents("#signup_account_type").hide();
-                        $("#signup_info").show();
+                        $("#signup_store_info").show();
                     }
+                });
+                $("#signup").click(function(){
+                    $.ajax({
+                        url: '/signup/index.json',
+                        type: 'POST',
+                        data: {
+                            
+                        }
+                    });
                 });
             });    
         </script>
