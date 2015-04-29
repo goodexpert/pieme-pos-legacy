@@ -74,65 +74,40 @@
       </div>
       <!-- END PAGE HEADER--> 
       <div class="clearfix"> </div>
-      <div class="col-md-6 col-sm-6"> 
+      <div class="col-md-12 col-sm-12"> 
+        <input type="hidden" id="sales-data" value='<?php echo json_encode($sales);?>'>
         <!-- BEGIN PORTLET-->
-        <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Sales History</div>
-        <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega line-box line-box-content portlet solid bordered grey-cararra">
-          <div class="portlet-title">
-            <div class="tools">
-              <div class="btn-group" data-toggle="buttons">
-                <label class="btn grey-steel btn-sm active">
-                  <input type="radio" name="options" class="toggle" id="option1">
-                  New</label>
-                <label class="btn grey-steel btn-sm">
-                  <input type="radio" name="options" class="toggle" id="option2">
-                  Returning</label>
-              </div>
-            </div>
-          </div>
-          <div class="portlet-body">
-            <div id="site_statistics_loading"> <img src="/assets/admin/layout/img/loading.gif" alt="loading"/> </div>
-            <div id="site_statistics_content" class="display-none">
-              <div id="site_statistics" class="chart"> </div>
-            </div>
-          </div>
-        </div>
-        <!-- END PORTLET--> 
-      </div>
-      <div class="col-md-6 col-sm-6"> 
-        <!-- BEGIN PORTLET-->
-        <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Revenue</div>
+        <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Sales</div>
         <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega line-box line-box-content portlet solid grey-cararra bordered">
-          <div class="portlet-title">
-            <div class="tools">
-              <div class="btn-group pull-right"> <a href="" class="btn grey-steel btn-sm dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> Filter <span class="fa fa-angle-down"> </span> </a>
-                <ul class="dropdown-menu pull-right">
-                  <li> <a href="javascript:;"> Q1 2014 <span class="label label-sm label-default"> past </span> </a> </li>
-                  <li> <a href="javascript:;"> Q2 2014 <span class="label label-sm label-default"> past </span> </a> </li>
-                  <li class="active"> <a href="javascript:;"> Q3 2014 <span class="label label-sm label-success"> current </span> </a> </li>
-                  <li> <a href="javascript:;"> Q4 2014 <span class="label label-sm label-warning"> upcoming </span> </a> </li>
-                </ul>
-              </div>
-            </div>
-          </div>
           <div class="portlet-body">
             <div id="site_activities_loading"> <img src="/assets/admin/layout/img/loading.gif" alt="loading"/> </div>
             <div id="site_activities_content" class="display-none">
               <div id="site_activities" style="height: 228px;"> </div>
             </div>
             <div style="margin: 20px 0 10px 30px">
+              <?php
+              $revenue = 0;
+              $tax = 0;
+              $count = 0;
+              $cost = 0;
+              foreach($sales as $key => $value) {
+                $revenue += $value['amount'];
+                $tax += $value['tax'];
+                $count += $value['count'];
+                $cost += $value['cost'];
+              } ?>
               <div class="row">
                 <div class="col-md-3 col-sm-3 col-xs-6 text-stat"> <span class="label label-sm label-success"> Revenue: </span>
-                  <h3>$13,234</h3>
+                  <h3>$<?php echo number_format($revenue,2,'.',',');?></h3>
                 </div>
                 <div class="col-md-3 col-sm-3 col-xs-6 text-stat"> <span class="label label-sm label-info"> Tax: </span>
-                  <h3>$134,900</h3>
+                  <h3>$<?php echo number_format($tax,2,'.',',');?></h3>
                 </div>
-                <div class="col-md-3 col-sm-3 col-xs-6 text-stat"> <span class="label label-sm label-danger"> Shipment: </span>
-                  <h3>$1,134</h3>
+                <div class="col-md-3 col-sm-3 col-xs-6 text-stat"> <span class="label label-sm label-danger"> Profit: </span>
+                  <h3>$<?php echo number_format($revenue - $tax - $cost,2,'.',',');?></h3>
                 </div>
                 <div class="col-md-3 col-sm-3 col-xs-6 text-stat"> <span class="label label-sm label-warning"> Orders: </span>
-                  <h3>235090</h3>
+                  <h3><?php echo $count;?></h3>
                 </div>
               </div>
             </div>
@@ -245,12 +220,19 @@
 <script src="/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script> 
 <!-- END PAGE LEVEL SCRIPTS --> 
 <script>
-jQuery(document).ready(function() {    
+jQuery(document).ready(function() {
+    var sales_data = JSON.parse($("#sales-data").val());
+    var sales = [];
+    
+    $.each(sales_data, function(key, value) {
+        sales.push([key.toUpperCase(), value['amount']]);
+    });
+
    Metronic.init(); // init metronic core components
    Layout.init(); // init current layout
 QuickSidebar.init() // init quick sidebar // initlayout and core plugins
    Index.init();
-   Index.initCharts(); // init index page's custom scripts
+   Index.initCharts(sales.reverse()); // init index page's custom scripts
    Index.initMiniCharts();
    Index.initDashboardDaterange();
    Tasks.initDashboardWidget();

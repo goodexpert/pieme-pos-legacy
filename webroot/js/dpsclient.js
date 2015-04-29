@@ -145,7 +145,7 @@ DpsClient.prototype.payment = function (txnRef, amount, callback) {
                 var txnref = response.message.txnref;
                 var txntype = response.message.txntype;
 
-                if("INCORRECT PIN" == responsetext) {
+                if("INCORRECT PIN" == responsetext || "SIGN DECLINED" == responsetext) {
                     $(".eftpos_status").hide();
                     $(".pay").show();
                     $(".modal-backdrop").show();

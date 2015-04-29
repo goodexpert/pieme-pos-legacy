@@ -442,7 +442,7 @@ jQuery(document).ready(function() {
             },
             success: function(result) {
                 if(result.success) {
-                    window.location.href = "/dashboard";
+                    window.location.href = "/users/logout";
                 } else {
                     console.log(result);
                 }

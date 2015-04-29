@@ -42,7 +42,11 @@
 <!-- END THEME STYLES -->
 <link rel="shortcut icon" href="onzsa.ico"/>
 
-
+<style>
+.create_account {
+	text-align: center;
+}
+</style>
 
 </head>
 <!-- END HEAD -->
@@ -103,6 +107,7 @@
                             </form>
                         </div>
                     </div>
+                    <p class="create_account">Don't have an account? <a href="/signup">Try Onzsa for free</a></p>
                 </div>
               </div>
             </div>

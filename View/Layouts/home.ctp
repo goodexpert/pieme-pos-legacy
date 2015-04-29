@@ -17,7 +17,7 @@
 <link href="/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
 <link href="/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
 <link href="/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-<link href="/assets/global/plugins/jquery-ui-themes-1.11.0/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css"/> 
+<link href="/assets/global/plugins/jquery-ui-themes-1.11.0/themes/smoothness/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <!-- END GLOBAL MANDATORY STYLES -->
 <!-- BEGIN THEME STYLES -->
 <link href="/assets/global/css/components.css" rel="stylesheet" type="text/css"/>

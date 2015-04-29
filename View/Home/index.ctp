@@ -704,7 +704,7 @@
 </div>
 <div class="qty_block">
 
-    <form action="#" novalidate class="qty-form">
+    <form novalidate class="qty-form">
 
         <div class="main_panel col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
             <p class="col-md-12 col-alpha col-omega">Quantity</p>
@@ -742,7 +742,7 @@
 </div>
 <div class="price_block">
 
-    <form action="#" novalidate class="price-form">
+    <form novalidate class="price-form">
 
         <div class="main_panel col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
             <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
@@ -783,7 +783,7 @@
 </div>
 <div class="discount_block">
 
-    <form action="#" novalidate class="discount-form">
+    <form novalidate class="discount-form">
 
         <div class="main_panel col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
             <!--
@@ -1283,7 +1283,7 @@ jQuery(document).ready(function() {
                     dpsClient.payment('TXN12345', paying, function(data, error) {
                         console.log('Call callback:');
                         console.log(data);
-                        if(data.responsetext == "ACCEPTED" || data.responsetext == "SIG ACCEPTED" || data.responsetext == "SIG DECLINED") {
+                        if(data.responsetext == "ACCEPTED" || data.responsetext == "SIG ACCEPTED") {
 
                             payments.push([payment_id, paying]);
 
@@ -1880,13 +1880,15 @@ $(".show_numpad").click(function(){
             $( this ).animate( position );
         }
     });
+    /*
     $(".discount_block").toggleClass('numpad_active');
     $(".discount_block").position({
-        my: "left+860 bottom+10",
+        my: "left+860 bottom+30",
         using: function( position ) {
             $( this ).animate( position );
         }
     });
+    */
     return false;
 });
 var priceEdit = "discount";
@@ -1979,32 +1981,6 @@ $(document).on("click",".price-control",function(event){
     }
 });
 
-$(document).on('submit',".price-form",function(){
-    if(priceEdit == 'price') {
-        $("a[data-id="+$(this).attr("data-id")+"]").text("@"+parseFloat($(".price_field").val()).toFixed(2));
-    } else {
-        var currentPrice = $("a[data-id="+$(this).attr("data-id")+"]").text().replace(/@/,'');
-        var toDiscount = currentPrice * $(".price_field").val().replace(/%/,"") / 100;
-        $("a[data-id="+$(this).attr("data-id")+"]").text("@"+ parseFloat(currentPrice - toDiscount).toFixed(2));
-    }
-    $(".price_block").hide();
-    return false;
-});
-
-$(document).on('submit',".discount-form",function(){
-    var discounted_amount = 0;
-    if(priceEditAll == 'price') {
-        discounted_amount = parseFloat($(".discount_field").val());
-    } else {
-        var toDiscount = $(".toPay").text() * $(".discount_field").val().replace(/%/,"") / 100;
-        discounted_amount = toDiscount;
-    }
-    $(".added-body").prepend('<tr class="order-discount"><td>Discount</td><td></td><td></td><td class="amount" style="text-align:right;">'+ discounted_amount.toFixed(2) +'</td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');
-    $(".discount_block").hide();
-    return false;
-});
-
-
 $(document).on("click",".qty-control",function(event){
     $(".qty-form").attr({"data-id":$(this).attr("qty-id")});
     if(($(this).position().top + 169) == $(".qty_block").position().top){
@@ -2047,12 +2023,6 @@ $(document).on("click",".qty-control",function(event){
             });
         }
     }
-});
-$(".qty-form").submit(function(){
-    $("a[qty-id="+$(this).attr("data-id")+"]").text(parseInt($(".qty_field").val()));
-    $(".qty_block").hide();
-    assign_pricebook();
-    return false;
 });
 
 $(document).on("click",".discount",function(event){
@@ -2132,4 +2102,37 @@ function assign_pricebook() {
         });
     });
 }
+$(document).on('submit',".price-form",function(){
+    if(priceEdit == 'price') {
+        $("a[data-id="+$(this).attr("data-id")+"]").text("@"+parseFloat($(".price_field").val()).toFixed(2));
+    } else {
+        var currentPrice = $("a[data-id="+$(this).attr("data-id")+"]").text().replace(/@/,'');
+        var toDiscount = currentPrice * $(".price_field").val().replace(/%/,"") / 100;
+        $("a[data-id="+$(this).attr("data-id")+"]").text("@"+ parseFloat(currentPrice - toDiscount).toFixed(2));
+    }
+    $(".price_block").hide();
+    priceCalculator();
+    return false;
+});
+
+$(document).on('submit',".discount-form",function(){
+    var discounted_amount = 0;
+    if(priceEditAll == 'price') {
+        discounted_amount = parseFloat($(".discount_field").val());
+    } else {
+        var toDiscount = $(".toPay").text() * $(".discount_field").val().replace(/%/,"") / 100;
+        discounted_amount = toDiscount;
+    }
+    $(".added-body").prepend('<tr class="order-discount"><td>Discount</td><td></td><td></td><td class="amount" style="text-align:right;">'+ discounted_amount.toFixed(2) +'</td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');
+    $(".discount_block").hide();
+    priceCalculator();
+    return false;
+});
+$(".qty-form").submit(function(){
+    $("a[qty-id="+$(this).attr("data-id")+"]").text(parseFloat($(".qty_field").val()));
+    $(".qty_block").hide();
+    priceCalculator();
+    assign_pricebook();
+    return false;
+});
 </script>

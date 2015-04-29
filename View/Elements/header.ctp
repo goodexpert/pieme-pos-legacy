@@ -14,87 +14,89 @@
             <div class="hor-menu hidden-sm hidden-xs">
                 <ul class="nav navbar-nav">
                     <!-- DOC: Remove data-hover="dropdown" and data-close-others="true" attributes below to disable the horizontal opening on mouse hover -->
-                    <li>
-                        <a href="/dashboard">
-                        Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/home">Sell</a>
-                    </li>
-                    <li>
-                        <a href="/history">
-                        History </a>
-                    </li>
-                    <li>
-                        <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
-                        Product <i class="fa fa-angle-down"></i></a>
-                        <ul class="dropdown-menu pull-left">
-                            <li>
-                                <a href="/product">Product</a>
-                            </li>
-                            <li>
-                                <a href="/product/brand">Brand</a>
-                            </li>
-                            <li>
-                                <a href="/product/type">Types</a>
-                            </li>
-                            <li>
-                                <a href="/pricebook">Price Books</a>
-                            </li>
-                            <li>
-                                <a href="/supplier">Suppliers</a>
-                            </li>
-                            <li>
-                                <a href="/product/tag">Tags</a>
-                            </li>
-                            <li>
-                                <a href="/stock">Stock Control</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
-                        Customer <i class="fa fa-angle-down"></i></a>
-                        <ul class="dropdown-menu pull-left">
-                            <li>
-                                <a href="/customer">Customer</a>
-                            </li>
-                            <li>
-                                <a href="/customer/group">Group</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
-                        Setup <i class="fa fa-angle-down"></i></a>
-                        <ul class="dropdown-menu pull-left">
-                            <li>
-                                <a href="/setup">General</a>
-                            </li>
-                            <li>
-                                <a href="/account">Account</a>
-                            </li>
-                            <li>
-                                <a href="/setup/outlets_and_registers">Outlets and Registers</a>
-                            </li>
-                            <li>
-                                <a href="/setup/quick_keys">Quick Keys</a>
-                            </li>
-                            <li>
-                                <a href="/setup/payments">Payment Types</a>
-                            </li>
-                            <li>
-                                <a href="/setup/taxes">Sales Taxes</a>
-                            </li>
-                            <li>
-                                <a href="/setup/loyalty">Loyalty</a>
-                            </li>
-                            <li>
-                                <a href="/setup/user">Users</a>
-                            </li>
-                        </ul>
-                    </li>
+                    <?php if($authUser['user_type'] !== "cashier") { ?>
+                        <li>
+                            <a href="/dashboard">
+                            Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/home">Sell</a>
+                        </li>
+                        <li>
+                            <a href="/history">
+                            History </a>
+                        </li>
+                        <li>
+                            <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
+                            Product <i class="fa fa-angle-down"></i></a>
+                            <ul class="dropdown-menu pull-left">
+                                <li>
+                                    <a href="/product">Product</a>
+                                </li>
+                                <li>
+                                    <a href="/product/brand">Brand</a>
+                                </li>
+                                <li>
+                                    <a href="/product/type">Types</a>
+                                </li>
+                                <li>
+                                    <a href="/pricebook">Price Books</a>
+                                </li>
+                                <li>
+                                    <a href="/supplier">Suppliers</a>
+                                </li>
+                                <li>
+                                    <a href="/product/tag">Tags</a>
+                                </li>
+                                <li>
+                                    <a href="/stock">Stock Control</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
+                            Customer <i class="fa fa-angle-down"></i></a>
+                            <ul class="dropdown-menu pull-left">
+                                <li>
+                                    <a href="/customer">Customer</a>
+                                </li>
+                                <li>
+                                    <a href="/customer/group">Group</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
+                            Setup <i class="fa fa-angle-down"></i></a>
+                            <ul class="dropdown-menu pull-left">
+                                <li>
+                                    <a href="/setup">General</a>
+                                </li>
+                                <li>
+                                    <a href="/account">Account</a>
+                                </li>
+                                <li>
+                                    <a href="/setup/outlets_and_registers">Outlets and Registers</a>
+                                </li>
+                                <li>
+                                    <a href="/setup/quick_keys">Quick Keys</a>
+                                </li>
+                                <li>
+                                    <a href="/setup/payments">Payment Types</a>
+                                </li>
+                                <li>
+                                    <a href="/setup/taxes">Sales Taxes</a>
+                                </li>
+                                <li>
+                                    <a href="/setup/loyalty">Loyalty</a>
+                                </li>
+                                <li>
+                                    <a href="/setup/user">Users</a>
+                                </li>
+                            </ul>
+                        </li>
+                    <?php } ?>
                 </ul>
             </div>
             <!-- END HORIZANTAL MENU -->

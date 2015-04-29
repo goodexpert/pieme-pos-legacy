@@ -186,6 +186,10 @@ class ProductController extends AppController {
                     unset($data['product_brand_id']);
                 if(empty($data['product_uom']))
                     unset($data['product_uom']);
+                if(!is_numeric($data['supply_price']))
+                    $data['supply_price'] = null;
+                if(!is_numeric($data['markup']))
+                    $data['markup'] = null;
 
                 $this->MerchantProduct->create();
                 $this->MerchantProduct->save(array('MerchantProduct' => $data));
@@ -381,6 +385,10 @@ class ProductController extends AppController {
                     $data['product_brand_id'] = null;
                 if(empty($data['product_uom']))
                     $data['product_uom'] = null;
+                if(!is_numeric($data['supply_price']))
+                    $data['supply_price'] = null;
+                if(!is_numeric($data['markup']))
+                    $data['markup'] = null;
 
                 $this->MerchantProduct->id = $id;
                 $this->MerchantProduct->save(array('MerchantProduct' => $data));

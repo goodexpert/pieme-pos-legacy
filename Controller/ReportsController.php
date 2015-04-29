@@ -2221,6 +2221,105 @@ class ReportsController extends AppController {
  * @return void
  */
     public function stock_low() {
+        $user = $this->Auth->user();
+
+        $this->loadModel('MerchantProduct');
+        $this->loadModel('MerchantProductType');
+        $this->loadModel('MerchantProductBrand');
+        $this->loadModel('MerchantSupplier');
+        $this->loadModel('MerchantProductInventory');
+        $this->loadModel('MerchantProductTag');     
+
+        $types = $this->MerchantProductType->find('all', array(
+            'conditions' => array(
+                'MerchantProductType.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('types',$types);
+        
+        $brands = $this->MerchantProductBrand->find('all',array(
+            'conditions' => array(
+                'MerchantProductBrand.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('brands',$brands);
+        
+        $suppliers = $this->MerchantSupplier->find('all',array(
+            'conditions' => array(
+                'MerchantSupplier.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('suppliers',$suppliers);
+        
+        $outlets = $this->MerchantOutlet->find('all', array(
+            'conditions' => array(
+                'MerchantOutlet.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('outlets',$outlets);
+        
+        $tags = $this->MerchantProductTag->find('all', array(
+            'conditions' => array(
+                'MerchantProductTag.merchant_id' => $user['merchant_id']
+            )
+        ));
+        $this->set('tags',$tags);
+
+        if(isset($_GET['product_type_id'])) {
+            $criteriaInventory = array(
+                'MerchantProductInventory.count <=' => 0,
+            );
+            if(!empty($_GET['outlet_id'])) {
+                $criteriaInventory['MerchantProductInventory.outlet_id'] = $_GET['outlet_id'];
+            }
+            
+            $this->MerchantProductInventory->bindModel(array(
+                'belongsTo' => array(
+                    'MerchantOutlet' => array(
+                        'className' => 'MerchantOutlet',
+                        'foreignKey' => 'outlet_id'
+                    )
+                )
+            ));
+        
+            $this->MerchantProduct->bindModel(array(
+                'hasMany' => array(
+                    'MerchantProductInventory' => array(
+                        'className' => 'MerchantProductInventory',
+                        'foreignKey' => 'product_id',
+                        'conditions' => $criteriaInventory
+                    )
+                )
+            ));
+            
+            $criteriaMerchantProduct = array(
+                'MerchantProduct.merchant_id' => $user['merchant_id']
+            );
+            if(!empty($_GET['name'])) {
+                $criteriaMerchantProduct['OR'] = array(
+                    'MerchantProduct.name LIKE' => "%".$_GET['name']."%",
+                    'MerchantProduct.sku LIKE' => "%".$_GET['name']."%",
+                    'MerchantProduct.handle LIKE' => "%".$_GET['name']."%"
+                );
+            }
+            if(!empty($_GET['product_type_id'])) {
+                $criteriaMerchantProduct['MerchantProduct.product_type_id'] = $_GET['product_type_id'];
+            }
+            if(!empty($_GET['product_brand_id'])) {
+                $criteriaMerchantProduct['MerchantProduct.product_brand_id'] = $_GET['product_brand_id'];
+            }
+            if(!empty($_GET['supplier_id'])) {
+                $criteriaMerchantProduct['MerchantProduct.supplier_id'] = $_GET['supplier_id'];
+            }
+            
+            $this->MerchantProduct->recursive = 2;
+            
+            $products = $this->MerchantProduct->find('all', array(
+                'conditions' => $criteriaMerchantProduct
+            ));
+            
+            $this->set('products',$products);
+        }
     }
 
 /**

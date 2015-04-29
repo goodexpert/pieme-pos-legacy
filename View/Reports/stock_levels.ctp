@@ -187,13 +187,13 @@
                 </tr>
                 </thead>
                 <tbody>
-                    <?php if(empty($products)) {
-                        
+                    <?php
+                    $totalCount = 0;
+                    $totalValue = 0;
+                    $totalAvg = 0;
+                    $productCount = 0;
+                    if(empty($products)) {
                     } else {
-                        $totalCount = 0;
-                        $totalValue = 0;
-                        $totalAvg = 0;
-                        $productCount = 0;
                         foreach($products as $product) {
                             foreach($product['MerchantProductInventory'] as $inventory) {
                                 $totalCount += $inventory['count'];

@@ -80,7 +80,7 @@
                     <?php foreach($tags as $tag){ ?>
                     <tr>
                         <td><?php echo $tag['MerchantProductTag']['name'];?></td>
-                        <td><?php echo count($tag['MerchantProudctCategory']);?></td>
+                        <td><?php echo count($tag['MerchantProductCategory']);?></td>
                         <td>
                             <span data-id="<?php echo $tag['MerchantProductTag']['id'];?>" class="clickable edit-tag">Edit</span> | 
                             <span data-id="<?php echo $tag['MerchantProductTag']['id'];?>" class="clickable delete-tag">Delete</span>
