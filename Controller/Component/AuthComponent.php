@@ -258,6 +258,13 @@ class AuthComponent extends Component {
 	protected $_methods = array();
 
 /**
+ * Subdomain name
+ *
+ * @var string
+ */
+	protected $subdomain;
+
+/**
  * Initializes AuthComponent for use in the controller.
  *
  * @param Controller $controller A reference to the instantiating controller object
@@ -283,6 +290,16 @@ class AuthComponent extends Component {
 	public function startup(Controller $controller) {
 		$methods = array_flip(array_map('strtolower', $controller->methods));
 		$action = strtolower($controller->request->params['action']);
+
+		$names = explode(".", $_SERVER['HTTP_HOST']);
+		if (count($names) == 2) {
+			header('Location: http://www.onzsa.com' . $_SERVER['REQUEST_URI']);
+		} elseif (!is_numeric($names[0])) {
+			$this->subdomain = $names[0];
+			$this->authenticate['Form']['scope'] = array(
+				'Merchant.domain_prefix' => $this->subdomain
+			);
+		}
 
 		$isMissingAction = (
 			$controller->scaffold === false &&
@@ -669,6 +686,23 @@ class AuthComponent extends Component {
 	}
 
 /**
+ * Check if a domain name exists.
+ *
+ * @return bool true if a domain can be found, false if one cannot.
+ */
+	protected function _checkDomain($domain) {
+		$result = ClassRegistry::init('Merchant')->find('first', array(
+			'conditions' => array(
+				'Merchant.domain_prefix' => $domain
+			)
+		));
+		if (empty($result['Merchant'])) {
+			return false;
+		}
+		return true;
+	}
+
+/**
  * Similar to AuthComponent::user() except if the session user cannot be found, connected authentication
  * objects will have their getUser() methods called. This lets stateless authentication methods function correctly.
  *
@@ -677,6 +711,12 @@ class AuthComponent extends Component {
 	protected function _getUser() {
 		$user = $this->user();
 		if ($user) {
+			if (!empty($this->subdomain) && $this->subdomain !== $user['Merchant']['domain_prefix']) {
+				if (!$this->_checkDomain($this->subdomain)) {
+					throw new NotFoundException();
+				}
+				return false;
+			}
 			$this->Session->delete('Auth.redirect');
 			return true;
 		}

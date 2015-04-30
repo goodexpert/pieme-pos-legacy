@@ -59,7 +59,7 @@
                     Users
                 </h2>
                 <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
-                    <a href="/quickkey/add"><button class="btn btn-white pull-right">
+                    <a href="/quick_keys/new"><button class="btn btn-white pull-right">
                         <div class="glyphicon glyphicon-plus"></div>&nbsp;
                     Add user</button></a> 
                 </div>
