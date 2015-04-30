@@ -99,13 +99,13 @@
                             <td><?php echo $register['name'];?></td>
                             <td><?php echo $outlet['MerchantOutlet']['name'];?></td>
                             <td>
-                                <select class="width-inherit quick_key_id">
-                                    <?php foreach($items as $item) { ?>
-                                        <option value="<?php echo $item['MerchantQuickKey']['id'];?>" <?php if($register['quick_key_id'] == $item['MerchantQuickKey']['id']){echo "selected";}?>><?php echo $item['MerchantQuickKey']['name'];?></option>
-                                    <?php } ?>
+                                <select class="width-inherit quick_key_id assign_quick_key">
+                                <?php foreach($items as $item) { ?>
+                                    <option value="<?php echo $item['MerchantQuickKey']['id'];?>" <?php if($register['quick_key_id'] == $item['MerchantQuickKey']['id']){echo "selected";}?>><?php echo $item['MerchantQuickKey']['name'];?></option>
+                                <?php } ?>
                                 </select>
                             </td>
-                            <td><span class="clickable assign_quick_key">Edit</span></td>
+                            <td><a href="/register/<?=$register['id'];?>/edit">Edit register</a></td>
                         </tr>
                     <?php }
                 }?>
@@ -215,13 +215,20 @@ jQuery(document).ready(function() {
     Layout.init(); // init layout
     QuickSidebar.init() // init quick sidebar
     Index.init();
-    $(".assign_quick_key").click(function(){
+
+    $(".assign_quick_key").change(function(e) {
+        var register_id = $(".register-list-data").attr("data-id");
+        var quick_key_id = $(".quick_key_id").val();
+
+        if (register_id == '' || quick_key_id == '')
+            return;
+
         $.ajax({
             url: '/quick_keys/assign.json',
             type: 'POST',
             data: {
-                register_id: $(this).parents(".register-list-data").attr("data-id"),
-                quick_key_id: $(this).parents(".register-list-data").find(".quick_key_id").val()
+                register_id: register_id,
+                quick_key_id: quick_key_id
             },
             success: function(result) {
                 if(result.success) {
