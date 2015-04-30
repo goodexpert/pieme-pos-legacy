@@ -267,7 +267,7 @@
                             <h5><strong>Attribute</strong></h5>
                             <div class="info"><select class="variant_value_1"><option></option><option value="variant_value_add">+ Add new attribute</option>
                             <?php foreach($variants as $variant){ ?>
-                            <option value="<?=$variant['MerchantVariant']['name'];?>"><?=$variant['MerchantVariant']['name'];?></option>
+                            <option value="<?=$variant['MerchantProductVariant']['name'];?>"><?=$variant['MerchantProductVariant']['name'];?></option>
                             <?php } ?>
                             
                             </select></div>
@@ -536,7 +536,7 @@ $(document).ready(function(){
 $(document).ready(function(){
     var variant_count = 2;
     $(document).on('click','.variant_add',function(){
-        $(this).parent().parent().parent().append('<div class="col-md-12 col-sm-12 col-xs-12 variant_attr variant_added" style="margin-top:15px;"><div class="col-md-12 col-xs-12 col-sm-12"><div class="col-md-3 col-xs-3 col-sm-3"><div class="info"><select class="variant_value_'+variant_count+'"><option></option><option value="variant_value_add">+ Add new attribute</option><?php foreach($variants as $variant){ ?><option value="<?=$variant['MerchantVariant']['name'];?>"><?=$variant['MerchantVariant']['name'];?></option><?php } ?></select></div></div><div class="col-md-3 col-xs-3 col-sm-3"><div class="info"><input type="text" class="variant_default_'+variant_count+'"></div></div><div class="col-md-2 col-xs-2 col-sm-2"><button class="btn remove remove_variant_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button></div></div><div>'+ ($(".variant_attr").length >= 2 ? '<span class="variant_max">A product has a maximum of three variants.</span><span class="variant_add" style="display:none;">Add Another Attribute</span>':'<span class="variant_add">Add Another Attribute</span>') +'</div></div>');
+        $(this).parent().parent().parent().append('<div class="col-md-12 col-sm-12 col-xs-12 variant_attr variant_added" style="margin-top:15px;"><div class="col-md-12 col-xs-12 col-sm-12"><div class="col-md-3 col-xs-3 col-sm-3"><div class="info"><select class="variant_value_'+variant_count+'"><option></option><option value="variant_value_add">+ Add new attribute</option><?php foreach($variants as $variant){ ?><option value="<?=$variant['MerchantProductVariant']['name'];?>"><?=$variant['MerchantProductVariant']['name'];?></option><?php } ?></select></div></div><div class="col-md-3 col-xs-3 col-sm-3"><div class="info"><input type="text" class="variant_default_'+variant_count+'"></div></div><div class="col-md-2 col-xs-2 col-sm-2"><button class="btn remove remove_variant_attr" style="padding:0"><i class="glyphicon glyphicon-remove"></i></button></div></div><div>'+ ($(".variant_attr").length >= 2 ? '<span class="variant_max">A product has a maximum of three variants.</span><span class="variant_add" style="display:none;">Add Another Attribute</span>':'<span class="variant_add">Add Another Attribute</span>') +'</div></div>');
         $(this).hide();
         variant_count++;
     });

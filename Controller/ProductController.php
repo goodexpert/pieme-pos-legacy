@@ -22,13 +22,27 @@ class ProductController extends AppController {
     public $layout = 'home';
 
 /**
- * This controller uses MerchantProduct, MerchantProductType, MerchantProductBrand, MerchantProductTag,
- *  MerchantTaxRate, MerchantSupplier, MerchantProductTag, MerchantVariant and MerchantProductInventory models.
+ * This controller uses the following models.
  *
  * @var array
  */
-    public $uses = array('Merchant', 'MerchantProduct', 'MerchantProductType', 'MerchantProductBrand', 'MerchantProductTag',
-        'MerchantTaxRate', 'MerchantSupplier', 'MerchantProductCategory', 'MerchantPriceBookEntry', 'MerchantVariant', 'MerchantProductInventory', 'MerchantOutlet', 'MerchantProductComposite', 'MerchantPriceBook', 'MerchantProductLog');
+    public $uses = array(
+        'Merchant',
+        'MerchantProduct',
+        'MerchantProductComposite',
+        'MerchantProductType',
+        'MerchantProductBrand',
+        'MerchantProductTag',
+        'MerchantProductVariant',
+        'MerchantProductCategory',
+        'MerchantProductLog',
+        'MerchantTaxRate',
+        'MerchantPriceBook',
+        'MerchantPriceBookEntry',
+        'MerchantOutlet',
+        'MerchantSupplier',
+        'MerchantProductInventory'
+    );
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -342,11 +356,11 @@ class ProductController extends AppController {
         ));
         $this->set('taxes', $taxes);
 
-        $variants = $this->MerchantVariant->find('all', array(
+        $variants = $this->MerchantProductVariant->find('all', array(
             'conditions' => array(
                 'OR' => array(
-                    'MerchantVariant.merchant_id IS NULL',
-                    'MerchantVariant.merchant_id' => $user['merchant_id']
+                    'MerchantProductVariant.merchant_id IS NULL',
+                    'MerchantProductVariant.merchant_id' => $user['merchant_id']
                 )
             ),
         ));
@@ -656,11 +670,11 @@ class ProductController extends AppController {
         ));
         $this->set('taxes', $taxes);
 
-        $variants = $this->MerchantVariant->find('all', array(
+        $variants = $this->MerchantProductVariant->find('all', array(
             'conditions' => array(
                 'OR' => array(
-                    'MerchantVariant.merchant_id IS NULL',
-                    'MerchantVariant.merchant_id' => $user['merchant_id']
+                    'MerchantProductVariant.merchant_id IS NULL',
+                    'MerchantProductVariant.merchant_id' => $user['merchant_id']
                 )
             ),
         ));
@@ -1045,16 +1059,15 @@ class ProductController extends AppController {
     }
 
     public function add_variants() {
-        $this->loadModel('MerchantVariant');
         $result = array();
         if($this->request->is('post')) {
 
             try {
                 $data = $this->request->data;
-                $this->MerchantVariant->create();
+                $this->MerchantProductVariant->create();
                 $data['merchant_id'] = $this->Auth->user()['merchant_id'];
-                $this->MerchantVariant->save($data);
-                $result['id'] = $this->MerchantVariant->id;
+                $this->MerchantProductVariant->save($data);
+                $result['id'] = $this->MerchantProductVariant->id;
                 $result['name'] = $data['name'];
                 $result['default_value'] = $data['default_value'];
             } catch  (Exception $e) {
