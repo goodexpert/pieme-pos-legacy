@@ -296,6 +296,9 @@ class AuthComponent extends Component {
 			header('Location: http://www.onzsa.com' . $_SERVER['REQUEST_URI']);
 		} elseif (!is_numeric($names[0])) {
 			$this->subdomain = $names[0];
+			if (!$this->_checkDomain($this->subdomain)) {
+				throw new NotFoundException();
+			}
 			$this->authenticate['Form']['scope'] = array(
 				'Merchant.domain_prefix' => $this->subdomain
 			);
@@ -686,23 +689,6 @@ class AuthComponent extends Component {
 	}
 
 /**
- * Check if a domain name exists.
- *
- * @return bool true if a domain can be found, false if one cannot.
- */
-	protected function _checkDomain($domain) {
-		$result = ClassRegistry::init('Merchant')->find('first', array(
-			'conditions' => array(
-				'Merchant.domain_prefix' => $domain
-			)
-		));
-		if (empty($result['Merchant'])) {
-			return false;
-		}
-		return true;
-	}
-
-/**
  * Similar to AuthComponent::user() except if the session user cannot be found, connected authentication
  * objects will have their getUser() methods called. This lets stateless authentication methods function correctly.
  *
@@ -712,9 +698,6 @@ class AuthComponent extends Component {
 		$user = $this->user();
 		if ($user) {
 			if (!empty($this->subdomain) && $this->subdomain !== $user['Merchant']['domain_prefix']) {
-				if (!$this->_checkDomain($this->subdomain)) {
-					throw new NotFoundException();
-				}
 				return false;
 			}
 			$this->Session->delete('Auth.redirect');
@@ -881,6 +864,23 @@ class AuthComponent extends Component {
 			return;
 		}
 		$this->Session->setFlash($message, $this->flash['element'], $this->flash['params'], $this->flash['key']);
+	}
+
+/**
+ * Check if a domain name exists.
+ *
+ * @return bool true if a domain can be found, false if one cannot.
+ */
+	protected function _checkDomain($domain) {
+		$result = ClassRegistry::init('Merchant')->find('first', array(
+			'conditions' => array(
+				'Merchant.domain_prefix' => $domain
+			)
+		));
+		if (empty($result['Merchant'])) {
+			return false;
+		}
+		return true;
 	}
 
 }
