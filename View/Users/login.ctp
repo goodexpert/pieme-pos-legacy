@@ -107,7 +107,7 @@
                             </form>
                         </div>
                     </div>
-                    <p class="create_account">Don't have an account? <a href="/signup">Try Onzsa for free</a></p>
+                    <p class="create_account">Don't have an account? <a href="https://www.onzsa.com/signup">Try Onzsa for free</a></p>
                 </div>
               </div>
             </div>
