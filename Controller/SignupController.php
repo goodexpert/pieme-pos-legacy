@@ -26,7 +26,7 @@ class SignupController extends AppController {
  */
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('index', 'setup');
+        $this->Auth->allow('index', 'setup', 'check_validate');
     }
 
 /**
@@ -39,6 +39,12 @@ class SignupController extends AppController {
             $data = $this->request->data;
             $data['domain_prefix'] = str_replace(' ', '_', strtolower($data['name']));
             $this->createMerchant($data);
+        }
+    }
+    
+    public function check_validate() {
+        if ($this->request->is('post')) {
+            //Keep getting 500 error
         }
     }
 
@@ -96,7 +102,7 @@ class SignupController extends AppController {
             $merchant['Merchant'] = $data;
             $merchant['Merchant']['subscriber_id'] = $this->Subscriber->id;
             $merchant['Merchant']['merchant_code'] = $this->generate_password(6);
-            $merchant['Merchant']['plan_id'] = 'subscriber_plan_retailer_trial';
+            $merchant['Merchant']['plan_id'] = $data['plan_id'];
             $merchant['Merchant']['trial_ends'] = CakeTime::format('+30 days', '%Y-%m-%d');
             $this->Merchant->save($merchant);
             $merchant_id = $this->Merchant->id;

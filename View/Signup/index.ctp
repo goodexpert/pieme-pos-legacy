@@ -88,7 +88,7 @@
                     </div>
                     <!-- General Information -->
                     <div id="signup_general_info" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container">
-                        <div class="line-box">
+                        <form class="line-box" action="/signup/index.json" method="post">
                             <h1>Sign up</h1>
                             <div class="dashed-line-gr"><?php echo $this->Session->flash(); ?></div>
                             <dl>
@@ -114,51 +114,35 @@
                                 <dd class="hidden"><input type="text" name="time_zone" id="time_zone" value="Pacific/Auckland"></dd>
                             </dl>
                             <div class="dashed-line-gr"></div>
-                            <button type="button" id="continue" class="btn btn-success">Continue</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Account Type -->
-                    <div id="signup_account_type" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container" style="display: none;">
-                        <div class="line-box col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                            <h1>Sign up</h1>
-                            <div class="dashed-line-gr"><?php echo $this->Session->flash(); ?></div>
-                            <h5>Please select an account type</h5>
-							<div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
-                                <button type="button" class="btn btn-white btn-right pull-right width-initial">
-                                    <input type="radio" class="hidden" id="signup_account_type_open_franchise" value="0">
-                                    <label for="signup_account_type_open_franchise" style="width:100%; height:100%;">Open Franchise</label>
-                                </button>
-                                <button type="button" class="btn btn-white btn-center pull-right width-initial">
-                                    <input type="radio" class="hidden" id="signup_account_type_join_franchise" value="1">
-                                    <label for="signup_account_type_join_franchise" style="width:100%; height:100%;">Join Franchise</label>
-                                </button>
-                                <button type="button" class="btn btn-white btn-left pull-right width-initial">
-                                    <input type="radio" class="hidden" id="signup_account_type_single_merchant" value="2">
-                                    <label for="signup_account_type_single_merchant" style="width:100%; height:100%;">Single Merchant</label>
-                                </button>
-                                <button type="button" class="btn btn-white btn-left pull-right width-initial">
-                                    <input type="radio" class="hidden" id="signup_account_type_trial" value="3">
-                                    <label for="signup_account_type_trial" style="width:100%; height:100%;">Trial</label>
-                                </button>
-							</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Store Information -->
-                    <div id="signup_store_info" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container" style="display: none;">
-                        <div class="line-box">
-                            <h1>Sign up</h1>
-                            <div class="dashed-line-gr"><?php echo $this->Session->flash(); ?></div>
                             <dl>
-                                <dt>Store name</dt> 
-                                <dd><input type="text" name="name" id="name" required></dd>
-                                <dt class="hidden">Private web address</dt>
-                                <dd class="hidden"><input type="hidden" name="domain_prefix" id="domain_prefix"></dd>
+                                <dt>Type</dt>
+                                <dd>
+									<select id="plan_id_1" name="plan_id_1">
+										<option value="subscriber_plan_retailer">Single Merchant</option>
+										<option value="subscriber_plan_franchise">Join Franchise</option>
+										<option value="subscriber_plan_franchise_hq">Open Franchise</option>
+										<option value="subscriber_plan_retailer_trial">Trial</option>
+									</select>
+								</dd>
+                                <dt class="plan_id_2">Plan</dt>
+                                <dd class="plan_id_2">
+									<select id="plan_id_2" name="plan_id_2">
+										<option value="small">Small</option>
+										<option value="medium">Medium</option>
+										<option value="large">Large</option>
+										<option value="xlarge">Extra Large</option>
+									</select>
+									<h5><a>Detail about our plan</a></h5>
+								</dd>
+								<input type="hidden" id="plan_id" name="plan_id" value="">
+                                <dt class="store_name">Store name</dt>
+                                <dd class="store_name"><input type="text" name="name" id="name" required></dd>
+                                <dt class="merchant_code" style="display: none;">Store code</dt>
+                                <dd class="merchant_code" style="display: none;"><input type="text" id="merchant_code" name="merchant_code" maxlength="6" placeholder="Enter store code"></dd>
                             </dl>
                             <div class="dashed-line-gr"></div>
-                            <button id="signup" class="btn btn-success"><img src="/img/ONZSA_eye.png">Start onzsa</button>
-                        </div>
+                            <button type="submit" id="signup" class="btn btn-success" >Start</button>
+                        </form>
                     </div>
                 </div>
               </div>
@@ -235,30 +219,43 @@
                     $("#time_zone").val(timezone);
                 });
                 */
-                
+
                 /*
                  * Account Type Select
                  */
-                $("#continue").click(function() {
-                    $("#signup_general_info").hide();
-                    $("#signup_account_type").show();
+                var plan_id = "";
+                $(document).on("change", "select", function() {
+	                if($(this).val() !== "subscriber_plan_franchise_hq" && $(this).val() !== "subscriber_plan_retailer_trial") {
+		                $(".plan_id_2").show();
+		                $("#plan_id").val($("#plan_id_1").val() + '_' + $("#plan_id_2").val());
+	                } else {
+		                $(".plan_id_2").hide();
+		                $("#plan_id").val($(this).val());
+	                }
+	                if($("#plan_id_1").val() == "subscriber_plan_franchise") {
+		                $(".merchant_code").show();
+		                $(".store_name").hide();
+	                } else {
+		                $(".merchant_code").hide();
+		                $(".store_name").show();
+	                }
                 });
-                $("#signup_account_type input[type=radio]").change(function(){
-                    if($(this).val() == 0 || $(this).val() == 2 || $(this).val() == 3) {
-                        $(this).parents("#signup_account_type").hide();
-                        $("#signup_store_info").show();
-                    }
-                });
-                $("#signup").click(function(){
+                $(document).on("focusout", "#merchant_code", function() {
+                    console.log("Identifying...");
+                    /*Why keep showing 500 error? Fix here
                     $.ajax({
-                        url: '/signup/index.json',
+                        url: '/signup/check_validate.json',
                         type: 'POST',
                         data: {
-                            
+                            merchant_code: $("#merchant_code").val()
+                        },
+                        success: function(result) {
+                            console.log(result);
                         }
                     });
+                    */
                 });
-            });    
+            });
         </script>
     </div>
         
