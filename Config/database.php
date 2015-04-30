@@ -71,8 +71,8 @@ class DATABASE_CONFIG {
 	public $default = array(
 		'datasource' => 'Database/Mysql',
 		'persistent' => false,
-		'host' => '192.168.1.205',
-		'login' => 'emcor_dba',
+		'host' => 'localhost',
+		'login' => 'onzsa_dba',
 		'password' => '!zltm1218@',
 		'database' => 'onzsa',
 		'prefix' => '',
