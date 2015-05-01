@@ -331,7 +331,7 @@ jQuery(document).ready(function() {
         var key_layouts = JSON.stringify(layouts);
         
         $.ajax({
-            url: "/quick_keys/add.json",
+            url: "/quick_keys/new.json",
             type: "POST",
             data: {
                 name: $("#layout_name").val(),

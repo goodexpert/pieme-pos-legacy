@@ -294,7 +294,7 @@ class AuthComponent extends Component {
 		$names = explode(".", $_SERVER['HTTP_HOST']);
 		if (count($names) == 2) {
 			header('Location: http://www.onzsa.com' . $_SERVER['REQUEST_URI']);
-		} elseif (!is_numeric($names[0])) {
+		} elseif ($_SERVER['HTTP_HOST'] !== 'localhost' && !is_numeric($names[0])) {
 			$this->subdomain = $names[0];
 			if (!$this->_checkDomain($this->subdomain)) {
 				throw new NotFoundException();

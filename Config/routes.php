@@ -140,7 +140,7 @@
         array('controller' => 'quickKey', 'action' => 'add'));
 
     Router::connect('/quick_keys/assign',
-        array('controller' => 'quickKey', 'action' => 'assign.json'));
+        array('controller' => 'quickKey', 'action' => 'assign'));
 
     Router::connect('/quick_keys/:id/edit',
         array('controller' => 'quickKey', 'action' => 'edit'),
