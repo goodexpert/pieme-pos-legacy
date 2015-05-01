@@ -105,7 +105,7 @@
                                     <?php } ?>
                                 </select>
                             </td>
-                            <td><span class="clickable assign_quick_key">Edit</span></td>
+                            <td><a href="/register/<?php echo $register['id'];?>/edit">Edit</a></td>
                         </tr>
                     <?php }
                 }?>
@@ -215,9 +215,9 @@ jQuery(document).ready(function() {
     Layout.init(); // init layout
     QuickSidebar.init() // init quick sidebar
     Index.init();
-    $(".assign_quick_key").click(function(){
+    $(".quick_key_id").change(function(){
         $.ajax({
-            url: '/quick_keys/assign.json',
+            url: '/quick_key/assign.json',
             type: 'POST',
             data: {
                 register_id: $(this).parents(".register-list-data").attr("data-id"),
