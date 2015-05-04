@@ -24,7 +24,7 @@ class UsersController extends AppController {
  *
  * @var array
  */
-    public $uses = array('MerchantUser', 'MerchantUserType', 'MerchantOutlet', 'MerchantRegister', 'Subscriber');
+    public $uses = array('MerchantUser', 'MerchantUserType', 'MerchantOutlet', 'MerchantRegister', 'Subscriber', 'Plan');
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -77,6 +77,9 @@ class UsersController extends AppController {
                         )
                     )
                 ));
+                
+                $plan = $this->Plan->findById($user['Merchant']['plan_id']);
+                $this->Session->write('Auth.User.Merchant.Plan', $plan['Plan']);
 
                 if (count($registers) == 1) {
                     $register = $registers[0];

@@ -556,6 +556,7 @@ $.widget( "custom.catcomplete", $.ui.autocomplete, {
         $.each( items, function( index, item ) {
             var li;
             if ( item.category != currentCategory ) {
+            	ul.attr({class: "ui-autocomplete ui-front ui-menu ui-widget-1 ui-widget-content-1 ui-corner-all"});
                 ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
                 currentCategory = item.category;
             }
