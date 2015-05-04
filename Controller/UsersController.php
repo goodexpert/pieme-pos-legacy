@@ -24,7 +24,7 @@ class UsersController extends AppController {
  *
  * @var array
  */
-    public $uses = array('MerchantUser', 'MerchantUserType', 'MerchantOutlet', 'MerchantRegister', 'Subscriber');
+    public $uses = array('MerchantUser', 'MerchantUserType', 'MerchantOutlet', 'MerchantRegister', 'Subscriber', 'Plan');
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -33,7 +33,7 @@ class UsersController extends AppController {
  */
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('login', 'lock');
+        $this->Auth->allow('login', 'lock', 'check_exist', 'check_store_name');
     }
 
 /**
@@ -77,6 +77,9 @@ class UsersController extends AppController {
                         )
                     )
                 ));
+                
+                $plan = $this->Plan->findById($user['Merchant']['plan_id']);
+                $this->Session->write('Auth.User.Merchant.Plan', $plan['Plan']);
 
                 if (count($registers) == 1) {
                     $register = $registers[0];
@@ -234,6 +237,49 @@ class UsersController extends AppController {
         $user = $this->Auth->user();
         $user = $this->MerchantUser->findById($id);
         $this->set('user',$user);
+    }
+    
+    public function check_exist() {
+	    if($this->request->is('post') || $this->request->is('ajax')) {
+	    	$this->loadModel('Merchant');
+	    	$result = array(
+	    		'success' => false
+	    	);
+	    	try {
+	    		$data = $this->request->data;
+		    	$merchant = $this->Merchant->findByMerchantCode($data);
+		    	if(!empty($merchant)) {
+			    	$result['success'] = true;
+			    	$result['merchant_id'] = $merchant['Merchant']['id'];
+			    	$result['store_name'] = $merchant['Merchant']['name'];
+			    	$result['subscriber_id'] = $merchant['Merchant']['subscriber_id'];
+		    	}
+		    } catch (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+            $this->serialize($result);
+            return;
+	    }
+    }
+    
+    public function check_store_name() {
+	    if($this->request->is('post') || $this->request->is('ajax')) {
+	    	$this->loadModel('Merchant');
+	    	$result = array(
+	    		'success' => true
+	    	);
+	    	try {
+	    		$data = $this->request->data;
+		    	$merchant = $this->Merchant->findByName($data);
+		    	if(!empty($merchant)) {
+			    	$result['success'] = false;
+		    	}
+		    } catch (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+            $this->serialize($result);
+            return;
+	    }
     }
 
 }

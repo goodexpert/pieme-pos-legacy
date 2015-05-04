@@ -405,7 +405,7 @@
                                             <td class="text-right"><?php echo number_format($discount,2,'.',',');?></td>
                                             <td class="text-right"><?php echo number_format($cost,2,'.',',');?></td>
                                             <td class="text-right"><?php echo number_format($sales - $cost,2,'.',',');?></td>
-                                            <td class="text-right"><?php echo number_format(($sales - $cost) / $sales * 100,2,'.',',');?></td>
+                                            <td class="text-right"><?php if($sales > 0){echo number_format(($sales - $cost) / $sales * 100,2,'.',',');}else{echo 0;}?></td>
                                             <td class="text-right"><?php echo number_format($tax,2,'.',',');?></td>
                                             <td class="text-right"><?php echo number_format($sales + $tax,2,'.',',');?></td>
                                             <td class="text-limit"><?php echo $product['MerchantProduct']['sku'];?></td>
@@ -474,7 +474,7 @@
                                     <td class="text-right"><?php echo number_format($grandTotalDiscount,2,'.',',');?></td>
                                     <td class="text-right"><?php echo number_format($grandTotalCost,2,'.',',');?></td>
                                     <td class="text-right"><?php echo number_format($grandTotalGrossProfit,2,'.',',');?></td>
-                                    <td class="text-right"><?php echo number_format(($grandTotalSales - $grandTotalCost) / $grandTotalSales * 100,2,'.',',');?></td>
+                                    <td class="text-right"><?php if($grandTotalSales > 0){echo number_format(($grandTotalSales - $grandTotalCost) / $grandTotalSales * 100,2,'.',',');}else{echo 0;}?></td>
                                     <td class="text-right"><?php echo number_format($grandTotalTax,2,'.',',');?></td>
                                     <td class="text-right"><?php echo number_format($grandTotalSales + $grandTotalTax,2,'.',',');?></td>
                                     <td class="text-limit"> </td>

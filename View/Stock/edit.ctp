@@ -360,9 +360,11 @@ jQuery(document).ready(function() {
         minLength: 2,
         select: function( event, ui ) {
             searchItem = ui.item.data;
-
             $(this).val(ui.item.sku);
             return false;
+        },
+        open: function( event, ui ) {
+	        $("ul").last().attr({class:"ui-autocomplete ui-front ui-menu ui-widget-1 ui-widget-content-1 ui-corner-all"});
         }
     });
 

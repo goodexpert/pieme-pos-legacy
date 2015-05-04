@@ -95,13 +95,13 @@
                                 <dt class="hidden">Private web address</dt>
                                 <dd class="hidden"><input type="hidden" name="domain_prefix" id="domain_prefix"></dd>
                                 <dt>First name</dt>
-                                <dd><input type="text" name="first_name" id="first_name" required></dd>
+                                <dd><input type="text" name="first_name" id="first_name" class="required" required></dd>
                                 <dt>Last name</dt>
-                                <dd><input type="text" name="last_name" id="last_name" required></dd>
+                                <dd><input type="text" name="last_name" id="last_name" class="required" required></dd>
                                 <dt>Mail address</dt>
-                                <dd><input type="email" name="username" id="username" required></dd>
+                                <dd><input type="email" name="username" id="username" class="required" required></dd>
                                 <dt>Password</dt>
-                                <dd><input type="password" name="password" id="password" required></dd>
+                                <dd><input type="password" name="password" id="password" class="required" required></dd>
                                 
                                 
                                 <dt>City</dt>
@@ -121,11 +121,11 @@
 										<option value="subscriber_plan_retailer">Single Merchant</option>
 										<option value="subscriber_plan_franchise">Join Franchise</option>
 										<option value="subscriber_plan_franchise_hq">Open Franchise</option>
-										<option value="subscriber_plan_retailer_trial">Trial</option>
+										<option value="subscriber_plan_retailer_trial" selected>Trial</option>
 									</select>
 								</dd>
-                                <dt class="plan_id_2">Plan</dt>
-                                <dd class="plan_id_2">
+                                <dt class="plan_id_2" style="display: none;">Plan</dt>
+                                <dd class="plan_id_2" style="display: none;">
 									<select id="plan_id_2" name="plan_id_2">
 										<option value="small">Small</option>
 										<option value="medium">Medium</option>
@@ -134,11 +134,15 @@
 									</select>
 									<h5><a>Detail about our plan</a></h5>
 								</dd>
-								<input type="hidden" id="plan_id" name="plan_id" value="">
+								<input type="hidden" id="plan_id" name="plan_id" value="subscriber_plan_retailer_trial">
                                 <dt class="store_name">Store name</dt>
-                                <dd class="store_name"><input type="text" name="name" id="name" required></dd>
+                                <dd class="store_name"><input type="text" name="store_name" id="store_name" class="required" required></dd>
                                 <dt class="merchant_code" style="display: none;">Store code</dt>
-                                <dd class="merchant_code" style="display: none;"><input type="text" id="merchant_code" name="merchant_code" maxlength="6" placeholder="Enter store code"></dd>
+                                <dd class="merchant_code" style="display: none;">
+                                    <input type="text" id="merchant_code" name="merchant_code" maxlength="6" placeholder="Enter store code" autocomplete="off">
+                                    <input type="hidden" id="subscriber_id" name="subscriber_id">
+                                    <input type="hidden" id="parent_merchant_id" name="parent_merchant_id">
+                                </dd>
                             </dl>
                             <div class="dashed-line-gr"></div>
                             <button type="submit" id="signup" class="btn btn-success" >Start</button>
@@ -219,12 +223,28 @@
                     $("#time_zone").val(timezone);
                 });
                 */
-
+                /*
+                function validation() {
+                    $(".required").each(function() {
+                        if($(this).val().length > 0 && $("#store_name").hasClass("invalid") == false && $("#merchant_code").hasClass("invalid") == false) {
+                            $("#signup").attr({"disabled":false});
+                        } else {
+                            $("#signup").attr({"disabled":true});
+                        }
+                    });
+                }
+                $(document).on("keyup", function() {
+                    validation();
+                });
+                */
                 /*
                  * Account Type Select
                  */
                 var plan_id = "";
                 $(document).on("change", "select", function() {
+                    $("#store_name").val('');
+                    $("#merchant_code").val('');
+                    $("#signup").attr({"disabled":true});
 	                if($(this).val() !== "subscriber_plan_franchise_hq" && $(this).val() !== "subscriber_plan_retailer_trial") {
 		                $(".plan_id_2").show();
 		                $("#plan_id").val($("#plan_id_1").val() + '_' + $("#plan_id_2").val());
@@ -240,20 +260,55 @@
 		                $(".store_name").show();
 	                }
                 });
-                $(document).on("focusout", "#merchant_code", function() {
-                    console.log("Identifying...");
-                    /*Why keep showing 500 error? Fix here
-                    $.ajax({
-                        url: '/signup/check_validate.json',
-                        type: 'POST',
-                        data: {
-                            merchant_code: $("#merchant_code").val()
-                        },
-                        success: function(result) {
-                            console.log(result);
-                        }
-                    });
-                    */
+                $(document).on("keyup", "#store_name", function() {
+                    if($(this).val().length > 0) {
+                        $.ajax({
+                            url: '/users/check_store_name.json',
+                            type: 'POST',
+                            data: {
+                                name: $("#store_name").val()
+                            },
+                            success: function(result) {
+                                if(result.success) {
+                                    console.log("Confirmed");
+                                    $("#store_name").removeClass("invalid");
+                                    $("#signup").attr({"disabled":false});
+                                } else {
+                                    console.log("Invalid");
+                                    $("#store_name").addClass("invalid");
+                                    $("#signup").attr({"disabled":true});
+                                }
+                            }
+                        });
+                    }
+                });
+                $(document).on("keyup", "#merchant_code", function() {
+                    if($(this).val().length == 6) {
+                        console.log("Identifying...");
+    
+                        $.ajax({
+                            url: '/users/check_exist.json',
+                            type: 'POST',
+                            data: {
+                                merchant_code: $("#merchant_code").val()
+                            },
+                            success: function(result) {
+                                if(result.success) {
+                                    $("#subscriber_id").val(result.subscriber_id);
+                                    $("#store_name").val(result.store_name);
+                                    $("#parent_merchant_id").val(result.merchant_id);
+                                    $("#merchant_code").removeClass("invalid");
+                                    $("#signup").attr({"disabled":false});
+                                } else {
+                                    $("#subscriber_id").val('');
+                                    $("#store_name").val('');
+                                    $("#parent_merchant_id").val('');
+                                    $("#merchant_code").addClass("invalid");
+                                    $("#signup").attr({"disabled":true});
+                                }
+                            }
+                        });
+                    }
                 });
             });
         </script>

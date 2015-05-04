@@ -54,38 +54,132 @@
         <div class="page-content">
             <h2>Account</h2>
                 <div class="inventory-tab">
-                    <li class="active">Retail</li>
-                    <li>Franchise</li>
+                    <li id="show_retail" target="retailer" class="active">Retail</li>
+                    <li id="show_franchise" target="franchise">Franchise</li>
+                    <li id="show_franchise_hq" target="franchise_hq">Franchise HQ</li>
                 </div>
             <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
                 <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega line-box">
-                <h4 class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
-                    Select a Plan
-                </h4>
-                <h5 class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega margin-bottom-20">
-                    You have 1 Outlet, 1 Register, 5 Products, 3 Customers and 1 User.<br>
-                </h5>
+                    <h4 class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
+                        Select a Plan
+                    </h4>
+                    <h5 class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega margin-bottom-20">
+                        You have
+                        <?php 
+                        if($authUser['Merchant']['Plan']['limit_outlets'] == -1) {
+                            echo "Unlimited Outlet, ";
+                        } else {
+                            echo $authUser['Merchant']['Plan']['limit_outlets'];
+                            if($authUser['Merchant']['Plan']['limit_outlets'] > 1) {
+                                echo " Outlets, ";
+                            } else {
+                                echo " Outlet, ";
+                            }
+                        }
+                        if($authUser['Merchant']['Plan']['limit_registers'] == -1) {
+                            echo "Unlimited Register, ";
+                        } else {
+                            echo $authUser['Merchant']['Plan']['limit_registers'];
+                            if($authUser['Merchant']['Plan']['limit_registers'] > 1) {
+                                echo " Registers, ";
+                            } else {
+                                echo " Register, ";
+                            }
+                        }
+                        if($authUser['Merchant']['Plan']['limit_products'] == -1) {
+                            echo "Unlimited Product, ";
+                        } else {
+                            echo $authUser['Merchant']['Plan']['limit_products'];
+                            if($authUser['Merchant']['Plan']['limit_products'] > 1) {
+                                echo " Products, ";
+                            } else {
+                                echo " Product, ";
+                            }
+                        }
+                        if($authUser['Merchant']['Plan']['limit_customers'] == -1) {
+                            echo "Unlimited Customer and ";
+                        } else {
+                            echo $authUser['Merchant']['Plan']['limit_customers'];
+                            if($authUser['Merchant']['Plan']['limit_customers'] > 1) {
+                                echo " Customers and ";
+                            } else {
+                                echo " Customer and ";
+                            }
+                        }
+                        if($authUser['Merchant']['Plan']['limit_users'] == -1) {
+                            echo "Unlimited User.";
+                        } else {
+                            echo $authUser['Merchant']['Plan']['limit_users'];
+                            if($authUser['Merchant']['Plan']['limit_users'] > 1) {
+                                echo " Users.";
+                            } else {
+                                echo " User.";
+                            }
+                        }
+                        ?>
+                    </h5>
                     <?php foreach($plans as $plan) { ?>
-                    <div class="col-md-3 col-sm-6 col-xs-6 margin-bottom-20">
-                        <div class="plan-item clickable <?php if($authUser['Merchant']['plan_id'] == $plan['Plan']['id']){echo "selected_plan";}?> line-box">
-                            <div class="col-md-12 col-sm-12 col-xs-12 plan-header">
-                                <input type="radio" value="<?php echo $plan['Plan']['id'];?>" name="account_plan" <?php if($authUser['Merchant']['plan_id'] == $plan['Plan']['id']){echo "checked";}?>> <lable for="account_plan"><?php echo $plan['Plan']['name'];?></lable>
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12">
-                                <div class="plan-price">
-                                    FREE
+                        <div class="col-md-3 col-sm-6 col-xs-6 margin-bottom-20 <?php if(strpos($plan['Plan']['id'], 'franchise') == true && strpos($plan['Plan']['id'], 'hq') == false){echo 'franchise hidden';} else if(strpos($plan['Plan']['id'], 'hq') == true){echo 'franchise_hq hidden';} else if(strpos($plan['Plan']['id'], 'retailer') == true){echo 'retailer';}?>">
+                            <div class="plan-item clickable <?php if($authUser['Merchant']['plan_id'] == $plan['Plan']['id']){echo "selected_plan";}?> line-box">
+                                <div class="col-md-12 col-sm-12 col-xs-12 plan-header">
+                                    <input type="radio" value="<?php echo $plan['Plan']['id'];?>" name="account_plan" <?php if($authUser['Merchant']['plan_id'] == $plan['Plan']['id']){echo "checked";}?>> <lable for="account_plan"><?php echo $plan['Plan']['name'];?></lable>
                                 </div>
-                                <span class="triangle-left"></span>
-                                <span class="triangle-right"></span>
-                            </div>
-                            <div class="col-md-12 col-sm-12 col-xs-12 plan-desc">
-                                <ul>
-                                    <li>Single outlet</li>
-                                    <li>1 register included</li>
-                                </ul>
+                                <div class="col-md-12 col-sm-12 col-xs-12">
+                                    <div class="plan-price">
+                                        <?php
+                                            if($plan['Plan']['price'] > 0) {
+                                                echo "$".number_format($plan['Plan']['price'],2,'.',',');
+                                            } else {
+                                                echo "FREE";
+                                            }
+                                        ?>
+                                    </div>
+                                    <span class="triangle-left"></span>
+                                    <span class="triangle-right"></span>
+                                </div>
+                                <div class="col-md-12 col-sm-12 col-xs-12 plan-desc">
+                                    <ul>
+                                        <li>
+                                        	<?php if($plan['Plan']['limit_outlets'] == 1){
+                                        		echo "Single";
+                                        	} else if($plan['Plan']['limit_outlets'] == -1){
+                                        	   echo "Unlimited";
+                                            } else {
+                                                echo $plan['Plan']['limit_outlets'];
+                                            }?> 
+                                        outlet</li>
+                                        <li>
+                                            <?php if($plan['Plan']['limit_registers'] == -1){
+                                                echo "Unlimited register";
+                                            } else {
+                                                echo $plan['Plan']['limit_registers']." register included";
+                                            }?>
+                                        </li>
+                                        <li>
+                                            <?php if($plan['Plan']['limit_products'] == -1){
+                                                echo "Unlimited product";
+                                            } else {
+                                                echo $plan['Plan']['limit_products']." product included";
+                                            }?>
+                                        </li>
+                                        <li>
+                                            <?php if($plan['Plan']['limit_customers'] == -1){
+                                                echo "Unlimited customer";
+                                            } else {
+                                                echo $plan['Plan']['limit_customers']." customer included";
+                                            }?>
+                                        </li>
+                                        <li>
+                                            <?php if($plan['Plan']['limit_users'] == -1){
+                                                echo "Unlimited user";
+                                            } else {
+                                                echo $plan['Plan']['limit_users']." user included";
+                                            }?>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     <?php } ?>
                 </div>
             </div>
@@ -96,52 +190,6 @@
         </div>
     </div>
     <!-- END CONTENT -->
-    <!-- BEGIN QUICK SIDEBAR -->
-    <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
-    <div class="page-quick-sidebar-wrapper">
-        <div class="page-quick-sidebar">            
-            <div class="nav-justified">
-                <ul class="nav nav-tabs nav-justified">
-                    <li class="active">
-                        <a href="#quick_sidebar_tab_1" data-toggle="tab">
-                        Users <span class="badge badge-danger">2</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#quick_sidebar_tab_2" data-toggle="tab">
-                        Alerts <span class="badge badge-success">7</span>
-                        </a>
-                    </li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        More<i class="fa fa-angle-down"></i>
-                        </a>
-                        <ul class="dropdown-menu pull-right" role="menu">
-                            <li>
-                                <a href="#quick_sidebar_tab_3" data-toggle="tab">
-                                <i class="icon-bell"></i> Alerts </a>
-                            </li>
-                            <li>
-                                <a href="#quick_sidebar_tab_3" data-toggle="tab">
-                                <i class="icon-info"></i> Notifications </a>
-                            </li>
-                            <li>
-                                <a href="#quick_sidebar_tab_3" data-toggle="tab">
-                                <i class="icon-speech"></i> Activities </a>
-                            </li>
-                            <li class="divider">
-                            </li>
-                            <li>
-                                <a href="#quick_sidebar_tab_3" data-toggle="tab">
-                                <i class="icon-settings"></i> Settings </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </div>
-<!-- END QUICK SIDEBAR -->
 </div>
 <!-- END CONTAINER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
@@ -198,7 +246,6 @@ jQuery(document).ready(function() {
     QuickSidebar.init() // init quick sidebar
     Index.init();
     
-    
     $(".plan-item").click(function(){
         $(".plan-item").children(".plan-header").children(".radio").children("span").removeClass('checked');
         $(".plan-item").children(".plan-header").children(".radio").children("span").children("input[name=account_plan]").attr({'checked':false});
@@ -220,6 +267,13 @@ jQuery(document).ready(function() {
         }).done(function(result){
             console.log(result);
         });
+    });
+    
+    $(document).on('click', '.inventory-tab li', function() {
+        $(".inventory-tab li").removeClass("active");
+        $(this).addClass("active");
+        $(".plan-item").parent().addClass("hidden");
+        $("." + $(this).attr("target")).removeClass("hidden");
     });
 });
 </script>

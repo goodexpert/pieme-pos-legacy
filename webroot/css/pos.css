@@ -1219,7 +1219,6 @@ text-align:right;
 }
 .selected_plan {
 	box-shadow: 0 0 9px rgba(0,0,0,0.5);
-	border: 0;
 }
 .selected_plan>.plan-header {
 	background: #616161;

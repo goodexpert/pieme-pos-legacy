@@ -105,7 +105,7 @@
                                 <?php } ?>
                                 </select>
                             </td>
-                            <td><a href="/register/<?=$register['id'];?>/edit">Edit register</a></td>
+                            <td><a href="/register/<?php echo $register['id'];?>/edit">Edit register</a></td>
                         </tr>
                     <?php }
                 }?>
@@ -215,7 +215,6 @@ jQuery(document).ready(function() {
     Layout.init(); // init layout
     QuickSidebar.init() // init quick sidebar
     Index.init();
-
     $(".assign_quick_key").change(function(e) {
         var register_id = $(".register-list-data").attr("data-id");
         var quick_key_id = $(".quick_key_id").val();
@@ -224,7 +223,7 @@ jQuery(document).ready(function() {
             return;
 
         $.ajax({
-            url: '/quick_keys/assign.json',
+            url: '/quick_key/assign.json',
             type: 'POST',
             data: {
                 register_id: register_id,
