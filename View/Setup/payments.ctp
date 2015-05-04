@@ -68,8 +68,8 @@
             </div>
         <table id="historyTable" class="table table-striped table-bordered dataTable">
             <colgroup>
-                <col width="85%">
-                <col width="15%">
+                <col width="50%">
+                <col width="50%">
             </colgroup>
             <thead>
                 <tr>

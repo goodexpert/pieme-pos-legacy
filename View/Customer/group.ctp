@@ -41,13 +41,19 @@
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                 <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">Customer Group</h2>
                 <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
-                    <button id="add_group" class="btn btn-white pull-right btn-left">
+                    <button id="add_group" class="btn btn-white pull-right">
                         <div class="glyphicon glyphicon-plus"></div>&nbsp;
                     Add</button>
                 </div>
             </div>
 
             <table id="groupTable" class="table-bordered">
+            	<colgroup>
+               		<col width="25%">
+               		<col width="25%">
+               		<col width="25%">
+               		<col width="25%">
+                </colgroup>
                 <thead>
                 <tr>
                     <th>Name</th>

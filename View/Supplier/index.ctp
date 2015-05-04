@@ -69,6 +69,11 @@
             </div>
             
             <table id="supplierTable" class="table-bordered">
+            	<colgroup>
+               		<col width="33%">
+               		<col width="33%">
+               		<col width="33%">
+                </colgroup>
                 <thead>
                 <tr>
                     <th>Name</th>

@@ -59,6 +59,11 @@
                 </div>
             </div>
             <table id="typeTable" class="table-bordered">
+            	<colgroup>
+               		<col width="33%">
+               		<col width="33%">
+               		<col width="33%">
+                </colgroup>
                 <thead>
                 <tr>
                     <th>Name</th>
