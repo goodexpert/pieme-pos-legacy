@@ -204,6 +204,9 @@ class ProductController extends AppController {
                     $data['supply_price'] = null;
                 if(!is_numeric($data['markup']))
                     $data['markup'] = null;
+                if(empty($data['tax_id'])) {
+                    $data['tax_id'] = $this->MerchantTaxRate->findByTaxRate($data['tax'])['MerchantTaxRate']['id'];
+                }
 
                 $this->MerchantProduct->create();
                 $this->MerchantProduct->save(array('MerchantProduct' => $data));
@@ -375,6 +378,10 @@ class ProductController extends AppController {
         
         $merchant = $this->Merchant->findById($user['merchant_id']);
         $this->set('merchant',$merchant);
+        if(isset($_GET['parent_id'])) {
+            $parent = $this->MerchantProduct->findById($_GET['parent_id']);
+            $this->set('parent', $parent);
+        }
     }
 
     public function edit($id) {

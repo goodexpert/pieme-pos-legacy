@@ -53,17 +53,23 @@
     <div class="page-content-wrapper">
         <div class="page-content">
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                <input type="hidden" id="product_id" value="<?=$id;?>">
+                <input type="hidden" id="product_id" value="<?php echo $id;?>">
                 <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
                 <?=$product['MerchantProduct']['name'];?>
                 </h2>
-                
                 <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
                     <a href="<?php echo $_SERVER['REQUEST_URI'];?>/delete">
                     <button class="btn btn-white btn-right pull-right">
                         <span class="glyphicon glyphicon-trash"></span>&nbsp;Delete Product
                     </button>
                     </a>
+                    <?php if($product['MerchantProduct']['has_variants'] == 1) { ?>
+                    <a href="/product/add?parent_id=<?php echo $id;?>">
+                    <button class="btn btn-white btn-right pull-right">
+                        <span class="glyphicon glyphicon-plus"></span>&nbsp;Add Variant
+                    </button>
+                    </a>
+                    <?php } ?>
                     <button class="btn btn-white pull-right btn-center">
                         <div class="glyphicon glyphicon-print"></div>&nbsp;
                     Print Label</button>
@@ -72,8 +78,6 @@
                     Edit Product</button></a>
                 </div>
             </div>
-            
-            
             <div class="product_tags"></div>
                 <!-- START col-md-12-->
                 <div class="form-body line-box col-md-12 col-xs-12 col-sm-12 col-alpha col-omega product_tags-list margin-top-20"> 

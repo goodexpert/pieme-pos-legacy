@@ -74,12 +74,19 @@
   <div class="page-content-wrapper">
     <div class="page-content">
       <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-        <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega"> Add Product </h2>
+        <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega"> 
+        <?php if(!isset($_GET['parent_id'])) {
+        	echo "Add Product";
+        } else {
+	        echo "Add Variant to ".$parent['MerchantProduct']['name'];
+        }?>
+         </h2>
       </div>
       <div class="portlet box product-add">
         <div class="portlet-body form"> 
           <!-- BEGIN FORM-->
           <div class="form-horizontal">
+          	<?php if(!isset($_GET['parent_id'])) { ?>
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title">Detail</div>
             <!-- START col-md-12-->
             <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
@@ -87,7 +94,7 @@
                   <dl>
                     <dt class="col-md-4">Product name</dt>
                     <dd class="col-md-8">
-                      <input type="text" class="required" id="product_name">
+                      <input type="text" class="required" id="product_name" value="<?php if(isset($_GET['parent_id'])){echo $parent['MerchantProduct']['name'];}?>">
                       <span class="help-block">
                       <input type="checkbox" id="availability" value="1" checked>
                       This product can be sold </span> </dd>
@@ -97,7 +104,7 @@
                   <dl>
                     <dt class="col-md-4">Product handle</dt>
                     <dd class="col-md-8">
-                      <input type="text" class="required" id="product_handle">
+                      <input type="text" class="required" id="product_handle" value="<?php if(isset($_GET['parent_id'])){echo $parent['MerchantProduct']['handle'];}?>">
                       <span class="help-block"> A unique identifier for this product </span> </dd>
                   </dl>
                 </div>
@@ -111,7 +118,7 @@
                       <select id="product_type">
                         <option value="" selected></option>
                         <?php foreach($types as $type){?>
-                            <option value="<?=$type['MerchantProductType']['id'];?>"><?=$type['MerchantProductType']['name'];?></option>
+                            <option value="<?php echo $type['MerchantProductType']['id'];?>" <?php if(isset($_GET['parent_id']) && $parent['MerchantProduct']['product_type_id'] == $type['MerchantProductType']['id']){echo "selected";}?>><?=$type['MerchantProductType']['name'];?></option>
                         <?php } ?>
                         <option value="add-type">+ Add type</option>
                       </select>
@@ -123,7 +130,7 @@
                       <select id="product_supplier">
                         <option></option>
                         <?php foreach($suppliers as $supplier){?>
-                            <option value="<?=$supplier['MerchantSupplier']['id'];?>"><?=$supplier['MerchantSupplier']['name'];?></option>
+                            <option value="<?=$supplier['MerchantSupplier']['id'];?>" <?php if(isset($_GET['parent_id']) && $parent['MerchantProduct']['supplier_id'] == $supplier['MerchantSupplier']['id']){echo "selected";}?>><?=$supplier['MerchantSupplier']['name'];?></option>
                         <?php } ?>
                         <option value="add-supplier">+ Add supplier</option>
                       </select>
@@ -139,7 +146,7 @@
                       <select id="product_brand">
                           <option value="" selected></option>
                           <?php foreach($brands as $brand){?>
-                            <option value="<?=$brand['MerchantProductBrand']['id'];?>"><?=$brand['MerchantProductBrand']['name'];?></option>
+                            <option value="<?php echo $brand['MerchantProductBrand']['id'];?>" <?php if(isset($_GET['parent_id']) && $parent['MerchantProduct']['product_brand_id'] == $brand['MerchantProductBrand']['id']){echo "selected";}?>><?=$brand['MerchantProductBrand']['name'];?></option>
                         <?php } ?>
                         <option value="add-brand">+ Add brand</option>
                       </select>
@@ -148,7 +155,7 @@
                   <dl>
                     <dt class="col-md-4">Supplier code</dt>
                     <dd class="col-md-8">
-                      <input type="text" id="supplier_code">
+                      <input type="text" id="supplier_code" value="<?php if(isset($_GET['parent_id'])){echo $parent['MerchantProduct']['supplier_code'];}?>">
                     </dd>
                   </dl>
                   <dl>
@@ -159,7 +166,7 @@
                           <?php foreach($uoms as $uom) { ?>
                             <optgroup label="<?php echo $uom['ProductUomCategory']['name'];?>">
                                 <?php foreach($uom['ProductUom'] as $unit) { ?>
-                                    <option value="<?php echo $unit['id'];?>"><?php echo $unit['name'].' ('.$unit['symbol'].')';?></option>
+                                    <option value="<?php echo $unit['id'];?>" <?php if(isset($_GET['parent_id']) && $parent['MerchantProduct']['product_uom'] == $unit['id']){echo "selected";}?>><?php echo $unit['name'].' ('.$unit['symbol'].')';?></option>
                                 <?php }
                           } ?>
                       </select>
@@ -208,6 +215,7 @@
               </div>
               <!-- END col-md-12-->
             </div>
+            <?php } ?>
             <!-- END col-md-12-->
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Pricing</div>
             <!-- START col-md-12-->

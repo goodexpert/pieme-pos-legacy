@@ -467,6 +467,7 @@ $(document).ready(function () {
                                 price: price,
                                 price_include_tax: price_include_tax,
                                 description: description,
+                                tax: tax,
                                 variant_option_one_name: variant_option_one_name,
                                 variant_option_one_value: variant_option_one_value,
                                 variant_option_two_name: variant_option_two_name,
