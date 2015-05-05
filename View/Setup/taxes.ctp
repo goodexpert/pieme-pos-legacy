@@ -65,11 +65,11 @@
                 </div>
             </div>
         <table id="historyTable" class="table table-striped table-bordered dataTable">
-            	<colgroup>
-               		<col width="33%">
-               		<col width="33%">
-               		<col width="33%">
-                </colgroup>
+            <colgroup>
+               <col width="33%">
+               <col width="33%">
+               <col width="33%">
+            </colgroup>
             <thead>
                 <tr>
                     <th>Name</th>

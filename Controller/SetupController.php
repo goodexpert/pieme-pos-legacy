@@ -236,6 +236,10 @@ class SetupController extends AppController {
                 'MerchantOutlet' => array(
                     'className' => 'MerchantOutlet',
                     'foreignKey' => 'outlet_id'
+                ),
+                'MerchantUserType' => array(
+                    'className' => 'MerchantUserType',
+                    'foreignKey' => 'user_type_id'
                 )
             )
         ));

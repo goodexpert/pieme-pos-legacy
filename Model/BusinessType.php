@@ -3,11 +3,11 @@
 App::uses('AppModel', 'Model');
 
 /**
- * Category model for ONZSA.
+ * BusinessType model for ONZSA.
  *
  * @package       onzsa.Model
  */
-class Category extends AppModel {
+class BusinessType extends AppModel {
 
 /**
  * The name of the database connection to use bind this model class.
@@ -21,21 +21,21 @@ class Category extends AppModel {
  *
  * @var string
  */
-    public $useTable = "categories";
+    public $useTable = "business_types";
 
 /**
  * Primary key of the database table.
  *
  * @var string
  */
-    public $primaryKey = "category";
+    public $primaryKey = "id";
 
 /**
  * Name of the Model.
  *
  * @var string
  */
-    public $name = "Category";
+    public $name = "BusinessType";
 
 /**
  * Validation rules.

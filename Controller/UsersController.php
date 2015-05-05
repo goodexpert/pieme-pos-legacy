@@ -163,7 +163,11 @@ class UsersController extends AppController {
             return;
         }
 
-        $user_types = $this->MerchantUserType->find('all');
+        $user_types = $this->MerchantUserType->find('list', array(
+            'conditions' => array(
+                'MerchantUserType.is_active' => 1
+            )
+        ));
         $this->set('user_types', $user_types);
 
         $outlets = $this->MerchantOutlet->find('all', array(
@@ -214,7 +218,11 @@ class UsersController extends AppController {
             return;
         }
 
-        $user_types = $this->MerchantUserType->find('all');
+        $user_types = $this->MerchantUserType->find('list', array(
+            'conditions' => array(
+                'MerchantUserType.is_active' => 1
+            )
+        ));
         $this->set('user_types', $user_types);
 
         $outlets = $this->MerchantOutlet->find('all', array(
@@ -238,48 +246,48 @@ class UsersController extends AppController {
         $user = $this->MerchantUser->findById($id);
         $this->set('user',$user);
     }
-    
+
     public function check_exist() {
-	    if($this->request->is('post') || $this->request->is('ajax')) {
-	    	$this->loadModel('Merchant');
-	    	$result = array(
-	    		'success' => false
-	    	);
-	    	try {
-	    		$data = $this->request->data;
-		    	$merchant = $this->Merchant->findByMerchantCode($data);
-		    	if(!empty($merchant)) {
-			    	$result['success'] = true;
-			    	$result['merchant_id'] = $merchant['Merchant']['id'];
-			    	$result['store_name'] = $merchant['Merchant']['name'];
-			    	$result['subscriber_id'] = $merchant['Merchant']['subscriber_id'];
-		    	}
-		    } catch (Exception $e) {
+        if($this->request->is('post') || $this->request->is('ajax')) {
+            $this->loadModel('Merchant');
+            $result = array(
+                'success' => false
+            );
+            try {
+                $data = $this->request->data;
+                $merchant = $this->Merchant->findByMerchantCode($data);
+                if(!empty($merchant)) {
+                    $result['success'] = true;
+                    $result['merchant_id'] = $merchant['Merchant']['id'];
+                    $result['store_name'] = $merchant['Merchant']['name'];
+                    $result['subscriber_id'] = $merchant['Merchant']['subscriber_id'];
+                }
+            } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
             }
             $this->serialize($result);
             return;
-	    }
+        }
     }
-    
+
     public function check_store_name() {
-	    if($this->request->is('post') || $this->request->is('ajax')) {
-	    	$this->loadModel('Merchant');
-	    	$result = array(
-	    		'success' => true
-	    	);
-	    	try {
-	    		$data = $this->request->data;
-		    	$merchant = $this->Merchant->findByName($data);
-		    	if(!empty($merchant)) {
-			    	$result['success'] = false;
-		    	}
-		    } catch (Exception $e) {
+        if($this->request->is('post') || $this->request->is('ajax')) {
+            $this->loadModel('Merchant');
+            $result = array(
+                'success' => true
+            );
+            try {
+                $data = $this->request->data;
+                $merchant = $this->Merchant->findByName($data);
+                if(!empty($merchant)) {
+                    $result['success'] = false;
+                }
+            } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
             }
             $this->serialize($result);
             return;
-	    }
+        }
     }
 
 }

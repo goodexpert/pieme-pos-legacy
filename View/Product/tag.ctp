@@ -64,18 +64,14 @@
                     New Tag</button>
                 </div>
             </div>
-            
             <br>
-            
             <table id="tagTable" class="table-bordered">
-            	            	<colgroup>
-               		<col width="33%">
-               		<col width="33%">
-               		<col width="33%">
+                <colgroup>
+                   <col width="33%">
+                   <col width="33%">
+                   <col width="33%">
                 </colgroup>
-
                 <thead>
-                
                 <tr>
                     <th>Name</th>
                     <th>Number of Products</th>
@@ -83,7 +79,6 @@
                 </tr>
                 </thead>
                 <tbody>
-                    
                     <?php foreach($tags as $tag){ ?>
                     <tr>
                         <td><?php echo $tag['MerchantProductTag']['name'];?></td>
@@ -94,11 +89,8 @@
                         </td>
                     </tr>
                     <?php } ?>
-                    
                 </tbody>
             </table>
-            
-            
         </div>
     </div>
     <!-- END CONTENT -->

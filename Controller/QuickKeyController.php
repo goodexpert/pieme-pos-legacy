@@ -124,7 +124,5 @@ class QuickKeyController extends AppController {
             return;
         }
     }
-    public function quick_new() {
-		
-    }
+
 }

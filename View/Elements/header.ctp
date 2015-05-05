@@ -14,7 +14,7 @@
             <div class="hor-menu hidden-sm hidden-xs">
                 <ul class="nav navbar-nav">
                     <!-- DOC: Remove data-hover="dropdown" and data-close-others="true" attributes below to disable the horizontal opening on mouse hover -->
-                    <?php if($authUser['user_type'] !== "cashier") { ?>
+                    <?php if($authUser['user_type_id'] !== "user_type_cashier") { ?>
                         <li>
                             <a href="/dashboard">
                             Dashboard

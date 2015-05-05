@@ -290,7 +290,7 @@ class AuthComponent extends Component {
 	public function startup(Controller $controller) {
 		$methods = array_flip(array_map('strtolower', $controller->methods));
 		$action = strtolower($controller->request->params['action']);
-/*
+
 		$names = explode(".", $_SERVER['HTTP_HOST']);
 		if (count($names) == 2) {
 			header('Location: http://www.onzsa.com' . $_SERVER['REQUEST_URI']);
@@ -303,7 +303,7 @@ class AuthComponent extends Component {
 				'Merchant.domain_prefix' => $this->subdomain
 			);
 		}
-*/
+
 		$isMissingAction = (
 			$controller->scaffold === false &&
 			!isset($methods[$action])

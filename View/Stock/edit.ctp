@@ -364,7 +364,7 @@ jQuery(document).ready(function() {
             return false;
         },
         open: function( event, ui ) {
-	        $("ul").last().attr({class:"ui-autocomplete ui-front ui-menu ui-widget-1 ui-widget-content-1 ui-corner-all"});
+            $("ul").last().attr({class:"ui-autocomplete ui-front ui-menu ui-widget-1 ui-widget-content-1 ui-corner-all"});
         }
     });
 

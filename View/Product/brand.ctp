@@ -65,10 +65,10 @@
                 </div>
             </div>
             <table id="brandTable" class="table-bordered">
-            	<colgroup>
-               		<col width="33%">
-               		<col width="33%">
-               		<col width="33%">
+                <colgroup>
+                   <col width="33%">
+                   <col width="33%">
+                   <col width="33%">
                 </colgroup>
                 <thead>
                 <tr>

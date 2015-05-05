@@ -10,14 +10,14 @@ class SignupController extends AppController {
  *
  * @var string
  */
-    public $layout = '';
+    public $layout = 'signup';
 
 /**
- * This controller uses Contact and Merchant models.
+ * This controller uses the following models.
  *
  * @var array
  */
-    public $uses = array('Contact', 'Merchant', 'Subscriber', 'Retailer');
+    public $uses = array('Signup', 'Contact', 'Subscriber', 'Merchant', 'Retailer');
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -52,6 +52,7 @@ class SignupController extends AppController {
     public function setup() {
         $data = array(
             'name' => 'master',
+            'plan_id' => 'subscriber_plan_retailer_trial',
             'domain_prefix' => 'master',
             'first_name' => 'Steve',
             'last_name' => 'Park',
@@ -75,11 +76,7 @@ class SignupController extends AppController {
         $password = substr( str_shuffle( $chars ), 0, $length );
         return $password;
     }
-/**
- * Create the merchant function.
- *
- * @return boolean
- */
+
 /**
  * Create the merchant function.
  *
@@ -90,7 +87,7 @@ class SignupController extends AppController {
         $dataSource->begin();
 
         try {
-            if(isset($data['plan_id_1']) && !empty($data['plan_id_1']) && $data['plan_id_1'] == 'subscriber_plan_franchise') {
+            if (isset($data['plan_id_1']) && !empty($data['plan_id_1']) && $data['plan_id_1'] == 'subscriber_plan_franchise') {
                 // create a retailer
                 $this->Retailer->create();
                 $data['merchant_id'] = $data['parent_merchant_id'];
@@ -128,7 +125,7 @@ class SignupController extends AppController {
                 $this->Merchant->create();
                 $merchant['Merchant'] = $data;
                 $merchant['Merchant']['merchant_code'] = $this->generate_password(6);
-                if($data['plan_id'] == 'subscriber_plan_retailer_trial') {
+                if ($data['plan_id'] == 'subscriber_plan_retailer_trial') {
                     $merchant['Merchant']['trial_ends'] = CakeTime::format('+30 days', '%Y-%m-%d');
                 }
                 $this->Merchant->save($merchant);
@@ -197,7 +194,7 @@ class SignupController extends AppController {
         $user = array();
         $user['MerchantUser']['merchant_id'] = $merchant_id;
         $user['MerchantUser']['retailer_id'] = $retailer_id;
-        $user['MerchantUser']['user_type'] = 'admin';
+        $user['MerchantUser']['user_type_id'] = 'user_type_admin';
         $user['MerchantUser']['username'] = $username;
         $user['MerchantUser']['password'] = $password;
         $user['MerchantUser']['display_name'] = $display_name;

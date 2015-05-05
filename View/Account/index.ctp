@@ -94,10 +94,10 @@
                                 <div class="col-md-12 col-sm-12 col-xs-12 plan-desc">
                                     <ul>
                                         <li>
-                                        	<?php if($plan['Plan']['limit_outlets'] == 1){
-                                        		echo "Single";
-                                        	} else if($plan['Plan']['limit_outlets'] == -1){
-                                        	   echo "Unlimited";
+                                            <?php if($plan['Plan']['limit_outlets'] == 1){
+                                                echo "Single";
+                                            } else if($plan['Plan']['limit_outlets'] == -1){
+                                               echo "Unlimited";
                                             } else {
                                                 echo $plan['Plan']['limit_outlets'];
                                             }?> 

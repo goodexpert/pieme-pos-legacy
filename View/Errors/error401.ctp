@@ -52,11 +52,11 @@
     <!-- BEGIN CONTENT -->
     <div class="page-content-wrapper">
         <div class="page-content">
-			<div class="text-center margin-top-30">
-				<img src="/img/store.png"  class="margin-top-30">
+            <div class="text-center margin-top-30">
+                <img src="/img/store.png"  class="margin-top-30">
             <h3>Hold up. There is no retailer for this Onzsa domain</h3>
-			<h5>We don't have a registered retailer for this domain just yet...</h5>
-			</div>
+            <h5>We don't have a registered retailer for this domain just yet...</h5>
+            </div>
         </div>
     </div>
 

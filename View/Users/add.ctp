@@ -141,15 +141,10 @@
                   <dl>
                     <dt class="col-md-4">User account type</dt>
                     <dd class="col-md-8">
-                        <select name="merchant_user['user_type']" id="merchant_user_type">
-                        <?php
-                            foreach($user_types as $user_type) :
-                                $type = $user_type['MerchantUserType']['user_type'];
-                         ?>
-                            <option value="<?php echo $type; ?>"><?php echo ucwords($type); ?></option>
-                        <?php
-                            endforeach;
-                         ?>
+                        <select name="merchant_user['user_type_id']" id="merchant_user_type_id">
+                        <?php foreach ($user_types as $key => $value) : ?>
+                            <option value="<?php echo $key; ?>"><?php echo $value; ?></option>
+                        <?php endforeach; ?>
                         </select>              
                      </dd>
                   </dl>
@@ -224,7 +219,7 @@ jQuery(document).ready(function() {
             url: '/users/add.json',
             type: 'POST',
             data: {
-                user_type: $("#merchant_user_type").val(),
+                user_type_id: $("#merchant_user_type_id").val(),
                 username: $("#merchant_user_username").val(),
                 password: $("#merchant_user_password").val(),
                 display_name: $("#merchant_user_display_name").val(),

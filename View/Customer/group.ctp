@@ -48,11 +48,11 @@
             </div>
 
             <table id="groupTable" class="table-bordered">
-            	<colgroup>
-               		<col width="25%">
-               		<col width="25%">
-               		<col width="25%">
-               		<col width="25%">
+                <colgroup>
+                   <col width="25%">
+                   <col width="25%">
+                   <col width="25%">
+                   <col width="25%">
                 </colgroup>
                 <thead>
                 <tr>

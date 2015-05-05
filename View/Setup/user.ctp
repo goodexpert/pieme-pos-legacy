@@ -95,7 +95,7 @@
                     <td class="text-center"><img src="../img/no-image.png" alt="user-image"></td>
                     <td><a href="/users/<?php echo $user['MerchantUser']['id'];?>"><?php echo $user['MerchantUser']['username'];?></a></td>
                     <td><?php echo $user['MerchantUser']['display_name'];?></td>
-                    <td><?php echo $user['MerchantUser']['user_type'];?></td>
+                    <td><?php echo $user['MerchantUserType']['name'];?></td>
                     <td><?php echo $user['MerchantOutlet']['name'];?></td>
                     <td>
                         <div class="input-group">

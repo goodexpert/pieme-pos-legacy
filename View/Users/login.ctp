@@ -44,7 +44,7 @@
 
 <style>
 .create_account {
-	text-align: center;
+    text-align: center;
 }
 </style>
 
