@@ -114,7 +114,7 @@
                                 <dd class="hidden"><input type="text" name="time_zone" id="time_zone" value="Pacific/Auckland"></dd>
                             </dl>
                             <div class="dashed-line-gr"></div>
-                            <dl>
+                            <dl><!--
                                 <dt>Type</dt>
                                 <dd>
 									<select id="plan_id_1" name="plan_id_1">
@@ -134,6 +134,7 @@
 									</select>
 									<h5><a>Detail about our plan</a></h5>
 								</dd>
+                                -->
 								<input type="hidden" id="plan_id" name="plan_id" value="subscriber_plan_retailer_trial">
                                 <dt class="store_name">Store name</dt>
                                 <dd class="store_name"><input type="text" name="store_name" id="store_name" class="required" required></dd>

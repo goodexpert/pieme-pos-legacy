@@ -90,7 +90,7 @@ class SignupController extends AppController {
         $dataSource->begin();
 
         try {
-            if($data['plan_id_1'] == 'subscriber_plan_franchise') {
+            if(isset($data['plan_id_1']) && !empty($data['plan_id_1']) && $data['plan_id_1'] == 'subscriber_plan_franchise') {
                 // create a retailer
                 $this->Retailer->create();
                 $data['merchant_id'] = $data['parent_merchant_id'];

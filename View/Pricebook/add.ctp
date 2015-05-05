@@ -326,6 +326,7 @@ jQuery(document).ready(function() {
     $(document).on("click",".data-found",function(){
         $(".price_book_individual tbody").append('<tr class="added_price_book_entry" data-id="'+$(this).attr("data-id")+'"><td>'+$(this).text()+'</td><td class="entry_supply_price">'+$(this).attr("data-supply_price")+'</td><td><input type="text" class="entry_markup" value="'+$(this).attr("data-markup")+'"></td><td><input type="text" class="entry_discount"></td><td class="entry_retail_price_exclude_tax">'+$(this).attr("data-retail-price")+'</td><td class="entry_tax" tax-rate="'+$(this).attr("data-tax-rate")+'">'+$(this).attr("data-tax")+'</td><td><input type="text" class="entry_retail_price_include_tax" value="'+$(this).attr("data-price")+'"></td><td><input type="number" class="entry_min_unit"></td><td><input type="number" class="entry_max_unit"></td><td><div class="clickable remove"><i class="glyphicon glyphicon-remove"></i></div></td></tr>');
         calculation();
+        $(".search_result").hide();
     });
     /* DYNAMIC PROUCT SEARCH START */
     
@@ -347,6 +348,12 @@ jQuery(document).ready(function() {
                 $(".search-default").show();
             }
         }
+    });
+    $(document).on("change", ".entry_discount", function(){
+        calculation();
+    });
+    $(document).on("change", ".entry_markup", function(){
+        calculation();
     });
 
     /* DYNAMIC PRODUCT SEARCH END */

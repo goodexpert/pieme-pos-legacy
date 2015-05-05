@@ -53,76 +53,30 @@
     <div class="page-content-wrapper">
         <div class="page-content">
             <h2>Account</h2>
-                <div class="inventory-tab">
-                    <li id="show_retail" target="retailer" class="active">Retail</li>
-                    <li id="show_franchise" target="franchise">Franchise</li>
-                    <li id="show_franchise_hq" target="franchise_hq">Franchise HQ</li>
-                </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega line-box">
+                <h4>You're currently on the 'Free' Plan</h4>
+                <h5>Payment Frequency <span>Monthly</span></h5>
+                <h5><span id="total_outlet"><?php echo $total_outlet;?></span> Outlets</h5>
+                <h5><span id="total_register"><?php echo $total_register;?></span> Registers</h5>
+                <h5><span id="total_user"><?php echo $total_user;?></span> Users</h5>
+                <h5><span id="total_product"><?php echo $total_product;?></span> Products</h5>
+                <h5><span id="total_customer"><?php echo $total_customer;?></span> Customers</h5>
+            </div>
+            <div class="inventory-tab">
+                <li id="show_retail" target="retailer" class="active">Retail</li>
+                <li id="show_franchise" target="franchise">Franchise</li>
+                <li id="show_franchise_hq" target="franchise_hq">Franchise HQ</li>
+            </div>
             <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
                 <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega line-box">
                     <h4 class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
                         Select a Plan
                     </h4>
-                    <h5 class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega margin-bottom-20">
-                        You have
-                        <?php 
-                        if($authUser['Merchant']['Plan']['limit_outlets'] == -1) {
-                            echo "Unlimited Outlet, ";
-                        } else {
-                            echo $authUser['Merchant']['Plan']['limit_outlets'];
-                            if($authUser['Merchant']['Plan']['limit_outlets'] > 1) {
-                                echo " Outlets, ";
-                            } else {
-                                echo " Outlet, ";
-                            }
-                        }
-                        if($authUser['Merchant']['Plan']['limit_registers'] == -1) {
-                            echo "Unlimited Register, ";
-                        } else {
-                            echo $authUser['Merchant']['Plan']['limit_registers'];
-                            if($authUser['Merchant']['Plan']['limit_registers'] > 1) {
-                                echo " Registers, ";
-                            } else {
-                                echo " Register, ";
-                            }
-                        }
-                        if($authUser['Merchant']['Plan']['limit_products'] == -1) {
-                            echo "Unlimited Product, ";
-                        } else {
-                            echo $authUser['Merchant']['Plan']['limit_products'];
-                            if($authUser['Merchant']['Plan']['limit_products'] > 1) {
-                                echo " Products, ";
-                            } else {
-                                echo " Product, ";
-                            }
-                        }
-                        if($authUser['Merchant']['Plan']['limit_customers'] == -1) {
-                            echo "Unlimited Customer and ";
-                        } else {
-                            echo $authUser['Merchant']['Plan']['limit_customers'];
-                            if($authUser['Merchant']['Plan']['limit_customers'] > 1) {
-                                echo " Customers and ";
-                            } else {
-                                echo " Customer and ";
-                            }
-                        }
-                        if($authUser['Merchant']['Plan']['limit_users'] == -1) {
-                            echo "Unlimited User.";
-                        } else {
-                            echo $authUser['Merchant']['Plan']['limit_users'];
-                            if($authUser['Merchant']['Plan']['limit_users'] > 1) {
-                                echo " Users.";
-                            } else {
-                                echo " User.";
-                            }
-                        }
-                        ?>
-                    </h5>
                     <?php foreach($plans as $plan) { ?>
                         <div class="col-md-3 col-sm-6 col-xs-6 margin-bottom-20 <?php if(strpos($plan['Plan']['id'], 'franchise') == true && strpos($plan['Plan']['id'], 'hq') == false){echo 'franchise hidden';} else if(strpos($plan['Plan']['id'], 'hq') == true){echo 'franchise_hq hidden';} else if(strpos($plan['Plan']['id'], 'retailer') == true){echo 'retailer';}?>">
                             <div class="plan-item clickable <?php if($authUser['Merchant']['plan_id'] == $plan['Plan']['id']){echo "selected_plan";}?> line-box">
                                 <div class="col-md-12 col-sm-12 col-xs-12 plan-header">
-                                    <input type="radio" value="<?php echo $plan['Plan']['id'];?>" name="account_plan" <?php if($authUser['Merchant']['plan_id'] == $plan['Plan']['id']){echo "checked";}?>> <lable for="account_plan"><?php echo $plan['Plan']['name'];?></lable>
+                                    <input type="radio" value="<?php echo $plan['Plan']['id'];?>" data-outlet="<?php echo $plan['Plan']['limit_outlets'];?>" data-register="<?php echo $plan['Plan']['limit_registers'];?>" data-product="<?php echo $plan['Plan']['limit_products'];?>" data-customer="<?php echo $plan['Plan']['limit_customers'];?>" data-user="<?php echo $plan['Plan']['limit_users'];?>" name="account_plan" <?php if($authUser['Merchant']['plan_id'] == $plan['Plan']['id']){echo "checked";}?>> <lable for="account_plan"><?php echo $plan['Plan']['name'];?></lable>
                                 </div>
                                 <div class="col-md-12 col-sm-12 col-xs-12">
                                     <div class="plan-price">
@@ -183,6 +137,20 @@
                     <?php } ?>
                 </div>
             </div>
+
+            <h3>Enter payment Details</h3>
+            <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega line-box">
+                <dl>
+                    <dt>Credit card number</dt>
+                    <dd><input type="text"></dd>
+                    <dt>Expiry date</dt>
+                    <dd><input type="text"></dd>
+                    <dt>Security code (CVV)</dt>
+                    <dd><input type="text"></dd>
+                    <dt>Coupon code</dt>
+                    <dd><input type="text"></dd>
+                </dl>
+            </div>
             <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
                 <button class="btn btn-primary btn-wide save pull-right">Save</button>
                 <button class="btn btn-default btn-wide pull-right margin-right-10">Cancel</button>
@@ -236,6 +204,7 @@
 <script src="/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
 <script src="/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
 <script src="/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
+<script type="text/javascript" src="/js/jquery.confirm.js"></script> 
 <!-- END PAGE LEVEL SCRIPTS -->
 
 <script src="/js/notify.js" type="text/javascript"></script>
@@ -256,17 +225,49 @@ jQuery(document).ready(function() {
     });
     
     $(".save").click(function(){
-        var plan_id = $("input[name=account_plan]:checked").val();
-        
-        $.ajax({
-            url: '/account/update_plan.json',
-            type: 'POST',
-            data: {
-                plan_id: plan_id
-            }
-        }).done(function(result){
-            console.log(result);
-        });
+        var plan = $("input[name=account_plan]:checked");
+        if((plan.attr("data-product") < $("#total_product").text() && plan.attr("data-product") > 0) || (plan.attr("data-outlet") < $("#total_outlet").text() && plan.attr("data-outlet") > 0) || (plan.attr("data-register") < $("#total_register").text() && plan.attr("data-register") > 0) || (plan.attr("data-user") < $("#total_user").text() && plan.attr("data-user") > 0) || (plan.attr("data-customer") < $("#total_customer").text() && plan.attr("data-customer") > 0)) {
+            $.confirm({
+                title:'Warning',
+                text:'You will going to lose your data if you change your current plan to selected plan.',
+                cancelButton: "Cancel",
+                confirmButton: "Process",
+                confirmButtonClass: "btn btn-success pull-right",
+                cancelButtonClass: "btn btn-primary margin-right-5",
+                confirm: function() {
+                    $.ajax({
+                        url: '/account/update_plan.json',
+                        type: 'POST',
+                        data: {
+                            plan_id: plan.val()
+                        },
+                        success: function(result) {
+                            if(result.success) {
+                                alert("changed");
+                            } else {
+                                console.log(result);
+                            }
+                        }
+                    });
+                }
+            });
+        } else {
+            $.ajax({
+                url: '/account/update_plan.json',
+                type: 'POST',
+                data: {
+                    plan_id: plan.val()
+                },
+                success: function(result) {
+                    if(result.success) {
+                        alert("changed");
+                    } else {
+                        console.log(result);
+                    }
+                }
+            });
+            console.log(plan.val());
+        }
     });
     
     $(document).on('click', '.inventory-tab li', function() {
