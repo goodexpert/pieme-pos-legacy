@@ -118,6 +118,15 @@
                  </div>
             </form>
             <table id="historyTable" class="table table-striped table-bordered dataTable">
+            	<colgroup>
+                	<col width="10%">
+                	<col width="15%">
+                	<col width="15%">
+                	<col width="10%">
+                	<col width="15%">
+                	<col width="15%">
+                	<col width="20%">
+                </colgroup>
                 <thead>
                 <tr>
                     <th class="hisID">ID</th>

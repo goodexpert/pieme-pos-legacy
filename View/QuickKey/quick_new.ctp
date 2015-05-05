@@ -1,6 +1,3 @@
-<link href="/css/dataTable.css" rel="stylesheet" type="text/css">
-
-
 <div class="clearfix">
 </div>
 <!-- BEGIN CONTAINER -->
@@ -55,49 +52,14 @@
     <!-- BEGIN CONTENT -->
     <div class="page-content-wrapper">
         <div class="page-content">
-        
-            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-bottom-20">
-                <h2 class="col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
-                    Supplier
-                </h2>
-                
-                <div class="col-md-5 col-xs-5 col-sm-5 col-alpha col-omega">
-                    <a href="/supplier/add">
-                    <button class="btn btn-white pull-right margin-top-20">Add</button>
-                    </a>
-                </div>
-            </div>
-            
-            <table id="supplierTable" class="table-bordered">
-            	<colgroup>
-               		<col width="33%">
-               		<col width="33%">
-               		<col width="33%">
-                </colgroup>
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                    <?php foreach($suppliers as $supplier) { ?>
-                    <tr data-id="<?=$supplier['MerchantSupplier']['id'];?>">
-                        <td class="supplier_name"><?=$supplier['MerchantSupplier']['name'];?></td>
-                        <td><?=$supplier['MerchantSupplier']['description'];?></td>
-                        <td>
-                            <a href="/product?supplier_id=<?=$supplier['MerchantSupplier']['id'];?>">View Products</a>
-                             | <a href="/supplier/edit?id=<?=$supplier['MerchantSupplier']['id'];?>" class="edit-supplier">Edit</a> 
-                             | <span class="clickable delete-supplier" data-id="<?=$supplier['MerchantSupplier']['id'];?>">Delete</span>
-                        </td>
-                    </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
-        
+			<div class="text-center margin-top-30">
+				<img src="/img/store.png"  class="margin-top-30">
+            <h3>Hold up. There is no retailer for this Onzsa domain</h3>
+			<h5>We don't have a registered retailer for this domain just yet...</h5>
+			</div>
         </div>
     </div>
+
     <!-- END CONTENT -->
     <!-- BEGIN QUICK SIDEBAR -->
     <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
@@ -165,47 +127,191 @@
 <script src="/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
 <!-- END CORE PLUGINS -->
+<!-- BEGIN PAGE LEVEL PLUGINS -->
+<script src="/assets/global/plugins/jqvmap/jqvmap/jquery.vmap.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.russia.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.world.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.europe.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.germany.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.usa.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/jqvmap/jqvmap/data/jquery.vmap.sampledata.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/flot/jquery.flot.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/flot/jquery.flot.resize.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/flot/jquery.flot.categories.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/jquery.pulsate.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/bootstrap-daterangepicker/moment.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.js" type="text/javascript"></script>
+<!-- IMPORTANT! fullcalendar depends on jquery-ui-1.10.3.custom.min.js for drag & drop support -->
+<script src="/assets/global/plugins/fullcalendar/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/jquery-easypiechart/jquery.easypiechart.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/jquery.sparkline.min.js" type="text/javascript"></script>
+<script src="/assets/global/plugins/gritter/js/jquery.gritter.js" type="text/javascript"></script>
+<!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <script src="/assets/global/scripts/metronic.js" type="text/javascript"></script>
 <script src="/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
 <script src="/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
 <script src="/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
-<script type="text/javascript" src="/js/jquery.confirm.js"></script>
-<script src="/js/dataTable.js" type="text/javascript"></script>
+<script src="/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
+
+<script src="/js/notify.js" type="text/javascript"></script>
 <script>
+var quick = [];
+
 jQuery(document).ready(function() {    
     Metronic.init(); // init metronic core componets
     Layout.init(); // init layout
     QuickSidebar.init() // init quick sidebar
     Index.init();
-    
-    $("#supplierTable").DataTable({
-        searching: false
+
+    $( "#sortable" ).sortable({
+        revert: true
     });
-    $("#supplierTable_length").hide();
+
+    /* DYNAMIC PROUCT SEARCH START */
     
-    $(".delete-supplier").click(function(){
-        var id = $(this).attr("data-id");
-        var parentTr = $(this).parent().parent()
-        $.confirm({
-            text:'Delete this supplier',
-            confirmButton: "Delete",
-            confirm: function(button){
-                $.ajax({
-                    url: "/supplier/delete.json",
-                    type: "POST",
-                    data: {
-                        id: id
-                    }
-                }).done(function(result){
-                    location.reload();
-                });
-            },
-            confirmButtonClass: "pull-right btn-success margin-left-10",
-            cancelButton: "Cancel",
+    var $cells = $(".data-found");
+    $(".search_result").hide();
+
+    $(document).on("keyup","#search",function() {
+        var val = $.trim(this.value).toUpperCase();
+        if (val === "")
+            $(".search_result").hide();
+        else {
+            $cells.hide();
+            $(".search_result").show();
+            $(".search-default").hide();
+            $cells.filter(function() {
+                return -1 != $(this).text().toUpperCase().indexOf(val);
+            }).show();
+            if($(".search_result").height() == 0){
+                $(".search-default").show();
+            }
+        }
+        $cells.click(function(){
+           $("#search").val($(this).text());
         });
     });
+
+    /* DYNAMIC PRODUCT SEARCH END */
+    
+
+    /* PAGE CONTROL */
+
+    $(document).on('click','.page',function(){
+        $(".page").removeClass("selected");
+        $(".qKey").hide();
+        $(".qKey[page="+$(this).attr("rel")+"]").show();
+        $(this).addClass("selected");
+    });
+    
+    var pageCount = 1;
+    $("#add-page").click(function(){
+        pageCount++;
+        $(".product-list-footer").append('<span rel="'+pageCount+'" class="page clickable">'+pageCount+'</span>');
+        $(".page").removeClass("selected");
+        $(".page[rel="+pageCount+"]").addClass("selected");
+        $(".qKey").hide();
+    });
+    $("#remove-page").click(function(){
+        if(pageCount !== 1){
+            $(".product-list-footer").find("span[rel="+pageCount+"]").remove();
+            $(".qKey[page="+pageCount+"]").remove();
+            pageCount--;
+            $(".page").removeClass("selected");
+            $(".page[rel="+pageCount+"]").addClass("selected");
+            $(".qKey[page="+pageCount+"]").show();
+        }
+    });
+
+    /* PAGE CONTROL END */
+
+
+
+    /* DATA FOUNDED CLICK EVENT */
+
+    $(".data-found").click(function(){
+        $("#sortable").append('<li class="col-lg-3 col-md-4 col-xs-6 col-sm-6 product clickable col-alpha col-omega button-view qKey" data-id="'+$(this).attr("data-id")+'" page="'+$(".product-list-footer").find(".selected").text()+'"><span class="button-remove"><i class="glyphicon glyphicon-remove"></i></span><p>'+$(this).text()+'</p></li>');
+    });
+
+
+    /* DATA FOUNDED CLICK EVENT END */
+    
+    
+    $(document).on('click','.button-remove',function(){
+        $(this).parent().remove();
+    });
+
+
+
+    /* SAVE TRIGGER */
+
+    $(document).on("click",".save",function(){
+        
+        var layouts = {};
+
+        var layout = [];
+
+        var pages = {};
+        var keys = [];
+        var products = {};
+        var last_page = 0;
+        var sortable_length = $(".qKey").length;
+        $(".qKey").each(function(){
+            if($(this).attr("page") > last_page){
+                last_page = $(this).attr("page");
+            }
+        });
+        
+        for(var j = 1;j <= last_page;j++) {
+            repeat_each(j);
+        }
+        
+        function repeat_each(page_number){
+            $(".qKey[page="+page_number+"]").each(function(){
+            
+                products.product_id = $(this).attr("data-id");
+                products.position = 0;
+                products.label = $(this).find("p").text();
+                
+                keys.push(products);
+                
+                pages.page = page_number;
+                pages.keys = keys;
+                
+                products = {};
+                
+            });
+            layout.push(pages);
+            keys = [];
+            products = {};
+            pages = {};
+        }
+
+        layouts.pages = layout;
+
+        var key_layouts = JSON.stringify(layouts);
+        
+        $.ajax({
+            url: "/quick_keys/new.json",
+            type: "POST",
+            data: {
+                name: $("#layout_name").val(),
+                key_layouts: key_layouts,
+            },
+        }).done(function(){
+            window.location.href = "/setup/quick_keys";
+        });
+        
+    });
+
+    /* SAVE TRIGGER END */
+    
+    $(".cancel").click(function(){
+        window.history.back();
+    });
+
 });
 </script>
-<script type="text/javascript" src="/js/jquery.confirm.js"></script>
+<!-- END JAVASCRIPTS -->
