@@ -146,6 +146,16 @@
                           <table class="table-bordered dataTable-sm">
                               <thead>
                                 <tr>
+                                    <?php
+                                    if(!empty($product['MerchantProduct']['variant_option_one_name'])) {
+                                        echo "<th>".$product['MerchantProduct']['variant_option_one_name']."</th>";
+                                    }
+                                    if(!empty($product['MerchantProduct']['variant_option_two_name'])) {
+                                        echo "<th>".$product['MerchantProduct']['variant_option_two_name']."</th>";
+                                    }
+                                    if(!empty($product['MerchantProduct']['variant_option_three_name'])) {
+                                        echo "<th>".$product['MerchantProduct']['variant_option_three_name']."</th>";
+                                    }?>
                                     <th>Outlet</th>
                                     <th>In stock</th>
                                 </tr>

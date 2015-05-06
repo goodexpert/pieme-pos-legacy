@@ -79,17 +79,55 @@
         	echo "Add Product";
         } else {
 	        echo "Add Variant to ".$parent['MerchantProduct']['name'];
+	        echo '<input type="hidden" value="'.$_GET['parent_id'].'" id="parent_id">';
         }?>
          </h2>
       </div>
       <div class="portlet box product-add">
+        <form action="/product/add" class="portlet-body form" enctype="multipart/form-data">
         <div class="portlet-body form"> 
           <!-- BEGIN FORM-->
           <div class="form-horizontal">
-          	<?php if(!isset($_GET['parent_id'])) { ?>
-            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title">Detail</div>
+            <?php if(isset($_GET['parent_id'])) { ?>
+          	<div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Variants</div>
             <!-- START col-md-12-->
-            <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+            <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega" style="padding:0;padding-bottom:15px;"> 
+              <!-- START col-md-12-->
+              <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega variant_attr">
+                <div id="first_variant_attr" class="col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-md-12 col-xs-12 col-sm-12">
+                        <table class="col-md-5 col-sm-5">
+                        	<tr>
+                        		<th>Attribute</th><th>Value</th>
+                        	</tr>
+                        	<?php if(!empty($parent['MerchantProduct']['variant_option_one_name'])) { ?>
+                        	<input type="hidden" class="variant_value_1" value="<?php echo $parent['MerchantProduct']['variant_option_one_name'];?>">
+                        	<tr>
+                        		<td><?php echo $parent['MerchantProduct']['variant_option_one_name'];?></td><td><input type="text" class="variant_default_1"></td>
+                        	</tr>
+                        	<?php } ?>
+                        	<?php if(!empty($parent['MerchantProduct']['variant_option_two_name'])) { ?>
+                        	<input type="hidden" class="variant_value_2" value="<?php echo $parent['MerchantProduct']['variant_option_two_name'];?>">
+                        	<tr>
+                        		<td><?php echo $parent['MerchantProduct']['variant_option_two_name'];?></td><td><input type="text" class="variant_default_2"></td>
+                        	</tr>
+                        	<?php } ?>
+                        	<?php if(!empty($parent['MerchantProduct']['variant_option_three_name'])) { ?>
+                        	<input type="hidden" class="variant_value_3" value="<?php echo $parent['MerchantProduct']['variant_option_three_name'];?>">
+                        	<tr>
+                        		<td><?php echo $parent['MerchantProduct']['variant_option_three_name'];?></td><td><input type="text" class="variant_default_3"></td>
+                        	</tr>
+                        	<?php } ?>
+                        </table>
+                    </div>
+                </div>
+              </div>
+              <!-- END col-md-12-->
+            </div>
+            <?php } ?>
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title" <?php if(isset($_GET['parent_id'])) {echo 'style="display: none;"';} ?>>Detail</div>
+            <!-- START col-md-12-->
+            <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega" <?php if(isset($_GET['parent_id'])) {echo 'style="display: none;"';} ?>>
               <div class="col-md-6 col-sm-12 col-alpha col-omega" style="margin-bottom: 20px">
                   <dl>
                     <dt class="col-md-4">Product name</dt>
@@ -178,8 +216,8 @@
               <!-- END col-md-12-->
               <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega dashed-line-gr"></div>
               <!-- START col-md-12-->
-              <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-top-20"> 
-                <div class="col-md-12 col-xs-12 col-sm-12 margin-top-20 col-alpha col-omega">
+              <div class="col-md-6 col-xs-6 col-sm-6 col-alpha col-omega margin-top-20"> 
+                <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                   <dl>
                     <dt class="col-md-2 height-inherit">Description</dt>
                     <dd class="col-md-10 height-inherit">
@@ -188,22 +226,20 @@
                   </dl>
                 </div>
               </div>
-              <!-- END col-md-12-->
-              <div class="dashed-line-gr"></div>
-              <!-- START col-md-12-->
-              <div class="col-md-12 col-xs-12 col-sm-12 margin-top-20">
+              <div class="col-md-6 col-xs-6 col-sm-6 margin-top-20">
                   <dl class="form-group">
                     <dt class="col-md-2">Images</dt>
                     <dd class="col-md-10">
-                        <form action="/file-upload" class="dropzone" id="drop-file">
+                        <div class="dropzone" id="drop-file">
                           <div class="fallback">
                             <input name="file" type="file">
                           </div>
-                        </form>
+                        </div>
                      </dd>
                   </dl>
               </div>
               <!-- END col-md-12-->
+              <div class="dashed-line-gr"></div>
               <div class="col-md-12 col-alpha col-omega">
                   <dl>
                     <dt class="col-md-2">Product tags</dt>
@@ -215,7 +251,6 @@
               </div>
               <!-- END col-md-12-->
             </div>
-            <?php } ?>
             <!-- END col-md-12-->
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Pricing</div>
             <!-- START col-md-12-->
@@ -225,16 +260,16 @@
                   <div class="set-price col-md-12">
                     <div class="set-price-box col-md-2 col-xs-2 col-sm-2 col-alpha">
                         <h5><strong>Supply price</strong></h5>
-                      <input type="text" id="supply_price" value="0.00">
+                      <input type="text" id="supply_price" value="<?php if(isset($_GET['parent_id'])){echo number_format($parent['MerchantProduct']['supply_price'],2,'.','');} else {echo "0.00";}?>">
                       <div class="info">Excluding tax</div>
                     </div>
                     <div class="set-price-box col-md-2 col-xs-2 col-sm-2 col-alpha">
                         <h5><strong>x Markup (%)</strong></h5>
-                      <input type="text" id="markup" value="0.00">
+                      <input type="text" id="markup" value="<?php if(isset($_GET['parent_id'])){echo number_format($parent['MerchantProduct']['markup'] * 100,2,'.','');} else {echo "0.00";}?>">
                     </div>
                     <div class="set-price-box col-md-2 col-xs-2 col-sm-2 col-alpha">
                         <h5><strong> = Retail price</strong></h5>
-                      <input type="text" id="retail_price_exclude" value="0.00">
+                      <input type="text" id="retail_price_exclude" value="<?php if(isset($_GET['parent_id'])){echo number_format($parent['MerchantProduct']['price'],2,'.','');} else {echo "0.00";}?>">
                       <div class="info">Excluding tax</div>
                     </div>
                     <div class="set-price-box col-md-3 col-xs-3 col-sm-3 col-alpha">
@@ -244,12 +279,12 @@
                         <option tax-id="<?=$tax['MerchantTaxRate']['id'];?>" value="<?=$tax['MerchantTaxRate']['rate'];?>"><?=$tax['MerchantTaxRate']['name'];?></span></option>
                         <?php } ?>
                       </select>
-                      <input type="text" id="sales_tax_calc" class="textOnly" value="0.00" disabled>
+                      <input type="text" id="sales_tax_calc" class="textOnly" value="<?php if(isset($_GET['parent_id'])){echo number_format($parent['MerchantProduct']['tax'],2,'.','');} else {echo "0.00";}?>" disabled>
                       <div class="tax_info">Currenty, GST (15%)</div>
                     </div>
                     <div class="set-price-box col-md-3 col-xs-3 col-sm-3 col-alpha col-omega">
                         <h5><strong>= Retail price</strong></h5>
-                      <input type="text" id="retail_price_include" value="0.00">
+                      <input type="text" id="retail_price_include" value="<?php if(isset($_GET['parent_id'])){echo number_format($parent['MerchantProduct']['price_include_tax'],2,'.','');} else {echo "0.00";}?>">
                       <div class="info">Including tax</div>
                     </div>
                   </div>
@@ -257,6 +292,7 @@
               <!-- END col-md-12-->
             </div>
             <!-- END col-md-12-->
+            <?php if(!isset($_GET['parent_id'])) { ?>
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Variants</div>
             <!-- START col-md-12-->
             <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega" style="padding:0;padding-bottom:15px;"> 
@@ -290,6 +326,7 @@
               </div>
               <!-- END col-md-12-->
             </div>
+            <?php } ?>
             <!-- END col-md-12-->
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Inventory</div>
             <!-- START col-md-12-->
@@ -304,6 +341,7 @@
                         <input type="text" class="required" id="sku" value="<?php if($merchant['Merchant']['use_sku_sequence'] == 1){echo $merchant['Merchant']['sku_sequence'];}?>">
                     </dd>
                   </dl>
+                  <?php if(!isset($_GET['parent_id'])) { ?>
                   <dl>
                     <dt class="col-md-4">Stock type</dt>
                     <dd class="col-md-8">
@@ -313,6 +351,7 @@
                       </select>
                     </dd>
                   </dl>
+                  <?php } ?>
                 </div>
                 <!-- END col-md-6--> 
               </div>
@@ -409,7 +448,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </form>
         <!-- END FORM--> 
       </div>
     </div>
@@ -614,26 +653,26 @@ $(document).ready(function(){
         });
     });
 
-
     /* DYNAMIC TAG SETTING */
-    var FormSamples = function () {
-        return {
-            //main function to initiate the module
-            init: function () {
-                var tags = [];
-                var tag_array = $("#tag_list").val();
-                tag_array = JSON.parse(tag_array);
-                $.each(tag_array, function(value){
-                    tags.push($(this)[0]['MerchantProductTag']['name']);
-                });
-                $(".select2_sample3").select2({
-                    tags: tags
-                });
-            }
-        };
-    }();
-    FormSamples.init();
-
+    if($("#tag_list").length > 0) {
+        var FormSamples = function () {
+            return {
+                //main function to initiate the module
+                init: function () {
+                    var tags = [];
+                    var tag_array = $("#tag_list").val();
+                    tag_array = JSON.parse(tag_array);
+                    $.each(tag_array, function(value){
+                        tags.push($(this)[0]['MerchantProductTag']['name']);
+                    });
+                    $(".select2_sample3").select2({
+                        tags: tags
+                    });
+                }
+            };
+        }();
+        FormSamples.init();
+    }
     /* DYNAMIC PROUCT SEARCH START */
     var $cells = $(".data-found");
     $(".search_result").hide();
@@ -667,7 +706,7 @@ $(document).ready(function(){
     /* DYNAMIC PRODUCT SEARCH END */
 
 
-    /* PRODUCT ADD */
+    /* PRODUCT ADD 
    $(document).on('click','.addProduct',function(){
         $("#loader-wrapper").show();
 
@@ -693,7 +732,9 @@ $(document).ready(function(){
         var tax = $("#sales_tax_calc").val();
         var markup = $("#markup").val();
         var tax_id = $('option:selected',"#sales_tax").attr("tax-id");
-        var tags = $("input[type=hidden]").val().split(",");
+        if($("#tag_list").length > 0) {
+            var tags = $("input[type=hidden]").val().split(",");
+        }
         var stock_type = $("#stock_type").val();
 
         var variant_option_one_name = $(".variant_value_1").val();
@@ -759,17 +800,23 @@ $(document).ready(function(){
             $(".stock-tracking").each(function(){
                inventories.push({outlet_id: $(this).find(".stock-outlet_id").val(), count: $(this).find(".stock_count").val(), reorder_point: $(this).find(".stock_reorder_point").val(), restock_level: $(this).find(".stock_reorder_amount").val()}) 
             });
-
             var composite = [];
             $(".composite-attr").each(function(){
                 composite.push({product_id: $(this).attr("data-id"), quantity: $(this).find(".composite_quantity").val()});
             });
 
-            var tagArray = $("input:hidden.product_tag").val().split(",");
-            if(tagArray[0] == ''){
-                tagArray = '';
+            if($("#tag_list").length > 0) {
+                var tagArray = $("input:hidden.product_tag").val().split(",");
+                if(tagArray[0] == ''){
+                    tagArray = '';
+                } else {
+                    tagArray = JSON.stringify(tagArray);
+                }
+            }
+            if($("#parent_id").length > 0) {
+                parent_id = $("#parent_id").val();
             } else {
-                tagArray = JSON.stringify(tagArray);
+                parent_id = null;
             }
             
             $.ajax({
@@ -777,6 +824,7 @@ $(document).ready(function(){
                 type: "POST",
                 data: {
                     name: name,
+                    parent_id: parent_id,
                     handle: handle,
                     product_type_id: type,
                     product_brand_id: brand,
@@ -825,6 +873,7 @@ $(document).ready(function(){
             $("html, body").animate({ scrollTop: 0 }, "slow");
         }
     });
+*/
 
     $(document).on("change","select",function(){
 

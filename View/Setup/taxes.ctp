@@ -278,9 +278,14 @@ jQuery(document).ready(function() {
           data: {
               name: $("#tax_name").val(),
               rate: tax_rate / 100
+          },
+          success: function(result) {
+              if(result.success) {
+                  location.reload();
+	          } else {
+    	          console.log(result);
+	          }
           }
-        }).done(function(msg){
-           location.reload();
         });
     });
     $(".edit-submit").click(function(){
@@ -292,9 +297,15 @@ jQuery(document).ready(function() {
               id: target,
               name: $("#tax_name-edit").val(),
               rate: tax_rate / 100
+          },
+          success: function(result) {
+	          if(result.success) {
+		          location.reload();
+	          } else {
+		          console.log(result);
+	          }
           }
         });
-        location.reload();
     });
     $(".delete-tax").click(function(){
         target = $(this).attr("data-id");
@@ -303,9 +314,15 @@ jQuery(document).ready(function() {
             type: 'POST',
             data: {
               id: target
-            } 
+            },
+            success: function(result) {
+	            if(result.success) {
+		            location.reload();
+	            } else {
+		            console.log(result);
+	            }
+            }
         });
-        location.reload();
     });
 });
 </script>

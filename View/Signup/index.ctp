@@ -11,20 +11,20 @@
             </div>
             <!-- General Information -->
             <div id="signup_general_info" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container">
-                <form class="line-box" action="/signup/index.json" method="post">
+                <form class="line-box" action="/signup/index.json" method="post" role="form" data-toggle="validator">
                     <h1>Sign up</h1>
                     <div class="dashed-line-gr"><?php echo $this->Session->flash(); ?></div>
                     <dl>
                         <dt class="hidden">Private web address</dt>
                         <dd class="hidden"><input type="hidden" name="domain_prefix" id="domain_prefix"></dd>
                         <dt>First name</dt>
-                        <dd><input type="text" name="first_name" id="first_name" class="required" required></dd>
+                        <dd><input type="text" name="first_name" id="first_name" class="required" autocomplete="off" required></dd>
                         <dt>Last name</dt>
-                        <dd><input type="text" name="last_name" id="last_name" class="required" required></dd>
+                        <dd><input type="text" name="last_name" id="last_name" class="required" autocomplete="off" required></dd>
                         <dt>Mail address</dt>
-                        <dd><input type="email" name="username" id="username" class="required" required></dd>
+                        <dd><input type="email" name="username" id="username" class="required" autocomplete="off" required></dd>
                         <dt>Password</dt>
-                        <dd><input type="password" name="password" id="password" class="required" required></dd>
+                        <dd><input type="password" name="password" id="password" class="required" autocomplete="off" required></dd>
                         <dt>City</dt>
                         <dd><input type="text" name="physical_city" id="physical_city" autocomplete="on" value="Auckland" required></dd>
                         <dt class="hidden">Country</dt>
@@ -59,7 +59,7 @@
                         -->
                         <input type="hidden" id="plan_id" name="plan_id" value="subscriber_plan_retailer_trial">
                         <dt class="store_name">Store name</dt>
-                        <dd class="store_name"><input type="text" name="store_name" id="store_name" class="required" required></dd>
+                        <dd class="store_name"><input type="text" name="store_name" id="store_name" class="required" autocomplete="off" required><div class="help-block with-errors"></div></dd>
                         <dt class="merchant_code" style="display: none;">Store code</dt>
                         <dd class="merchant_code" style="display: none;">
                             <input type="text" id="merchant_code" name="merchant_code" maxlength="6" placeholder="Enter store code" autocomplete="off">
@@ -185,6 +185,7 @@ $(document).ready(function(){
     });
     $(document).on("keyup", "#store_name", function() {
         if($(this).val().length > 0) {
+        	$(".with-errors").text('verifying...');
             $.ajax({
                 url: '/users/check_store_name.json',
                 type: 'POST',
@@ -193,16 +194,18 @@ $(document).ready(function(){
                 },
                 success: function(result) {
                     if(result.success) {
-                        console.log("Confirmed");
+                        $(".with-errors").text('');
                         $("#store_name").removeClass("invalid");
                         $("#signup").attr({"disabled":false});
                     } else {
-                        console.log("Invalid");
+                        $(".with-errors").text('store name already in use');
                         $("#store_name").addClass("invalid");
                         $("#signup").attr({"disabled":true});
                     }
                 }
             });
+        } else {
+	        $(".with-errors").text('');
         }
     });
     $(document).on("keyup", "#merchant_code", function() {

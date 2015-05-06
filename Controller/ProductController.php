@@ -194,6 +194,10 @@ class ProductController extends AppController {
                 // Step 1: add a new product.
                 $data = $this->request->data;
                 $data['merchant_id'] = $user['merchant_id'];
+                if(empty($data['stock_type']))
+                    $data['stock_type'] = "standard";
+                if(empty($data['parent_id']))
+                    unset($data['parent_id']);
                 if(empty($data['product_type_id']))
                     unset($data['product_type_id']);
                 if(empty($data['product_brand_id']))
@@ -767,6 +771,12 @@ class ProductController extends AppController {
         $product = $this->MerchantProduct->findById($id);
         $this->set("product", $product);
         $this->set("id", $id);
+        $children = $this->MerchantProduct->find('all', array(
+            'conditions' => array(
+                'MerchantProduct.parent_id' => $id
+            )
+        ));
+        $this->set("children",$children);
         
         $inventories = $this->MerchantProductInventory->find('all', array(
             'fields' => array(
