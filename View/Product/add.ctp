@@ -706,7 +706,7 @@ $(document).ready(function(){
     /* DYNAMIC PRODUCT SEARCH END */
 
 
-    /* PRODUCT ADD */
+    /* PRODUCT ADD 
    $(document).on('click','.addProduct',function(){
         $("#loader-wrapper").show();
 
@@ -877,7 +877,7 @@ $(document).ready(function(){
             $("html, body").animate({ scrollTop: 0 }, "slow");
         }
     });
-
+*/
 
     $(document).on("change","select",function(){
 

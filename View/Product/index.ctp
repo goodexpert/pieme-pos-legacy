@@ -523,7 +523,9 @@ $(document).ready(function () {
 	    	$(".child_variant").remove();
 	    	$(this).removeClass("opened");
     	} else {
+        	$(this).addClass("opened");
     		var target_tr = $(this).parents("tr");
+    		$('<tr class="variant_load"><td colspan="9" style="text-align:center;">retrieving data...</td></tr>').insertAfter(target_tr);
     		$.ajax({
 	    		url: '/product/check_variants.json',
 	    		type: 'POST',
@@ -531,15 +533,22 @@ $(document).ready(function () {
 		    		product_id: $(this).attr("data-id")
 	    		},
 	    		success: function(result) {
+    	    		$(".variant_load").remove();
 		    		if(result.success) {
 		    			var i = 0;
 			    		$(result.data).each(function() {
-				    		console.log(result.data[i]);
+				    		var product_id = result.data[i]['MerchantProduct']['id'];
 				    		var product_name = result.data[i]['MerchantProduct']['name'];
 				    		var option_one = result.data[i]['MerchantProduct']['variant_option_one_value'];
 				    		var option_two = result.data[i]['MerchantProduct']['variant_option_two_value'];
 				    		var option_three = result.data[i]['MerchantProduct']['variant_option_three_value'];
-				    		$('<tr class="child_variant"><td colspan="5"></td><td>'+ product_name +'/'+ option_one +'</td><td colspan="3"></td></tr>').insertAfter(target_tr);
+				    		if(option_two.length > 0){
+					    		option_one += "/";
+				    		}
+				    		if(option_three.length > 0){
+					    		option_tow += "/";
+				    		}
+				    		$('<tr class="child_variant"><td colspan="5" style="border:0;"></td><td><a href="/product/'+ product_id +'/edit">'+ product_name +'/'+ option_one +''+ option_two +''+ option_three +'</a></td><td colspan="3" style="border:0;"></td></tr>').insertAfter(target_tr);
 				    		i++;
 			    		});
 		    		} else {
@@ -547,11 +556,6 @@ $(document).ready(function () {
 		    		}
 	    		}
     		});
-    		/*
-		    $('<tr class="child_variant"><td colspan="5"></td><td>name</td><td colspan="3"></td></tr>').insertAfter($(this).parents("tr"));
-		    $(this).addClass("opened");
-		    console.log("OK");
-		    */
 	    }
     });
 });

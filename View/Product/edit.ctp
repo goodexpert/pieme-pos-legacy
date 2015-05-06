@@ -76,13 +76,50 @@
         <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega"> Edit Product </h2>
         <input type="hidden" id="product_id" value="<?php echo $id;?>">
       </div>
-      <div class="portlet box product-add">
+      <form action="<?php echo $_SERVER['REQUEST_URI'];?>" class="portlet box product-add">
         <div class="portlet-body form"> 
           <!-- BEGIN FORM-->
           <div class="form-horizontal">
-            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title">Detail</div>
+            <?php if(!empty($product['MerchantProduct']['parent_id'])) { ?>
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Variants</div>
             <!-- START col-md-12-->
-            <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+            <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega" style="padding:0;padding-bottom:15px;"> 
+                <!-- START col-md-12-->
+                <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega variant_attr">
+                    <div id="first_variant_attr" class="col-md-12 col-sm-12 col-xs-12">
+                        <div class="col-md-12 col-xs-12 col-sm-12">
+                            <table class="col-md-5 col-sm-5">
+                            	<tr>
+                            		<th>Attribute</th><th>Value</th>
+                            	</tr>
+                            	<?php if(!empty($product['MerchantProduct']['variant_option_one_name'])) { ?>
+                            	<input type="hidden" class="variant_value_1" value="<?php echo $product['MerchantProduct']['variant_option_one_name'];?>">
+                            	<tr>
+                            		<td><?php echo $product['MerchantProduct']['variant_option_one_name'];?></td><td><input type="text" class="variant_default_1" value="<?php echo $product['MerchantProduct']['variant_option_one_value'];?>"></td>
+                            	</tr>
+                            	<?php } ?>
+                            	<?php if(!empty($product['MerchantProduct']['variant_option_two_name'])) { ?>
+                            	<input type="hidden" class="variant_value_2" value="<?php echo $product['MerchantProduct']['variant_option_two_name'];?>">
+                            	<tr>
+                            		<td><?php echo $product['MerchantProduct']['variant_option_two_name'];?></td><td><input type="text" class="variant_default_2" value="<?php echo $product['MerchantProduct']['variant_option_two_value'];?>"></td>
+                            	</tr>
+                            	<?php } ?>
+                            	<?php if(!empty($product['MerchantProduct']['variant_option_three_name'])) { ?>
+                            	<input type="hidden" class="variant_value_3" value="<?php echo $product['MerchantProduct']['variant_option_three_name'];?>">
+                            	<tr>
+                            		<td><?php echo $product['MerchantProduct']['variant_option_three_name'];?></td><td><input type="text" class="variant_default_3" value="<?php echo $product['MerchantProduct']['variant_option_three_value'];?>"></td>
+                            	</tr>
+                            	<?php } ?>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- END col-md-12-->
+            </div>
+            <?php } ?>
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title" <?php if(!empty($product['MerchantProduct']['parent_id'])) {echo 'style="display: none;"';} ?>>Detail</div>
+            <!-- START col-md-12-->
+            <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega" <?php if(!empty($product['MerchantProduct']['parent_id'])) {echo 'style="display: none;"';} ?>>
               <div class="col-md-6">
                   <dl class="form-group">
                     <dt class="col-md-3">Product name</dt>
@@ -171,7 +208,7 @@
               <!-- END col-md-12-->
               <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega dashed-line-gr"></div>
               <!-- START col-md-12-->
-              <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-top-20"> 
+              <div class="col-md-6 col-xs-6 col-sm-6 col-alpha col-omega margin-top-20"> 
                 <!-- START col-md-6-->
                 <!-- END col-md-6-->
                 <div class="col-md-12 col-xs-12 col-sm-12">
@@ -184,17 +221,16 @@
                 </div>
               </div>
               <!-- END col-md-12-->
-              <div class="dashed-line-gr"></div>
               <!-- START col-md-12-->
-              <div class="col-md-12 col-xs-12 col-sm-12 margin-top-20">
+              <div class="col-md-6 col-xs-6 col-sm-6 margin-top-20">
                   <dl class="form-group">
                     <dt class="col-md-2">Images</dt>
                     <dd class="col-md-10 col-alpha">
-                        <form action="/file-upload" class="dropzone" id="drop-file">
+                        <div class="dropzone" id="drop-file">
                           <div class="fallback">
                             <input name="file" type="file">
                           </div>
-                        </form>
+                        </div>
                      </dd>
                   </dl>
               </div>
@@ -260,6 +296,7 @@
               <!-- END col-md-12-->
             </div>
             <!-- END col-md-12-->
+            <?php if(empty($product['MerchantProduct']['parent_id'])) { ?>
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Variants</div>
             <!-- START col-md-12-->
             <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega" style="padding:0;padding-bottom:15px;"> 
@@ -364,6 +401,7 @@
               <!-- END col-md-12-->
             </div>
             <!-- END col-md-12-->
+            <?php } ?>
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Inventory</div>
             <!-- START col-md-12-->
             <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega"> 
@@ -377,7 +415,7 @@
                         <input type="text" class="form-control" id="sku" value="<?=$product['MerchantProduct']['sku'];?>">
                     </dd>
                   </dl>
-                  <dl class="form-group">
+                  <dl class="form-group" <?php if(!empty($product['MerchantProduct']['parent_id'])){echo 'style="display:none;"';}?>>
                     <dt class="col-md-3">Stock type</dt>
                     <dd class="col-md-9">
                       <select class="form-control" id="stock_type">
@@ -492,7 +530,7 @@
           </div>
         </div>
         <!-- END FORM--> 
-      </div>
+      </form>
     </div>
     <input type="hidden" id="created">
     <!-- BEGIN QUICK SIDEBAR --> 
@@ -738,7 +776,7 @@ $(document).ready(function(){
     /* DYNAMIC PRODUCT SEARCH END */
 
 
-    /* PRODUCT Edit */
+    /* PRODUCT Edit 
    $(document).on('click','.editProduct',function(){
         $("#loader-wrapper").show();
         var name = $("#product_name").val();
@@ -888,7 +926,7 @@ $(document).ready(function(){
             $("html, body").animate({ scrollTop: 0 }, "slow");
         }
     });
-    
+    */
     $(document).on("change","select",function(){
 
         if($("select option[value=add-type]").attr("selected")){

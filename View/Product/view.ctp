@@ -157,6 +157,7 @@
                                         echo "<th>".$product['MerchantProduct']['variant_option_three_name']."</th>";
                                     }?>
                                     <th>In stock</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -185,6 +186,10 @@
                                             }
                                             ?>
                                         </td>
+                                        <td>
+                                            <a href="/product/<?php echo $child['MerchantProduct']['id'];?>/edit">Edit</a> | 
+                                            <a href="/product/<?php echo $child['MerchantProduct']['id'];?>/delete">Delete</a>
+                                        </td>
                                     </tr>
                                 <?php } ?>
                                     <tr>
@@ -208,6 +213,9 @@
                                             }
                                             echo "<td>".$total_count."</td>";
                                         }?>
+                                        <td>
+                                            <a href="/product/<?php echo $product['MerchantProduct']['id'];?>/edit">Edit</a>
+                                        </td>
                                     </tr>
                             </tbody>
                           </table>

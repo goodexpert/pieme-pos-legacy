@@ -564,11 +564,47 @@ class ProductController extends AppController {
                         $this->MerchantProductComposite->save($saveComposite);
                     }
                 }
+                
+                //Step 7: Update its own variants
+                $variants = $this->MerchantProduct->find('all', array(
+                    'conditions' => array(
+                        'MerchantProduct.parent_id' => $id
+                    )
+                ));
+                if(!empty($variants)) {
+                    unset($data['supply_price']);
+                    unset($data['markup']);
+                    unset($data['price']);
+                    unset($data['price_include_tax']);
+                    unset($data['tax']);
+                    unset($data['variant_option_one_value']);
+                    unset($data['variant_option_two_value']);
+                    unset($data['variant_option_three_value']);
+                    unset($data['sku']);
+                    unset($data['track_inventory']);
+                    unset($data['stock_type']);
+                    unset($data['is_active']);
+                    if($data['variant_option_two_name'] == '')
+                        $data['variant_option_two_value'] = '';
+                    if($data['variant_option_three_name'] == '')
+                        $data['variant_option_three_value'] = '';
+                    if($data['has_variants'] == 0) {
+                        foreach($variants as $variant) {
+                            $this->MerchantProduct->delete($variant['MerchantProduct']['id']);
+                        }
+                    } else {
+                        $data['has_variants'] = 0;
+                        foreach($variants as $variant) {
+                            $this->MerchantProduct->id = $variant['MerchantProduct']['id'];
+                            $this->MerchantProduct->save($data);
+                        }
+                    }
+                }
 
                 $dataSource->commit();
 
                 $result['success'] = true;
-                $result['product_id'] = $this->MerchantProduct->id;
+                $result['product_id'] = $id;
             } catch (Exception $e) {
                 $dataSource->rollback();
                 $result['message'] = $e->getMessage();
