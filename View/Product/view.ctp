@@ -156,17 +156,59 @@
                                     if(!empty($product['MerchantProduct']['variant_option_three_name'])) {
                                         echo "<th>".$product['MerchantProduct']['variant_option_three_name']."</th>";
                                     }?>
-                                    <th>Outlet</th>
                                     <th>In stock</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php foreach($inventories as $inventory) { ?>
-                                <tr>
-                                    <td><?php echo $inventory['MerchantOutlet']['name'];?></td>
-                                    <td><?php echo $inventory['MerchantProductInventory']['count'];?></td>
-                                </tr>
+                                <?php foreach($children as $child) { ?>
+                                    <tr>
+                                        <?php
+                                        if(!empty($child['MerchantProduct']['variant_option_one_value'])) {
+                                            echo "<td>".$child['MerchantProduct']['variant_option_one_value']."</td>";
+                                        }
+                                        if(!empty($child['MerchantProduct']['variant_option_two_value'])) {
+                                            echo "<td>".$child['MerchantProduct']['variant_option_two_value']."</td>";
+                                        }
+                                        if(!empty($child['MerchantProduct']['variant_option_three_value'])) {
+                                            echo "<td>".$child['MerchantProduct']['variant_option_three_value']."</td>";
+                                        }?>
+                                        <td>
+                                            <?php 
+                                            if(empty($child['MerchantProductInventory'])){
+                                                echo "&infin;";
+                                            } else {
+                                                $total_inventory = 0;
+                                                foreach($child['MerchantProductInventory'] as $inventory) {
+                                                    $total_inventory += $inventory['count'];
+                                                }
+                                                echo $total_inventory;
+                                            }
+                                            ?>
+                                        </td>
+                                    </tr>
                                 <?php } ?>
+                                    <tr>
+                                        <?php
+                                        if(!empty($product['MerchantProduct']['variant_option_one_value'])) {
+                                            echo "<td>".$product['MerchantProduct']['variant_option_one_value']."</td>";
+                                        }
+                                        if(!empty($product['MerchantProduct']['variant_option_two_value'])) {
+                                            echo "<td>".$product['MerchantProduct']['variant_option_two_value']."</td>";
+                                        }
+                                        if(!empty($product['MerchantProduct']['variant_option_three_value'])) {
+                                            echo "<td>".$product['MerchantProduct']['variant_option_three_value']."</td>";
+                                        }?>
+                                        <?php 
+                                        if(empty($inventories)) {
+                                            echo "<td>&infin;</td>";
+                                        } else {
+                                            $total_count = 0;
+                                            foreach($inventories as $inventory) {
+                                                $total_count += $inventory['MerchantProductInventory']['count'];
+                                            }
+                                            echo "<td>".$total_count."</td>";
+                                        }?>
+                                    </tr>
                             </tbody>
                           </table>
                         </div>

@@ -132,7 +132,7 @@ class ProductController extends AppController {
                 )
             )
         ));
-        
+
         $this->MerchantProductCategory->bindModel(array(
             'belongsTo' => array(
                 'MerchantProductTag' => array(
@@ -141,12 +141,23 @@ class ProductController extends AppController {
                 )
             )
         ));
-        
+
         $this->MerchantProduct->recursive = 2;
-        
+
         $items = $this->MerchantProduct->find('all', array(
             'conditions' => $filter
         ));
+        $i = 0;
+        foreach($items as $item) {
+            $items[$i]['Variants'] = array();
+            $variants = $this->MerchantProduct->find('all', array(
+                'conditions' => array(
+                    'MerchantProduct.parent_id' => $items[$i]['MerchantProduct']['id']
+                )
+            ));
+            $items[$i]['Variants'] = $variants;
+            $i++;
+        }
 
         $suppliers = $this->MerchantSupplier->find('all', array(
             'conditions' => array(
@@ -165,7 +176,7 @@ class ProductController extends AppController {
                 'MerchantProductBrand.merchant_id' => $user['merchant_id']
             ),
         ));
-        
+
         $tags = $this->MerchantProductTag->find('all', array(
             'conditions' => array(
                 'MerchantProductTag.merchant_id' => $user['merchant_id']
@@ -771,6 +782,16 @@ class ProductController extends AppController {
         $product = $this->MerchantProduct->findById($id);
         $this->set("product", $product);
         $this->set("id", $id);
+        
+        $this->MerchantProduct->bindModel(array(
+            'hasMany' => array(
+                'MerchantProductInventory' => array(
+                    'className' => 'MerchantProductInventory',
+                    'foreignKey' => 'product_id'
+                )
+            )
+        ));
+        
         $children = $this->MerchantProduct->find('all', array(
             'conditions' => array(
                 'MerchantProduct.parent_id' => $id
@@ -1087,6 +1108,26 @@ class ProductController extends AppController {
                 $result['id'] = $this->MerchantProductVariant->id;
                 $result['name'] = $data['name'];
                 $result['default_value'] = $data['default_value'];
+            } catch  (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+            $this->serialize($result);
+        }
+    }
+    
+    public function check_variants() {
+        if($this->request->is('post')) {
+            $result = array(
+                'success' => false
+            );
+            try {
+                $children = $this->MerchantProduct->find('all', array(
+                    'conditions' => array(
+                        'MerchantProduct.parent_id' => $_POST['product_id']
+                    )
+                ));
+                $result['data'] = $children;
+                $result['success'] = true;
             } catch  (Exception $e) {
                 $result['message'] = $e->getMessage();
             }

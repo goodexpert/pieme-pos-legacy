@@ -706,7 +706,7 @@ $(document).ready(function(){
     /* DYNAMIC PRODUCT SEARCH END */
 
 
-    /* PRODUCT ADD 
+    /* PRODUCT ADD */
    $(document).on('click','.addProduct',function(){
         $("#loader-wrapper").show();
 
@@ -856,7 +856,11 @@ $(document).ready(function(){
                 },
                 success: function(result) {
                     if (result.success) {
-                        window.location.href = "/product/"+result.product_id;
+                        if($("#parent_id").length > 0) {
+                            window.location.href = "/product/"+$("#parent_id").val();
+                        } else {
+                            window.location.href = "/product/"+result.product_id;
+                        }
                     } else {
                         $("#loader-wrapper").hide();
                         console.log(result);
@@ -873,7 +877,7 @@ $(document).ready(function(){
             $("html, body").animate({ scrollTop: 0 }, "slow");
         }
     });
-*/
+
 
     $(document).on("change","select",function(){
 

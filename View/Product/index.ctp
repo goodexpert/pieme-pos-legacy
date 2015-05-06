@@ -182,6 +182,7 @@
                     <th class="hidden">supply_price</th>
                     <th class="hidden">markup</th>
                     <th class="hidden">retail_price</th>
+                    <th>Variants</th>
                     <th>price_include_tax</th>
                     <th class="hidden">tax_value</th>
                     <th class="hidden">tax_id</th>
@@ -204,7 +205,7 @@
                 </thead>
                 <tbody>
                     <?php foreach($items as $item){?>
-                    <tr>
+                    <tr <?php if(!empty($item['MerchantProduct']['parent_id'])){echo 'style="display: none;"';}?>>
                         <td><?=$item['MerchantProduct']['name'];?></td>
                         <td class="hidden"><?=$item['MerchantProduct']['id'];?></td>
                         <td><?=date("d M Y",strtotime($item['MerchantProduct']['created']));?></td>
@@ -216,6 +217,13 @@
                         <td class="hidden"><?=$item['MerchantProduct']['supply_price'];?></td>
                         <td class="hidden"><?=$item['MerchantProduct']['markup'];?></td>
                         <td class="hidden"><?=$item['MerchantProduct']['price'];?></td>
+                        <td>
+                        	<?php if(empty($item['Variants'])){
+                        		echo "None";
+                        	} else {
+                        		echo '<span data-id="'.$item['MerchantProduct']['id'].'" class="clickable check_variants">'.count($item['Variants']).' variants</span>';
+                        	}?>
+                        </td>
                         <td><?=number_format($item['MerchantProduct']['price_include_tax'],2,'.','');?></td>
                         <td class="hidden"><?=$item['MerchantProduct']['tax'];?></td>
                         <td class="hidden"><?=$item['MerchantProduct']['tax_id'];?></td>
@@ -509,6 +517,42 @@ $(document).ready(function () {
     $(document).on("click",".remove_tag",function() {
         $(this).parents(".tag_wrap").remove();
         i--;
+    });
+    $(".check_variants").click(function(){
+    	if($(this).hasClass("opened")) {
+	    	$(".child_variant").remove();
+	    	$(this).removeClass("opened");
+    	} else {
+    		var target_tr = $(this).parents("tr");
+    		$.ajax({
+	    		url: '/product/check_variants.json',
+	    		type: 'POST',
+	    		data: {
+		    		product_id: $(this).attr("data-id")
+	    		},
+	    		success: function(result) {
+		    		if(result.success) {
+		    			var i = 0;
+			    		$(result.data).each(function() {
+				    		console.log(result.data[i]);
+				    		var product_name = result.data[i]['MerchantProduct']['name'];
+				    		var option_one = result.data[i]['MerchantProduct']['variant_option_one_value'];
+				    		var option_two = result.data[i]['MerchantProduct']['variant_option_two_value'];
+				    		var option_three = result.data[i]['MerchantProduct']['variant_option_three_value'];
+				    		$('<tr class="child_variant"><td colspan="5"></td><td>'+ product_name +'/'+ option_one +'</td><td colspan="3"></td></tr>').insertAfter(target_tr);
+				    		i++;
+			    		});
+		    		} else {
+			    		console.log(result);
+		    		}
+	    		}
+    		});
+    		/*
+		    $('<tr class="child_variant"><td colspan="5"></td><td>name</td><td colspan="3"></td></tr>').insertAfter($(this).parents("tr"));
+		    $(this).addClass("opened");
+		    console.log("OK");
+		    */
+	    }
     });
 });
 </script>
