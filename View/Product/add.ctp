@@ -861,45 +861,11 @@ $(document).ready(function(){
                 type: "POST",
                 cache: false,
                 contentType: false,
-                mimeType: "multipart/form-data",
                 processData: false,
+                mimeType: "multipart/form-data",
                 data: formData,
-                /*
-                data: {
-                    name: name,
-                    parent_id: parent_id,
-                    handle: handle,
-                    product_type_id: type,
-                    product_brand_id: brand,
-                    supplier_id: supplier,
-                    supplier_code: supplier_code,
-                    supply_price: supply_price,
-                    price: retail_price,
-                    tax: tax,
-                    price_include_tax: price_include_tax,
-                    markup: markup / 100,
-                    tax_id: tax_id,
-                    description: description,
-                    image: image,
-                    stock_type: stock_type,
-                    sku: sku,
-                    is_active: availability,
-                    product_uom: product_uom,
-                    has_variants: has_variants,
-                    variant_option_one_name: variant_option_one_name,
-                    variant_option_one_value: variant_option_one_value,
-                    variant_option_two_name: variant_option_two_name,
-                    variant_option_two_value: variant_option_two_value,
-                    variant_option_three_name: variant_option_three_name,
-                    variant_option_three_value: variant_option_three_value,
-                    track_inventory: track_inventory,
-                    inventories: inventories,
-                    tags: tagArray,
-                    composite: composite
-                },
-                 */
-                success: function(result) {
-                    console.log(result);
+                success: function(data) {
+                    var result = JSON.parse(data);
                     if (result.success) {
                         if($("#parent_id").length > 0) {
                             window.location.href = "/product/"+$("#parent_id").val();
@@ -907,8 +873,8 @@ $(document).ready(function(){
                             window.location.href = "/product/"+result.product_id;
                         }
                     } else {
-                        $("#loader-wrapper").hide();
                         console.log(result);
+                        $("#loader-wrapper").hide();
                     }
                 },
                 error: function(jqXHR, textStatus, errorThrown) {

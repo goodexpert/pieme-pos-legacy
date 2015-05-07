@@ -363,7 +363,7 @@ class ProductController extends AppController {
                     $data['image_large'] = $filename;
                 }
 
-                $dataSource->rollback();
+                $dataSource->commit();
                 
                 if ($this->request->is('ajax')) {
                     $result['success'] = true;
