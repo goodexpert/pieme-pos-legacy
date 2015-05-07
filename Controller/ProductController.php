@@ -190,6 +190,22 @@ class ProductController extends AppController {
         $this->set('tags', $tags);
     }
 
+    protected function _uploadFile($id) {
+        if (isset($_FILES['file'])) {
+            $file = $_FILES['file'];
+            $uploadedFile = $file['tmp_name'];
+
+            if (!empty($uploadedFile)) {
+                $ext = explode(".", $file['name']);
+                $filename = '/files/products/' . $id . '.' . $ext[1];
+                $filepath = WWW_ROOT . 'files/products/' . $id . '.' . $ext[1];
+                move_uploaded_file($uploadedFile, $filepath);
+                return $filename;
+            }
+        }
+        return false;
+    }
+
     public function add() {
         $user = $this->Auth->user();
 
@@ -205,22 +221,58 @@ class ProductController extends AppController {
                 // Step 1: add a new product.
                 $data = $this->request->data;
                 $data['merchant_id'] = $user['merchant_id'];
-                if(empty($data['stock_type']))
-                    $data['stock_type'] = "standard";
-                if(empty($data['parent_id']))
+
+                if (isset($data['parent_id']) && empty($data['parent_id'])) {
                     unset($data['parent_id']);
-                if(empty($data['product_type_id']))
+                }
+
+                if (isset($data['product_type_id']) && empty($data['product_type_id'])) {
                     unset($data['product_type_id']);
-                if(empty($data['product_brand_id']))
+                }
+
+                if (isset($data['product_brand_id']) && empty($data['product_brand_id'])) {
                     unset($data['product_brand_id']);
-                if(empty($data['product_uom']))
+                }
+
+                if (isset($data['resource_id']) && empty($data['resource_id'])) {
+                    unset($data['resource_id']);
+                }
+
+                if (isset($data['supplier_id']) && empty($data['supplier_id'])) {
+                    unset($data['supplier_id']);
+                }
+
+                if (isset($data['supplier_code']) && empty($data['supplier_code'])) {
+                    unset($data['supplier_code']);
+                }
+
+                if (isset($data['product_uom']) && empty($data['product_uom'])) {
                     unset($data['product_uom']);
-                if(!is_numeric($data['supply_price']))
-                    $data['supply_price'] = null;
-                if(!is_numeric($data['markup']))
+                }
+
+                if (isset($data['supply_price']) && (empty($data['supply_price']) || !is_numeric($data['supply_price']))) {
+                    unset($data['supply_price']);
+                }
+
+                if (isset($data['markup']) && (empty($data['markup']) || !is_numeric($data['markup']))) {
                     $data['markup'] = null;
-                if(empty($data['tax_id'])) {
+                }
+
+                if (isset($data['tax_id']) && empty($data['tax_id'])) {
                     $data['tax_id'] = $this->MerchantTaxRate->findByTaxRate($data['tax'])['MerchantTaxRate']['id'];
+                }
+
+                if (isset($data['has_variants']) && $data['has_variants'] != 1) {
+                    unset($data['variant_option_one_name']);
+                    unset($data['variant_option_one_value']);
+                    unset($data['variant_option_two_name']);
+                    unset($data['variant_option_two_value']);
+                    unset($data['variant_option_three_name']);
+                    unset($data['variant_option_three_value']);
+                }
+
+                if (isset($data['stock_type']) && empty($data['stock_type'])) {
+                    $data['stock_type'] = "standard";
                 }
 
                 $this->MerchantProduct->create();
@@ -238,8 +290,8 @@ class ProductController extends AppController {
 
                 // Step 3: If track_inventory is active, add the stock of product to the inventory of each outlet.
                 if ($data['track_inventory'] == 1) {
-                     //$inventories = $data['inventories'];
-                     foreach ($data['inventories'] as $inventory) {
+                     $inventories = json_decode($data['inventories'], true);
+                     foreach ($inventories as $inventory) {
                          if($inventory['count'] == null) {
                              $inventory['count'] = 0;
                          }
@@ -260,7 +312,7 @@ class ProductController extends AppController {
                 if(!empty($data['tags']) && isset($data['tags'])) {
                     // Step 4: Save Tags
                     $savedTag = array();
-                    $tagArray = json_decode($data['tags'],true);
+                    $tagArray = json_decode($data['tags'], true);
                     foreach($tagArray as $tag) {
                         $tag_exist = $this->MerchantProductTag->find('first', array(
                             'conditions' => array(
@@ -290,7 +342,8 @@ class ProductController extends AppController {
 
                 //Step 6: Save Composite Attributes
                 if ($data['stock_type'] == 'composite') {
-                    foreach($data['composite'] as $composite) {
+                    $products = json_decode($data['composite'], true);
+                    foreach($products as $composite) {
                         $this->MerchantProductComposite->create();
                         $saveComposite['MerchantProductComposite']['parent_id'] = $this->MerchantProduct->id;
                         $saveComposite['MerchantProductComposite']['product_id'] = $composite['product_id'];
@@ -304,17 +357,35 @@ class ProductController extends AppController {
                 $increase->Merchant['sku_sequence'] = $this->Merchant->findById($user['merchant_id'])['Merchant']['sku_sequence'] + 1;
                 $this->Merchant->save($increase);
 
-                $dataSource->commit();
+                //Step 8: Store the image file
+                if ($filename = $this->_uploadFile($this->MerchantProduct->id)) {
+                    $data['image'] = $filename;
+                    $data['image_large'] = $filename;
+                }
+
+                $dataSource->rollback();
                 
-                $result['success'] = true;
-                $result['product_id'] = $this->MerchantProduct->id;
+                if ($this->request->is('ajax')) {
+                    $result['success'] = true;
+                    $result['product_id'] = $this->MerchantProduct->id;
+                } else {
+                    $this->redirect('/products');
+                }
             } catch (Exception $e) {
                 $dataSource->rollback();
-                $result['message'] = $e->getMessage();
+                if ($this->request->is('ajax')) {
+                    $result['message'] = $e->getMessage();
+                } else {
+                    $this->Session->setFlash($e->getMessage());
+                }
             }
 
-            $this->serialize($result);
-            return;
+            if ($this->request->is('ajax')) {
+                $this->serialize($result);
+                return;
+            } else {
+                $this->set('formData', $this->request->data);
+            }
         }
         $this->loadModel("ProductUom");
         $this->loadModel("ProductUomCategory");
@@ -400,7 +471,6 @@ class ProductController extends AppController {
     }
 
     public function edit($id) {
-    
         $user = $this->Auth->user();
 
         if ($this->request->is('ajax') || $this->request->is('post')) {

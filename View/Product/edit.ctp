@@ -30,13 +30,9 @@
 <div class="clearfix"> </div>
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
-
     <div id="loader-wrapper" style="display:none">
-    
         <div id="loader"></div>
-        
     </div>
-
   <div id="notify"></div>
   <!-- BEGIN SIDEBAR -->
   <div class="page-sidebar-wrapper"> 
@@ -486,9 +482,7 @@
                         <?php foreach($items as $item){ ?>
                     
                         <button type="button" data-id="<?=$item['MerchantProduct']['id'];?>" class="data-found"><?=$item['MerchantProduct']['name'];?></button>
-
                         <?php } ?>
-
                     </div>
                   </div>
                   <div class="col-md-2 col-xs-2 col-sm-2">
@@ -603,6 +597,9 @@
 <script src="/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script> 
 <script src="/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
 <script type="text/javascript" src="/assets/global/plugins/select2/select2.min.js"></script>
+<script src="/js/dropzone.js"></script> 
+<script src="/js/jquery.popupoverlay.js"></script>
+<script type="text/javascript" src="/js/jquery.confirm.js"></script> 
 <!-- END PAGE LEVEL SCRIPTS --> 
 <script>
 jQuery(document).ready(function() {    
@@ -610,7 +607,6 @@ jQuery(document).ready(function() {
    Layout.init(); // init layout
    QuickSidebar.init() // init quick sidebar
    Index.init();
-   
 });
 </script> 
 <script>
@@ -619,12 +615,11 @@ $(document).ready(function(){
          var code = key.keyCode || key.which;
          var clean = $(this).val().replace(/[^\d\.]/g, '');
          $(this).val(clean);
-         if(code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8"){
-         
+         if (code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8") {
              $("#markup").val(($("#retail_price_exclude").val() - $(this).val()) / ($(this).val()) * 100);
-             
          }
     });
+
     $(document).on("keyup", "#markup", function(key){
          var code = key.keyCode || key.which;
          var clean = $(this).val().replace(/[^\d\.]/g, '');
@@ -636,6 +631,7 @@ $(document).ready(function(){
              $("#sales_tax_calc").val(parseFloat(retail_exclude * $("#sales_tax").val()).toFixed(2));
          }
     });
+
     $(document).on("keyup", "#retail_price_exclude", function(key){
          var code = key.keyCode || key.which;
          var clean = $(this).val().replace(/[^\d\.]/g, '');
@@ -647,6 +643,7 @@ $(document).ready(function(){
              $("#retail_price_include").val(parseFloat(sales_tax + parseFloat($(this).val())).toFixed(2));
          }
     });
+
     $(document).on("change", "#sales_tax", function(){
         $("#sales_tax_calc").val(parseFloat($("#retail_price_exclude").val() * $(this).val()).toFixed(2));
         $("#retail_price_include").val(parseFloat($("#retail_price_exclude").val() * $(this).val() + parseFloat($("#retail_price_exclude").val())).toFixed(2));
@@ -765,14 +762,12 @@ $(document).ready(function(){
                 $(".search-default").show();
             }
         }
-        
         $cells.click(function(){
            $("#composite_search").val($(this).text());
            $("#selected_composite_id").val($(this).attr('data-id'));
            $(".search_result").hide();
         });
     });
-
     /* DYNAMIC PRODUCT SEARCH END */
 
 
@@ -1026,6 +1021,3 @@ $(document).ready(function(){
 });
 </script> 
 <!-- END JAVASCRIPTS --> 
-<script src="/js/dropzone.js"></script> 
-<script src="/js/jquery.popupoverlay.js"></script>
-<script type="text/javascript" src="/js/jquery.confirm.js"></script> 
