@@ -70,9 +70,9 @@
     <div class="page-content">
       <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
         <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega"> Edit Product </h2>
-        <input type="hidden" id="product_id" value="<?php echo $id;?>">
       </div>
-      <form action="<?php echo $_SERVER['REQUEST_URI'];?>" class="portlet box product-add">
+      <input type="hidden" id="parent_id" value="<?php if(!empty($product['MerchantProduct']['parent_id'])){echo $product['MerchantProduct']['parent_id'];}?>"/>
+      <form action="<?php echo $_SERVER['REQUEST_URI'];?>" class="portlet box product-add product-form" method="post" id="product-form" enctype="multipart/form-data">
         <div class="portlet-body form"> 
           <!-- BEGIN FORM-->
           <div class="form-horizontal">
@@ -141,7 +141,7 @@
                   <dl class="form-group">
                     <dt class="col-md-3">Product type</dt>
                     <dd class="col-md-9">
-                      <select class="form-control" id="product_type">
+                      <select class="form-control" id="product_type_id">
                           <option value=""></option>
                         <?php foreach($types as $type){?>
                             <option value="<?=$type['MerchantProductType']['id'];?>" <?php if($type['MerchantProductType']['id'] == $product['MerchantProduct']['product_type_id']){echo "selected";}?>><?=$type['MerchantProductType']['name'];?></option>
@@ -153,7 +153,7 @@
                   <dl class="form-group">
                     <dt class="col-md-3">Supplier</dt>
                     <dd class="col-md-9">
-                      <select class="form-control" id="product_supplier">
+                      <select class="form-control" id="product_supplier_id">
                         <option></option>
                         <?php foreach($suppliers as $supplier){?>
                             <option value="<?=$supplier['MerchantSupplier']['id'];?>" <?php if($supplier['MerchantSupplier']['id'] == $product['MerchantProduct']['supplier_id']){echo "selected";}?>><?=$supplier['MerchantSupplier']['name'];?></option>
@@ -169,7 +169,7 @@
                   <dl class="form-group">
                     <dt class="col-md-3">Product brand</dt>
                     <dd class="col-md-9">
-                      <select class="form-control" id="product_brand">
+                      <select class="form-control" id="product_brand_id">
                           <option value=""></option>
                           <?php foreach($brands as $brand){?>
                             <option value="<?=$brand['MerchantProductBrand']['id'];?>" <?php if($brand['MerchantProductBrand']['id'] == $product['MerchantProduct']['product_brand_id']){echo "selected";}?>><?=$brand['MerchantProductBrand']['name'];?></option>
@@ -205,34 +205,34 @@
               <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega dashed-line-gr"></div>
               <!-- START col-md-12-->
               <div class="col-md-6 col-xs-6 col-sm-6 col-alpha col-omega margin-top-20"> 
-                <!-- START col-md-6-->
-                <!-- END col-md-6-->
-                <div class="col-md-12 col-xs-12 col-sm-12">
-                  <dl class="form-group">
-                    <dt class="col-md-2">Description</dt>
-                    <dd class="col-md-10 col-alpha">
-                      <textarea id="product_description" style="width:100%" rows="4"><?=$product['MerchantProduct']['description'];?></textarea>
-                     </dd>
+                <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                  <dl>
+                    <dt class="col-md-4 height-inherit">Description</dt>
+                    <dd class="col-md-8 height-inherit">
+                      <textarea id="product_description" style="width:100%" rows="5"><?php echo $product['MerchantProduct']['description'];?></textarea>
+                    </dd>
                   </dl>
                 </div>
               </div>
-              <!-- END col-md-12-->
-              <!-- START col-md-12-->
               <div class="col-md-6 col-xs-6 col-sm-6 margin-top-20">
                   <dl class="form-group">
-                    <dt class="col-md-2">Images</dt>
-                    <dd class="col-md-10 col-alpha">
+                    <dt class="col-md-4">Images</dt>
+                    <dd class="col-md-8">
+                        <input name="file" type="file">
+<!--
                         <div class="dropzone" id="drop-file">
                           <div class="fallback">
                             <input name="file" type="file">
                           </div>
                         </div>
-                     </dd>
+-->
+                    </dd>
                   </dl>
               </div>
               <!-- END col-md-12-->
-              <div class="col-md-12">
-                  <dl class="form-group">
+              <div class="dashed-line-gr"></div>
+              <div class="col-md-12 col-alpha col-omega">
+                  <dl>
                     <dt class="col-md-2">Product tags</dt>
                     <input type="hidden" id="tag_list" value='<?php echo json_encode($tags);?>'>
                     <dd class="col-md-10 col-alpha">
@@ -556,8 +556,8 @@
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) --> 
 <!-- BEGIN CORE PLUGINS --> 
 <!--[if lt IE 9]>
-<script src="assets/global/plugins/respond.min.js"></script>
-<script src="assets/global/plugins/excanvas.min.js"></script> 
+<script src="/assets/global/plugins/respond.min.js"></script>
+<script src="/assets/global/plugins/excanvas.min.js"></script> 
 <![endif]--> 
 <script src="/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script> 
 <script src="/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script> 
@@ -697,8 +697,8 @@ $(document).ready(function(){
                 product_type_name: $(".type-name").val(),
             }
         }).done(function(result){
-            $("#product_type").append('<option value="'+result['id']+'">'+result['name']+'</option>');
-            $("#product_type").val(result['id']);
+            $("#product_type_id").append('<option value="'+result['id']+'">'+result['name']+'</option>');
+            $("#product_type_id").val(result['id']);
         });
     });
 
@@ -711,8 +711,8 @@ $(document).ready(function(){
                 product_brand_desc: $(".brand-description").val()
             }
         }).done(function(result){
-            $("#product_brand").append('<option value="'+result['id']+'">'+result['name']+'</option>');
-            $("#product_brand").val(result['id']);
+            $("#product_brand_id").append('<option value="'+result['id']+'">'+result['name']+'</option>');
+            $("#product_brand_id").val(result['id']);
         });
     });
 
@@ -771,21 +771,25 @@ $(document).ready(function(){
     /* DYNAMIC PRODUCT SEARCH END */
 
 
-    /* PRODUCT Edit 
-   $(document).on('click','.editProduct',function(){
+    // PRODUCT Edit 
+    $(document).on('click','.editProduct',function(){
         $("#loader-wrapper").show();
+        var parent_id = $("#parent_id").val();
         var name = $("#product_name").val();
         var handle = $("#product_handle").val();
-        var type = $("#product_type").val();
-        var brand = $("#product_brand").val();
+        var type = $("#product_type_id").val();
+        var brand = $("#product_brand_id").val();
         var description = $("#product_description").val();
-        var image = "no-image.png";
+        var image = "/img/no-image.png";
         var sku = $("#sku").val();
+        var supplier_id = $("#product_supplier_id").val();
+        /*
         if($("#product_supplier").val() !== ""){
             var supplier = $("#product_supplier").val();
         } else {
             var supplier;
         }
+        */
         var product_uom = $("#product_uom").val();
         
         var supplier_code = $("#supplier_code").val();
@@ -794,9 +798,11 @@ $(document).ready(function(){
         var price_include_tax = $("#retail_price_include").val();
         var tax_rate = $("#sales_tax").val();
         var tax = $("#sales_tax_calc").val();
-        var markup = $("#markup").val() / 100;
+        var markup = $("#markup").val();
         var tax_id = $('option:selected',"#sales_tax").attr("tax-id");
-        var tags = $("input[type=hidden]").val().split(",");
+        if($("#tag_list").length > 0) {
+            var tags = $("input[type=hidden]").val().split(",");
+        }
         var stock_type = $("#stock_type").val();
         
         var variant_option_one_name = $(".variant_value_1").val();
@@ -826,13 +832,18 @@ $(document).ready(function(){
         });
         
         if($(".incorrect").length == 0) {
-        
             var created = moment().format("YYYY-MM-DD HH:mm");
             var availability;
             if($("#availability").attr('checked')){
                 availability = 1;
             } else {
                 availability = 0;
+            }
+            var has_variants;
+            if($("#variant").is(":checked")){
+                has_variants = 1;
+            } else {
+                has_variants = 0;
             }
             var track_inventory;
             if($("#track_inventory").is(':checked')){
@@ -844,67 +855,74 @@ $(document).ready(function(){
             } else {
                 track_inventory = 0;
             }
-            var has_variants;
-            if($("#variant").is(":checked")){
-                has_variants = 1;
-            } else {
-                has_variants = 0;
-            }
+
             var category;
             var inventories = [];
             $(".stock-tracking").each(function(){
                inventories.push({outlet_id: $(this).find(".stock-outlet_id").val(), count: $(this).find(".stock_count").val(), reorder_point: $(this).find(".stock_reorder_point").val(), restock_level: $(this).find(".stock_reorder_amount").val()}) 
             });
-            inventories = JSON.stringify(inventories);
             var composite = [];
             $(".composite-attr").each(function(){
                 composite.push({product_id: $(this).attr("data-id"), quantity: $(this).find(".composite_quantity").val()});
             });
             
-            var tagArray = $("input:hidden.product_tag").val().split(",");
-            if(tagArray[0] == ''){
-                tagArray = '';
-            } else {
-                tagArray = JSON.stringify(tagArray);
+            if($("#tag_list").length > 0) {
+                var tagArray = $("input:hidden.product_tag").val().split(",");
+                if(tagArray[0] == ''){
+                    tagArray = '';
+                } else {
+                    tagArray = JSON.stringify(tagArray);
+                }
             }
             
+            var formData = new FormData(document.getElementById('product-form'));
+            formData.append('name', name);
+            formData.append('parent_id', parent_id);
+            formData.append('handle', handle);
+            formData.append('product_type_id', type);
+            formData.append('product_brand_id', brand);
+            formData.append('supplier_id', supplier_id);
+            formData.append('supplier_code', supplier_code);
+            formData.append('supply_price', supply_price);
+            formData.append('price', retail_price);
+            formData.append('tax', tax);
+            formData.append('price_include_tax', price_include_tax);
+            formData.append('markup', markup / 100);
+            formData.append('tax_id', tax_id);
+            formData.append('description', description);
+            formData.append('image', image);
+            formData.append('stock_type', stock_type);
+            formData.append('sku', sku);
+            formData.append('is_active', availability);
+            formData.append('product_uom', product_uom);
+            formData.append('has_variants', has_variants);
+            formData.append('variant_option_one_name', variant_option_one_name);
+            formData.append('variant_option_one_value', variant_option_one_value);
+            formData.append('variant_option_two_name', variant_option_two_name);
+            formData.append('variant_option_two_value', variant_option_two_value);
+            formData.append('variant_option_three_name', variant_option_three_name);
+            formData.append('variant_option_three_value', variant_option_three_value);
+            formData.append('track_inventory', track_inventory);
+            formData.append('inventories', JSON.stringify(inventories));
+            formData.append('tags', tagArray);
+            formData.append('composite', JSON.stringify(composite));
+
             $.ajax({
                 url: window.location+'.json',
                 type: "POST",
-                data: {
-                    name: name,
-                    handle: handle,
-                    product_type_id: type,
-                    product_brand_id: brand,
-                    supplier_id: supplier,
-                    supplier_code: supplier_code,
-                    supply_price: supply_price,
-                    price: retail_price,
-                    tax: tax,
-                    price_include_tax: price_include_tax,
-                    markup: markup,
-                    tax_id: tax_id,
-                    description: description,
-                    image: image,
-                    stock_type: stock_type,
-                    sku: sku,
-                    product_uom: product_uom,
-                    is_active: availability,
-                    has_variants: has_variants,
-                    variant_option_one_name: variant_option_one_name,
-                    variant_option_one_value: variant_option_one_value,
-                    variant_option_two_name: variant_option_two_name,
-                    variant_option_two_value: variant_option_two_value,
-                    variant_option_three_name: variant_option_three_name,
-                    variant_option_three_value: variant_option_three_value,
-                    track_inventory: track_inventory,
-                    inventories: inventories,
-                    tags: tagArray,
-                    composite: composite
-                },
-                success: function(result){
-                    if(result.success) {
-                        window.location.href = "/product/"+result.product_id;
+                cache: false,
+                contentType: false,
+                processData: false,
+                mimeType: "multipart/form-data",
+                data: formData,
+                success: function(data){
+                    var result = JSON.parse(data);
+                    if (result.success) {
+                        if($("#parent_id").val().length > 0) {
+                            window.location.href = "/product/"+$("#parent_id").val();
+                        } else {
+                            window.location.href = "/product/"+result.product_id;
+                        }
                     } else {
                         $("#loader-wrapper").hide();
                         console.log(result);
@@ -921,7 +939,7 @@ $(document).ready(function(){
             $("html, body").animate({ scrollTop: 0 }, "slow");
         }
     });
-    */
+
     $(document).on("change","select",function(){
 
         if($("select option[value=add-type]").attr("selected")){
@@ -931,7 +949,7 @@ $(document).ready(function(){
                 confirmButton: "Add",
                 cancelButton: "Cancel",
                 cancel: function(button){
-                    $("#product_type").val('');
+                    $("#product_type_id").val('');
                 },
                 confirmButtonClass: "type-add"
             });
@@ -944,7 +962,7 @@ $(document).ready(function(){
                 confirmButton: "Add",
                 cancelButton: "Cancel",
                 cancel: function(button){
-                    $("#product_brand").val('');
+                    $("#product_brand_id").val('');
                 },
                 confirmButtonClass: "brand-add"
             });
@@ -957,7 +975,7 @@ $(document).ready(function(){
                 confirmButton: "Add",
                 cancelButton: "Cancel",
                 cancel: function(button){
-                    $("#product_supplier").val('');
+                    $("#product_supplier_id").val('');
                 },
                 confirmButtonClass: "supplier-add"
             });
@@ -973,7 +991,7 @@ $(document).ready(function(){
                 cancel: function(button){
                     selection.val('');
                 },
-                confirmButtonClass: "variant-add"
+                confirmButtonClass: "variant-add btn-success"
             });
         }
         

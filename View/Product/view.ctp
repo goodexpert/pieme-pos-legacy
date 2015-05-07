@@ -223,7 +223,7 @@
                         <!-- END col-md-12-->
                   </div>
                   <div class="col-md-3 col-xs-3 col-sm-3 col-alpha col-omega product-detail-img" style="text-align:center;">
-                      <img src="/img/<?=$product['MerchantProduct']['image'];?>">
+                      <img src="<?=$product['MerchantProduct']['image'];?>">
                   </div>
                   <!-- END col-md-12-->
                 </div>

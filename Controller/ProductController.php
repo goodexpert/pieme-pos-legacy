@@ -262,7 +262,7 @@ class ProductController extends AppController {
                     $data['tax_id'] = $this->MerchantTaxRate->findByTaxRate($data['tax'])['MerchantTaxRate']['id'];
                 }
 
-                if (isset($data['has_variants']) && $data['has_variants'] != 1) {
+                if (isset($data['has_variants']) && $data['has_variants'] == 0 && empty($data['parent_id'])) {
                     unset($data['variant_option_one_name']);
                     unset($data['variant_option_one_value']);
                     unset($data['variant_option_two_name']);
@@ -273,6 +273,12 @@ class ProductController extends AppController {
 
                 if (isset($data['stock_type']) && empty($data['stock_type'])) {
                     $data['stock_type'] = "standard";
+                }
+                
+                //Step 1.5: Store the image file
+                if ($filename = $this->_uploadFile($this->MerchantProduct->id)) {
+                    $data['image'] = $filename;
+                    $data['image_large'] = $filename;
                 }
 
                 $this->MerchantProduct->create();
@@ -357,19 +363,13 @@ class ProductController extends AppController {
                 $increase->Merchant['sku_sequence'] = $this->Merchant->findById($user['merchant_id'])['Merchant']['sku_sequence'] + 1;
                 $this->Merchant->save($increase);
 
-                //Step 8: Store the image file
-                if ($filename = $this->_uploadFile($this->MerchantProduct->id)) {
-                    $data['image'] = $filename;
-                    $data['image_large'] = $filename;
-                }
-
                 $dataSource->commit();
                 
                 if ($this->request->is('ajax')) {
                     $result['success'] = true;
                     $result['product_id'] = $this->MerchantProduct->id;
                 } else {
-                    $this->redirect('/products');
+                    $this->redirect('/product/'.$this->MerchantProduct->id);
                 }
             } catch (Exception $e) {
                 $dataSource->rollback();
@@ -484,17 +484,65 @@ class ProductController extends AppController {
             try {
                 // Step 1: update the product.
                 $data = $this->request->data;
-                $data['merchant_id'] = $user['merchant_id'];
-                if(empty($data['product_type_id']))
-                    $data['product_type_id'] = null;
-                if(empty($data['product_brand_id']))
-                    $data['product_brand_id'] = null;
-                if(empty($data['product_uom']))
-                    $data['product_uom'] = null;
-                if(!is_numeric($data['supply_price']))
-                    $data['supply_price'] = null;
-                if(!is_numeric($data['markup']))
+    
+                if (isset($data['parent_id']) && empty($data['parent_id'])) {
+                    unset($data['parent_id']);
+                }
+
+                if (isset($data['product_type_id']) && empty($data['product_type_id'])) {
+                    unset($data['product_type_id']);
+                }
+
+                if (isset($data['product_brand_id']) && empty($data['product_brand_id'])) {
+                    unset($data['product_brand_id']);
+                }
+
+                if (isset($data['resource_id']) && empty($data['resource_id'])) {
+                    unset($data['resource_id']);
+                }
+
+                if (isset($data['supplier_id']) && empty($data['supplier_id'])) {
+                    unset($data['supplier_id']);
+                }
+
+                if (isset($data['supplier_code']) && empty($data['supplier_code'])) {
+                    unset($data['supplier_code']);
+                }
+
+                if (isset($data['product_uom']) && empty($data['product_uom'])) {
+                    unset($data['product_uom']);
+                }
+
+                if (isset($data['supply_price']) && (empty($data['supply_price']) || !is_numeric($data['supply_price']))) {
+                    unset($data['supply_price']);
+                }
+
+                if (isset($data['markup']) && (empty($data['markup']) || !is_numeric($data['markup']))) {
                     $data['markup'] = null;
+                }
+
+                if (isset($data['tax_id']) && empty($data['tax_id'])) {
+                    $data['tax_id'] = $this->MerchantTaxRate->findByTaxRate($data['tax'])['MerchantTaxRate']['id'];
+                }
+                
+                if (isset($data['has_variants']) && $data['has_variants'] == 0 && empty($data['parent_id'])) {
+                    unset($data['variant_option_one_name']);
+                    unset($data['variant_option_one_value']);
+                    unset($data['variant_option_two_name']);
+                    unset($data['variant_option_two_value']);
+                    unset($data['variant_option_three_name']);
+                    unset($data['variant_option_three_value']);
+                }
+
+                if (isset($data['stock_type']) && empty($data['stock_type'])) {
+                    $data['stock_type'] = "standard";
+                }
+                
+                //Step 1.5: Store the image file
+                if ($filename = $this->_uploadFile($id)) {
+                    $data['image'] = $filename;
+                    $data['image_large'] = $filename;
+                }
 
                 $this->MerchantProduct->id = $id;
                 $this->MerchantProduct->save(array('MerchantProduct' => $data));
@@ -654,10 +702,12 @@ class ProductController extends AppController {
                     unset($data['track_inventory']);
                     unset($data['stock_type']);
                     unset($data['is_active']);
-                    if($data['variant_option_two_name'] == '')
+                    if($data['variant_option_two_name'] == '') {
                         $data['variant_option_two_value'] = '';
-                    if($data['variant_option_three_name'] == '')
+                    }
+                    if($data['variant_option_three_name'] == '') {
                         $data['variant_option_three_value'] = '';
+                    }
                     if($data['has_variants'] == 0) {
                         foreach($variants as $variant) {
                             $this->MerchantProduct->delete($variant['MerchantProduct']['id']);
@@ -670,18 +720,29 @@ class ProductController extends AppController {
                         }
                     }
                 }
-
+                
                 $dataSource->commit();
 
-                $result['success'] = true;
-                $result['product_id'] = $id;
+                if ($this->request->is('ajax')) {
+                    $result['success'] = true;
+                    $result['product_id'] = $this->MerchantProduct->id;
+                } else {
+                    $this->redirect('/product/'.$id);
+                }
             } catch (Exception $e) {
                 $dataSource->rollback();
-                $result['message'] = $e->getMessage();
-                $result['data'] = $data;
+                if ($this->request->is('ajax')) {
+                    $result['message'] = $e->getMessage();
+                } else {
+                    $this->Session->setFlash($e->getMessage());
+                }
             }
-            $this->serialize($result);
-            return;
+            if ($this->request->is('ajax')) {
+                $this->serialize($result);
+                return;
+            } else {
+                $this->set('formData', $this->request->data);
+            }
         }
         
         $this->loadModel("productUom");

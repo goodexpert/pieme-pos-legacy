@@ -251,7 +251,7 @@
                         <div class="col-md-4 col-xs-12 col-sm-6 product clickable col-alpha col-omega" data-id="<?php echo $key_items[$product['product_id']]['MerchantProduct']['id'];?>" page="<?php echo $product['page'];?>" data-uom="<?php if(!empty($key_items[$product['product_id']]['ProductUom'])){echo $key_items[$product['product_id']]['ProductUom']['ProductUomCategory']['name'];}?>" data-symbol="<?php if(!empty($key_items[$product['product_id']]['ProductUom'])){echo $key_items[$product['product_id']]['ProductUom']['symbol'];}?>">
                             <div class="product-container">
                                 <div class="product-img">
-                                    <img src="img/<?php if($key_items[$product['product_id']]['MerchantProduct']['image'] == null){echo 'no-image.png';} else {echo $key_items[$product['product_id']]['MerchantProduct']['image'];}?>" alt="<?php echo $key_items[$product['product_id']]['MerchantProduct']['name'];?>">
+                                    <img src="<?php if($key_items[$product['product_id']]['MerchantProduct']['image'] == null){echo 'no-image.png';} else {echo $key_items[$product['product_id']]['MerchantProduct']['image'];}?>" alt="<?php echo $key_items[$product['product_id']]['MerchantProduct']['name'];?>">
                                 </div>
                                 <div class="product-info">
                                     <div class="product-name"><p><?=$key_items[$product['product_id']]['MerchantProduct']['name'];?></p></div>
@@ -829,25 +829,25 @@
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) --> 
 <!-- BEGIN CORE PLUGINS --> 
 <!--[if lt IE 9]>
-<script src="assets/global/plugins/respond.min.js"></script>
-<script src="assets/global/plugins/excanvas.min.js"></script> 
+<script src="/assets/global/plugins/respond.min.js"></script>
+<script src="/assets/global/plugins/excanvas.min.js"></script> 
 <![endif]--> 
-<script src="assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script> 
-<script src="assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script> 
+<script src="/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script> 
+<script src="/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script> 
 <!-- IMPORTANT! Load jquery-ui-1.10.3.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip --> 
-<script src="assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script> 
-<script src="assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script> 
-<script src="assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script> 
-<script src="assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script> 
-<script src="assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script> 
-<script src="assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script> 
-<script src="assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script> 
-<script src="assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script> 
+<script src="/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script> 
+<script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script> 
+<script src="/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script> 
+<script src="/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script> 
+<script src="/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script> 
+<script src="/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script> 
+<script src="/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script> 
+<script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script> 
 <!-- END CORE PLUGINS -->  
 <!-- END PAGE LEVEL PLUGINS --> 
 <!-- BEGIN PAGE LEVEL SCRIPTS --> 
-<script src="assets/global/scripts/metronic.js" type="text/javascript"></script> 
-<script src="assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
+<script src="/assets/global/scripts/metronic.js" type="text/javascript"></script> 
+<script src="/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
 <script src="/js/jquery.jqprint-0.3.js" type="text/javascript"></script>
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script src="/js/dpsclient.js" type="text/javascript"></script>

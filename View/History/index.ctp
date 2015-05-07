@@ -262,8 +262,8 @@
     </div>
     <!-- END CONTENT -->
 </div>
-<!-- VOID POPUP BOX -->
-<div class="confirmation-modal modal" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;">
+<!-- PAYMENT POPUP BOX -->
+<div class="confirmation-modal modal payment" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;">
   <div class="modal-dialog">
       <div class="modal-content">
           <div class="modal-header">
@@ -339,14 +339,35 @@
       </div>
   </div>
 </div>
-<!-- VOID POPUP BOX END -->
+<!-- PAYMENT POPUP BOX END -->
+<!-- SEND POPUP BOX -->
+<div class="confirmation-modal modal send" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <button type="button" class="confirm-close cancel" data-dismiss="modal" aria-hidden="true">
+              <i class="glyphicon glyphicon-remove"></i>
+              </button>
+              <h4 class="modal-title">Enter email address</h4>
+          </div>
+          <div class="modal-body">
+              <input type="text" name="email" id="email_address">
+          </div>
+          <div class="modal-footer">
+              <button class="cancel btn btn-primary" type="button" data-dismiss="modal">Cancel</button>
+              <button id="send_receipt" class="confirm btn btn-success" type="button" data-dismiss="modal">Send</button>
+          </div>
+      </div>
+  </div>
+</div>
+<!-- SEND POPUP BOX END -->
 <div class="fade in modal-backdrop" style="display: none;"></div>
 <!-- END CONTAINER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
 <!--[if lt IE 9]>
-<script src="assets/global/plugins/respond.min.js"></script>
-<script src="assets/global/plugins/excanvas.min.js"></script> 
+<script src="/assets/global/plugins/respond.min.js"></script>
+<script src="/assets/global/plugins/excanvas.min.js"></script> 
 <![endif]-->
 <script src="/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script>
 <script src="/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
@@ -470,7 +491,7 @@ jQuery(document).ready(function() {
     });
     
     $(".payment_action").click(function(){
-        $(".modal").show();
+        $(".payment").show();
         $(".modal-backdrop").show();
         
         $(".payment_action_amount").val($(this).parent().find(".total").text().split("$")[1]);
@@ -479,6 +500,26 @@ jQuery(document).ready(function() {
     $(".cancel").click(function(){
         $(".modal").hide();
         $(".modal-backdrop").hide();
+    });
+    $(".send_receipt").click(function(){
+        $(".send").show();
+        $(".modal-backdrop").show();
+    });
+    $("#send_receipt").click(function(){
+        $.ajax({
+            url: '/history/send_receipt',
+            type: 'POST',
+            data: {
+                to: $("#email_address").val(),
+                customer: 'John Doe',
+                item: 'NOTHING'
+            },
+            success: function(){
+                $("#email_address").val('');
+                $(".send").hide();
+                $(".modal-backdrop").hide();
+            }
+        });
     });
 });
 </script>

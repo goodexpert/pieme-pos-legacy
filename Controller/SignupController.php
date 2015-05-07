@@ -453,6 +453,8 @@ class SignupController extends AppController {
         $product1['MerchantProduct']['tax'] = $product1['MerchantProduct']['price'] * $rate['MerchantTaxRate']['rate'];
         $product1['MerchantProduct']['tax_id'] = $rate['MerchantTaxRate']['id'];
         $product1['MerchantProduct']['price_include_tax'] = $product1['MerchantProduct']['price'] + $product1['MerchantProduct']['tax'];
+        $product1['MerchantProduct']['image'] = "/img/no-image.png";
+        $product1['MerchantProduct']['image_large'] = "/img/no-image.png";
         $this->MerchantProduct->save($product1);
         $product1['MerchantProduct']['id'] = $this->MerchantProduct->id;
 
@@ -477,6 +479,8 @@ class SignupController extends AppController {
         $product2['MerchantProduct']['tax'] = $product2['MerchantProduct']['price'] * $rate['MerchantTaxRate']['rate'];
         $product2['MerchantProduct']['tax_id'] = $rate['MerchantTaxRate']['id'];
         $product2['MerchantProduct']['price_include_tax'] = $product2['MerchantProduct']['price'] + $product2['MerchantProduct']['tax'];
+        $product2['MerchantProduct']['image'] = "/img/no-image.png";
+        $product2['MerchantProduct']['image_large'] = "/img/no-image.png";
         $this->MerchantProduct->save($product2);
         $product2['MerchantProduct']['id'] = $this->MerchantProduct->id;
 

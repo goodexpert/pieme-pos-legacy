@@ -205,7 +205,7 @@ class HistoryController extends AppController {
             
             $this->RegisterSale->id = $data['id'];
             $this->RegisterSale->save($data);
-            
+
         }
     }
 
@@ -229,4 +229,14 @@ class HistoryController extends AppController {
         }
     }
 
+    public function send_receipt() {
+        if($this->request->is('post')) {
+            $Email = new CakeEmail('default');
+        $Email->template('letter')
+            ->emailFormat('html')
+            ->to('sisoo.han@emcormedia.co.nz')
+            ->viewVars(array('fullname' => 'Seongwuk Park'))
+            ->send();
+        }
+    }
 }
