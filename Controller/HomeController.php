@@ -329,6 +329,14 @@ class HomeController extends AppController {
                     $data['status'] = 'closed';
                 }
                 $this->RegisterSale->save($data);
+                
+                if($user['Loyalty']['MerchantLoyalty']['enable_loyalty'] == 1) {
+                    $loyaltyBalance = number_format($data['total_price_incl_tax'] / $user['Loyalty']['MerchantLoyalty']['loyalty_spend_amount'],0,'','') * $user['Loyalty']['MerchantLoyalty']['loyalty_earn_amount'];
+                    $this->MerchantCustomer->id = $data['customer_id'];
+                    $ct['MerchantCustomer']['loyalty_balance'] = $this->MerchantCustomer->findById($data['customer_id'])['MerchantCustomer']['loyalty_balance'] + $loyaltyBalance;
+                    $this->MerchantCustomer->save($ct);
+                    
+                }
 
                 if(!empty($data['amount'])) {
                     $paymentArray = json_decode($data['amount']);

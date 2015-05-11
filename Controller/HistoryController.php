@@ -23,7 +23,15 @@ class HistoryController extends AppController {
  *
  * @var array
  */
-    public $uses = array('MerchantProduct', 'RegisterSale', 'RegisterSaleItem', 'MerchantCustomer', 'MerchantUser', 'SaleStatus');
+    public $uses = array(
+        'MerchantProduct',
+        'RegisterSale',
+        'RegisterSaleItem',
+        'RegisterSalePayment',
+        'MerchantCustomer',
+        'MerchantUser',
+        'SaleStatus'
+    );
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -152,6 +160,20 @@ class HistoryController extends AppController {
                     'foreignKey' => 'sale_id'
                 )
             ),
+            'belongsTo' => array(
+                'MerchantCustomer' => array(
+                    'className' => 'MerchantCustomer',
+                    'foreignKey' => 'customer_id'
+                ),
+                'MerchantRegister' => array(
+                    'className' => 'MerchantRegister',
+                    'foreignKey' => 'register_id'
+                ),
+                'MerchantUser' => array(
+                    'className' => 'MerchantUser',
+                    'foreignKey' => 'user_id'
+                )
+            )
         ));
 
         $this->RegisterSale->recursive = 2;
@@ -237,6 +259,24 @@ class HistoryController extends AppController {
             ->to('sisoo.han@emcormedia.co.nz')
             ->viewVars(array('fullname' => 'Seongwuk Park'))
             ->send();
+        }
+    }
+    
+    public function add_register_sale_payments() {
+        $user = $this->Auth->user();
+        if($this->request->is('post')) {
+            $result = array(
+                'success' => flase
+            );
+            try {
+                $data = $this->request->data;
+                $this->RegisterSalePayment->create();
+                $this->RegisterSalePayment->save($data);
+                $result['success'] = true;
+            } catch (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+            $this->serialize($result);
         }
     }
 }

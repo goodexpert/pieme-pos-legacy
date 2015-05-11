@@ -79,15 +79,13 @@
                                     <input type="radio" value="<?php echo $plan['Plan']['id'];?>" data-outlet="<?php echo $plan['Plan']['limit_outlets'];?>" data-register="<?php echo $plan['Plan']['limit_registers'];?>" data-product="<?php echo $plan['Plan']['limit_products'];?>" data-customer="<?php echo $plan['Plan']['limit_customers'];?>" data-user="<?php echo $plan['Plan']['limit_users'];?>" name="account_plan" <?php if($authUser['Merchant']['plan_id'] == $plan['Plan']['id']){echo "checked";}?>> <lable for="account_plan"><?php echo $plan['Plan']['name'];?></lable>
                                 </div>
                                 <div class="col-md-12 col-sm-12 col-xs-12">
-                                    <div class="plan-price">
-                                        <?php
+                                    <div class="plan-price"><?php
                                             if($plan['Plan']['price'] > 0) {
                                                 echo "$".number_format($plan['Plan']['price'],2,'.',',');
                                             } else {
                                                 echo "FREE";
                                             }
-                                        ?>
-                                    </div>
+                                    ?></div>
                                     <span class="triangle-left"></span>
                                     <span class="triangle-right"></span>
                                 </div>
@@ -137,9 +135,20 @@
                     <?php } ?>
                 </div>
             </div>
+            
+            <div id="merchant_code_section" class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega margin-top-20" style="display: none;">
+                <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega line-box">
+                    <div class="col-md-3 col-sm-6 col-xs-6 margin-bottom-20">
+                        Merchant Code
+                        <input type="text" id="merchant_code">
+                        <button type="button" id="verify_merchant_code" class="btn btn-default">Verify</button>
+                        <input type="hidden" id="subscriber_id">
+                        <input type="hidden" id="parent_merchant_id">
+                    </div>
+                </div>
+            </div>
 
-            <h3>Enter payment Details</h3>
-            <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega line-box">
+            <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega line-box payment_details margin-top-20" style="display: none;">
                 <dl>
                     <dt>Credit card number</dt>
                     <dd><input type="text"></dd>
@@ -209,22 +218,33 @@
 
 <script src="/js/notify.js" type="text/javascript"></script>
 <script>
-jQuery(document).ready(function() {    
+jQuery(document).ready(function() {
     Metronic.init(); // init metronic core componets
     Layout.init(); // init layout
     QuickSidebar.init() // init quick sidebar
     Index.init();
-    
-    $(".plan-item").click(function(){
+
+    $(document).on("click", ".plan-item", function(){
         $(".plan-item").children(".plan-header").children(".radio").children("span").removeClass('checked');
         $(".plan-item").children(".plan-header").children(".radio").children("span").children("input[name=account_plan]").attr({'checked':false});
         $(".plan-item").removeClass("selected_plan");
         $(this).children(".plan-header").children(".radio").children("span").addClass('checked');
         $(this).children(".plan-header").children(".radio").children("span").children("input[name=account_plan]").attr({'checked':'checked'});
         $(this).addClass("selected_plan");
+
+        if($(this).find(".plan-price").text() !== "FREE") {
+	        $(".payment_details").show();
+        } else {
+	        $(".payment_details").hide();
+        }
+        if(RegExp("Franchise").test($(this).find("lable").text()) == true) {
+            $("#merchant_code_section").show();
+        } else {
+            $("#merchant_code_section").hide();
+        }
     });
-    
-    $(".save").click(function(){
+
+    $(document).on("click", ".save", function(){
         var plan = $("input[name=account_plan]:checked");
         if((plan.attr("data-product") < $("#total_product").text() && plan.attr("data-product") > 0) || (plan.attr("data-outlet") < $("#total_outlet").text() && plan.attr("data-outlet") > 0) || (plan.attr("data-register") < $("#total_register").text() && plan.attr("data-register") > 0) || (plan.attr("data-user") < $("#total_user").text() && plan.attr("data-user") > 0) || (plan.attr("data-customer") < $("#total_customer").text() && plan.attr("data-customer") > 0)) {
             $.confirm({
@@ -235,38 +255,85 @@ jQuery(document).ready(function() {
                 confirmButtonClass: "btn btn-success pull-right",
                 cancelButtonClass: "btn btn-primary margin-right-5",
                 confirm: function() {
+                    if(RegExp("franchise").test($("input[type='radio']:checked").attr("value")) == true) {
+                        if($(".success-message").length > 0) {
+                            $.ajax({
+                                url: '/account/update_plan.json',
+                                type: 'POST',
+                                data: {
+                                    plan_id: plan.val(),
+                                    subscriber_id: $("#subscriber_id").val(),
+                                    merchant_id: $("#parent_merchant_id").val()
+                                },
+                                success: function(result) {
+                                    if(result.success) {
+                                        alert("changed");
+                                        window.location.href = "/users/logout";
+                                    } else {
+                                        console.log(result);
+                                    }
+                                }
+                            });
+                        } else {
+                            alert("Please check the form");
+                        }
+                    } else {
+                        $.ajax({
+                            url: '/account/update_plan.json',
+                            type: 'POST',
+                            data: {
+                                plan_id: plan.val()
+                            },
+                            success: function(result) {
+                                if(result.success) {
+                                    alert("changed");
+                                } else {
+                                    console.log(result);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        } else {
+            if(RegExp("franchise").test($("input[type='radio']:checked").attr("value")) == true) {
+                if($(".success-message").length > 0) {
                     $.ajax({
                         url: '/account/update_plan.json',
                         type: 'POST',
                         data: {
-                            plan_id: plan.val()
+                            plan_id: plan.val(),
+                            subscriber_id: $("#subscriber_id").val(),
+                            merchant_id: $("#parent_merchant_id").val()
                         },
                         success: function(result) {
                             if(result.success) {
                                 alert("changed");
+                                window.location.href = "/users/logout";
                             } else {
                                 console.log(result);
                             }
                         }
                     });
+                } else {
+                    alert("Please check the form");
                 }
-            });
-        } else {
-            $.ajax({
-                url: '/account/update_plan.json',
-                type: 'POST',
-                data: {
-                    plan_id: plan.val()
-                },
-                success: function(result) {
-                    if(result.success) {
-                        alert("changed");
-                    } else {
-                        console.log(result);
+            } else {
+                $.ajax({
+                    url: '/account/update_plan.json',
+                    type: 'POST',
+                    data: {
+                        plan_id: plan.val()
+                    },
+                    success: function(result) {
+                        if(result.success) {
+                            alert("changed");
+                        } else {
+                            console.log(result);
+                        }
                     }
-                }
-            });
-            console.log(plan.val());
+                });
+            }
         }
     });
     
@@ -275,6 +342,31 @@ jQuery(document).ready(function() {
         $(this).addClass("active");
         $(".plan-item").parent().addClass("hidden");
         $("." + $(this).attr("target")).removeClass("hidden");
+    });
+    
+    $("#verify_merchant_code").click(function(){
+        $("#merchant_code").removeClass("incorrect");
+        $(".message").remove();
+        $('<h5 class="message">verifying...</h5>').insertAfter($("#merchant_code"));
+        $.ajax({
+            url: '/users/check_exist.json',
+            type: 'POST',
+            data: {
+                merchant_code: $("#merchant_code").val()
+            },
+            success: function(result) {
+                $(".message").remove();
+                if(result.success) {
+                    $("#merchant_code").attr({disabled:'disabled'});
+                    $("#subscriber_id").val(result.subscriber_id);
+                    $("#parent_merchant_id").val(result.merchant_id);
+                    $('<h5 class="message success-message">'+result.store_name+'</h5>').insertAfter($("#merchant_code"));
+                } else {
+                    $("#merchant_code").addClass("incorrect");
+                    $('<h5 class="message incorrect-message"><i class="glyphicon glyphicon-remove-circle margin-right-5"></i>Incorrect code.</h5>').insertAfter($("#merchant_code"));
+                }
+            }
+        });
     });
 });
 </script>

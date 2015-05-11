@@ -42,10 +42,12 @@ class AccountController extends AppController {
         $this->loadModel("MerchantUser");
         $this->loadModel("MerchantProduct");
         $this->loadModel("MerchantCustomer");
-        
-        $plans = $this->Plan->find('all');
+
+        $plans = $this->Plan->find('all', array(
+            'order' => array('Plan.price ASC')
+        ));
         $this->set('plans',$plans);
-        
+
         $outletCriteria = array();
         $userCriteria = array();
         if(empty($user['retailer_id'])) {
@@ -94,18 +96,30 @@ class AccountController extends AppController {
         $this->loadModel("Merchant");
         $this->loadModel("Retailer");
         $this->loadModel("Plan");
+        $this->loadModel("MerchantUser");
         $user = $this->Auth->user();
-        
+
         if($this->request->is('post')) {
-            
             $result = array(
                 'success' => false
             );
             try {
                 $data = $this->request->data;
                 if(empty($user['retailer_id'])){
-                    $this->Merchant->id = $user['merchant_id'];
-                    $this->Merchant->save($data);
+                    if(strpos($data['plan_id'],"franchise") !== false && strpos($data['plan_id'],"hq") == false) {
+                        $this->Retailer->create();
+                        $this->Retailer->save($data);
+
+                        //$this->Merchant->delete($user['merchant_id']);
+
+                        $this->MerchantUser->id = $user['id'];
+                        $userData['MerchantUser']['merchant_id'] = $data['merchant_id'];
+                        $userData['MerchantUser']['retailer_id'] = $this->Retailer->id;
+                        $this->MerchantUser->save($userData);
+                    } else {
+                        $this->Merchant->id = $user['merchant_id'];
+                        $this->Merchant->save($data);
+                    }
                 } else {
                     $this->Retailer->id = $user['retailer_id'];
                     $this->Retailer->save($data);

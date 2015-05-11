@@ -36,7 +36,7 @@
   <div class="page-content-wrapper">
     <div class="page-content">
         <div id="notify" class="hidden col-lg-12 col-md-12 col-sm-12">
-            <div class="notify-content"><p>Changed information well!!!!!!</p></div>
+            <div class="notify-content"><p>Setup has been changed. Please login again to your account.</p></div>
         </div>
       <div class="col-md-12 col-xs-12 col-sm-12"><h3>General Setup</h3></div>
       <div class="portlet-body form"> 

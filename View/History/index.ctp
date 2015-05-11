@@ -226,13 +226,17 @@
                                         </ul>
                                         <div class="solid-line"></div>
                                         <ul class="receipt-text">
-                                            <?php foreach($sale['RegisterSalePayment'] as $payment) { ?>
+                                            <?php
+                                            $balance = 0;
+                                            foreach($sale['RegisterSalePayment'] as $payment) {
+                                                $balance += $payment['amount'];
+                                            ?>
                                             <li class="col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
                                                 <?php echo $payment['MerchantPaymentType']['name'];?>
                                             </li>
                                             <li class="pull-right col-md-5 col-xs-5 col-sm-5 col-omega" style="text-align:right;">
                                                 <div>
-                                                    <?='$'.number_format($payment['amount'],2,'.',',');?>
+                                                    <?php echo number_format($payment['amount'],2,'.',',');?>
                                                     <div class="glyphicon glyphicon-remove clickable"></div>
                                                 </div>
                                             </li>
@@ -241,6 +245,16 @@
                                         <div class="dashed-line-gr"></div>
                                         <button type="button" class="btn btn-default pull-right payment_action">Apply payment / refund</button>
                                         <div class="solid-line"></div>
+                                        <ul class="receipt-text">
+                                            <li class="col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
+                                                Balance
+                                            </li>
+                                            <li class="col-md-5 col-xs-5 col-sm-5 col-omega" style="text-align:right;">
+                                                <?php
+                                                $balance = number_format($balance,2,'.',',');
+                                                if($balance < 0){echo '-$'.$balance;} else {echo '$'.$balance;}?>
+                                            </li>
+                                        </ul>
                                     </div>
                                     <div class="receipt-bt"></div>
                                 </div>
@@ -291,6 +305,7 @@
                   </div>
                   <div class="col-md-8">
                       <input type="text" class="payment_action_amount">
+                      To add a refund, enter a negative amount
                   </div>
               </div>
               <div class="col-md-12 col-alpha col-omega">
@@ -298,6 +313,7 @@
                       Payment date
                   </div>
                   <div class="col-md-8">
+                      <span class="glyphicon glyphicon-calendar icon-calendar"></span>
                       <input type="text" class="payment_action_date">
                   </div>
               </div>
@@ -334,7 +350,7 @@
           </div>
           <div class="modal-footer">
               <button class="cancel btn btn-primary" type="button" data-dismiss="modal">Cancel</button>
-              <button class="confirm btn btn-success" type="button" data-dismiss="modal">Save</button>
+              <button id="apply_payment_refund" class="confirm btn btn-success" type="button" data-dismiss="modal">Save</button>
           </div>
       </div>
   </div>
@@ -495,6 +511,7 @@ jQuery(document).ready(function() {
         $(".modal-backdrop").show();
         
         $(".payment_action_amount").val($(this).parent().find(".total").text().split("$")[1]);
+        $("#apply_payment_refund").attr({sale_id : $(this).parents(".expandable-child").attr("data-parent-id")});
     });
     
     $(".cancel").click(function(){
@@ -518,6 +535,33 @@ jQuery(document).ready(function() {
                 $("#email_address").val('');
                 $(".send").hide();
                 $(".modal-backdrop").hide();
+            }
+        });
+    });
+    $("#apply_payment_refund").click(function(){
+        var payment_type = $(".payment_action_type").val();
+        var paymet_amount = $(".payment_action_amount").val();
+        var register_id = $(".payment_action_register").val();
+        var payment_date = $(".payment_action_date").val() +' '+ $(".payment_action_h").val() +':'+ $(".payment_action_m").val();
+        var sale_id = $(this).attr("sale_id");
+        
+        $.ajax({
+            url: '/history/add_register_sale_payments.json',
+            type: 'POST',
+            data: {
+                sale_id: sale_id,
+                merchant_payment_type_id: payment_type,
+                amount: paymet_amount,
+                payment_date: payment_date,
+                sequence: 999
+            },
+            success: function(result) {
+                if(result.success) {
+                    $(".modal").hide();
+                    $(".modal-backdrop").hide();
+                } else {
+                    console.log(result);
+                }
             }
         });
     });

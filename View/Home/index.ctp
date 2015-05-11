@@ -110,6 +110,7 @@
   <!-- BEGIN CONTENT -->
   <div class="page-content-wrapper">
     <div class="page-content" id="sell-index">
+      <input type="hidden" id="discount_auth" value="<?php echo $authUser['Merchant']['allow_cashier_discount'];?>">
       <div class="maximum">
           <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-top-30">
              <button class="btn btn-white maxi pull-right"><i class="icon-size-fullscreen"></i></button>
@@ -199,7 +200,7 @@
                 <div class="col-md-12 col-xs-12 col-sm-12 buttons col-alpha col-omega">
                   <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha"><button id="park" class="btn btn-primary">Park</button></div>
                   <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha"><button class="btn btn-primary void">VOID</button></div>
-                  <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha"><button class="btn btn-primary discount">Discount</button></div>
+                  <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha"><button class="btn btn-primary discount" <?php if($authUser['Merchant']['allow_cashier_discount'] == 0){echo "disabled";}?>>Discount</button></div>
                 </div>
             </div>
 
@@ -251,7 +252,7 @@
                         <div class="col-md-4 col-xs-12 col-sm-6 product clickable col-alpha col-omega" data-id="<?php echo $key_items[$product['product_id']]['MerchantProduct']['id'];?>" page="<?php echo $product['page'];?>" data-uom="<?php if(!empty($key_items[$product['product_id']]['ProductUom'])){echo $key_items[$product['product_id']]['ProductUom']['ProductUomCategory']['name'];}?>" data-symbol="<?php if(!empty($key_items[$product['product_id']]['ProductUom'])){echo $key_items[$product['product_id']]['ProductUom']['symbol'];}?>">
                             <div class="product-container">
                                 <div class="product-img">
-                                    <img src="<?php if($key_items[$product['product_id']]['MerchantProduct']['image'] == null){echo 'no-image.png';} else {echo $key_items[$product['product_id']]['MerchantProduct']['image'];}?>" alt="<?php echo $key_items[$product['product_id']]['MerchantProduct']['name'];?>">
+                                    <img src="<?php if($key_items[$product['product_id']]['MerchantProduct']['image'] == null){echo '/img/no-image.png';} else {echo $key_items[$product['product_id']]['MerchantProduct']['image'];}?>" alt="<?php echo $key_items[$product['product_id']]['MerchantProduct']['name'];?>">
                                 </div>
                                 <div class="product-info">
                                     <div class="product-name"><p><?=$key_items[$product['product_id']]['MerchantProduct']['name'];?></p></div>
@@ -856,7 +857,7 @@
 <script>
 jQuery(document).ready(function() {
     Metronic.init(); // init metronic core componets
-    Layout.init(); // init layout
+    //Layout.init(); // init layout
     /**
      *    Retrieve Sale
      **/
@@ -1544,16 +1545,9 @@ $(document).ready(function(){
         $(".mini").show();
         return false;
     });
-    $(".mini").confirm({
-        text:"Exit full screen?",
-        confirm: function(button){
-            $.fullscreen.exit();
-            return false;
-        },
-        cancel: function(button){
-        },
-        confirmButton: "Exit",
-        cancelButton: "Cancel"
+    $(".mini").click(function(){
+        $.fullscreen.exit();
+        return false;
     });
     $(document).bind('fscreenchange', function(e, state, elem) {
         if (!$.fullscreen.isFullScreen()) {
@@ -1595,8 +1589,6 @@ $(document).ready(function(){
         window.addEventListener('resize', handleWindowResize);
         handleWindowResize();
     }
-
-
 });
 
 function handleWindowResize() {
@@ -1932,23 +1924,24 @@ $(document).on("click","#set-unit-price-all",function(){
 
 
 $(document).on("click",".price-control",function(event){
-    $(".price-form").attr({"data-id":$(this).attr("data-id")});
-    if(($(this).position().top + 136) == $(".price_block").position().top){
-        $(".price_block").hide();
-        $(".price_block").removeClass("price_block_active");
-    } else if(($(this).position().top + 135) == $(".price_block").position().top){
-        $(".price_block").hide();
-        $(".price_block").removeClass("price_block_active");
-    } else {
-        $(".price_block").show();
-        $(".qty_block").hide();
-        $(".numpad_text").focus();
-        $(".numpad_text").val("");
-        $(".price_block").addClass("price_block_active");
+    if($("#discount_auth").val() == 1) {
+        $(".price-form").attr({"data-id":$(this).attr("data-id")});
+        if(($(this).position().top + 136) == $(".price_block").position().top){
+            $(".price_block").hide();
+            $(".price_block").removeClass("price_block_active");
+        } else if(($(this).position().top + 135) == $(".price_block").position().top){
+            $(".price_block").hide();
+            $(".price_block").removeClass("price_block_active");
+        } else {
+            $(".price_block").show();
+            $(".qty_block").hide();
+            $(".numpad_text").focus();
+            $(".numpad_text").val("");
+            $(".price_block").addClass("price_block_active");
         if($(".price_block").hasClass("numpad_active")){
-
+            
             if($(this).position().top < 120){
-
+                
                 $(".price_block").position({
                     my: "left+70 bottom+61",
                     of: $(this),
@@ -1956,71 +1949,77 @@ $(document).on("click",".price-control",function(event){
                         $( this ).animate( position );
                     }
                 });
-
+                
+                } else {
+                    $(".price_block").position({
+                        my: "left+70 bottom+325",
+                        of: $(this),
+                        using: function( position ) {
+                            $( this ).animate( position );
+                        }
+                    });
+                    
+                }
             } else {
-
                 $(".price_block").position({
-                    my: "left+70 bottom+325",
+                    my: "left+70 bottom+110",
                     of: $(this),
                     using: function( position ) {
                         $( this ).animate( position );
                     }
                 });
-
             }
-        } else {
-            $(".price_block").position({
-                my: "left+70 bottom+110",
-                of: $(this),
-                using: function( position ) {
-                    $( this ).animate( position );
-                }
-            });
         }
+    } else {
+        alert("You are not authorized to perform this action!");
     }
 });
 
 $(document).on("click",".qty-control",function(event){
-    $(".qty-form").attr({"data-id":$(this).attr("qty-id")});
-    if(($(this).position().top + 169) == $(".qty_block").position().top){
-        $(".qty_block").hide();
-        $(".qty_block").removeClass("qty_block_active");
-    } else if(($(this).position().top + 171) == $(".qty_block").position().top){
-        $(".qty_block").hide();
-        $(".qty_block").removeClass("qty_block_active");
-    } else {
-        $(".qty_block").show();
-        $(".price_block").hide();
-        $(".numpad_text").focus();
-        $(".numpad_text").val("");
-        $(".qty_block").addClass("qty_block_active");
-        if($(".qty_block").hasClass("numpad_active")){
-            if($(this).position().top < 80){
-                $(".qty_block").position({
-                    my: "left+32 bottom+25",
-                    of: $(this),
-                    using: function( position ) {
-                        $( this ).animate( position );
-                    }
-                });
+    if($("#discount_auth").val() == 1) {
+        $(".qty-form").attr({"data-id":$(this).attr("qty-id")});
+        if(($(this).position().top + 169) == $(".qty_block").position().top){
+            $(".qty_block").hide();
+            $(".qty_block").removeClass("qty_block_active");
+        } else if(($(this).position().top + 171) == $(".qty_block").position().top){
+            $(".qty_block").hide();
+            $(".qty_block").removeClass("qty_block_active");
+        } else {
+            $(".qty_block").show();
+            $(".price_block").hide();
+            $(".numpad_text").focus();
+            $(".numpad_text").val("");
+            $(".qty_block").addClass("qty_block_active");
+            if($(".qty_block").hasClass("numpad_active")){
+                if($(this).position().top < 80){
+                    $(".qty_block").position({
+                        my: "left+32 bottom+25",
+                        of: $(this),
+                        using: function( position ) {
+                            $( this ).animate( position );
+                        }
+                    });
+                } else {
+                    $(".qty_block").position({
+                        my: "left+32 bottom+289",
+                        of: $(this),
+                        using: function( position ) {
+                            $( this ).animate( position );
+                        }
+                    });
+                }
             } else {
                 $(".qty_block").position({
-                    my: "left+32 bottom+289",
+                    my: "left+32 bottom+71",
                     of: $(this),
                     using: function( position ) {
                         $( this ).animate( position );
                     }
                 });
             }
-        } else {
-            $(".qty_block").position({
-                my: "left+32 bottom+71",
-                of: $(this),
-                using: function( position ) {
-                    $( this ).animate( position );
-                }
-            });
         }
+    } else {
+        alert("You are not authorized to perform this action!");
     }
 });
 
@@ -2049,7 +2048,7 @@ $(document).on("click",".discount",function(event){
             });
         } else {
             $(".discount_block").position({
-                my: "left-83 bottom+155",
+                my: "left-83 bottom-45",
                 of: $(this),
                 using: function( position ) {
                     $( this ).animate( position );

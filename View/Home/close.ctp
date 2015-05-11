@@ -137,6 +137,11 @@
                             <td>New</td>
                             <td>$<?=number_format($open['MerchantRegisterOpen']['total_new_payments'],2,'.','');?></td>
                         </tr>
+                        <tr style="border-top:4px double black;">
+                        	<th>Total Transaction Count</th>
+                        	<th></th>
+                        	<th><?php if(empty($payments)){echo 0;} else {echo count($payments);}?></th>
+                        </tr>
                     </table>
                     
                 </div>

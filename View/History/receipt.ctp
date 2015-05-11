@@ -74,8 +74,8 @@
                         <div class="dashed-line-gr"></div>
                         <div class="receipt-body">
                             <div class="receipt-body-customer">
-                                <?php if($sales['RegisterSale']['customer_id'] !== null){ ?>
-                                <span class="receipt-customer-name">customer name</span><br>
+                                <?php if($sales['MerchantCustomer']['customer_code'] !== 'walkin'){ ?>
+                                	<span class="receipt-customer-name"><?php echo $sales['MerchantCustomer']['customer_code'];?></span><br>
                                 <?php } ?>
                                 <span class="receupt-customer-region">New Zealand</span>
                             </div>
@@ -85,7 +85,7 @@
                             <div class="receipt-body-info">
                                 Invoice #: <?php echo $sales['RegisterSale']['receipt_number'];?><br>
                                 <span class="invoice-date"><?=$sales['RegisterSale']['sale_date'];?></span><br>
-                                Served by: sales person on register: Register
+                                Served by: <?php echo $sales['MerchantUser']['display_name'];?> on <?php echo $sales['MerchantRegister']['name'];?>
                             </div>
                             <div class="dashed-line-gr"></div>
                             <div class="col-md-12 col-xs-12 col-sm-12 col-omega col-alpha receipt-body-sales">
@@ -110,7 +110,7 @@
                                     </tr>
                                     <tr>
                                         <th>TOTAL</th>
-                                        <td class="total-amount receipt-total pull-right">$<?=number_format($sales['RegisterSale']['total_cost'],2,'.',',');?></td>
+                                        <td class="total-amount receipt-total pull-right">$<?=number_format($sales['RegisterSale']['total_price_incl_tax'],2,'.',',');?></td>
                                     </tr>
                                 </table>
                             </div>
