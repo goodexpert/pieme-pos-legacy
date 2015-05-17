@@ -279,4 +279,34 @@ class UsersController extends AppController {
         }
     }
 
+/**
+ * Check the merchant code.
+ *
+ * @return void
+ */
+    public function check_exist() {
+        $result = array(
+            'success' => false
+        );
+
+        if ($this->request->is('post') || $this->request->is('ajax')) {
+            $this->loadModel('Merchant');
+
+            try {
+                $data = $this->request->data;
+                $merchant = $this->Merchant->findByMerchantCode($data);
+
+                if (!empty($merchant) && is_array($merchant)) {
+                    $result['success'] = true;
+                    $result['merchant_id'] = $merchant['Merchant']['id'];
+                    $result['store_name'] = $merchant['Merchant']['name'];
+                    $result['subscriber_id'] = $merchant['Merchant']['subscriber_id'];
+                }
+            } catch (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+        }
+        $this->serialize($result);
+    }
+
 }
