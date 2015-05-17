@@ -216,7 +216,10 @@
  *
  */
 	Configure::write('Session', array(
-		'defaults' => 'php'
+        'defaults' => 'php',
+        'timeout' => 10,
+        'cookieTimeout' => 1440,
+        'checkAgent' => false
 	));
 
 /**

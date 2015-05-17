@@ -40,6 +40,11 @@ class OutletController extends AppController {
         parent::beforeFilter();
     }
 
+/**
+ * Index function.
+ *
+ * @return void
+ */
     public function index() {
         $user = $this->Auth->user();
         

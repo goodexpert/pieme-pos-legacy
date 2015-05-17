@@ -1,16 +1,20 @@
 /***
-Dashboard stats
+Dashboard Stats
 ***/
 
 @mixin dashboard-stat-variant($name, $bg-color, $text-color) {
     &.#{$name} {
         background-color: $bg-color;  
 
+        &.dashboard-stat-light:hover {
+            background-color: darken($bg-color, 4%);            
+        }
+
         .visual {
             > i { 
                 color: $text-color;
-                opacity: 0.3;
-                filter: alpha(opacity=30); 
+                opacity: 0.1;
+                filter: alpha(opacity=10); 
             }
         }
 
@@ -21,8 +25,8 @@ Dashboard stats
 
             .desc {
                 color: $text-color; 
-                opacity: 0.8;
-                filter: alpha(opacity=80);    
+                opacity: 1;
+                filter: alpha(opacity=100);    
             }              
         }
 
@@ -34,8 +38,11 @@ Dashboard stats
 }
 
 .dashboard-stat {
+    display: block;
     margin-bottom: 25px;
     overflow: hidden;
+
+    @include border-radius($general-border-radius);  
 
     @include clearfix();
 
@@ -55,7 +62,7 @@ Dashboard stats
         line-height: 35px; 
 
         > i {
-            margin-left: -27px;  
+            margin-left: -35px;  
             font-size: 110px; 
             line-height: 110px;  
         }
@@ -107,8 +114,102 @@ Dashboard stats
             float: right;
         }
     }  
+}
 
-    //@include dashboard-stat-variant("green", $metronic-green, $metronic-green-text);
+.dashboard-stat-light {
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+
+    .details {
+        margin-bottom: 5px;
+
+        .number {
+            font-weight: 300;
+            margin-bottom: 0px;
+        }
+    }
+}
+
+/***
+Dashboard Stats 2
+***/
+
+.dashboard-stat2 {
+    @include border-radius($general-border-radius);
+    background: #fff;
+    padding: 15px 15px 30px 15px; 
+    margin-bottom: 20px;  
+
+    .display {
+        @include clearfix();
+        margin-bottom: 20px;
+
+        .number {
+            float: left;
+            display: inline-block;
+            
+            h3 {
+                margin: 0 0 2px 0;  
+                padding: 0;
+                font-size: 30px;
+                font-weight: 400;
+
+                > small {
+                    font-size: 23px;
+                }
+            }
+
+            small {
+                font-size: 14px;
+                color: #AAB5BC;
+                font-weight: 600; 
+                text-transform: uppercase;
+            }
+
+        }
+
+        .icon {
+            display: inline-block;
+            float: right;
+            padding: 7px 0 0 0;
+
+            > i {
+                color: #cbd4e0;
+                font-size: 26px;
+            }
+        }  
+    }
+
+    .progress-info {
+        clear:both;
+
+        .progress { 
+            margin: 0;        
+            height: 4px;
+            clear:both;
+            display: block; 
+        }
+
+        .status {
+            margin-top: 5px;
+            font-size: 11px;
+            color: #AAB5BC;
+            font-weight: 600; 
+            text-transform: uppercase;
+
+            .status-title {
+                float: left;
+                display: inline-block;
+            }
+
+            .status-number {
+                float: right;
+                display: inline-block;
+            }
+        }
+    }
+
+    
 }
 
 /***
@@ -123,8 +224,7 @@ Text Stats
     }
 
     span {
-        font-size: 12px;
-        text-transform: uppercase;
+        font-size: 13px !important;
     }
 }
 

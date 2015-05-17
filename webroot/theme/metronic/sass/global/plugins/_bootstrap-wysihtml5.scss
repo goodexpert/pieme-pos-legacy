@@ -19,13 +19,13 @@ wysihtml5
 Error state for WYSIWYG Editors
 ***/
 .has-error .wysihtml5-sandbox {
-  border: 1px solid $brand-danger !important;
+  border: 1px solid $state-danger-border !important;
 }
 
 .has-success .wysihtml5-sandbox {
-  border: 1px solid $brand-success !important;
+  border: 1px solid $state-success-border !important;
 }
 
 .has-warning .wysihtml5-sandbox {
-  border: 1px solid $brand-warning !important;
+  border: 1px solid $state-warning-border !important;
 }

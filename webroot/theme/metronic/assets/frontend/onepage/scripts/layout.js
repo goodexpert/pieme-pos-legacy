@@ -1,12 +1,12 @@
 var Layout = function () {
     var isMobileDevice = function() {
-        return (
-            navigator.userAgent.match(/Android/i) || 
-            navigator.userAgent.match(/BlackBerry/i) || 
-            navigator.userAgent.match(/iPhone|iPad|iPod/i) || 
-            navigator.userAgent.match(/Opera Mini/i) || 
+        return  ((
+            navigator.userAgent.match(/Android/i) ||
+            navigator.userAgent.match(/BlackBerry/i) ||
+            navigator.userAgent.match(/iPhone|iPad|iPod/i) ||
+            navigator.userAgent.match(/Opera Mini/i) ||
             navigator.userAgent.match(/IEMobile/i)
-        );
+        ) ? true : false);
     }
 
     var WindowWidth = $(window).width();
@@ -49,9 +49,15 @@ var Layout = function () {
         };
 
         headerFix();// call headerFix() when the page was loaded
-        $(window).scroll(function() {
-            headerFix();// call headerFix() when the page was scrolled
-        });
+        if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
+            $(window).bind("touchend touchcancel touchleave", function(e){
+                headerFix();
+            });
+        } else {
+            $(window).scroll(function() {
+                headerFix();
+            });
+        }
     }
 
     var handleGo2Top = function () {       
@@ -65,9 +71,15 @@ var Layout = function () {
         };
 
         Go2TopOperation();// call headerFix() when the page was loaded
-        $(window).scroll(function() {
-            Go2TopOperation();// call headerFix() when the page was scrolled
-        });
+        if (navigator.userAgent.match(/iPhone|iPad|iPod/i)) {
+            $(window).bind("touchend touchcancel touchleave", function(e){
+                Go2TopOperation();
+            });
+        } else {
+            $(window).scroll(function() {
+                Go2TopOperation();
+            });
+        }
     }
 
     function handleBootstrap() {
@@ -190,6 +202,14 @@ var Layout = function () {
             setColor(color);
             $('.inline li', panel).removeClass("current");
             $(this).addClass("current");
+        });
+
+        $('.color-panel .menu-pos').change(function(){
+            if ($(this).val() == "top") {
+                $('body').addClass("menu-always-on-top");
+            } else {
+                $('body').removeClass("menu-always-on-top");
+            }
         });
     }
 

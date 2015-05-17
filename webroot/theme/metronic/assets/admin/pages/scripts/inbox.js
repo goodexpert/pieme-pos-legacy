@@ -28,7 +28,9 @@ var Inbox = function () {
 
                 loading.hide();
                 content.html(res);
-                Layout.fixContentHeight();
+                if (Layout.fixContentHeight) {
+                    Layout.fixContentHeight();
+                }
                 Metronic.initUniform();
             },
             error: function(xhr, ajaxOptions, thrownError)
@@ -154,8 +156,9 @@ var Inbox = function () {
     }
 
     var loadReply = function (el) {
-        var url = 'inbox_reply.html';
-
+        var messageid = $(el).attr("data-messageid");
+        var url = 'inbox_reply.html?messageid=' + messageid;
+        
         loading.show();
         content.html('');
         toggleButton(el);
@@ -193,7 +196,7 @@ var Inbox = function () {
     }
 
     var loadSearchResults = function (el) {
-        var url = 'inbox_search_result.html';
+        var url = 'inbox_inbox.html';
 
         loading.show();
         content.html('');

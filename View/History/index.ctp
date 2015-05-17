@@ -1,9 +1,6 @@
 <link href="/css/dataTable.css" rel="stylesheet" type="text/css">
-
-<div class="clearfix">
-</div>
-<!-- BEGIN CONTAINER -->
-<div class="page-container">
+<div class="clearfix"></div>
+<div class="container">
     <!-- BEGIN SIDEBAR -->
     <div class="page-sidebar-wrapper">
         <!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
@@ -118,14 +115,14 @@
                  </div>
             </form>
             <table id="historyTable" class="table table-striped table-bordered dataTable">
-            	<colgroup>
-                	<col width="10%">
-                	<col width="15%">
-                	<col width="15%">
-                	<col width="10%">
-                	<col width="15%">
-                	<col width="15%">
-                	<col width="20%">
+                <colgroup>
+                    <col width="10%">
+                    <col width="15%">
+                    <col width="15%">
+                    <col width="10%">
+                    <col width="15%">
+                    <col width="15%">
+                    <col width="20%">
                 </colgroup>
                 <thead>
                 <tr>
@@ -226,11 +223,11 @@
                                         </ul>
                                         <div class="solid-line"></div>
                                         <ul class="receipt-text">
-                                            <?php
+                                        <?php
                                             $balance = 0;
                                             foreach($sale['RegisterSalePayment'] as $payment) {
                                                 $balance += $payment['amount'];
-                                            ?>
+                                         ?>
                                             <li class="col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
                                                 <?php echo $payment['MerchantPaymentType']['name'];?>
                                             </li>
@@ -355,8 +352,7 @@
       </div>
   </div>
 </div>
-<!-- PAYMENT POPUP BOX END -->
-<!-- SEND POPUP BOX -->
+<!-- BEGIN POPUP BOX -->
 <div class="confirmation-modal modal send" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;">
   <div class="modal-dialog">
       <div class="modal-content">
@@ -376,43 +372,38 @@
       </div>
   </div>
 </div>
-<!-- SEND POPUP BOX END -->
 <div class="fade in modal-backdrop" style="display: none;"></div>
-<!-- END CONTAINER -->
+<!-- END POPUP BOX -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
 <!--[if lt IE 9]>
-<script src="/assets/global/plugins/respond.min.js"></script>
-<script src="/assets/global/plugins/excanvas.min.js"></script> 
+<script src="/theme/onzsa/assets/global/plugins/respond.min.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/excanvas.min.js"></script> 
 <![endif]-->
-<script src="/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
 <!-- IMPORTANT! Load jquery-ui-1.10.3.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
-<script src="/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
 <!-- END CORE PLUGINS -->
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
-<script src="/assets/global/scripts/metronic.js" type="text/javascript"></script>
-<script src="/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
-<script src="/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
-<script src="/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
-<script src="/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
-
-<!-- END PAGE LEVEL SCRIPTS -->
-
+<script src="/theme/onzsa/assets/global/scripts/metronic.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <script src="/js/dataTable.js" type="text/javascript"></script>
+<!-- END PAGE LEVEL SCRIPTS -->
 <script>
 jQuery(document).ready(function() {    
     Metronic.init(); // init metronic core componets
     Layout.init(); // init layout
-    QuickSidebar.init() // init quick sidebar
     Index.init();
     
     $("#date_from").datepicker({ dateFormat: 'yy-mm-dd' });

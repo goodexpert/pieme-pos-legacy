@@ -17,6 +17,7 @@ Social Icons
         text-indent:-9999px;
 
         > a {
+            @include border-radius(2px);
             width:28px;
             height:28px;
             display:block;
@@ -27,11 +28,19 @@ Social Icons
             -ms-transition: all 0.3s ease-in-out;
             -moz-transition: all 0.3s ease-in-out;
             -webkit-transition: all 0.3s ease-in-out;
+
+            @if $theme-type == "material-design" { 
+                @extend .md-shadow-z-1;
+            }
         }
 
         &:hover {
             > a {
                 background-position:0 -38px;
+
+                @if $theme-type == "material-design" { 
+                    @extend .md-shadow-z-2-hover; 
+                }
             }
         }
 
@@ -80,9 +89,25 @@ Social Icons
                 opacity: 0.7;
                 background-position:0 -38px !important;
 
+                @if $theme-type == "material-design" { 
+                    @extend .md-shadow-z-1;
+                }
+
                 &:hover {
                     opacity: 1;
+                    
+                    @if $theme-type == "material-design" { 
+                        @extend .md-shadow-z-2-hover;
+                    }
                 }
+            }
+        }
+    }
+
+    &.social-icons-circle {
+        > li {
+            > a {
+                border-radius: 25px !important;
             }
         }
     }
@@ -99,11 +124,16 @@ Inline Social Icons
     height:28px;
     background-position:0 0;
     background-repeat:no-repeat;
+    @include border-radius(2px);
     transition: all 0.3s ease-in-out;
     -o-transition: all 0.3s ease-in-out;
     -ms-transition: all 0.3s ease-in-out;
     -moz-transition: all 0.3s ease-in-out;
     -webkit-transition: all 0.3s ease-in-out;
+
+    &.social-icon-circle {
+        border-radius: 25px !important;
+    }
 }
 
 .social-icon {

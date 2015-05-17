@@ -19,11 +19,18 @@ class PricebookController extends AppController {
     public $layout = 'home';
 
 /**
- * This controller uses MerchantProduct, MerchantPriceBook and MerchantPriceBookEntry models.
+ * This controller uses the following models.
  *
  * @var array
  */
-    public $uses = array('MerchantProduct', 'MerchantTaxRate', 'MerchantOutlet', 'MerchantPriceBook', 'MerchantPriceBookEntry', 'MerchantCustomerGroup');
+    public $uses = array(
+        'MerchantCustomerGroup',
+        'MerchantOutlet',
+        'MerchantProduct',
+        'MerchantPriceBook',
+        'MerchantPriceBookEntry',
+        'MerchantTaxRate'
+    );
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -34,8 +41,12 @@ class PricebookController extends AppController {
         parent::beforeFilter();
     }
 
+/**
+ * Index function.
+ *
+ * @return void
+ */
     public function index() {
-    
         $this->MerchantPriceBook->bindModel(array(
             'belongsTo' => array(
                 'MerchantCustomerGroup' => array(

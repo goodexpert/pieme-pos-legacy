@@ -20,19 +20,19 @@ class UsersController extends AppController {
     public $layout = 'home';
 
 /**
- * This controller uses MerchantUser, MerchantUserType, MerchantRegister and MerchantOutlet models.
+ * This controller uses the following models.
  *
  * @var array
  */
     public $uses = array(
         'MerchantUser',
-        'Retailer',
+        'MerchantRetailer',
         'MerchantUserType',
         'MerchantOutlet',
         'MerchantRegister',
         'MerchantLoyalty',
-        'Subscriber',
-        'Plan'
+        'Plan',
+        'Subscriber'
     );
 
 /**
@@ -42,103 +42,7 @@ class UsersController extends AppController {
  */
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('login', 'lock', 'check_exist', 'check_store_name');
-    }
-
-/**
- * Login function.
- *
- * @return void
- */
-    public function login() {
-        $this->layout = false;
-
-        // set a default notification message.
-        $this->Session->setFlash(__('Enter any username and password.'), 'default');
-        $show_alert = false;
-
-        if ($this->request->is('post')) {
-            if ($this->Auth->login()) {
-                $user = $this->Auth->user();
-
-                $conditions = array(
-                    'MerchantOutlet.id = MerchantRegister.outlet_id',
-                    'MerchantOutlet.merchant_id' => $user['merchant_id']
-                );
-
-                if (isset($user['outlet_id'])) {
-                    $conditions = array_merge($conditions, array(
-                        'MerchantOutlet.id' => $user['outlet_id']
-                    ));
-                }
-
-                $registers = $this->MerchantRegister->find('all', array(
-                    'fields' => array(
-                        'MerchantRegister.*',
-                        'MerchantOutlet.*'
-                    ),
-                    'joins' => array(
-                        array(
-                            'table' => 'merchant_outlets',
-                            'alias' => 'MerchantOutlet',
-                            'type' => 'INNER',
-                            'conditions' => $conditions
-                        )
-                    )
-                ));
-                
-                $plan = $this->Plan->findById($user['Merchant']['plan_id']);
-                $this->Session->write('Auth.User.Merchant.Plan', $plan['Plan']);
-
-                if (count($registers) == 1) {
-                    $register = $registers[0];
-                    $this->Session->write('Auth.User.MerchantRegister', $register['MerchantRegister']);
-                    $this->Session->write('Auth.User.MerchantOutlet', $register['MerchantOutlet']);
-                    $_SESSION["Auth"]["User"]["outlet_id"] = $register['MerchantOutlet']['id'];
-                }
-                $_SESSION["Auth"]["User"]["RegisterCount"] = count($registers);
-
-                $this->MerchantUser->id = $user['id'];
-                $user['last_ip_address'] = $_SERVER['REMOTE_ADDR'];
-                $user['last_logged'] = date("Y-m-d H:i:s");
-                $this->MerchantUser->save($user);
-                
-                if(!empty($user['retailer_id'])) {
-                    $_SESSION["Auth"]["User"]["Retailer"] = $this->Retailer->findById($user['retailer_id']);
-                }
-
-                $_SESSION["Auth"]["User"]["Subscriber"] = $this->Subscriber->findById($user['Merchant']['subscriber_id']);
-                $_SESSION["Auth"]["User"]["Loyalty"] = $this->MerchantLoyalty->findByMerchantId($user['merchant_id']);
-                // Create a cookie variable
-                $this->Cookie->write('session_id', rand());
-
-                return $this->redirect($this->Auth->redirect());
-            }
-            $this->Session->setFlash(__('Invalid username or password, try again'));
-            $show_alert = true;
-        }
-        $this->set('show_alert', $show_alert);
-    }
-
-/**
- * Logout function.
- *
- * @return void
- */
-    public function logout() {
-        // Delete a cookie variable
-        $this->Cookie->delete('session_id');
-
-        return $this->redirect($this->Auth->logout());
-    }
-
-/**
- * Lock screen function.
- *
- * @return void
- */
-    public function lock() {
-        $this->layout = 'lock';
+        $this->Auth->allow('login', 'check_exist', 'check_store_name');
     }
 
 /**
@@ -260,16 +164,138 @@ class UsersController extends AppController {
         $this->set('user',$user);
     }
 
+/**
+ * Login function.
+ *
+ * @return void
+ */
+    public function login() {
+        // set a default notification message.
+        $this->Session->setFlash(__('Enter any username and password.'), 'default');
+        $show_alert = false;
+
+        if ($this->request->is('post')) {
+            if ($this->Auth->login()) {
+                $user = $this->Auth->user();
+
+                $conditions = array(
+                    'MerchantOutlet.id = MerchantRegister.outlet_id',
+                    'MerchantOutlet.merchant_id' => $user['merchant_id']
+                );
+
+                if (isset($user['outlet_id'])) {
+                    $conditions = array_merge($conditions, array(
+                        'MerchantOutlet.id' => $user['outlet_id']
+                    ));
+                }
+
+                $registers = $this->MerchantRegister->find('all', array(
+                    'fields' => array(
+                        'MerchantRegister.*',
+                        'MerchantOutlet.*'
+                    ),
+                    'joins' => array(
+                        array(
+                            'table' => 'merchant_outlets',
+                            'alias' => 'MerchantOutlet',
+                            'type' => 'INNER',
+                            'conditions' => $conditions
+                        )
+                    )
+                ));
+                
+                $plan = $this->Plan->findById($user['Merchant']['plan_id']);
+                $this->Session->write('Auth.User.Merchant.Plan', $plan['Plan']);
+
+                if (count($registers) == 1) {
+                    $register = $registers[0];
+                    $this->Session->write('Auth.User.MerchantRegister', $register['MerchantRegister']);
+                    $this->Session->write('Auth.User.MerchantOutlet', $register['MerchantOutlet']);
+                    $_SESSION["Auth"]["User"]["outlet_id"] = $register['MerchantOutlet']['id'];
+                }
+                $_SESSION["Auth"]["User"]["RegisterCount"] = count($registers);
+
+                $this->MerchantUser->id = $user['id'];
+                $user['last_ip_address'] = $_SERVER['REMOTE_ADDR'];
+                $user['last_logged'] = date("Y-m-d H:i:s");
+                $this->MerchantUser->save($user);
+                
+                if(!empty($user['retailer_id'])) {
+                    $_SESSION["Auth"]["User"]["MerchantRetailer"] = $this->MerchantRetailer->findById($user['retailer_id']);
+                }
+
+                $_SESSION["Auth"]["User"]["Subscriber"] = $this->Subscriber->findById($user['Merchant']['subscriber_id']);
+                $_SESSION["Auth"]["User"]["Loyalty"] = $this->MerchantLoyalty->findByMerchantId($user['merchant_id']);
+                // Create a cookie variable
+                $this->Cookie->write('session_id', rand());
+
+                return $this->redirect($this->Auth->redirect());
+            }
+            $this->Session->setFlash(__('Invalid username or password, try again'));
+            $show_alert = true;
+        }
+        $this->set('show_alert', $show_alert);
+
+        $this->layout = 'login';
+    }
+
+/**
+ * Logout function.
+ *
+ * @return void
+ */
+    public function logout() {
+        // Delete a cookie variable
+        $this->Cookie->delete('session_id');
+
+        return $this->redirect($this->Auth->logout());
+    }
+
+/**
+ * Lock screen function.
+ *
+ * @return void
+ */
+    public function lock() {
+        if ($this->request->is('post')) {
+        }
+
+        $this->Session->write('Auth.User.is_locked', true);
+        $this->layout = 'lock';
+    }
+
+/**
+ * Keepalive function.
+ *
+ * @return void
+ */
+    public function ping() {
+        if ($this->request->is('ajax')) {
+            $this->serialize(array(
+                'success' => true
+            ));
+        } else {
+            $this->layout = 'ajax';
+        }
+    }
+
+/**
+ * Check the merchant code.
+ *
+ * @return void
+ */
     public function check_exist() {
-        if($this->request->is('post') || $this->request->is('ajax')) {
+        if ($this->request->is('post') || $this->request->is('ajax')) {
             $this->loadModel('Merchant');
             $result = array(
                 'success' => false
             );
+
             try {
                 $data = $this->request->data;
                 $merchant = $this->Merchant->findByMerchantCode($data);
-                if(!empty($merchant)) {
+
+                if (!empty($merchant)) {
                     $result['success'] = true;
                     $result['merchant_id'] = $merchant['Merchant']['id'];
                     $result['store_name'] = $merchant['Merchant']['name'];
@@ -283,15 +309,22 @@ class UsersController extends AppController {
         }
     }
 
+/**
+ * Check the merchant name.
+ *
+ * @return void
+ */
     public function check_store_name() {
-        if($this->request->is('post') || $this->request->is('ajax')) {
+        if ($this->request->is('post') || $this->request->is('ajax')) {
             $this->loadModel('Merchant');
             $result = array(
                 'success' => true
             );
+
             try {
                 $data = $this->request->data;
                 $merchant = $this->Merchant->findByName($data);
+
                 if(!empty($merchant)) {
                     $result['success'] = false;
                 }

@@ -5,6 +5,13 @@ App::uses('AppController', 'Controller');
 class AccountController extends AppController {
 
 /**
+ * Components property.
+ *
+ * @var array
+ */
+    public $components = array('RequestHandler');
+
+/**
  * Name of layout to use with this View.
  *
  * @var string
@@ -12,13 +19,12 @@ class AccountController extends AppController {
     public $layout = 'home';
 
 /**
- * This controller does not use a model
+ * This controller uses the following models.
  *
  * @var array
  */
-    public $uses = array();
-
-    public $components = array('RequestHandler');
+    public $uses = array(
+    );
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -94,7 +100,7 @@ class AccountController extends AppController {
 
     public function update_plan() {
         $this->loadModel("Merchant");
-        $this->loadModel("Retailer");
+        $this->loadModel("MerchantRetailer");
         $this->loadModel("Plan");
         $this->loadModel("MerchantUser");
         $user = $this->Auth->user();
@@ -107,22 +113,22 @@ class AccountController extends AppController {
                 $data = $this->request->data;
                 if(empty($user['retailer_id'])){
                     if(strpos($data['plan_id'],"franchise") !== false && strpos($data['plan_id'],"hq") == false) {
-                        $this->Retailer->create();
-                        $this->Retailer->save($data);
+                        $this->MerchantRetailer->create();
+                        $this->MerchantRetailer->save($data);
 
                         //$this->Merchant->delete($user['merchant_id']);
 
                         $this->MerchantUser->id = $user['id'];
                         $userData['MerchantUser']['merchant_id'] = $data['merchant_id'];
-                        $userData['MerchantUser']['retailer_id'] = $this->Retailer->id;
+                        $userData['MerchantUser']['retailer_id'] = $this->MerchantRetailer->id;
                         $this->MerchantUser->save($userData);
                     } else {
                         $this->Merchant->id = $user['merchant_id'];
                         $this->Merchant->save($data);
                     }
                 } else {
-                    $this->Retailer->id = $user['retailer_id'];
-                    $this->Retailer->save($data);
+                    $this->MerchantRetailer->id = $user['retailer_id'];
+                    $this->MerchantRetailer->save($data);
                 }
                 $result['success'] = true;
             } catch (Exception $e) {

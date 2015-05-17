@@ -19,11 +19,15 @@ class RegisterController extends AppController {
     public $layout = 'home';
 
 /**
- * This controller uses MerchantRegister, MerchantQuickKey and MerchantReceiptTemplate models.
+ * This controller uses the following models.
  *
  * @var array
  */
-    public $uses = array('MerchantRegister', 'MerchantQuickKey', 'MerchantReceiptTemplate');
+    public $uses = array(
+        'MerchantQuickKey',
+        'MerchantRegister',
+        'MerchantReceiptTemplate'
+    );
 
 /**
  * Callback is called before any controller action logic is executed.

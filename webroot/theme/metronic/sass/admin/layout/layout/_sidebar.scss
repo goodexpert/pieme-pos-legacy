@@ -20,6 +20,7 @@ Page sidebar
 		box-shadow: none;
 	}
 
+	/* Default sidebar menu */
 	.page-sidebar-menu {
 		list-style: none;
 		margin: 0;
@@ -35,7 +36,7 @@ Page sidebar
 			&.sidebar-toggler-wrapper,
 			&.sidebar-search-wrapper {
 				border: 0 !important;
-				 @include clearfix();
+				@include clearfix(); 
 			}
 
 			&.start {
@@ -87,6 +88,20 @@ Page sidebar
 				}
 			}
 
+			&.heading {
+				padding: 15px 15px 15px 15px;
+				> h3 {
+					margin: 0;
+					padding: 0;
+					font-size: $sidebar-menu-head-font-size;
+					font-weight: 300;
+				}
+			}
+
+			&.heading + li > a {
+				border-top: 0;
+			}
+
 			&.open {
 				> a {
 					font-size: $sidebar-menu-link-font-size;
@@ -101,18 +116,32 @@ Page sidebar
 
 					> .selected {
 						display: block;
-						width: 8px;
-						height: 25px;
 						background-image: none; /* will be set in a theme css file*/
 						float: right;
 						position: absolute;
 						right:0px;
 						top:8px;
 
+						background: none;
+						width: 0;
+						height: 0;
+						border-top: 12px solid transparent;
+						border-bottom: 12px solid transparent;
+						border-right: 12px solid #ffffff;
+
 						.page-sidebar-reversed & {
-							background-image: none; /* will be set in a theme css file*/
 							right: auto;
 							left:0;
+							border-right: 0;
+							border-left:8px solid #ffffff;
+						}
+
+						.page-container-bg-solid & {
+							border-color: transparent $page-content-solid-bg-color transparent transparent;  
+						}
+
+						.page-container-bg-solid.page-sidebar-reversed & {
+							border-color: transparent transparent transparent $page-content-solid-bg-color;  
 						}
 					}
 				}
@@ -122,11 +151,15 @@ Page sidebar
 		/* all links */
 		li {
 			> a {
-				> .arrow {
+				> .arrow { 
+
 					&:before {  
 						float: right;
+						width: 10px;
+						text-align: center;
 						margin-top: -1px;
 						margin-right: 5px;
+						margin-left: 5px;  
 						display: inline;
 						font-size: $sidebar-menu-link-icon-font-size;
 						font-family: FontAwesome;
@@ -137,16 +170,7 @@ Page sidebar
 					}
 
 					&.open:before {   
-						float: right;
-						margin-top: -1px;
-						margin-right: 2px;
-						display: inline;
-						font-family: FontAwesome;
-						height: auto;
-						font-size: $sidebar-menu-link-icon-font-size;
 						content: "\f107";
-						font-weight: 300;
-						text-shadow:none;
 					}
 				}
 
@@ -173,7 +197,7 @@ Page sidebar
 				> a {					
 					display: block;
 					margin: 0;
-					padding: 5px 15px 5px 43px;
+					padding: 6px 15px 6px 43px;
 					text-decoration: none;
 					font-size: $sidebar-menu-link-font-size;
 					font-weight: 300;
@@ -181,18 +205,6 @@ Page sidebar
 
 					> i {
 						font-size: $sidebar-menu-sub-menu-link-icon-font-size;
-					}
-
-					.arrow {
-						&:before {  
-							margin-right: 4px;
-							font-size: $sidebar-menu-link-icon-font-size;
-						}
-
-						&.open:before {
-							margin-right: 2px;
-							font-size: $sidebar-menu-link-icon-font-size;
-						}	
 					}
 				}
 
@@ -224,6 +236,45 @@ Page sidebar
 		}
 	}
 
+	/* light sidebar menu */
+	.page-sidebar-menu.page-sidebar-menu-light {  
+		> li {
+			> a {
+				border: 0;
+				margin: 0;
+				padding-left: 11px;
+				border-left: 4px solid transparent;
+			}
+
+			.sub-menu {
+				margin: 0;
+				padding: 1px 0;
+
+				li {                	
+					> a {
+						padding-top: 8px;
+						padding-bottom: 8px;
+					}
+
+					&:first-child {
+						margin-top: 0 !important;  
+					} 
+				}
+			}
+		}
+
+		.page-sidebar-reversed & {
+			> li {
+				> a {
+					padding-left: 15px;
+					padding-right: 11px;
+					border-left: 0;
+					border-right: 4px solid transparent;  
+				}
+			}
+		}
+	}
+
 	.sidebar-toggler {
 		display: block;
 		cursor: pointer; 
@@ -234,6 +285,9 @@ Page sidebar
 		margin-top: 15px;
 		margin-right: 19px;
 		float: right;
+
+		@include border-radius($general-border-radius);  
+
 		&:hover { 
 			filter: alpha(opacity=100);
 			opacity: 1;
@@ -254,12 +308,15 @@ Page sidebar
 
 		.input-group {
 			
+			@include border-radius($general-border-radius);  
+
 			.form-control {
 				border: 0;
 				font-size: 14px;
 				padding: 0;
 				height: auto;
-				line-height: auto;
+				line-height: auto;  
+				@include border-radius($general-border-radius); 
 			}
 
 			.input-group-btn {				
@@ -268,9 +325,7 @@ Page sidebar
 					padding: 2px 0 0 0;
 					background-color: transparent;
 					background-repeat: no-repeat;
-		            background-position: 100% 3px;
-					height1: 20px;
-					line-height1: 20px;
+					background-position: 100% 3px;
 
 					> i {
 						font-size: 15px; 
@@ -345,8 +400,12 @@ Page sidebar
 		.page-sidebar-menu {
 			> li {
 				&.last {
-					margin-bottom: 15px !important;
+					margin-bottom: 15px !important;  
 				}
+			}
+
+			.sub-menu {
+				height: auto !important;
 			}
 		}
 	}
@@ -355,13 +414,13 @@ Page sidebar
 
 	.page-sidebar-closed {
 		.page-sidebar {
-			width: $sidebar-collapsed-width !important;
+			width: $sidebar-collapsed-width !important; 
 
 			.page-sidebar-menu.page-sidebar-menu-closed {
 
 				/* sidebar */
 				width: $sidebar-collapsed-width !important; 
-					
+
 				> li {	
 
 					/* hide opened sub menu */
@@ -371,91 +430,106 @@ Page sidebar
 					}
 
 					&:hover {
-							width: ($sidebar-width + 11px) !important;
-							position: relative !important;
-							z-index: $zindex-sidebar-fixed;
-							display: block !important;
+						width: ($sidebar-collapsed-submenu-width-on-hover + $sidebar-collapsed-width + 1) !important; 
+						position: relative !important;
+						z-index: $zindex-sidebar-fixed;
+						display: block !important; 
 
-							> a {
-								> i {
-									margin-right: 10px;  
+						> a {
+							@include border-radius(0 $general-border-radius 0 0);
+
+							> i {
+								margin-right: 10px;  
+							}
+
+							> .title {
+								display: inline !important;
+								padding-left: 15px;
+							}
+
+							> .badge {
+								display: block !important;
+							}
+
+							> .selected {
+								display: none;
+							}
+						}	
+
+						&.heading {
+							width: $sidebar-collapsed-width !important;
+							box-shadow: none;
+						}					
+
+						> .sub-menu {  
+							width: $sidebar-collapsed-submenu-width-on-hover;
+							position: absolute;
+							z-index: $zindex-sidebar-submenu;
+							left: ($sidebar-collapsed-width + 1px);
+							margin-top: 0;
+							top: 100%;
+							display: block !important; 
+
+							@include border-radius(0 0 $general-border-radius $general-border-radius);
+
+							> li {
+								> a {
+									padding-left: 15px !important;
 								}
 
-								> .title {
-									display: inline !important;
-									padding-left: 10px;
-								}
+								> .sub-menu {
+									> li {
+										> a {
+											padding-left: 30px !important;
+										}
 
-								> .badge {
-									display: block !important;
-								}
-
-								> .selected {
-									display: none;
-								}
-							}						
-
-							> .sub-menu {  
-								width: $sidebar-collapsed-submenu-width-on-hover;
-								position: absolute;
-								z-index: $zindex-sidebar-submenu;
-								left: ($sidebar-collapsed-width + 1px);
-								margin-top: 0;
-								top: 100%;
-								display: block !important; 
-
-								> li {
-									> a {
-										padding-left: 15px !important;
-									}
-
-									> .sub-menu {
-										> li {
-											> a {
-												padding-left: 30px !important;
-											}
-
-											> .sub-menu {
-												> li {
-													> a {
-														padding-left: 45px !important;
-													}
+										> .sub-menu {
+											> li {
+												> a {
+													padding-left: 45px !important;
 												}
 											}
 										}
 									}
 								}
 							}
+						}
 					}
 
-					&.sidebar-toggler-wrapper {
-							.sidebar-toggler {
-								margin-right: 3px;	
-							}
+					&.heading {
+						> h3 {
+							display: none;  
+						}
+					}	
 
-							&:hover {
-								width: $sidebar-collapsed-width !important;
-							}
+					&.sidebar-toggler-wrapper {
+						.sidebar-toggler {
+							margin-right: 8px;	
+						}
+
+						&:hover {
+							width: $sidebar-collapsed-width !important;
+						}
 					}
 
 					&.sidebar-search-wrapper { 
-							&:hover {
-								width: $sidebar-collapsed-width !important;
-							}
+						&:hover {
+							width: $sidebar-collapsed-width !important;
+						}
 					}
 
 					> a {
-							padding-left: 7px;
+						padding-left: 11px;
 
-							.selected {
-								right: -3px !important;
-							}
+						.selected {
+							right: -3px !important;
+						}
 
-							> .badge,
-							> .title,
-							> .arrow {
-								display: none !important;
-							}
+						> .badge,
+						> .title,
+						> .arrow {
+							display: none !important;
+						}
 					}			
 				}
 
@@ -469,7 +543,7 @@ Page sidebar
 				.sidebar-search {
 					.input-group {
 						border-color: transparent;
-						margin-left: -9px;
+						margin-left: -4px;
 
 						.form-control {
 							display: none;
@@ -501,7 +575,8 @@ Page sidebar
 						width: $sidebar-collapsed-submenu-width-on-hover;
 						position: relative;
 						z-index: 1;
-						margin-left: 12px;
+						margin-left: 24px;
+						padding: 0;
 
 						.form-control {
 							background: none;
@@ -523,7 +598,7 @@ Page sidebar
 						background-repeat: no-repeat;
 						width: 11px;
 						height: 11px;
-						margin: 9px 2px 9px -11px;
+						margin: 9px -5px 9px -7px;
 						display: block; 
 						float: left;
 					}
@@ -540,7 +615,16 @@ Page sidebar
 					}
 				}
 			}
-		}
+
+			.page-sidebar-menu.page-sidebar-menu-light.page-sidebar-menu-closed {
+				> li {
+					> a {
+						padding-right: 11px; 
+						padding-left: 7px;   
+					}
+				}
+			}
+		} 
 
 		&.page-sidebar-reversed {
 
@@ -559,13 +643,27 @@ Page sidebar
 
 						&:hover {
 							margin-left: -($sidebar-collapsed-submenu-width-on-hover + 1px);
+
+							> a {
+								@include border-radius($general-border-radius 0 0 0);
+
+								> .title {
+									padding-left: 0;
+									padding-right: 15px;
+								}
+
+								> i {
+									margin-right: 0;
+									margin-left: 2px;   
+								}
+							}	
 						}
 
 						&.sidebar-search-wrapper,
 						&.sidebar-toggler-wrapper {
 							&:hover {
 								margin-left: 0;
-							}
+							} 
 						}
 					}
 
@@ -573,7 +671,7 @@ Page sidebar
 					.sidebar-search {
 						&.open {
 							.input-group {
-								margin-left: -($sidebar-collapsed-submenu-width-on-hover + 15px);
+								margin-left: -($sidebar-collapsed-submenu-width-on-hover + 17px);
 
 								.input-group-btn {				
 									.btn {
@@ -583,9 +681,18 @@ Page sidebar
 							}
 
 							.remove {
-								margin: 9px -1px 12px 1px  !important;
+								margin: 9px 4px 12px -16px  !important;
 								float: right !important;
 							}
+						}
+					}
+				}
+
+				.page-sidebar-menu.page-sidebar-menu-light.page-sidebar-menu-closed {
+					> li {
+						> a {
+							padding-right: 7px;      
+							padding-left: 11px;
 						}
 					}
 				}
@@ -596,7 +703,7 @@ Page sidebar
 			.page-sidebar {
 				&:hover {
 					width: $sidebar-width !important;
-					display: absolute;
+					display: block;
 					z-index: $zindex-sidebar-fixed;
 
 					.page-sidebar-menu {
@@ -614,7 +721,6 @@ Page sidebar
 			.page-sidebar {
 				&:hover {  
 					width: $sidebar-width !important;
-					display: absolute;
 					z-index: $zindex-sidebar-fixed;
 					margin-left: -$sidebar-width !important;
 
@@ -628,6 +734,132 @@ Page sidebar
 		&.page-sidebar-hide {
 			.page-sidebar {
 				display: none !important;
+			}
+		}
+	}
+
+	/* Sidebar Menu Wirh Hoverable Submenu */
+	.page-sidebar-menu.page-sidebar-menu-hover-submenu {  
+		li {
+			.sub-menu {
+				display: none; 	
+				width: $sidebar-collapsed-submenu-width-on-hover;
+				z-index: $zindex-sidebar-submenu;
+				position: absolute;		 
+
+				@include border-radius($general-border-radius);
+
+				> li {
+					> a {
+						margin: 3px;
+					}
+				}
+			}
+
+			&.active,
+			&.open {
+				.sub-menu {
+					display: none !important;
+				}				
+			}
+
+			a > .arrow {
+				display: none;
+			}
+
+			&:hover {
+				> a {
+					> .arrow {  
+						display: block;
+						float: right;
+						position: absolute;
+						right: 0; 
+						margin-top: -20px;
+						background: none;
+						width: 0;
+						height: 0;
+						border-style: solid;
+						border-top: 12px double transparent;
+						border-bottom: 12px double transparent;
+						border-left:0;
+
+						&:after,
+						&:before {
+							display: none;
+						}
+
+						.page-sidebar-reversed & {
+							right: auto;
+							left: 0;
+							border-right: 0;
+						}
+					}
+				}
+
+				> .sub-menu {
+					display: inline-block !important;
+				}
+			}
+		}
+
+		> li:hover {
+			> a {
+				> .arrow {
+					z-index: 1;
+					right: 0px;
+					margin-top: -23px; 
+				}
+				> .selected {
+					display: none;
+				}
+			}			
+
+			> .sub-menu {
+				margin-left: $sidebar-width;   
+				margin-top: -40px; 
+				
+				.page-sidebar-reversed & {
+					margin-left: -($sidebar-collapsed-submenu-width-on-hover) !important;
+				}
+
+				.page-sidebar-closed & {
+					margin-left: 0;
+				}
+
+				> li {
+					
+					> a {
+						padding-left: 15px;
+					}
+
+					.sub-menu {
+						margin-left: $sidebar-collapsed-submenu-width-on-hover;
+						margin-top: -38px !important; 
+
+						.page-sidebar-reversed & {
+							margin-left: -$sidebar-collapsed-submenu-width-on-hover !important;
+						}	
+
+						> li > a {
+							padding-left: 10px;
+							padding-right: 10px;
+						}
+					}
+				}  
+			}
+		}
+	}
+
+	.page-sidebar-menu.page-sidebar-menu-light.page-sidebar-menu-hover-submenu  {
+		li:hover {
+			> .sub-menu {
+				margin-top: -41px;
+
+				> li {
+					> .sub-menu { 
+						margin-top: -41px;
+					}
+				}
 			}
 		}
 	}
@@ -648,36 +880,36 @@ Page sidebar
 		}
 
 		&.navbar-collapse {
-  			max-height: none; /* set some max height to have a scrollable menu on mobile devices */
-  			
-  			&.collapse {
-  				display: none !important;
-  			}
+			max-height: none; /* set some max height to have a scrollable menu on mobile devices */
 
-  			&.in {
-  				border-top: 0 !important;
+			&.collapse {
+				display: none !important;
+			}
+
+			&.in {
+				border-top: 0 !important;
 				margin: 20px;
 				position: relative;
-  				overflow: hidden !important;
-			 	overflow-y: auto !important;
-			 	display: block !important;
-  			}
+				overflow: hidden !important;
+				overflow-y: auto !important;
+				display: block !important;
+			}
 
-  			&.navbar-no-scroll {
+			&.navbar-no-scroll {
 				max-height: none !important;
 			}
-  		}
+		}
 
-  		.mega-menu-responsive-content {
+		.mega-menu-responsive-content {
 			padding: 10px 18px 10px 45px;
 		}
-  	}
+	}
 
- 	.page-full-width {
- 		.page-sidebar-menu {
-  			display: block;
-  		}
-  	}
+	.page-full-width {
+		.page-sidebar-menu {
+			display: block;
+		}
+	}
 }
 
 @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) { /* 768px & 991px */
@@ -689,14 +921,14 @@ Page sidebar
 			}
 
 			.arrow {
-			  position: absolute;
-			  right: 25px;
-			  width: 0; 
-			  height: 0;
-			  top:50px;
-			  border-bottom: 15px solid #5f646b;
-			  border-left: 15px solid transparent; 
-			  border-right: 15px solid transparent; 
+				position: absolute;
+				right: 25px;
+				width: 0; 
+				height: 0;
+				top:50px;
+				border-bottom: 15px solid #5f646b;
+				border-left: 15px solid transparent; 
+				border-right: 15px solid transparent; 
 			}
 		}	
 	}

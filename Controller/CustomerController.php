@@ -19,11 +19,15 @@ class CustomerController extends AppController {
     public $layout = 'home';
 
 /**
- * This controller uses Contact, MerchantCustomer and MerchantCustomerGroup models.
+ * This controller uses the following models.
  *
  * @var array
  */
-    public $uses = array('Contact', 'MerchantCustomer', 'MerchantCustomerGroup');
+    public $uses = array(
+        'Contact',
+        'MerchantCustomer',
+        'MerchantCustomerGroup'
+    );
 
 /**
  * Callback is called before any controller action logic is executed.

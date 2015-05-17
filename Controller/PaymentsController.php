@@ -23,7 +23,10 @@ class PaymentsController extends AppController {
  *
  * @var array
  */
-    public $uses = array('PaymentType', 'MerchantPaymentType');
+    public $uses = array(
+        'PaymentType',
+        'MerchantPaymentType'
+    );
 
 /**
  * Callback is called before any controller action logic is executed.

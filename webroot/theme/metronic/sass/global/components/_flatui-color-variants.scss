@@ -38,6 +38,11 @@
 	.font-#{$name} {
 		color: $color !important;
 	}
+
+	.progress-bar.#{$name} {
+		background: $color !important;
+		color: $text-color !important;
+	}
 }
 
 /* Button */
@@ -53,7 +58,7 @@ Blue Colors
 Blue Default
 ***/
 
-@include flatui-color-variant("blue", #4B8DF8, #FFFFFF);
+@include flatui-color-variant("blue", #3598dc, #FFFFFF);
 
 /***
 Blue Madison
@@ -85,6 +90,25 @@ Blue Stell
 
 @include flatui-color-variant("blue-steel", #4B77BE, #FFFFFF);
 
+/***
+Blue Soft
+***/
+
+@include flatui-color-variant("blue-soft", #4c87b9, #FFFFFF);
+
+/***
+Blue Dark
+***/
+
+@include flatui-color-variant("blue-dark", #5e738b, #FFFFFF);
+
+/***
+Blue Sharp
+***/
+
+@include flatui-color-variant("blue-sharp", #5C9BD1, #FFFFFF);
+
+
 /***********
 Green Colors
 ************/
@@ -93,7 +117,7 @@ Green Colors
 Green Default
 ***/
 
-@include flatui-color-variant("green", #35aa47, #FFFFFF);
+@include flatui-color-variant("green", #26a69a, #FFFFFF);
 
 /***
 Green Meadow
@@ -124,6 +148,19 @@ Green Jungle
 ***/
 
 @include flatui-color-variant("green-jungle", #26C281, #FFFFFF);
+
+/***
+Green Sharp
+***/
+
+@include flatui-color-variant("green-sharp", #4DB3A2, #FFFFFF);
+
+/***
+Green Sharp
+***/
+
+@include flatui-color-variant("green-soft", #3faba4, #FFFFFF);
+
 
 /***********
 Grey Colors
@@ -163,7 +200,26 @@ Grey Cascade
 Grey Silver
 ***/
 
-@include flatui-color-variant("grey-silver", #BFBFBF, #FFFFFF);
+@include flatui-color-variant("grey-silver", #BFBFBF, #FAFCFB);
+ 
+/***
+Grey Salsa
+***/
+
+@include flatui-color-variant("grey-salsa", #ACB5C3, #FAFCFB);
+
+/***
+Grey Salt
+***/
+
+@include flatui-color-variant("grey-salt", #bfcad1, #FAFCFB);
+
+/***
+Grey Mint
+***/
+
+@include flatui-color-variant("grey-mint", #9eacb4, #FAFCFB);
+
 
 /***********
 Red Colors
@@ -173,7 +229,7 @@ Red Colors
 Red Default
 ***/
 
-@include flatui-color-variant("red", #d84a38, #FFFFFF); 
+@include flatui-color-variant("red", #cb5a5e, #FFFFFF); 
 
 /***
 Red Pink
@@ -196,7 +252,7 @@ Red Intense
 /***
 Red Thunderbird
 ***/
-
+  
 @include flatui-color-variant("red-thunderbird", #D91E18, #FFFFFF);
 
 /***
@@ -204,6 +260,19 @@ Red Flamingo
 ***/
 
 @include flatui-color-variant("red-flamingo", #EF4836, #FFFFFF);
+
+/***
+Red Flamingo
+***/
+
+@include flatui-color-variant("red-soft", #d05454, #FFFFFF);
+
+/***
+Red Haze
+***/
+
+@include flatui-color-variant("red-haze", #f36a5a, #FFFFFF);
+
 
 /***********
 Yellow Colors
@@ -213,7 +282,7 @@ Yellow Colors
 Yellow Default
 ***/
 
-@include flatui-color-variant("yellow", #FFB848, #FFFFFF);
+@include flatui-color-variant("yellow", #c49f47, #FFFFFF);
 
 /***
 Yellow Gold
@@ -245,6 +314,7 @@ Yellow Saffron
 
 @include flatui-color-variant("yellow-saffron", #F4D03F, #FFFFFF);
 
+
 /***********
 Purple Colors
 ************/
@@ -253,7 +323,7 @@ Purple Colors
 Purple Default
 ***/
 
-@include flatui-color-variant("purple", #8E44AD, #FFFFFF);
+@include flatui-color-variant("purple", #8e5fa2, #FFFFFF);
 
 /***
 Purple Plum
@@ -284,3 +354,30 @@ Purple Seance
 ***/
 
 @include flatui-color-variant("purple-seance", #9A12B3, #FFFFFF);
+
+/***
+Purple Intense
+***/
+
+@include flatui-color-variant("purple-intense", #8775a7, #FFFFFF);
+
+/***
+Purple Sharp
+***/
+
+@include flatui-color-variant("purple-sharp", #796799, #FFFFFF);
+
+/***
+Purple Soft
+***/
+
+@include flatui-color-variant("purple-soft", #8877a9, #FFFFFF);
+
+/***
+Transparent Button
+***/
+
+.btn-transparent.btn {
+  background: transparent;   
+  color: #888;
+}

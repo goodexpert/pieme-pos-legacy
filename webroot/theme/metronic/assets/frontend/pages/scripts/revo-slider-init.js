@@ -2,7 +2,7 @@ var RevosliderInit = function () {
 
     return {
         initRevoSlider: function () {
-                  jQuery('.fullwidthabnner').revolution({
+                  jQuery('.fullwidthabnner').show().revolution({ 
                       delay:2000,
                       startheight:417,
                       startwidth:1150,

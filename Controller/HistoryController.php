@@ -19,7 +19,7 @@ class HistoryController extends AppController {
     public $layout = 'home';
 
 /**
- * This controller uses MerchantProduct, RegisterSale and RegisterSaleItem models.
+ * This controller uses the following models.
  *
  * @var array
  */
@@ -227,7 +227,6 @@ class HistoryController extends AppController {
             
             $this->RegisterSale->id = $data['id'];
             $this->RegisterSale->save($data);
-
         }
     }
 
@@ -261,7 +260,7 @@ class HistoryController extends AppController {
             ->send();
         }
     }
-    
+
     public function add_register_sale_payments() {
         $user = $this->Auth->user();
         if($this->request->is('post')) {

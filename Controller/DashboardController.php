@@ -12,11 +12,15 @@ class DashboardController extends AppController {
     public $layout = 'home';
 
 /**
- * This controller does not use a model
+ * This controller uses the following models.
  *
  * @var array
  */
-    public $uses = array();
+    public $uses = array(
+        'MerchantOutlet',
+        'MerchantRegister',
+        'RegisterSale'
+    );
 
 /**
  * Callback is called before any controller action logic is executed.

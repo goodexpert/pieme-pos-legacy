@@ -1,9 +1,6 @@
 <link href="/css/dataTable.css" rel="stylesheet" type="text/css">
-
-<div class="clearfix">
-</div>
-<!-- BEGIN CONTAINER -->
-<div class="page-container">
+<div class="clearfix"></div>
+<div class="container">
     <!-- BEGIN SIDEBAR -->
     <div class="page-sidebar-wrapper">
         <!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
@@ -35,7 +32,6 @@
     </div>
     <!-- END SIDEBAR -->
     <!-- BEGIN CONTENT -->
-    
     <div class="page-content-wrapper">
         <div class="page-content">
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
@@ -46,7 +42,6 @@
                     Add</button>
                 </div>
             </div>
-
             <table id="groupTable" class="table-bordered">
                 <colgroup>
                    <col width="25%">
@@ -135,34 +130,33 @@
     <!-- EDIT GROUP POPUP BOX END -->
 </div>
 <div class="modal-backdrop fade in" style="display: none;"></div>
-<!-- END CONTAINER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
 <!--[if lt IE 9]>
-<script src="/assets/global/plugins/respond.min.js"></script>
-<script src="/assets/global/plugins/excanvas.min.js"></script> 
+<script src="/theme/onzsa/assets/global/plugins/respond.min.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/excanvas.min.js"></script> 
 <![endif]-->
-<script src="/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
 <!-- IMPORTANT! Load jquery-ui-1.10.3.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
-<script src="/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
 <!-- END CORE PLUGINS -->
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<script type="text/javascript" src="/assets/global/plugins/select2/select2.min.js"></script>
-<script type="text/javascript" src="/assets/global/plugins/datatables/media/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js"></script>
+<script type="text/javascript" src="/theme/onzsa/assets/global/plugins/select2/select2.min.js"></script>
+<script type="text/javascript" src="/theme/onzsa/assets/global/plugins/datatables/media/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/theme/onzsa/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
-<script src="/assets/global/scripts/metronic.js" type="text/javascript"></script>
-<script src="/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
-<script src="/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/scripts/metronic.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
@@ -174,12 +168,14 @@ jQuery(document).ready(function() {
     $("#groupTable").DataTable({
         searching: false
     });
+
     $("#groupTable_length").hide();
     
     $("#add_group").click(function(){
         $("#popup-add_group").show();
         $(".modal-backdrop").show();
     });
+
     $(".edit").click(function(){
         $("#group_name_edit").val($(this).parents("tr").find('.group_name').text());
         $("#group_code_edit").val($(this).parents("tr").find('.group_code').text());
@@ -187,6 +183,7 @@ jQuery(document).ready(function() {
         $("#popup-edit_group").show();
         $(".modal-backdrop").show();
     });
+
     $(".confirm-close").click(function(){
          $("#popup-add_group").hide();
          $("#popup-edit_group").hide();
@@ -209,6 +206,7 @@ jQuery(document).ready(function() {
             }
         });
     });
+
     $(".edit_submit").click(function(){
         $.ajax({
             url: '/customer/edit_group.json',
@@ -226,6 +224,7 @@ jQuery(document).ready(function() {
             }
         });
     });
+
     $(".delete").click(function(){
         var target_id = $(this).parents('tr').attr('data-id');
         $.ajax({

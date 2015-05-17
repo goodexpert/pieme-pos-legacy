@@ -17,7 +17,13 @@ class SignupController extends AppController {
  *
  * @var array
  */
-    public $uses = array('Signup', 'Contact', 'Subscriber', 'Merchant', 'Retailer');
+    public $uses = array(
+        'Contact',
+        'Merchant',
+        'MerchantRetailer',
+        'Signup',
+        'Subscriber'
+    );
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -89,11 +95,11 @@ class SignupController extends AppController {
         try {
             if (isset($data['plan_id_1']) && !empty($data['plan_id_1']) && $data['plan_id_1'] == 'subscriber_plan_franchise') {
                 // create a retailer
-                $this->Retailer->create();
+                $this->MerchantRetailer->create();
                 $data['merchant_id'] = $data['parent_merchant_id'];
-                $this->Retailer->save($data);
+                $this->MerchantRetailer->save($data);
                 $merchant_id = $data['parent_merchant_id'];
-                $retailer_id = $this->Retailer->id;
+                $retailer_id = $this->MerchantRetailer->id;
                 
                 // create a default user
                 $this->createDefaultUser($merchant_id, $retailer_id, $data['username'], $data['password'], $data['first_name'] . ' ' . $data['last_name']);

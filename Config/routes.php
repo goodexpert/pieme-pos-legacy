@@ -53,63 +53,66 @@
         array('controller' => 'product', 'action' => 'update'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
-    Router::connect('/stock/:id',
-        array('controller' => 'stock', 'action' => 'view'),
+    Router::connect('/stock_orders/newOrder',
+        array('controller' => 'stock_orders', 'action' => 'createOrder'));
+
+    Router::connect('/stock_orders/newTransfer',
+        array('controller' => 'stock_orders', 'action' => 'createTransfer'));
+
+    Router::connect('/stock_orders/:id',
+        array('controller' => 'stock_orders', 'action' => 'view'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
-    Router::connect('/stock/:id/edit',
-        array('controller' => 'stock', 'action' => 'edit'),
+    Router::connect('/stock_orders/:id/edit',
+        array('controller' => 'stock_orders', 'action' => 'edit'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
-    Router::connect('/stock/:id/editDetails',
-        array('controller' => 'stock', 'action' => 'editDetails'),
+    Router::connect('/stock_orders/:id/editDetails',
+        array('controller' => 'stock_orders', 'action' => 'editDetails'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
-    Router::connect('/stock/:id/cancel',
-        array('controller' => 'stock', 'action' => 'cancel'),
+    Router::connect('/stock_orders/:id/barcodes',
+        array('controller' => 'stock_orders', 'action' => 'barcodes'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
-    Router::connect('/stock/:id/markSent',
-        array('controller' => 'stock', 'action' => 'markSent'),
+    Router::connect('/stock_orders/:id/cancel',
+        array('controller' => 'stock_orders', 'action' => 'cancel'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
-    Router::connect('/stock/:id/receive',
-        array('controller' => 'stock', 'action' => 'receive'),
+    Router::connect('/stock_orders/:id/markSent',
+        array('controller' => 'stock_orders', 'action' => 'markSent'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
-    Router::connect('/inventory_count',
-        array('controller' => 'stock', 'action' => 'inventoryCount'));
-
-    Router::connect('/inventory_count/create',
-        array('controller' => 'stock', 'action' => 'newInventoryCount'));
-
-    Router::connect('/inventory_count/save',
-        array('controller' => 'stock', 'action' => 'saveInventoryCount'));
-
-    Router::connect('/inventory_count/start',
-        array('controller' => 'stock', 'action' => 'startInventoryCount'));
-
-    Router::connect('/inventory_count/search',
-        array('controller' => 'stock', 'action' => 'searchInventoryCount'));
-
-    Router::connect('/inventory_count/:id',
-        array('controller' => 'stock', 'action' => 'viewInventoryCount'),
+    Router::connect('/stock_orders/:id/send',
+        array('controller' => 'stock_orders', 'action' => 'send'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
-    Router::connect('/inventory_count/:id/edit',
-        array('controller' => 'stock', 'action' => 'editInventoryCount'),
+    Router::connect('/stock_orders/:id/receive',
+        array('controller' => 'stock_orders', 'action' => 'receive'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
-    Router::connect('/inventory_count/:id/perform',
-        array('controller' => 'stock', 'action' => 'performInventoryCount'),
+    Router::connect('/stock_orders/:id/addProduct',
+        array('controller' => 'stock_orders', 'action' => 'addProduct'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
-    Router::connect('/inventory_count/:id/review',
-        array('controller' => 'stock', 'action' => 'reviewInventoryCount'),
+    Router::connect('/stock_orders/product/:id/delete',
+        array('controller' => 'stock_orders', 'action' => 'deleteProduct'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
-    Router::connect('/inventory_count/:id/items',
-        array('controller' => 'stock', 'action' => 'getStockTakeItems'),
+    Router::connect('/stock_takes/:id',
+        array('controller' => 'stock_takes', 'action' => 'view'),
+        array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
+
+    Router::connect('/stock_takes/:id/edit',
+        array('controller' => 'stock_takes', 'action' => 'edit'),
+        array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
+
+    Router::connect('/stock_takes/:id/perform',
+        array('controller' => 'stock_takes', 'action' => 'perform'),
+        array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
+
+    Router::connect('/stock_takes/:id/review',
+        array('controller' => 'stock_takes', 'action' => 'review'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
     Router::connect('/outlet/:id/edit',

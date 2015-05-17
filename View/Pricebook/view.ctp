@@ -1,7 +1,5 @@
-<div class="clearfix">
-</div>
-<!-- BEGIN CONTAINER -->
-<div class="page-container">
+<div class="clearfix"></div>
+<div class="container">
     <div id="notify"></div>
     <!-- BEGIN SIDEBAR -->
     <div class="page-sidebar-wrapper">
@@ -69,7 +67,6 @@
                     <?php } ?>
                 </div>
             </div>
-
             <?php if($book['MerchantPriceBook']['is_default'] == 1) { ?>
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                 By default, products will be sold for the following amounts, unless they are overridden by another price book or on the sell screen.<br>To change these amounts you can edit the price and tax rate on individual products.
@@ -88,7 +85,6 @@
                 </tr>
                 </thead>
                 <tbody>
-
                     <?php foreach($book['MerchantPriceBookEntry'] as $product) { ?>
                         <tr>
                             <td><?=$product['MerchantProduct']['name'];?></td>
@@ -99,7 +95,6 @@
                             <td><?php echo $product['max_units'];?></td>
                         </tr>
                     <?php } ?>
-
                 </tbody>
             </table>
 
@@ -107,30 +102,29 @@
     </div>
     <!-- END CONTENT -->
 </div>
-<!-- END CONTAINER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
 <!--[if lt IE 9]>
-<script src="/assets/global/plugins/respond.min.js"></script>
-<script src="/assets/global/plugins/excanvas.min.js"></script> 
+<script src="/theme/onzsa/assets/global/plugins/respond.min.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/excanvas.min.js"></script> 
 <![endif]-->
-<script src="/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
 <!-- IMPORTANT! Load jquery-ui-1.10.3.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
-<script src="/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
 <!-- END CORE PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
-<script src="/assets/global/scripts/metronic.js" type="text/javascript"></script>
-<script src="/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
-<script src="/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
-<script src="/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/scripts/metronic.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <script type="text/javascript" src="/js/jquery.confirm.js"></script>
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
@@ -177,3 +171,4 @@ jQuery(document).ready(function() {
     });
 });
 </script>
+<!-- END JAVASCRIPTS -->

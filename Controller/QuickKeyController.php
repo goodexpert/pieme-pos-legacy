@@ -19,11 +19,14 @@ class QuickKeyController extends AppController {
     public $layout = 'home';
 
 /**
- * This controller uses MerchantProduct and MerchantQuickKey models.
+ * This controller uses the following models.
  *
  * @var array
  */
-    public $uses = array('MerchantProduct', 'MerchantQuickKey');
+    public $uses = array(
+        'MerchantProduct',
+        'MerchantQuickKey'
+    );
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -34,6 +37,11 @@ class QuickKeyController extends AppController {
         parent::beforeFilter();
     }
 
+/**
+ * Index function.
+ *
+ * @return void
+ */
     public function index() {
         $items = $this->MerchantQuickKey->find('all');
         $this->set("items",$items);

@@ -3,6 +3,7 @@ Bootstrap  Datetimepicker
 ***/
 
 .datetimepicker table td {
+  color: #000;
   font-weight: 300  !important;
   font-family: 'Open Sans' !important;
 }
@@ -39,5 +40,5 @@ Bootstrap  Datetimepicker
 
 /* change z-index when opened in modal */
 .modal-open .datetimepicker {
-  z-index: 10055 !important;
+  z-index: 10055;
 }

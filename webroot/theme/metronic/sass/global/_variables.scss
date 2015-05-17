@@ -9,11 +9,11 @@ $direction:  						ltr !default;
  
 // Bootstrap brand colors
 
-$brand-default:         			#c6c6c6 !default;
-$brand-primary:         		 	#428bca !default;
+$brand-default:         			#c6c6c6 !default;  
+$brand-primary:         		 	#428bca !default;  
 $brand-success:         		 	#45B6AF !default;   
 $brand-info:            		 	#89C4F4 !default;  
-$brand-warning:         		 	#ecbc29 !default;        
+$brand-warning:         		 	#dfba49 !default;         
 $brand-danger:          		 	#F3565D !default;       
  
 // Bootstrap Components states
@@ -97,7 +97,7 @@ $font-size-h5:            			$font-size-base !default;
 $font-size-h6:            			ceil(($font-size-base * 0.85)) !default; // ~12px
 
 // Global text color on <body>
-$text-color:            			#000000 !default;
+$text-color:            			#333333 !default;      
 
 // Global light text color on <body>
 $text-light-color:     	 			#ffffff !default;
@@ -106,12 +106,23 @@ $text-light-color:     	 			#ffffff !default;
 $text-muted-color:      			#444444 !default;
 
 // Global textual link color.
-$link-color:            			$brand-primary !default;
+$link-color:            			#5b9bd1 !default;
 
 // Link hover color.
 $link-hover-color:      			darken($link-color, 15%) !default;
 
+$primary-link-color:                #65A0D0;
+
 //== Forms Controls
+$input-md-label-color:        		#888888;
+$input-md-input-border:        		#e5e5e5;
+$input-md-label-opacity:      		1;
+$input-md-label-font-size: 			13px;
+$input-md-placeholder:	 			#999;
+$input-md-color:		 			#333;
+$input-md-focus-border:				$brand-success;
+$input-md-checkbox-box-color:  		#666;
+$input-md-checkbox-disabled-opacity:0.7;
 
 $input-bg:                       	#fff !default;
 $input-bg-disabled:              	#eeeeee !default;
@@ -120,14 +131,13 @@ $input-color:                    	#333 !default;
 $input-border:                   	#e5e5e5 !default;
 $input-border-focus:             	#999 !default;
 
-$input-color-placeholder:        	#888 !default;
+$input-color-placeholder:        	lighten($input-color, 50%) !default;  
 $input-icon-color:               	#999 !default;
 
-// Webkit browser custom scrollbar
-$webkit-scrollbar-width: 			12px;
-$webkit-scrollbar-track: 			#eaeaea;
-$webkit-scrollbar-thumb: 			#cecece;
-$webkit-scrollbar-thumb-hover: 		#aaaaaa;
+//## Border radius
+$general-border-radius:             4px !default;
+$form-control-border-radius:        4px !default;
+$portlet-border-radius:             4px !default;
 
 
 //## Z-index master list
@@ -145,6 +155,7 @@ $zindex-tooltip:           			1030 !default;
 $zindex-navbar-fixed:      			1030 !default;
 $zindex-modal-background:  			10049 !default;
 $zindex-modal:             			10050 !default;
+$zindex-top:						10100 !default;
 
 //## Media queries breakpoints
 //
@@ -162,7 +173,14 @@ $screen-md-min:              		992px !default;
 // Large screen / wide desktop
 $screen-lg-min:             	 	1200px !default;
 
+// Large scree / wider desktop      
+$screen-lg-med:                     1260px !default;
+
 // So media queries don't overlap when required, provide a maximum
 $screen-xs-max:              		($screen-sm-min - 1) !default;
 $screen-sm-max:              		($screen-md-min - 1) !default;
 $screen-md-max:              		($screen-lg-min - 1) !default;
+
+//## Img path settings
+
+$general-img-path:                  '../img/'; 

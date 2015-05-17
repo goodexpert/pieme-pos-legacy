@@ -3,12 +3,19 @@ Customized Bootstrap Panels
 ***/
 
 .panel {  
-    -webkit-box-shadow: none !important;
-    -moz-box-shadow: none !important;
-    box-shadow: none !important;
+
+    @if $theme-type == "default" {
+        -webkit-box-shadow: none !important;
+        -moz-box-shadow: none !important;
+        box-shadow: none !important;
+    }
 
     .panel-group & {
         overflow: visible;
+    }
+
+    .panel-body {
+        font-size: 13px; 
     }
 
     .panel-title > a:hover {
@@ -44,7 +51,7 @@ Customized Bootstrap Panels
 // Contextual variations
 
 .panel-default {
-  @include panel-variant($state-default-border, $state-default-text, lighten($state-default-bg, 10%), lighten($state-default-border, 10%));
+  @include panel-variant(lighten($state-default-border, 15%), $state-default-text, lighten($state-default-bg, 20%), lighten($state-default-border, 15%));   
 }
 
 .panel-primary {
@@ -80,5 +87,12 @@ Accordions
 
     a:hover {
         text-decoration:none;
+    }
+}
+
+@if $theme-type == "material-design" {
+    .panel {
+        @extend .md-shadow-z-2;        
+        border: 0; 
     }
 }

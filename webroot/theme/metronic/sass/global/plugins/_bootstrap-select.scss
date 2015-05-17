@@ -7,19 +7,19 @@ Bootstrap Select
 
 .has-error {
   .bootstrap-select .btn {
-    border-color: $brand-danger;
+    border-color: $state-danger-border;
   }
 }
 
 .has-success {
   .bootstrap-select .btn {
-    border-color: $brand-success;
+    border-color: $state-success-border;
   }
 }
 
 .has-warning {
   .bootstrap-select .btn {
-    border-color: $brand-warning;
+    border-color: $state-warning-border;
   }
 }
 

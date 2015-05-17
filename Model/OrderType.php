@@ -28,7 +28,7 @@ class OrderType extends AppModel {
  *
  * @var string
  */
-    public $primaryKey = "id";
+    public $primaryKey = "type";
 
 /**
  * Name of the Model.

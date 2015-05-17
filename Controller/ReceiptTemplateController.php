@@ -19,11 +19,15 @@ class ReceiptTemplateController extends AppController {
     public $layout = 'home';
 
 /**
- * This controller uses Contact and MerchantSupplier models.
+ * This controller uses the following models.
  *
  * @var array
  */
-    public $uses = array('MerchantReceiptTemplate', 'ReceiptStyle', 'MerchantRegister');
+    public $uses = array(
+        'MerchantReceiptTemplate',
+        'MerchantRegister',
+        'ReceiptStyle'
+    );
 
 /**
  * Callback is called before any controller action logic is executed.

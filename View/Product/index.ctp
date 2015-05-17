@@ -7,11 +7,8 @@
 }
 </style>
 <link href="/css/dataTable.css" rel="stylesheet" type="text/css">
-
-<div class="clearfix">
-</div>
-<!-- BEGIN CONTAINER -->
-<div class="page-container">
+<div class="clearfix"></div>
+<div class="container">
     <div id="notify"></div>
     <!-- BEGIN SIDEBAR -->
     <div class="page-sidebar-wrapper">
@@ -218,11 +215,11 @@
                         <td class="hidden"><?=$item['MerchantProduct']['markup'];?></td>
                         <td class="hidden"><?=$item['MerchantProduct']['price'];?></td>
                         <td>
-                        	<?php if(empty($item['Variants'])){
-                        		echo "None";
-                        	} else {
-                        		echo '<span data-id="'.$item['MerchantProduct']['id'].'" class="clickable check_variants">'.count($item['Variants']).' variants</span>';
-                        	}?>
+                            <?php if(empty($item['Variants'])){
+                                echo "None";
+                            } else {
+                                echo '<span data-id="'.$item['MerchantProduct']['id'].'" class="clickable check_variants">'.count($item['Variants']).' variants</span>';
+                            }?>
                         </td>
                         <td><?=number_format($item['MerchantProduct']['price_include_tax'],2,'.','');?></td>
                         <td class="hidden"><?=$item['MerchantProduct']['tax'];?></td>
@@ -255,31 +252,29 @@
     </div>
     <!-- END CONTENT -->
 </div>
-<!-- END CONTAINER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
 <!--[if lt IE 9]>
-<script src="/assets/global/plugins/respond.min.js"></script>
-<script src="/assets/global/plugins/excanvas.min.js"></script> 
+<script src="/theme/onzsa/assets/global/plugins/respond.min.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/excanvas.min.js"></script> 
 <![endif]-->
-<script src="/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
 <!-- IMPORTANT! Load jquery-ui-1.10.3.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
-<script src="/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
-<script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
 <!-- END CORE PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
-<script src="/assets/global/scripts/metronic.js" type="text/javascript"></script>
-<script src="/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
-<script src="/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script>
-<script src="/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
-<script src="/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/scripts/metronic.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
@@ -519,44 +514,44 @@ $(document).ready(function () {
         i--;
     });
     $(".check_variants").click(function(){
-    	if($(this).hasClass("opened")) {
-	    	$(".child_variant").remove();
-	    	$(this).removeClass("opened");
-    	} else {
-        	$(this).addClass("opened");
-    		var target_tr = $(this).parents("tr");
-    		$('<tr class="variant_load"><td colspan="9" style="text-align:center;">retrieving data...</td></tr>').insertAfter(target_tr);
-    		$.ajax({
-	    		url: '/product/check_variants.json',
-	    		type: 'POST',
-	    		data: {
-		    		product_id: $(this).attr("data-id")
-	    		},
-	    		success: function(result) {
-    	    		$(".variant_load").remove();
-		    		if(result.success) {
-		    			var i = 0;
-			    		$(result.data).each(function() {
-				    		var product_id = result.data[i]['MerchantProduct']['id'];
-				    		var product_name = result.data[i]['MerchantProduct']['name'];
-				    		var option_one = result.data[i]['MerchantProduct']['variant_option_one_value'];
-				    		var option_two = result.data[i]['MerchantProduct']['variant_option_two_value'];
-				    		var option_three = result.data[i]['MerchantProduct']['variant_option_three_value'];
-				    		if(option_two.length > 0){
-					    		option_one += "/";
-				    		}
-				    		if(option_three.length > 0){
-					    		option_tow += "/";
-				    		}
-				    		$('<tr class="child_variant"><td colspan="5" style="border:0;"></td><td><a href="/product/'+ product_id +'/edit">'+ product_name +'/'+ option_one +''+ option_two +''+ option_three +'</a></td><td colspan="3" style="border:0;"></td></tr>').insertAfter(target_tr);
-				    		i++;
-			    		});
-		    		} else {
-			    		console.log(result);
-		    		}
-	    		}
-    		});
-	    }
+        if($(this).hasClass("opened")) {
+            $(".child_variant").remove();
+            $(this).removeClass("opened");
+        } else {
+            $(this).addClass("opened");
+            var target_tr = $(this).parents("tr");
+            $('<tr class="variant_load"><td colspan="9" style="text-align:center;">retrieving data...</td></tr>').insertAfter(target_tr);
+            $.ajax({
+                url: '/product/check_variants.json',
+                type: 'POST',
+                data: {
+                    product_id: $(this).attr("data-id")
+                },
+                success: function(result) {
+                    $(".variant_load").remove();
+                    if(result.success) {
+                        var i = 0;
+                        $(result.data).each(function() {
+                            var product_id = result.data[i]['MerchantProduct']['id'];
+                            var product_name = result.data[i]['MerchantProduct']['name'];
+                            var option_one = result.data[i]['MerchantProduct']['variant_option_one_value'];
+                            var option_two = result.data[i]['MerchantProduct']['variant_option_two_value'];
+                            var option_three = result.data[i]['MerchantProduct']['variant_option_three_value'];
+                            if(option_two.length > 0){
+                                option_one += "/";
+                            }
+                            if(option_three.length > 0){
+                                option_tow += "/";
+                            }
+                            $('<tr class="child_variant"><td colspan="5" style="border:0;"></td><td><a href="/product/'+ product_id +'/edit">'+ product_name +'/'+ option_one +''+ option_two +''+ option_three +'</a></td><td colspan="3" style="border:0;"></td></tr>').insertAfter(target_tr);
+                            i++;
+                        });
+                    } else {
+                        console.log(result);
+                    }
+                }
+            });
+        }
     });
 });
 </script>

@@ -36,13 +36,15 @@ class TaxesController extends AppController {
 
     public function add() {
         $user = $this->Auth->user();
-        if($this->request->is('post')) {
+
+        if ($this->request->is('ajax') || $this->request->is('post')) {
             $data = $this->request->data;
             $data['merchant_id'] = $user['merchant_id'];
-            
+
             $result = array(
-            	'success' => false
+                'success' => false
             );
+
             try {
                 $this->MerchantTaxRate->create();
                 $this->MerchantTaxRate->save($data);
@@ -58,44 +60,48 @@ class TaxesController extends AppController {
 
     public function edit() {
         $user = $this->Auth->user();
-        if($this->request->is('post')) {
-        	$this->loadModel('MerchantProduct');
-        	$this->loadModel('MerchantPriceBook');
-        	$this->loadModel('MerchantPriceBookEntry');
+
+        if ($this->request->is('ajax') || $this->request->is('post')) {
+            $this->loadModel('MerchantProduct');
+            $this->loadModel('MerchantPriceBook');
+            $this->loadModel('MerchantPriceBookEntry');
             $data = $this->request->data;
             $data['merchant_id'] = $user['merchant_id'];
             
             $result = array(
-            	'success' => false
+                'success' => false
             );
+
             try {
                 $this->MerchantTaxRate->id = $data['id'];
                 $this->MerchantTaxRate->save($data);
-                
+
                 $priceBook = $this->MerchantPriceBook->find('all', array(
                     'conditions' => array(
                         'MerchantPriceBook.merchant_id' => $user['merchant_id'],
                         'MerchantPriceBook.name' => "General Price Book (All Products)"
                     )
                 ));
+
                 $products = $this->MerchantProduct->find('all', array(
-                	'conditions' => array(
-                		'MerchantProduct.tax_id' => $data['id']
-                	)
+                    'conditions' => array(
+                        'MerchantProduct.tax_id' => $data['id']
+                    )
                 ));
-                foreach($products as $product) {
-	                $this->MerchantProduct->id = $product['MerchantProduct']['id'];
-	                $change['MerchantProduct']['tax'] = $product['MerchantProduct']['price'] * $data['rate'];
-	                $change['MerchantProduct']['price_include_tax'] = $product['MerchantProduct']['price'] * $data['rate'] + $product['MerchantProduct']['price'];
-	                $this->MerchantProduct->save($change);
-	                
-	                $entries = $this->MerchantPriceBookEntry->find('all', array(
+
+                foreach ($products as $product) {
+                    $this->MerchantProduct->id = $product['MerchantProduct']['id'];
+                    $change['MerchantProduct']['tax'] = $product['MerchantProduct']['price'] * $data['rate'];
+                    $change['MerchantProduct']['price_include_tax'] = $product['MerchantProduct']['price'] * $data['rate'] + $product['MerchantProduct']['price'];
+                    $this->MerchantProduct->save($change);
+
+                    $entries = $this->MerchantPriceBookEntry->find('all', array(
                         'conditions' => array(
                             'MerchantPriceBookEntry.price_book_id' => $priceBook[0]['MerchantPriceBook']['id'],
                             'MerchantPriceBookEntry.product_id' => $product['MerchantProduct']['id']
                         )
                     ));
-                    
+
                     foreach($entries as $entry) {
                         $this->MerchantPriceBookEntry->id = $entry['MerchantPriceBookEntry']['id'];
                         $change['MerchantPriceBookEntry']['tax'] = $product['MerchantProduct']['price'] * $data['rate'];
@@ -103,7 +109,6 @@ class TaxesController extends AppController {
                         $this->MerchantPriceBookEntry->save($change);
                     }
                 }
-                
                 $result['success'] = true;
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
@@ -114,10 +119,12 @@ class TaxesController extends AppController {
 
     public function delete() {
         $user = $this->Auth->user();
-        if($this->request->is('post')) {
+
+        if ($this->request->is('ajax') || $this->request->is('post')) {
             $result = array(
-            	'success' => false
+                'success' => false
             );
+
             try {
                 $this->MerchantTaxRate->delete($_POST['id']);
                 $result['success'] = true;

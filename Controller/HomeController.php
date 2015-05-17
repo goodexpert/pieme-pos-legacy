@@ -4,15 +4,42 @@ App::uses('AppController', 'Controller');
 
 class HomeController extends AppController {
 
-    public $components = array('RequestHandler');
-
 /**
- * This controller does not use a model
+ * Components property.
  *
  * @var array
  */
-    public $uses = array('MerchantCustomer','MerchantCustomerGroup','Country','MerchantProduct','TaxRate','RegisterSale','RegisterSaleItem','RegisterSalePayment','MerchantUser','MerchantOutlet','MerchantPaymentType','MerchantProductInventory','MerchantProductLog','MerchantRegisterOpen','MerchantRegister');
+    public $components = array('RequestHandler');
+
+/**
+ * Name of layout to use with this View.
+ *
+ * @var string
+ */
     public $layout = 'home';
+
+/**
+ * This controller uses the following models.
+ *
+ * @var array
+ */
+    public $uses = array(
+        'Country',
+        'MerchantCustomer',
+        'MerchantCustomerGroup',
+        'MerchantProduct',
+        'MerchantOutlet',
+        'MerchantPaymentType',
+        'MerchantProductInventory',
+        'MerchantProductLog',
+        'MerchantRegisterOpen',
+        'MerchantRegister',
+        'MerchantUser',
+        'TaxRate',
+        'RegisterSale',
+        'RegisterSaleItem',
+        'RegisterSalePayment'
+    );
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -23,6 +50,11 @@ class HomeController extends AppController {
         parent::beforeFilter();
     }
 
+/**
+ * Index function.
+ *
+ * @return void
+ */
     public function index() {
         $user = $this->Auth->user();
         
@@ -329,7 +361,7 @@ class HomeController extends AppController {
                     $data['status'] = 'closed';
                 }
                 $this->RegisterSale->save($data);
-                
+
                 if($user['Loyalty']['MerchantLoyalty']['enable_loyalty'] == 1) {
                     $loyaltyBalance = number_format($data['total_price_incl_tax'] / $user['Loyalty']['MerchantLoyalty']['loyalty_spend_amount'],0,'','') * $user['Loyalty']['MerchantLoyalty']['loyalty_earn_amount'];
                     $this->MerchantCustomer->id = $data['customer_id'];

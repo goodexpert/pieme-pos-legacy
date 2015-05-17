@@ -1,6 +1,10 @@
 /***
-Fancy box fix overlay fix(in v1.2.4)
+Fancy box fix overlay fix
 ***/
 .fancybox-overlay {
-  z-index: 10000 ;
+  z-index: 100000 ;
+}
+
+.fancybox-opened {
+  z-index: 100001;
 }

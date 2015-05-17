@@ -16,7 +16,6 @@
     border-top: 1px solid white;
 }
 </style>
-
 <div class="clearfix"></div>
 <div class="receipt-parent col-md-12 col-xs-12 col-sm-12">
     <div class="col-md-12 col-xs-12 col-sm-12">
@@ -75,8 +74,7 @@
         <div class="receipt-bt"></div>
     </div>
 </div>
-<!-- BEGIN CONTAINER -->
-<div class="page-container"> 
+<div class="container"> 
   <!-- BEGIN SIDEBAR -->
   <div class="page-sidebar-wrapper"> 
     <!-- BEGIN HORIZONTAL RESPONSIVE MENU --> 
@@ -366,9 +364,7 @@
         </div>
       </div>
     </div>
-    
     <div id="retrieve-sale" class="page-content hidden">
-        
         <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-bottom-20">
             <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">Select a Sale to Open</h2>
             <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
@@ -826,29 +822,28 @@
 
 </div>
 <div class="modal-backdrop fade in" style="display:<?php if(empty($authUser['MerchantRegister'])){echo "block";}else{echo "none";};?>"></div>
-<!-- END CONTAINER --> 
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) --> 
 <!-- BEGIN CORE PLUGINS --> 
 <!--[if lt IE 9]>
-<script src="/assets/global/plugins/respond.min.js"></script>
-<script src="/assets/global/plugins/excanvas.min.js"></script> 
+<script src="/theme/onzsa/assets/global/plugins/respond.min.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/excanvas.min.js"></script> 
 <![endif]--> 
-<script src="/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script> 
 <!-- IMPORTANT! Load jquery-ui-1.10.3.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip --> 
-<script src="/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script> 
 <!-- END CORE PLUGINS -->  
 <!-- END PAGE LEVEL PLUGINS --> 
 <!-- BEGIN PAGE LEVEL SCRIPTS --> 
-<script src="/assets/global/scripts/metronic.js" type="text/javascript"></script> 
-<script src="/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/scripts/metronic.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
 <script src="/js/jquery.jqprint-0.3.js" type="text/javascript"></script>
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script src="/js/dpsclient.js" type="text/javascript"></script>

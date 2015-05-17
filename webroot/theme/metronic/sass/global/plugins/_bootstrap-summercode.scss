@@ -4,11 +4,17 @@ Error state for WYSIWYG Editors
 .note-editor {
 	border: 1px solid $input-border;
 
+	@include border-radius($general-border-radius); 
+
 	.note-toolbar {
 		border-bottom: 1px solid $input-border;
+
+		@include border-radius($general-border-radius $general-border-radius 0 0); 
 	}   
 
 	.note-statusbar {
+		@include border-radius(0 0 $general-border-radius $general-border-radius);   
+
 		.note-resizebar {
 			border-top: 1px solid $input-border; 
 		}		
@@ -17,6 +23,18 @@ Error state for WYSIWYG Editors
 	&.fullscreen {
 		z-index: 11000;   
 		width: 100% !important; 
+	}
+
+	.dropdown-menu {
+		&:before {
+	        left: 9px;
+	        right: auto;
+	    }
+
+	    &:after {
+	        left: 10px;
+	        right: auto;
+	    }
 	}
 }
 
@@ -27,13 +45,13 @@ Error state for WYSIWYG Editors
 }
 
 .has-error .note-editor {
-  border: 1px solid $brand-danger !important;
+  border: 1px solid $state-danger-border !important;
 }
 
 .has-success .note-editor {
-  border: 1px solid $brand-success !important;
+  border: 1px solid $state-success-border !important;
 } 
 
 .has-warning .note-editor {
-  border: 1px solid $brand-warning !important;
+  border: 1px solid $state-warning-border !important;
 } 

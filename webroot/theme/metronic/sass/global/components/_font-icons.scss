@@ -2,14 +2,13 @@
 Fontawesome Icons
 ***/
 
-[class^="fa-"],
+[class^="fa-"]:not(.fa-stack),
 [class^="glyphicon-"],
 [class^="icon-"],
-[class*=" fa-"],
+[class*=" fa-"]:not(.fa-stack),
 [class*=" glyphicon-"],  
 [class*=" icon-"] {
   display: inline-block; 
-  margin-top: 1px;
   font-size: $icon-size-normal;
   *margin-right: .3em;
   line-height: $icon-size-normal;
@@ -52,15 +51,15 @@ li [class*=" icon-"].icon-large {
 
 /* Icon sizing */
 
-.fa-sm,
+.fa-sm:not(.fa-stack),
 .icon-sm {
   font-size: 12px;
 }
 
-.fa-lg,
+.fa-lg:not(.fa-stack),
 .icon-lg {
-  font-size: 16px;
-}
+  font-size: 16px !important;
+} 
 
 .fa-2x {
   font-size: 2em;

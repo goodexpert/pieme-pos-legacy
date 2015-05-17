@@ -6,9 +6,14 @@ Customized Progress Bars
   border: 0; 
   background-image: none;
   filter: none;
+  box-shadow: none;
   -webkit-box-shadow: none;
      -moz-box-shadow: none;
           box-shadow: none;   
+
+  &.progress-sm {
+    height: 12px;
+  }
 }
 
 .progress > .progress-bar-default {
@@ -29,4 +34,15 @@ Customized Progress Bars
 
 .progress > .progress-bar-warning {
     @include progress-bar-variant($brand-warning);
+}
+
+@if $theme-type == "material-design" {
+    .progress {
+        height: 8px;
+        border-radius: 0 !important;
+
+        &.progress-sm {
+            height: 6px;
+        }
+    }
 }

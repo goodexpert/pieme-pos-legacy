@@ -10,6 +10,8 @@ var ComponentsPickers = function () {
             });
             //$('body').removeClass("modal-open"); // fix bug when inline picker is used in modal
         }
+
+        /* Workaround to restrict daterange past date select: http://stackoverflow.com/questions/11933173/how-to-restrict-the-selectable-date-ranges-in-bootstrap-datepicker */
     }
 
     var handleTimePickers = function () {
@@ -53,7 +55,7 @@ var ComponentsPickers = function () {
                 startDate: moment().subtract('days', 29),
                 endDate: moment(),
                 minDate: '01/01/2012',
-                maxDate: '12/31/2014',
+                maxDate: '12/31/2018',
             },
             function (start, end) {
                 $('#defaultrange input').val(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
@@ -67,7 +69,7 @@ var ComponentsPickers = function () {
                 startDate: moment().subtract('days', 29),
                 endDate: moment(),
                 minDate: '01/01/2012',
-                maxDate: '12/31/2014',
+                maxDate: '12/31/2018',
             },
             function (start, end) {
                 $('#defaultrange_modal input').val(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
@@ -128,6 +130,10 @@ var ComponentsPickers = function () {
     }
 
     var handleDatetimePicker = function () {
+
+        if (!jQuery().datetimepicker) {
+            return;
+        }
 
         $(".form_datetime").datetimepicker({
             autoclose: true,

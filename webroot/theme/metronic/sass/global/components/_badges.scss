@@ -19,7 +19,15 @@ Custom Bootstrap Badges
    		   -webkit-border-radius: 0 !important;
       	 -moz-border-radius: 0 !important;
           border-radius: 0 !important;
-	}
+	 }
+
+    &.badge-empty {
+      display: inline-block;
+      padding: 0;
+      min-width: 8px;   
+      height: 8px;
+      width: 8px;
+    }
 }
 
 /* Badge variants */
@@ -88,13 +96,33 @@ Dropdown Menu Badges
                	-webkit-border-radius: 12px !important;
                 -moz-border-radius: 12px !important;
                 border-radius: 12px !important;
+
+                @if $theme-type == "material-design" {
+                  padding: 4px 6px 2px 6px;
+                }
             }
         }
     }
 
     &.badge-roundless {
    		-webkit-border-radius: 0 !important;
-      	-moz-border-radius: 0 !important;
-        border-radius: 0 !important;
-	}
+      	 -moz-border-radius: 0 !important;
+              border-radius: 0 !important;
+	  }
+}
+
+
+@if $theme-type == "material-design" {
+    .badge {
+        @extend .md-shadow-z-1;  
+        text-transform: uppercase;
+        font-size: 10px; 
+        font-weight: 600;
+        padding: 4px 6px 2px 6px;
+    }
+
+    .page-sidebar .badge {
+          
+         font-size: 10px !important;
+    }
 }

@@ -2,8 +2,8 @@
 	body {
     	background-color: #fff !important;
 	}
-
-	.page-header {
+  
+	.page-bar {
 		display: none; 
 	}
 
@@ -19,7 +19,7 @@
 		display: none;    
 	}
 
-	.hidden-print {
+	.hidden-print {  
 		display: none;
 	}
 
@@ -37,6 +37,7 @@
 	}
 
 	.page-content {
+		padding: 0 !important;
 		min-height: 300px !important;
 		padding: 0px 20px 20px !important;
 		margin: 0 !important;

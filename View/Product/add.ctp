@@ -23,502 +23,477 @@
     cursor: pointer;
 }
 </style>
-
 <link href="/css/dropzone.css" rel="stylesheet" type="text/css"/>
 <link href="/css/loader.css" rel="stylesheet" type="text/css"/>
-<link rel="stylesheet" type="text/css" href="/assets/global/plugins/select2/select2.css"/>
-<div class="clearfix"> </div>
-<!-- BEGIN CONTAINER -->
-<div class="page-container">
+<link rel="stylesheet" type="text/css" href="/theme/onzsa/assets/global/plugins/select2/select2.css"/>
+<div class="clearfix"></div>
+<div class="container">
     <div id="loader-wrapper" style="display:none">
         <div id="loader"></div>
     </div>
-  <div id="notify"></div>
-  <!-- BEGIN SIDEBAR -->
-  <div class="page-sidebar-wrapper"> 
-    <!-- BEGIN HORIZONTAL RESPONSIVE MENU --> 
-    <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing --> 
-    <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-    <div class="page-sidebar navbar-collapse collapse">
-      <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
-        <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element --> 
-        <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
-        <li class="sidebar-search-wrapper"> 
-          <!-- BEGIN RESPONSIVE QUICK SEARCH FORM --> 
-          <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box --> 
-          <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-          <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
-            <a href="javascript:;" class="remove"> <i class="icon-close"></i> </a>
-            <div class="input-group">
-              <input type="text" class="form-control" placeholder="Search...">
-              <span class="input-group-btn">
-              <button class="btn submit"><i class="icon-magnifier"></i></button>
-              </span> </div>
-          </form>
-          <!-- END RESPONSIVE QUICK SEARCH FORM --> 
-        </li>
-        <li> <a href="index"> Sell </a> </li>
-        <li> <a href="history"> History </a> </li>
-        <li class="active"> <a href="history"> Product <span class="selected"></span> </a> </li>
-      </ul>
-    </div>
-    <!-- END HORIZONTAL RESPONSIVE MENU --> 
-  </div>
-  <!-- END SIDEBAR --> 
-  <!-- BEGIN CONTENT -->
-  <div class="page-content-wrapper">
-    <div class="page-content">
-      <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-        <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega"> 
-        <?php if(!isset($_GET['parent_id'])) {
-        	echo "Add Product";
-        } else {
-	        echo "Add Variant to ".$parent['MerchantProduct']['name'];
-        }?>
-         </h2>
-      </div>
-      <div class="portlet box product-add">
-        <div class="portlet-body form"> 
-          <!-- BEGIN FORM-->
-          <form action="/product/add" method="post" class="product-form" id="product-form" enctype="multipart/form-data">
-          <input type="hidden" id="parent_id" value="<?php echo isset($_GET['parent_id']) ? $_GET['parent_id'] : ''; ?>"/>
-          <div class="form-horizontal">
-            <?php if(isset($_GET['parent_id'])) { ?>
-          	<div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Variants</div>
-            <!-- START col-md-12-->
-            <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega" style="padding:0;padding-bottom:15px;"> 
-              <!-- START col-md-12-->
-              <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega variant_attr">
-                <div id="first_variant_attr" class="col-md-12 col-sm-12 col-xs-12">
-                    <div class="col-md-12 col-xs-12 col-sm-12">
-                        <table class="col-md-5 col-sm-5">
-                        	<tr>
-                        		<th>Attribute</th><th>Value</th>
-                        	</tr>
-                        	<?php if(!empty($parent['MerchantProduct']['variant_option_one_name'])) { ?>
-                        	<input type="hidden" class="variant_value_1" value="<?php echo $parent['MerchantProduct']['variant_option_one_name'];?>">
-                        	<tr>
-                        		<td><?php echo $parent['MerchantProduct']['variant_option_one_name'];?></td><td><input type="text" class="variant_default_1"></td>
-                        	</tr>
-                        	<?php } ?>
-                        	<?php if(!empty($parent['MerchantProduct']['variant_option_two_name'])) { ?>
-                        	<input type="hidden" class="variant_value_2" value="<?php echo $parent['MerchantProduct']['variant_option_two_name'];?>">
-                        	<tr>
-                        		<td><?php echo $parent['MerchantProduct']['variant_option_two_name'];?></td><td><input type="text" class="variant_default_2"></td>
-                        	</tr>
-                        	<?php } ?>
-                        	<?php if(!empty($parent['MerchantProduct']['variant_option_three_name'])) { ?>
-                        	<input type="hidden" class="variant_value_3" value="<?php echo $parent['MerchantProduct']['variant_option_three_name'];?>">
-                        	<tr>
-                        		<td><?php echo $parent['MerchantProduct']['variant_option_three_name'];?></td><td><input type="text" class="variant_default_3"></td>
-                        	</tr>
-                        	<?php } ?>
-                        </table>
-                    </div>
-                </div>
-              </div>
-              <!-- END col-md-12-->
-            </div>
-            <?php } ?>
-            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title" <?php if(isset($_GET['parent_id'])) {echo 'style="display: none;"';} ?>>Detail</div>
-            <!-- START col-md-12-->
-            <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega" <?php if(isset($_GET['parent_id'])) {echo 'style="display: none;"';} ?>>
-                <div class="col-md-6 col-sm-12 col-alpha col-omega" style="margin-bottom: 20px">
-                  <dl>
-                    <dt class="col-md-4">Product name</dt>
-                    <dd class="col-md-8">
-                      <input type="text" class="required" id="product_name" value="<?php if(isset($_GET['parent_id'])){echo $parent['MerchantProduct']['name'];}?>">
-                      <span class="help-block">
-                      <input type="checkbox" id="availability" value="1" checked>
-                      This product can be sold </span> </dd>
-                  </dl>
-                </div>
-                <div class="col-md-6 col-alpha col-omega">
-                  <dl>
-                    <dt class="col-md-4">Product handle</dt>
-                    <dd class="col-md-8">
-                      <input type="text" class="required" id="product_handle" value="<?php if(isset($_GET['parent_id'])){echo $parent['MerchantProduct']['handle'];}?>">
-                      <span class="help-block"> A unique identifier for this product </span> </dd>
-                  </dl>
-                </div>
-              <!-- START col-md-12-->
-              <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega"> 
-                <!-- START col-md-6-->
-                <div class="col-md-6 col-alpha col-omega">
-                  <dl>
-                    <dt class="col-md-4">Product type</dt>
-                    <dd class="col-md-8">
-                      <select id="product_type_id">
-                        <option value="" selected></option>
-                        <?php foreach($types as $type){?>
-                            <option value="<?php echo $type['MerchantProductType']['id'];?>" <?php if(isset($_GET['parent_id']) && $parent['MerchantProduct']['product_type_id'] == $type['MerchantProductType']['id']){echo "selected";}?>><?=$type['MerchantProductType']['name'];?></option>
-                        <?php } ?>
-                        <option value="add-type">+ Add type</option>
-                      </select>
-                    </dd>
-                  </dl>
-                  <dl>
-                    <dt class="col-md-4">Supplier</dt>
-                    <dd class="col-md-8">
-                      <select id="product_supplier_id">
-                        <option></option>
-                        <?php foreach($suppliers as $supplier){?>
-                            <option value="<?=$supplier['MerchantSupplier']['id'];?>" <?php if(isset($_GET['parent_id']) && $parent['MerchantProduct']['supplier_id'] == $supplier['MerchantSupplier']['id']){echo "selected";}?>><?=$supplier['MerchantSupplier']['name'];?></option>
-                        <?php } ?>
-                        <option value="add-supplier">+ Add supplier</option>
-                      </select>
-                    </dd>
-                  </dl>
-                </div>
-                <!-- END col-md-6--> 
-                <!-- START col-md-6-->
-                <div class="col-md-6 col-alpha col-omega">
-                  <dl>
-                    <dt class="col-md-4">Product brand</dt>
-                    <dd class="col-md-8">
-                      <select id="product_brand_id">
-                          <option value="" selected></option>
-                          <?php foreach($brands as $brand){?>
-                            <option value="<?php echo $brand['MerchantProductBrand']['id'];?>" <?php if(isset($_GET['parent_id']) && $parent['MerchantProduct']['product_brand_id'] == $brand['MerchantProductBrand']['id']){echo "selected";}?>><?=$brand['MerchantProductBrand']['name'];?></option>
-                        <?php } ?>
-                        <option value="add-brand">+ Add brand</option>
-                      </select>
-                    </dd>
-                  </dl>
-                  <dl>
-                    <dt class="col-md-4">Supplier code</dt>
-                    <dd class="col-md-8">
-                      <input type="text" id="supplier_code" value="<?php if(isset($_GET['parent_id'])){echo $parent['MerchantProduct']['supplier_code'];}?>">
-                    </dd>
-                  </dl>
-                  <dl>
-                    <dt class="col-md-4">Unit</dt>
-                    <dd class="col-md-8">
-                      <select id="product_uom">
-                          <option></option>
-                          <?php foreach($uoms as $uom) { ?>
-                            <optgroup label="<?php echo $uom['ProductUomCategory']['name'];?>">
-                                <?php foreach($uom['ProductUom'] as $unit) { ?>
-                                    <option value="<?php echo $unit['id'];?>" <?php if(isset($_GET['parent_id']) && $parent['MerchantProduct']['product_uom'] == $unit['id']){echo "selected";}?>><?php echo $unit['name'].' ('.$unit['symbol'].')';?></option>
-                                <?php }
-                          } ?>
-                      </select>
-                    </dd>
-                  </dl>
-                </div>
-                <!-- END col-md-6--> 
-              </div>
-              <!-- END col-md-12-->
-              <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega dashed-line-gr"></div>
-              <!-- START col-md-12-->
-              <div class="col-md-6 col-xs-6 col-sm-6 col-alpha col-omega margin-top-20"> 
-                <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                  <dl>
-                    <dt class="col-md-4 height-inherit">Description</dt>
-                    <dd class="col-md-8 height-inherit">
-                      <textarea id="product_description" style="width:100%" rows="5"></textarea>
-                    </dd>
-                  </dl>
-                </div>
-              </div>
-              <div class="col-md-6 col-xs-6 col-sm-6 margin-top-20">
-                  <dl class="form-group">
-                    <dt class="col-md-4">Images</dt>
-                    <dd class="col-md-8">
-                        <input name="file" type="file">
-<!--
-                        <div class="dropzone" id="drop-file">
-                          <div class="fallback">
-                            <input name="file" type="file">
-                          </div>
-                        </div>
--->
-                    </dd>
-                  </dl>
-              </div>
-              <!-- END col-md-12-->
-              <div class="dashed-line-gr"></div>
-              <div class="col-md-12 col-alpha col-omega">
-                  <dl>
-                    <dt class="col-md-2">Product tags</dt>
-                        <input type="hidden" id="tag_list" value='<?php echo json_encode($tags);?>'>
-                    <dd class="col-md-10">
-                      <input type="hidden" class="select2_sample3 product_tag" value="">
-                    </dd>
-                  </dl>
-              </div>
-              <!-- END col-md-12-->
-            </div>
-            <!-- END col-md-12-->
-            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Pricing</div>
-            <!-- START col-md-12-->
-            <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega"> 
-              <!-- START col-md-12-->
-              <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega"> 
-                  <div class="set-price col-md-12">
-                    <div class="set-price-box col-md-2 col-xs-2 col-sm-2 col-alpha">
-                        <h5><strong>Supply price</strong></h5>
-                      <input type="text" id="supply_price" value="<?php if(isset($_GET['parent_id'])){echo number_format($parent['MerchantProduct']['supply_price'],2,'.','');} else {echo "0.00";}?>">
-                      <div class="info">Excluding tax</div>
-                    </div>
-                    <div class="set-price-box col-md-2 col-xs-2 col-sm-2 col-alpha">
-                        <h5><strong>x Markup (%)</strong></h5>
-                      <input type="text" id="markup" value="<?php if(isset($_GET['parent_id'])){echo number_format($parent['MerchantProduct']['markup'] * 100,2,'.','');} else {echo "0.00";}?>">
-                    </div>
-                    <div class="set-price-box col-md-2 col-xs-2 col-sm-2 col-alpha">
-                        <h5><strong> = Retail price</strong></h5>
-                      <input type="text" id="retail_price_exclude" value="<?php if(isset($_GET['parent_id'])){echo number_format($parent['MerchantProduct']['price'],2,'.','');} else {echo "0.00";}?>">
-                      <div class="info">Excluding tax</div>
-                    </div>
-                    <div class="set-price-box col-md-3 col-xs-3 col-sm-3 col-alpha">
-                        <h5><strong>+ Sales tax</strong></h5>
-                      <select id="sales_tax">
-                          <?php foreach($taxes as $tax){ ?>
-                        <option tax-id="<?=$tax['MerchantTaxRate']['id'];?>" value="<?=$tax['MerchantTaxRate']['rate'];?>"><?=$tax['MerchantTaxRate']['name'];?></span></option>
-                        <?php } ?>
-                      </select>
-                      <input type="text" id="sales_tax_calc" class="textOnly" value="<?php if(isset($_GET['parent_id'])){echo number_format($parent['MerchantProduct']['tax'],2,'.','');} else {echo "0.00";}?>" disabled>
-                      <div class="tax_info">Currenty, GST (15%)</div>
-                    </div>
-                    <div class="set-price-box col-md-3 col-xs-3 col-sm-3 col-alpha col-omega">
-                        <h5><strong>= Retail price</strong></h5>
-                      <input type="text" id="retail_price_include" value="<?php if(isset($_GET['parent_id'])){echo number_format($parent['MerchantProduct']['price_include_tax'],2,'.','');} else {echo "0.00";}?>">
-                      <div class="info">Including tax</div>
-                    </div>
-                  </div>
-              </div>
-              <!-- END col-md-12-->
-            </div>
-            <!-- END col-md-12-->
-            <?php if(!isset($_GET['parent_id'])) { ?>
-            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Variants</div>
-            <!-- START col-md-12-->
-            <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega" style="padding:0;padding-bottom:15px;"> 
-              <!-- START col-md-12-->
-              <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega variant_attr"> 
-                <div class="line-box-stitle">Variants allow you to specify the different attributes of your product, such as size or color. You can define up to three attributes for this product (e.g. color), and each attribute can have many values (e.g. black, green, etc).
-                </div>
-                <span class="help-block">
-                  <input type="checkbox" name="variant" id="variant">
-                  <label for="variant">This product has variants</label>
-                </span>
-                <div id="first_variant_attr" class="col-md-12 col-sm-12 col-xs-12" style="display:none;">
-                    <div class="dashed-line-gr"></div>
-                    <div class="col-md-12 col-xs-12 col-sm-12">
-                        <div class="col-md-3 col-xs-3 col-sm-3">
-                            <h5><strong>Attribute</strong></h5>
-                            <div class="info"><select class="variant_value_1"><option></option><option value="variant_value_add">+ Add new attribute</option>
-                            <?php foreach($variants as $variant){ ?>
-                            <option value="<?=$variant['MerchantProductVariant']['name'];?>"><?=$variant['MerchantProductVariant']['name'];?></option>
-                            <?php } ?>
-                            
-                            </select></div>
-                        </div>
-                        <div class="col-md-3 col-xs-3 col-sm-3">
-                            <h5><strong>Default value</strong></h5>
-                            <div class="info"><input type="text" class="variant_default_1"></div>
-                        </div>
-                    </div>
-                    <span class="variant_add">Add Another Attribute</span>
-                </div>
-              </div>
-              <!-- END col-md-12-->
-            </div>
-            <?php } ?>
-            <!-- END col-md-12-->
-            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Inventory</div>
-            <!-- START col-md-12-->
-            <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega"> 
-              <!-- START col-md-12-->
-              <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega"> 
-                <!-- START col-md-6-->
-                <div class="col-md-6 col-alpha col-omega">
-                  <dl>
-                    <dt class="col-md-4">Stock keeping unit</dt>
-                    <dd class="col-md-8">
-                        <input type="text" class="required" id="sku" value="<?php if($merchant['Merchant']['use_sku_sequence'] == 1){echo $merchant['Merchant']['sku_sequence'];}?>">
-                    </dd>
-                  </dl>
-                  <?php if(!isset($_GET['parent_id'])) { ?>
-                  <dl>
-                    <dt class="col-md-4">Stock type</dt>
-                    <dd class="col-md-8">
-                      <select id="stock_type">
-                        <option value="standard">Standard</option>
-                        <option value="composite">Composite</option>
-                      </select>
-                    </dd>
-                  </dl>
-                  <?php } ?>
-                </div>
-                <!-- END col-md-6--> 
-              </div>
-              <div class="col-md-12 col-xs-12 col-sm-12 col-omega col-alpha" id="type_standard">
-                  <div class="line-box-stitle col-md-12 col-xs-12 col-sm-12">
-                      <dl class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                        <dt class="col-md-2">Stock Tracking</dt>
-                        <dd class="col-md-10">
-                          <input id="track_inventory" type="checkbox" value="1" checked>
-                          Track stock levels with onzsa
-                        </dd>
-                      </dl>
-                      <div class="dashed-line-gr"></div>
-                      <div class="col-md-12 col-sm-12 col-xs-12 stock-tracking-header">
-                          <div class="col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
-                            <h5><strong>Store</strong></h5>
-                          </div>
-                          <div class="col-md-2 col-xs-4 col-sm-4">
-                            <h5><strong>Current stock</strong></h5>
-                          </div>
-                          <div class="col-md-3 col-xs-4 col-sm-4">
-                            <h5><strong>Re-order point</strong></h5>
-                          </div>
-                          <div class="col-md-3 col-xs-4 col-sm-4">
-                            <h5><strong>Re-order amount</strong></h5>
-                          </div>
-                      </div>
-                      
-                      <?php foreach($outlets as $outlet) { ?>
-                      <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega stock-tracking">
-                            <input type="hidden" class="stock-outlet_id" value="<?php echo $outlet['MerchantOutlet']['id'];?>">
-                          <div class="col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
-                            <div class="info"><?php echo $outlet['MerchantOutlet']['name'];?></div>
-                          </div>
-                          <div class="col-md-2 col-xs-4 col-sm-4">
-                            <input type="text" class="form-control stock_count" placeholder="0">
-                          </div>
-                          <div class="col-md-3 col-xs-4 col-sm-4">
-                            <input type="text" class="form-control stock_reorder_point" placeholder="0">
-                          </div>
-                          <div class="col-md-3 col-xs-4 col-sm-4">
-                            <input type="text" class="form-control stock_reorder_amount" placeholder="0">
-                          </div>
-                      </div>
-                      <?php } ?>
-                   </div>
-              </div>
-              <div class="col-md-12 col-xs-12 col-sm-12" id="type_composite" style="display:none;">
-                  <div class="line-box-stitle col-md-12 col-xs-12 col-sm-12">
-                  <dl class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                    <dt class="col-md-12">Composite products contained specified quantities of one or more standard products.</dt>
-                  </dl>
-                  <div class="col-md-4 col-xs-4 col-sm-4">
-                    <h5><strong>Product:</strong></h5>
-                    <input type="search" id="composite_search" placeholder="Search Products">
-                    <input type="hidden" id="selected_composite_id">
-                    <div class="search_result">
-                        <span class="search-tri"></span>
-                        <div class="search-default"> No Result </div>
-                        <?php foreach($items as $item){ ?>
-                    
-                        <button type="button" data-id="<?=$item['MerchantProduct']['id'];?>" class="data-found"><?=$item['MerchantProduct']['name'];?></button>
-                        <?php } ?>
-                    </div>
-                  </div>
-                  <div class="col-md-2 col-xs-2 col-sm-2">
-                    <h5><strong>Quantity:</strong></h5>
+    <div id="notify"></div>
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper"> 
+        <!-- BEGIN HORIZONTAL RESPONSIVE MENU --> 
+        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing --> 
+        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+        <div class="page-sidebar navbar-collapse collapse">
+            <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element --> 
+                <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
+                <li class="sidebar-search-wrapper"> 
+                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM --> 
+                    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box --> 
+                    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                    <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
+                    <a href="javascript:;" class="remove"> <i class="icon-close"></i> </a>
                     <div class="input-group">
-                        <input type="number" id="composite_qty" placeholder="1">
+                        <input type="text" class="form-control" placeholder="Search...">
                         <span class="input-group-btn">
-                            <button type="button" id="composite_attr_add" class="btn btn-default" style="height:29px;padding-top:4px;">Add</button>
+                        <button class="btn submit"><i class="icon-magnifier"></i></button>
                         </span>
                     </div>
-                  </div>
-                  <div class="dashed-line-gr"></div>
-                  
-                  <div id="composite_added_list" class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
-                  
-                  </div>
-                  
-                </div>
-              </div>
-              <!-- END col-md-12-->
-            </div>
-            <!-- END col-md-12-->
-          </div>
-          <div class="form-actions fluid">
-            <div class="col-md-12 margin-top-20 col-omega">
-              <div class="pull-right">
-                <button type="button" class="btn btn-default btn-wide cancel margin-right-10">Cancel</button>
-                <button type="button" class="btn btn-primary btn-wide addProduct">Submit</button>
-              </div>
-            </div>
-          </div>
-        </form>
-        <!-- END FORM--> 
-      </div>
-    </div>
-    <input type="hidden" id="created">
-    <!-- BEGIN QUICK SIDEBAR --> 
-    <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
-    <div class="page-quick-sidebar-wrapper">
-      <div class="page-quick-sidebar">
-        <div class="nav-justified">
-          <ul class="nav nav-tabs nav-justified">
-            <li class="active"> <a href="#quick_sidebar_tab_1" data-toggle="tab"> Users <span class="badge badge-danger">2</span> </a> </li>
-            <li> <a href="#quick_sidebar_tab_2" data-toggle="tab"> Alerts <span class="badge badge-success">7</span> </a> </li>
-            <li class="dropdown"> <a href="#" class="dropdown-toggle" data-toggle="dropdown"> More<i class="fa fa-angle-down"></i> </a>
-              <ul class="dropdown-menu pull-right" role="menu">
-                <li> <a href="#quick_sidebar_tab_3" data-toggle="tab"> <i class="icon-bell"></i> Alerts </a> </li>
-                <li> <a href="#quick_sidebar_tab_3" data-toggle="tab"> <i class="icon-info"></i> Notifications </a> </li>
-                <li> <a href="#quick_sidebar_tab_3" data-toggle="tab"> <i class="icon-speech"></i> Activities </a> </li>
-                <li class="divider"> </li>
-                <li> <a href="#quick_sidebar_tab_3" data-toggle="tab"> <i class="icon-settings"></i> Settings </a> </li>
-              </ul>
-            </li>
-          </ul>
+                    </form>
+                    <!-- END RESPONSIVE QUICK SEARCH FORM --> 
+                </li>
+                <li> <a href="index"> Sell </a> </li>
+                <li> <a href="history"> History </a> </li>
+                <li class="active"> <a href="history"> Product <span class="selected"></span> </a> </li>
+            </ul>
         </div>
-      </div>
+        <!-- END HORIZONTAL RESPONSIVE MENU --> 
     </div>
-  </div>
-  <!-- END QUICK SIDEBAR --> 
-</div>
-<!-- END CONTAINER -->
+    <!-- END SIDEBAR --> 
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+        <div class="page-content">
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega"> 
+                <?php if(!isset($_GET['parent_id'])) {
+                    echo "Add Product";
+                } else {
+                    echo "Add Variant to ".$parent['MerchantProduct']['name'];
+                }?>
+                </h2>
+            </div>
+            <div class="portlet box product-add">
+                <div class="portlet-body form"> 
+                  <!-- BEGIN FORM-->
+                  <form action="/product/add" method="post" class="product-form" id="product-form" enctype="multipart/form-data">
+                  <input type="hidden" id="parent_id" value="<?php echo isset($_GET['parent_id']) ? $_GET['parent_id'] : ''; ?>"/>
+                  <div class="form-horizontal">
+                    <?php if(isset($_GET['parent_id'])) { ?>
+                      <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Variants</div>
+                    <!-- START col-md-12-->
+                    <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega" style="padding:0;padding-bottom:15px;"> 
+                      <!-- START col-md-12-->
+                      <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega variant_attr">
+                        <div id="first_variant_attr" class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="col-md-12 col-xs-12 col-sm-12">
+                                <table class="col-md-5 col-sm-5">
+                                    <tr>
+                                        <th>Attribute</th><th>Value</th>
+                                    </tr>
+                                    <?php if(!empty($parent['MerchantProduct']['variant_option_one_name'])) { ?>
+                                    <input type="hidden" class="variant_value_1" value="<?php echo $parent['MerchantProduct']['variant_option_one_name'];?>">
+                                    <tr>
+                                        <td><?php echo $parent['MerchantProduct']['variant_option_one_name'];?></td><td><input type="text" class="variant_default_1"></td>
+                                    </tr>
+                                    <?php } ?>
+                                    <?php if(!empty($parent['MerchantProduct']['variant_option_two_name'])) { ?>
+                                    <input type="hidden" class="variant_value_2" value="<?php echo $parent['MerchantProduct']['variant_option_two_name'];?>">
+                                    <tr>
+                                        <td><?php echo $parent['MerchantProduct']['variant_option_two_name'];?></td><td><input type="text" class="variant_default_2"></td>
+                                    </tr>
+                                    <?php } ?>
+                                    <?php if(!empty($parent['MerchantProduct']['variant_option_three_name'])) { ?>
+                                    <input type="hidden" class="variant_value_3" value="<?php echo $parent['MerchantProduct']['variant_option_three_name'];?>">
+                                    <tr>
+                                        <td><?php echo $parent['MerchantProduct']['variant_option_three_name'];?></td><td><input type="text" class="variant_default_3"></td>
+                                    </tr>
+                                    <?php } ?>
+                                </table>
+                            </div>
+                        </div>
+                      </div>
+                      <!-- END col-md-12-->
+                    </div>
+                    <?php } ?>
+                    <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title" <?php if(isset($_GET['parent_id'])) {echo 'style="display: none;"';} ?>>Detail</div>
+                    <!-- START col-md-12-->
+                    <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega" <?php if(isset($_GET['parent_id'])) {echo 'style="display: none;"';} ?>>
+                        <div class="col-md-6 col-sm-12 col-alpha col-omega" style="margin-bottom: 20px">
+                          <dl>
+                            <dt class="col-md-4">Product name</dt>
+                            <dd class="col-md-8">
+                              <input type="text" class="required" id="product_name" value="<?php if(isset($_GET['parent_id'])){echo $parent['MerchantProduct']['name'];}?>">
+                              <span class="help-block">
+                              <input type="checkbox" id="availability" value="1" checked>
+                              This product can be sold </span> </dd>
+                          </dl>
+                        </div>
+                        <div class="col-md-6 col-alpha col-omega">
+                          <dl>
+                            <dt class="col-md-4">Product handle</dt>
+                            <dd class="col-md-8">
+                              <input type="text" class="required" id="product_handle" value="<?php if(isset($_GET['parent_id'])){echo $parent['MerchantProduct']['handle'];}?>">
+                              <span class="help-block"> A unique identifier for this product </span> </dd>
+                          </dl>
+                        </div>
+                      <!-- START col-md-12-->
+                      <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega"> 
+                        <!-- START col-md-6-->
+                        <div class="col-md-6 col-alpha col-omega">
+                          <dl>
+                            <dt class="col-md-4">Product type</dt>
+                            <dd class="col-md-8">
+                              <select id="product_type_id">
+                                <option value="" selected></option>
+                                <?php foreach($types as $type){?>
+                                    <option value="<?php echo $type['MerchantProductType']['id'];?>" <?php if(isset($_GET['parent_id']) && $parent['MerchantProduct']['product_type_id'] == $type['MerchantProductType']['id']){echo "selected";}?>><?=$type['MerchantProductType']['name'];?></option>
+                                <?php } ?>
+                                <option value="add-type">+ Add type</option>
+                              </select>
+                            </dd>
+                          </dl>
+                          <dl>
+                            <dt class="col-md-4">Supplier</dt>
+                            <dd class="col-md-8">
+                              <select id="product_supplier_id">
+                                <option></option>
+                                <?php foreach($suppliers as $supplier){?>
+                                    <option value="<?=$supplier['MerchantSupplier']['id'];?>" <?php if(isset($_GET['parent_id']) && $parent['MerchantProduct']['supplier_id'] == $supplier['MerchantSupplier']['id']){echo "selected";}?>><?=$supplier['MerchantSupplier']['name'];?></option>
+                                <?php } ?>
+                                <option value="add-supplier">+ Add supplier</option>
+                              </select>
+                            </dd>
+                          </dl>
+                        </div>
+                        <!-- END col-md-6--> 
+                        <!-- START col-md-6-->
+                        <div class="col-md-6 col-alpha col-omega">
+                          <dl>
+                            <dt class="col-md-4">Product brand</dt>
+                            <dd class="col-md-8">
+                              <select id="product_brand_id">
+                                  <option value="" selected></option>
+                                  <?php foreach($brands as $brand){?>
+                                    <option value="<?php echo $brand['MerchantProductBrand']['id'];?>" <?php if(isset($_GET['parent_id']) && $parent['MerchantProduct']['product_brand_id'] == $brand['MerchantProductBrand']['id']){echo "selected";}?>><?=$brand['MerchantProductBrand']['name'];?></option>
+                                <?php } ?>
+                                <option value="add-brand">+ Add brand</option>
+                              </select>
+                            </dd>
+                          </dl>
+                          <dl>
+                            <dt class="col-md-4">Supplier code</dt>
+                            <dd class="col-md-8">
+                              <input type="text" id="supplier_code" value="<?php if(isset($_GET['parent_id'])){echo $parent['MerchantProduct']['supplier_code'];}?>">
+                            </dd>
+                          </dl>
+                          <dl>
+                            <dt class="col-md-4">Unit</dt>
+                            <dd class="col-md-8">
+                              <select id="product_uom">
+                                  <option></option>
+                                  <?php foreach($uoms as $uom) { ?>
+                                    <optgroup label="<?php echo $uom['ProductUomCategory']['name'];?>">
+                                        <?php foreach($uom['ProductUom'] as $unit) { ?>
+                                            <option value="<?php echo $unit['id'];?>" <?php if(isset($_GET['parent_id']) && $parent['MerchantProduct']['product_uom'] == $unit['id']){echo "selected";}?>><?php echo $unit['name'].' ('.$unit['symbol'].')';?></option>
+                                        <?php }
+                                  } ?>
+                              </select>
+                            </dd>
+                          </dl>
+                        </div>
+                        <!-- END col-md-6--> 
+                      </div>
+                      <!-- END col-md-12-->
+                      <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega dashed-line-gr"></div>
+                      <!-- START col-md-12-->
+                      <div class="col-md-6 col-xs-6 col-sm-6 col-alpha col-omega margin-top-20"> 
+                        <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                          <dl>
+                            <dt class="col-md-4 height-inherit">Description</dt>
+                            <dd class="col-md-8 height-inherit">
+                              <textarea id="product_description" style="width:100%" rows="5"></textarea>
+                            </dd>
+                          </dl>
+                        </div>
+                      </div>
+                      <div class="col-md-6 col-xs-6 col-sm-6 margin-top-20">
+                          <dl class="form-group">
+                            <dt class="col-md-4">Images</dt>
+                            <dd class="col-md-8">
+                                <input name="file" type="file">
+        <!--
+                                <div class="dropzone" id="drop-file">
+                                  <div class="fallback">
+                                    <input name="file" type="file">
+                                  </div>
+                                </div>
+        -->
+                            </dd>
+                          </dl>
+                      </div>
+                      <!-- END col-md-12-->
+                      <div class="dashed-line-gr"></div>
+                      <div class="col-md-12 col-alpha col-omega">
+                          <dl>
+                            <dt class="col-md-2">Product tags</dt>
+                                <input type="hidden" id="tag_list" value='<?php echo json_encode($tags);?>'>
+                            <dd class="col-md-10">
+                              <input type="hidden" class="select2_sample3 product_tag" value="">
+                            </dd>
+                          </dl>
+                      </div>
+                      <!-- END col-md-12-->
+                    </div>
+                    <!-- END col-md-12-->
+                    <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Pricing</div>
+                    <!-- START col-md-12-->
+                    <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega"> 
+                      <!-- START col-md-12-->
+                      <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega"> 
+                          <div class="set-price col-md-12">
+                            <div class="set-price-box col-md-2 col-xs-2 col-sm-2 col-alpha">
+                                <h5><strong>Supply price</strong></h5>
+                              <input type="text" id="supply_price" value="<?php if(isset($_GET['parent_id'])){echo number_format($parent['MerchantProduct']['supply_price'],2,'.','');} else {echo "0.00";}?>">
+                              <div class="info">Excluding tax</div>
+                            </div>
+                            <div class="set-price-box col-md-2 col-xs-2 col-sm-2 col-alpha">
+                                <h5><strong>x Markup (%)</strong></h5>
+                              <input type="text" id="markup" value="<?php if(isset($_GET['parent_id'])){echo number_format($parent['MerchantProduct']['markup'] * 100,2,'.','');} else {echo "0.00";}?>">
+                            </div>
+                            <div class="set-price-box col-md-2 col-xs-2 col-sm-2 col-alpha">
+                                <h5><strong> = Retail price</strong></h5>
+                              <input type="text" id="retail_price_exclude" value="<?php if(isset($_GET['parent_id'])){echo number_format($parent['MerchantProduct']['price'],2,'.','');} else {echo "0.00";}?>">
+                              <div class="info">Excluding tax</div>
+                            </div>
+                            <div class="set-price-box col-md-3 col-xs-3 col-sm-3 col-alpha">
+                                <h5><strong>+ Sales tax</strong></h5>
+                              <select id="sales_tax">
+                                  <?php foreach($taxes as $tax){ ?>
+                                <option tax-id="<?=$tax['MerchantTaxRate']['id'];?>" value="<?=$tax['MerchantTaxRate']['rate'];?>"><?=$tax['MerchantTaxRate']['name'];?></span></option>
+                                <?php } ?>
+                              </select>
+                              <input type="text" id="sales_tax_calc" class="textOnly" value="<?php if(isset($_GET['parent_id'])){echo number_format($parent['MerchantProduct']['tax'],2,'.','');} else {echo "0.00";}?>" disabled>
+                              <div class="tax_info">Currenty, GST (15%)</div>
+                            </div>
+                            <div class="set-price-box col-md-3 col-xs-3 col-sm-3 col-alpha col-omega">
+                                <h5><strong>= Retail price</strong></h5>
+                              <input type="text" id="retail_price_include" value="<?php if(isset($_GET['parent_id'])){echo number_format($parent['MerchantProduct']['price_include_tax'],2,'.','');} else {echo "0.00";}?>">
+                              <div class="info">Including tax</div>
+                            </div>
+                          </div>
+                      </div>
+                      <!-- END col-md-12-->
+                    </div>
+                    <!-- END col-md-12-->
+                    <?php if(!isset($_GET['parent_id'])) { ?>
+                    <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Variants</div>
+                    <!-- START col-md-12-->
+                    <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega" style="padding:0;padding-bottom:15px;"> 
+                      <!-- START col-md-12-->
+                      <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega variant_attr"> 
+                        <div class="line-box-stitle">Variants allow you to specify the different attributes of your product, such as size or color. You can define up to three attributes for this product (e.g. color), and each attribute can have many values (e.g. black, green, etc).
+                        </div>
+                        <span class="help-block">
+                          <input type="checkbox" name="variant" id="variant">
+                          <label for="variant">This product has variants</label>
+                        </span>
+                        <div id="first_variant_attr" class="col-md-12 col-sm-12 col-xs-12" style="display:none;">
+                            <div class="dashed-line-gr"></div>
+                            <div class="col-md-12 col-xs-12 col-sm-12">
+                                <div class="col-md-3 col-xs-3 col-sm-3">
+                                    <h5><strong>Attribute</strong></h5>
+                                    <div class="info"><select class="variant_value_1"><option></option><option value="variant_value_add">+ Add new attribute</option>
+                                    <?php foreach($variants as $variant){ ?>
+                                    <option value="<?=$variant['MerchantProductVariant']['name'];?>"><?=$variant['MerchantProductVariant']['name'];?></option>
+                                    <?php } ?>
+                                    
+                                    </select></div>
+                                </div>
+                                <div class="col-md-3 col-xs-3 col-sm-3">
+                                    <h5><strong>Default value</strong></h5>
+                                    <div class="info"><input type="text" class="variant_default_1"></div>
+                                </div>
+                            </div>
+                            <span class="variant_add">Add Another Attribute</span>
+                        </div>
+                      </div>
+                      <!-- END col-md-12-->
+                    </div>
+                    <?php } ?>
+                    <!-- END col-md-12-->
+                    <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title margin-top-20">Inventory</div>
+                    <!-- START col-md-12-->
+                    <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega"> 
+                      <!-- START col-md-12-->
+                      <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega"> 
+                        <!-- START col-md-6-->
+                        <div class="col-md-6 col-alpha col-omega">
+                          <dl>
+                            <dt class="col-md-4">Stock keeping unit</dt>
+                            <dd class="col-md-8">
+                                <input type="text" class="required" id="sku" value="<?php if($merchant['Merchant']['use_sku_sequence'] == 1){echo $merchant['Merchant']['sku_sequence'];}?>">
+                            </dd>
+                          </dl>
+                          <?php if(!isset($_GET['parent_id'])) { ?>
+                          <dl>
+                            <dt class="col-md-4">Stock type</dt>
+                            <dd class="col-md-8">
+                              <select id="stock_type">
+                                <option value="standard">Standard</option>
+                                <option value="composite">Composite</option>
+                              </select>
+                            </dd>
+                          </dl>
+                          <?php } ?>
+                        </div>
+                        <!-- END col-md-6--> 
+                      </div>
+                      <div class="col-md-12 col-xs-12 col-sm-12 col-omega col-alpha" id="type_standard">
+                          <div class="line-box-stitle col-md-12 col-xs-12 col-sm-12">
+                              <dl class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                                <dt class="col-md-2">Stock Tracking</dt>
+                                <dd class="col-md-10">
+                                  <input id="track_inventory" type="checkbox" value="1" checked>
+                                  Track stock levels with onzsa
+                                </dd>
+                              </dl>
+                              <div class="dashed-line-gr"></div>
+                              <div class="col-md-12 col-sm-12 col-xs-12 stock-tracking-header">
+                                  <div class="col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
+                                    <h5><strong>Store</strong></h5>
+                                  </div>
+                                  <div class="col-md-2 col-xs-4 col-sm-4">
+                                    <h5><strong>Current stock</strong></h5>
+                                  </div>
+                                  <div class="col-md-3 col-xs-4 col-sm-4">
+                                    <h5><strong>Re-order point</strong></h5>
+                                  </div>
+                                  <div class="col-md-3 col-xs-4 col-sm-4">
+                                    <h5><strong>Re-order amount</strong></h5>
+                                  </div>
+                              </div>
+                              
+                              <?php foreach($outlets as $outlet) { ?>
+                              <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega stock-tracking">
+                                    <input type="hidden" class="stock-outlet_id" value="<?php echo $outlet['MerchantOutlet']['id'];?>">
+                                  <div class="col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
+                                    <div class="info"><?php echo $outlet['MerchantOutlet']['name'];?></div>
+                                  </div>
+                                  <div class="col-md-2 col-xs-4 col-sm-4">
+                                    <input type="text" class="form-control stock_count" placeholder="0">
+                                  </div>
+                                  <div class="col-md-3 col-xs-4 col-sm-4">
+                                    <input type="text" class="form-control stock_reorder_point" placeholder="0">
+                                  </div>
+                                  <div class="col-md-3 col-xs-4 col-sm-4">
+                                    <input type="text" class="form-control stock_reorder_amount" placeholder="0">
+                                  </div>
+                              </div>
+                              <?php } ?>
+                           </div>
+                      </div>
+                      <div class="col-md-12 col-xs-12 col-sm-12" id="type_composite" style="display:none;">
+                          <div class="line-box-stitle col-md-12 col-xs-12 col-sm-12">
+                          <dl class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                            <dt class="col-md-12">Composite products contained specified quantities of one or more standard products.</dt>
+                          </dl>
+                          <div class="col-md-4 col-xs-4 col-sm-4">
+                            <h5><strong>Product:</strong></h5>
+                            <input type="search" id="composite_search" placeholder="Search Products">
+                            <input type="hidden" id="selected_composite_id">
+                            <div class="search_result">
+                                <span class="search-tri"></span>
+                                <div class="search-default"> No Result </div>
+                                <?php foreach($items as $item){ ?>
+                            
+                                <button type="button" data-id="<?=$item['MerchantProduct']['id'];?>" class="data-found"><?=$item['MerchantProduct']['name'];?></button>
+                                <?php } ?>
+                            </div>
+                          </div>
+                          <div class="col-md-2 col-xs-2 col-sm-2">
+                            <h5><strong>Quantity:</strong></h5>
+                            <div class="input-group">
+                                <input type="number" id="composite_qty" placeholder="1">
+                                <span class="input-group-btn">
+                                    <button type="button" id="composite_attr_add" class="btn btn-default" style="height:29px;padding-top:4px;">Add</button>
+                                </span>
+                            </div>
+                          </div>
+                          <div class="dashed-line-gr"></div>
+                          
+                          <div id="composite_added_list" class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
+                          
+                          </div>
+                          
+                        </div>
+                      </div>
+                      <!-- END col-md-12-->
+                    </div>
+                    <!-- END col-md-12-->
+                  </div>
+                  <div class="form-actions fluid">
+                    <div class="col-md-12 margin-top-20 col-omega">
+                      <div class="pull-right">
+                        <button type="button" class="btn btn-default btn-wide cancel margin-right-10">Cancel</button>
+                        <button type="button" class="btn btn-primary btn-wide addProduct">Submit</button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+                <!-- END FORM--> 
+              </div>
+            </div>
+            <input type="hidden" id="created">
+        </div>
+    </div>
 </div>
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) --> 
 <!-- BEGIN CORE PLUGINS --> 
 <!--[if lt IE 9]>
-<script src="/assets/global/plugins/respond.min.js"></script>
-<script src="/assets/global/plugins/excanvas.min.js"></script> 
+<script src="/theme/onzsa/assets/global/plugins/respond.min.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/excanvas.min.js"></script> 
 <![endif]--> 
-<script src="/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script> 
 <!-- IMPORTANT! Load jquery-ui-1.10.3.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip --> 
-<script src="/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script> 
 <!-- END CORE PLUGINS --> 
 <!-- BEGIN PAGE LEVEL PLUGINS --> 
-<script src="/assets/global/plugins/jqvmap/jqvmap/jquery.vmap.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.russia.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.world.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.europe.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.germany.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.usa.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jqvmap/jqvmap/data/jquery.vmap.sampledata.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/flot/jquery.flot.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/flot/jquery.flot.resize.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/flot/jquery.flot.categories.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jquery.pulsate.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/bootstrap-daterangepicker/moment.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/jquery.vmap.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.russia.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.world.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.europe.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.germany.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.usa.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/data/jquery.vmap.sampledata.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/flot/jquery.flot.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/flot/jquery.flot.resize.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/flot/jquery.flot.categories.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jquery.pulsate.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/bootstrap-daterangepicker/moment.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.js" type="text/javascript"></script> 
 <!-- IMPORTANT! fullcalendar depends on jquery-ui-1.10.3.custom.min.js for drag & drop support --> 
-<script src="/assets/global/plugins/fullcalendar/fullcalendar/fullcalendar.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jquery-easypiechart/jquery.easypiechart.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/jquery.sparkline.min.js" type="text/javascript"></script> 
-<script src="/assets/global/plugins/gritter/js/jquery.gritter.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/fullcalendar/fullcalendar/fullcalendar.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jquery-easypiechart/jquery.easypiechart.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jquery.sparkline.min.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/gritter/js/jquery.gritter.js" type="text/javascript"></script> 
 <!-- END PAGE LEVEL PLUGINS --> 
 <!-- BEGIN PAGE LEVEL SCRIPTS --> 
-<script src="/assets/global/scripts/metronic.js" type="text/javascript"></script> 
-<script src="/assets/admin/layout/scripts/layout.js" type="text/javascript"></script> 
-<script src="/assets/admin/layout/scripts/quick-sidebar.js" type="text/javascript"></script> 
-<script src="/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
-<script type="text/javascript" src="/assets/global/plugins/select2/select2.min.js"></script>
+<script src="/theme/onzsa/assets/global/scripts/metronic.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/admin/layout/scripts/layout.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
+<script type="text/javascript" src="/theme/onzsa/assets/global/plugins/select2/select2.min.js"></script>
 <script src="/js/dropzone.js"></script> 
 <script src="/js/jquery.popupoverlay.js"></script>
 <script type="text/javascript" src="/js/jquery.confirm.js"></script> 
@@ -527,7 +502,6 @@
 jQuery(document).ready(function() {    
    Metronic.init(); // init metronic core componets
    Layout.init(); // init layout
-   QuickSidebar.init() // init quick sidebar
    Index.init();
 });
 </script> 
@@ -993,7 +967,6 @@ $(document).ready(function(){
         $("#composite_search").val('');
         $("#composite_qty").val('');
     });
-
 });
 </script> 
 <!-- END JAVASCRIPTS --> 

@@ -9,7 +9,12 @@ class ReportsController extends AppController {
  *
  * @var array
  */
-    public $uses = array('MerchantOutlet', 'MerchantRegister', 'RegisterSale', 'RegisterSaleItem');
+    public $uses = array(
+        'MerchantOutlet',
+        'MerchantRegister',
+        'RegisterSale',
+        'RegisterSaleItem'
+    );
 
 /**
  * Name of layout to use with this View.

@@ -3,15 +3,13 @@ Customized Bootstrap Popover
 ***/
 
 .popover {
-    -webkit-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
-    -moz-box-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
-    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);  
+    @if $theme-type == "default" {
+        box-shadow: 5px 5px rgba(#666, 0.1);
+    }
+
     padding: 0;
 
-    .popover-title {
-        -webkit-border-radius: 0 !important;
-        -moz-border-radius: 0 !important;
-        border-radius: 0 !important;
+    .popover-title {  
         margin: 0 !important;
     }
 }
@@ -30,15 +28,26 @@ Customized Bootstrap Popover
 @include popover-variant("warning", $brand-warning);
 @include popover-variant("danger", $brand-danger);
 
-/* popover colors*/
-.popovers.yellow + .popover {
-    background: yellow;
-}
 
-.popovers.yellow + .popover .popover-title {
-    background: yellow;
-}
+@if $theme-type == "material-design" {
+    .popover {
+        @include border-radius($general-border-radius);
+        @extend .md-shadow-z-2;        
+        border: 0;
+        background: #fff; 
 
-.popovers.yellow + .popover .popover-content {
-    background: yellow;
+        > .popover-title {
+            background: #fff;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            padding: 10px 14px 6px 14px;
+            border: 0;
+        }
+
+        .arrow,
+        .arrow:after {
+            display: none !important;
+        }
+    }
 }

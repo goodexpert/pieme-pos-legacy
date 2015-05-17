@@ -6,6 +6,10 @@ Bootstrap Daterangepicker
   z-index: 10055 !important;
 }
 
+.daterangepicker {
+  margin-top: 4px;
+}
+
 .daterangepicker td {
   text-shadow: none ;
 }
@@ -30,6 +34,14 @@ Bootstrap Daterangepicker
 .daterangepicker .ranges label {
   font-weight: 300;
   display: block;
+}
+
+.daterangepicker .ranges {
+  width: 170px;
+
+  ul > li.active {
+    @include border-radius($general-border-radius);
+  }
 }
 
 .daterangepicker .ranges .btn {

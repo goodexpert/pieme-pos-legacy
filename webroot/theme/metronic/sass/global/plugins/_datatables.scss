@@ -291,3 +291,22 @@ Scroller Extension
 .dataTables_scrollBody {
   border-bottom: 1px solid #ddd !important;   
 }
+
+// popup message for copy function of the tabletools
+
+.DTTT_Print_Info {
+  width: 300px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-top: -50px;
+  margin-left: -150px;
+  background: #eee;
+  padding: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,.2);
+
+  > h6 {
+    font-size: 16px;
+    font-weight: 400;
+  }
+}

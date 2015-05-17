@@ -373,6 +373,14 @@ a:hover {
   box-shadow: 0 1px 4px rgba(228, 228, 228, 0.95);
   z-index: 9999;
 }
+
+.menu-always-on-top .header {
+  background: #fff;
+  top: 0;
+  bottom: auto;
+  position: fixed;
+}
+
 .ie8 .header {
   background: #fff !important;
 }
@@ -487,11 +495,13 @@ a:hover {
 .slider-item-1 .promo-like-text p {
   margin: 0;
 }
-.slider-item-1 .large_bold_white {
+.slider-item-1 .large_bold_white,
+.slider-item-2 .large_bold_white {
   font: 700 75px/83px "PT Sans Narrow", Arial, sans-serif;
   text-transform: uppercase;
 }
-.slider-item-1 .large_bold_white span {
+.slider-item-1 .large_bold_white span,
+.slider-item-2 .large_bold_white span {
   color: #e54a1a;
 }
 
@@ -1481,7 +1491,11 @@ Pre-Footer and pre-footer elements
 }
 
 .fancybox-overlay {
-  z-index: 9999;
+  z-index: 100000 ;
+}
+
+.fancybox-opened {
+  z-index: 100001;
 }
 
 /***
@@ -1493,6 +1507,12 @@ Styler Panel
   top: 120px;
   right: 0;
 }
+
+.color-panel .menu-pos {
+  margin: 0 0 15px 15px;
+  width: 150px;
+}
+
 .color-panel .color-mode-icons {
   top: 0;
   right: 0;

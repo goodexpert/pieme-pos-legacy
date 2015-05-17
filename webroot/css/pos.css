@@ -1910,6 +1910,118 @@ width: 1024px;
 
 }
 
+.full-count {
+	background: #F5F5F5;
+	padding: 6px;
+	margin-bottom: 16px;
+	border-radius: 5px;
+}
+
+.product-search-container {
+	background: #F5F5F5;
+	padding: 6px;
+	margin-bottom: 16px;
+	border-radius: 5px;
+}
+
+.filter-selection {
+    padding: 5px 20px;
+    margin-bottom: 20px;
+}
+
+.filter-product-results {
+    font-family: "graphik-regular","Helvetica Neue",Helvetica,Roboto,Arial,sans-serif;
+    float: right;
+    margin: 0 0 0 20px;
+    text-transform: uppercase;
+    line-height: 42px;
+    color: #adadad;
+}
+
+.filter-tag-group {
+    display: inline-block;
+    background-color: #eaf2f9;
+    border: 1px solid #dce5ed;
+    margin: 5px 5px 0 0;
+    padding-left: 10px;
+    color: #7ca5c1;
+    border-radius: 2px;
+    font-size: 15px;
+}
+
+.filter-tag-group .filter-tag-group-title {
+    color: #b5b5b5;
+}
+
+.filter-tag-group .filter-tag-items {
+    display: inline-block;
+}
+
+.filter-tag-group .filter-tag-item {
+    border-left: 1px solid #dce5ed;
+    color: #414141;
+    display: inline-block;
+    padding: 6px 25px 6px 8px;
+    position: relative;
+}
+
+.filter-tag-group .filter-tag-item:first-child {
+    border: none;
+    padding-left: 0;
+}
+
+.filter-tag-group .filter-tag-item-remove {
+    border: none;
+    background: none;
+    color: #008ae8;
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    padding: 5px 8px 0 7px;
+    outline: none;
+}
+
+.summary-container {
+    border-top: 1px solid #d2d2d2;
+    border-bottom: 1px solid #d2d2d2;
+	margin: 0;
+    background: #ebebeb;
+    padding: 0 75px;
+}
+
+.summary-item {
+    display: inline-block;
+    text-decoration: none;
+    padding: 20px 8px;
+    margin-right: 50px;
+    font-size: 16px;
+    font-family: 'graphik-regular', 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
+    color: #959595;
+    cursor: pointer;
+}
+
+.summary-item:hover, .summary-item.active {
+    border-bottom: 4px solid #ffc12c;
+    color: #414141;
+    text-decoration: none;
+}
+
+.stocktake-landing-list {
+    background-color: #ebebeb;
+    padding: 25px 75px;
+}
+
+.stocktake-landing-list .footer {
+    width: 100%;
+    margin-top: 40px;
+    padding: 20px 0;
+    background-color: transparent;
+    text-align: center;
+    font-size: 14px;
+    color: #7e7e7e;
+}
+
 @media only screen 
 and (min-device-width : 768px) 
 and (max-device-width : 1024px) 
@@ -1923,12 +2035,4 @@ and (min-device-width : 768px)
 and (max-device-width : 1024px) 
 and (orientation : portrait) 
 and (-webkit-min-device-pixel-ratio: 1) { /* STYLES GO HERE */ }
-
-
-
-
-
-
-
-
 

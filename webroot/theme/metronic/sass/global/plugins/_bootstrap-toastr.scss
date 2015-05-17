@@ -39,6 +39,10 @@ Toastr Notifications
   margin: 0 auto;
   left: 50%;
   margin-left: -150px;
+
+  .toast {
+    margin: 0 !important;
+  }
 }
 
 .toast-bottom-center {
@@ -46,4 +50,9 @@ Toastr Notifications
   margin: 0 auto;
   left: 50%;
   margin-left: -150px;
+
+  .toast {
+    margin: 0 !important;
+  }
 }
+
