@@ -244,7 +244,13 @@ class SignupController extends AppController {
             }
 
             $dataSource->commit();
-            $this->redirect('/users/login');
+
+		    $names = explode(".", $_SERVER['HTTP_HOST']);
+            if ($_SERVER['HTTP_HOST'] !== 'localhost' && !is_numeric($names[0])) {
+                $this->redirect('https://'.$data['domain_prefix'].'.onzsa.com/users/login');
+            } else {
+                $this->redirect('/users/login');
+            }
         } catch (Exception $e) {
             $dataSource->rollback();
             $this->Session->setFlash($e->getMessage());
