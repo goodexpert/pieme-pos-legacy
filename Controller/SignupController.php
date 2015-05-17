@@ -6,6 +6,13 @@ App::uses('CakeTime', 'Utility');
 class SignupController extends AppController {
 
 /**
+ * Components property.
+ *
+ * @var array
+ */
+    public $components = array('RequestHandler');
+
+/**
  * Name of layout to use with this View.
  *
  * @var string
@@ -32,7 +39,8 @@ class SignupController extends AppController {
  */
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('index', 'setup', 'check_validate');
+
+        $this->Auth->allow('index', 'check_exist', 'check_store_name', 'setup');
     }
 
 /**
@@ -45,16 +53,72 @@ class SignupController extends AppController {
             $data = $this->request->data;
             $data['name'] = $data['store_name'];
             $data['domain_prefix'] = str_replace(' ', '_', strtolower($data['name']));
-            $this->createMerchant($data);
-        }
-    }
-    
-    public function check_validate() {
-        if ($this->request->is('post')) {
-            //Keep getting 500 error
+            $this->_createSubscriber($data);
         }
     }
 
+/**
+ * Check the merchant code.
+ *
+ * @return void
+ */
+    public function check_exist() {
+        $result = array(
+            'success' => false
+        );
+
+        if ($this->request->is('post') || $this->request->is('ajax')) {
+            $this->loadModel('Merchant');
+
+            try {
+                $data = $this->request->data;
+                $merchant = $this->Merchant->findByMerchantCode($data);
+
+                if (!empty($merchant) && is_array($merchant)) {
+                    $result['success'] = true;
+                    $result['merchant_id'] = $merchant['Merchant']['id'];
+                    $result['store_name'] = $merchant['Merchant']['name'];
+                    $result['subscriber_id'] = $merchant['Merchant']['subscriber_id'];
+                }
+            } catch (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+        }
+        $this->serialize($result);
+    }
+
+/**
+ * Check the merchant name.
+ *
+ * @return void
+ */
+    public function check_store_name() {
+        $result = array(
+            'success' => false
+        );
+
+        if ($this->request->is('ajax') || $this->request->is('post')) {
+            $this->loadModel('Merchant');
+
+            try {
+                $data = $this->request->data;
+                $merchant = $this->Merchant->findByName($data);
+
+                if (!empty($merchant) && is_array($merchant)) {
+                    $result['success'] = true;
+                }
+            } catch (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+        }
+        $this->serialize($result);
+    }
+    
+/**
+ * Test setup function.
+ *
+ * @return void
+ */
     public function setup() {
         $data = array(
             'name' => 'master',
@@ -69,26 +133,28 @@ class SignupController extends AppController {
             'default_currency' => 'NZD',
             'time_zone' => 'Pacific/Auckland',
         );
-        $this->createMerchant($data);
+        $this->_createSubscriber($data);
     }
 
 /**
- * Create random password
+ * Generate a random merchant code
  *
  * @return string
  */
-    function generate_password( $length = 8 ) {
+    protected function _generateMerchantCode($length = 6) {
         $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-=+;:,.?";
-        $password = substr( str_shuffle( $chars ), 0, $length );
+        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        $password = substr(str_shuffle( $chars ), 0, $length);
         return $password;
     }
 
 /**
- * Create the merchant function.
+ * Create the subscriber function.
  *
- * @return boolean
+ * @param array signup data
+ * @return void
  */
-    private function createMerchant($data) {
+    protected function _createSubscriber($data) {
         $dataSource = $this->Contact->getDataSource();
         $dataSource->begin();
 
@@ -102,13 +168,13 @@ class SignupController extends AppController {
                 $retailer_id = $this->MerchantRetailer->id;
                 
                 // create a default user
-                $this->createDefaultUser($merchant_id, $retailer_id, $data['username'], $data['password'], $data['first_name'] . ' ' . $data['last_name']);
+                $this->_createDefaultUser($merchant_id, $retailer_id, $data['username'], $data['password'], $data['first_name'] . ' ' . $data['last_name']);
                 
                 // create a quick key
-                $quick_key_id = $this->createDefaultQuickKey($merchant_id, $retailer_id);
+                $quick_key_id = $this->_createDefaultQuickKey($merchant_id, $retailer_id);
 
                 // create a receipt template
-                $receipt_template_id = $this->createDefaultReceiptTemplate($merchant_id, $retailer_id, $data['name']);
+                $receipt_template_id = $this->_createDefaultReceiptTemplate($merchant_id, $retailer_id, $data['name']);
                 
                 // create a main outlet and register
                 $this->createDefaultOutlet($merchant_id, $retailer_id, $quick_key_id, $receipt_template_id);
@@ -130,7 +196,7 @@ class SignupController extends AppController {
                 // create a merchant
                 $this->Merchant->create();
                 $merchant['Merchant'] = $data;
-                $merchant['Merchant']['merchant_code'] = $this->generate_password(6);
+                $merchant['Merchant']['merchant_code'] = $this->_generateMerchantCode(6);
                 if ($data['plan_id'] == 'subscriber_plan_retailer_trial') {
                     $merchant['Merchant']['trial_ends'] = CakeTime::format('+30 days', '%Y-%m-%d');
                 }
@@ -138,43 +204,43 @@ class SignupController extends AppController {
                 $merchant_id = $this->Merchant->id;
                 
                 // create a default user
-                $this->createDefaultUser($merchant_id, NULL, $data['username'], $data['password'], $data['first_name'] . ' ' . $data['last_name']);
+                $this->_createDefaultUser($merchant_id, NULL, $data['username'], $data['password'], $data['first_name'] . ' ' . $data['last_name']);
                 
                 // create a default customer group
-                $customer_group_id = $this->createDefaultCustomerGroup($merchant_id);
+                $customer_group_id = $this->_createDefaultCustomerGroup($merchant_id);
     
                 // create a default customer
-                $this->createDefaultCustomer($merchant_id, $customer_group_id);
+                $this->_createDefaultCustomer($merchant_id, $customer_group_id);
     
                 // create default tax rates
-                $default_tax_id = $this->createDefaultTaxRates($merchant_id, $data['physical_country_id']);
+                $default_tax_id = $this->_createDefaultTaxRates($merchant_id, $data['physical_country_id']);
     
                 // create default payment types
-                $this->createDefaultPaymentTypes($merchant_id);
+                $this->_createDefaultPaymentTypes($merchant_id);
     
                 // create a quick key
-                $quick_key_id = $this->createDefaultQuickKey($merchant_id, NULL);
+                $quick_key_id = $this->_createDefaultQuickKey($merchant_id, NULL);
     
                 // create a receipt template
-                $receipt_template_id = $this->createDefaultReceiptTemplate($merchant_id, NULL, $data['name']);
+                $receipt_template_id = $this->_createDefaultReceiptTemplate($merchant_id, NULL, $data['name']);
     
                 // create a main outlet and register
-                $this->createDefaultOutlet($merchant_id, NULL, $quick_key_id, $receipt_template_id);
+                $this->_createDefaultOutlet($merchant_id, NULL, $quick_key_id, $receipt_template_id);
     
                 // create default supplier
-                $supplier_id = $this->createDefaultSupplier($merchant_id, $contact, $data['name']);
+                $supplier_id = $this->_createDefaultSupplier($merchant_id, $contact, $data['name']);
     
                 // create default products
-                $this->createDefaultProducts($merchant_id, $supplier_id, $default_tax_id, $quick_key_id);
+                $this->_createDefaultProducts($merchant_id, $supplier_id, $default_tax_id, $quick_key_id);
     
                 // create a default price book
-                $this->createDefaultPriceBook($merchant_id, $customer_group_id);
+                $this->_createDefaultPriceBook($merchant_id, $customer_group_id);
     
                 // create a default inventories
-                $this->createDefaultInventory($merchant_id);
+                $this->_createDefaultInventory($merchant_id);
     
                 // create a merchant loyalty
-                $this->createMerchantLoyalty($merchant_id, $data['name']);
+                $this->_createMerchantLoyalty($merchant_id, $data['name']);
             }
 
             $dataSource->commit();
@@ -182,9 +248,7 @@ class SignupController extends AppController {
         } catch (Exception $e) {
             $dataSource->rollback();
             $this->Session->setFlash($e->getMessage());
-            return false;
         }
-        return true;
     }
 
 /**
@@ -192,7 +256,7 @@ class SignupController extends AppController {
  *
  * @return void
  */
-    private function createDefaultUser($merchant_id, $retailer_id, $username, $password, $display_name) {
+    protected function _createDefaultUser($merchant_id, $retailer_id, $username, $password, $display_name) {
         $this->loadModel('MerchantUser');
 
         $this->MerchantUser->create();
@@ -214,7 +278,7 @@ class SignupController extends AppController {
  *
  * @return uuid
  */
-    private function createDefaultCustomerGroup($merchant_id) {
+    protected function _createDefaultCustomerGroup($merchant_id) {
         $this->loadModel('MerchantCustomerGroup');
 
         // create a default customer group
@@ -232,7 +296,7 @@ class SignupController extends AppController {
  *
  * @return uuid
  */
-    private function createDefaultCustomer($merchant_id, $customer_group_id) {
+    protected function _createDefaultCustomer($merchant_id, $customer_group_id) {
         $this->loadModel('MerchantCustomer');
 
         // create a default customer
@@ -250,7 +314,7 @@ class SignupController extends AppController {
  *
  * @return void
  */
-    private function createDefaultPaymentTypes($merchant_id) {
+    protected function _createDefaultPaymentTypes($merchant_id) {
         $this->loadModel('MerchantPaymentType');
         $this->loadModel('PaymentType');
 
@@ -277,7 +341,7 @@ class SignupController extends AppController {
  *
  * @return uuid
  */
-    private function createDefaultTaxRates($merchant_id, $country_id) {
+    protected function _createDefaultTaxRates($merchant_id, $country_id) {
         $this->loadModel('MerchantTaxRate');
         $this->loadModel('TaxRate');
 
@@ -321,7 +385,7 @@ class SignupController extends AppController {
  *
  * @return uuid
  */
-    private function createDefaultQuickKey($merchant_id, $retailer_id) {
+    protected function _createDefaultQuickKey($merchant_id, $retailer_id) {
         $this->loadModel('MerchantQuickKey');
 
         // create a quick key
@@ -332,7 +396,7 @@ class SignupController extends AppController {
         $this->MerchantQuickKey->save(array('MerchantQuickKey' => $data));
 
         // update a default quick key id
-        if(empty($retailer_id)) {
+        if (empty($retailer_id)) {
             $this->Merchant->id = $merchant_id;
             $this->Merchant->saveField('default_quick_key_id', $this->MerchantQuickKey->id);
         }
@@ -344,11 +408,11 @@ class SignupController extends AppController {
  *
  * @return uuid
  */
-    private function createDefaultReceiptTemplate($merchant_id, $retailer_id, $store_name) {
+    protected function _createDefaultReceiptTemplate($merchant_id, $retailer_id, $store_name) {
         $this->loadModel('MerchantReceiptTemplate');
         $this->loadModel('ReceiptStyle');
 
-        if(empty($retailer_id)) {
+        if (empty($retailer_id)) {
             // create a receipt template
             $this->MerchantReceiptTemplate->create();
             $data['merchant_id'] = $merchant_id;
@@ -370,7 +434,7 @@ class SignupController extends AppController {
  *
  * @return void
  */
-    private function createDefaultOutlet($merchant_id, $retailer_id, $quick_key_id, $receipt_template_id) {
+    protected function _createDefaultOutlet($merchant_id, $retailer_id, $quick_key_id, $receipt_template_id) {
         $this->loadModel('MerchantOutlet');
         $this->loadModel('MerchantRegister');
 
@@ -394,7 +458,7 @@ class SignupController extends AppController {
  *
  * @return uuid
  */
-    private function createDefaultSupplier($merchant_id, $contact, $name) {
+    protected function _createDefaultSupplier($merchant_id, $contact, $name) {
         $this->loadModel('MerchantSupplier');
 
         // create a contact
@@ -416,7 +480,7 @@ class SignupController extends AppController {
  *
  * @return void
  */
-    private function createDefaultProducts($merchant_id, $supplier_id, $tax_id, $quick_key_id) {
+    protected function _createDefaultProducts($merchant_id, $supplier_id, $tax_id, $quick_key_id) {
         $this->loadModel('MerchantProductBrand');
         $this->loadModel('MerchantProductType');
         $this->loadModel('MerchantProductTag');
@@ -533,7 +597,7 @@ class SignupController extends AppController {
  *
  * @return void
  */
-    private function createDefaultPriceBook($merchant_id, $customer_group_id) {
+    protected function _createDefaultPriceBook($merchant_id, $customer_group_id) {
         $this->loadModel('MerchantProduct');
         $this->loadModel('MerchantPriceBook');
         $this->loadModel('MerchantPriceBookEntry');
@@ -574,7 +638,7 @@ class SignupController extends AppController {
  *
  * @return void
  */
-    private function createDefaultInventory($merchant_id) {
+    protected function _createDefaultInventory($merchant_id) {
         $this->loadModel('MerchantOutlet');
         $this->loadModel('MerchantProduct');
         $this->loadModel('MerchantProductInventory');
@@ -611,7 +675,7 @@ class SignupController extends AppController {
  *
  * @return void
  */
-    private function createMerchantLoyalty($merchant_id, $store_name) {
+    protected function _createMerchantLoyalty($merchant_id, $store_name) {
         $this->loadModel('MerchantLoyalty');
 
         // create a merchant loyalty

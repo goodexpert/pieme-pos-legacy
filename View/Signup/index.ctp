@@ -1,80 +1,100 @@
 <div class="clearfix"></div>
 <div class="container">
-  <!-- BEGIN CONTENT -->
-  <div class="page-content-wrapper">
-    <div class="page-content sell-index col-lg-12 col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
-      <div class="maximum col-lg-12 col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 signup-img">
-                <img src="/img/ipad.png" alt="signup-img" >
-            </div>
-            <!-- General Information -->
-            <div id="signup_general_info" class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container">
-                <form class="line-box" action="/signup/index.json" method="post" role="form" data-toggle="validator">
-                    <h1>Sign up</h1>
-                    <div class="dashed-line-gr"><?php echo $this->Session->flash(); ?></div>
-                    <dl>
-                        <dt class="hidden">Private web address</dt>
-                        <dd class="hidden"><input type="hidden" name="domain_prefix" id="domain_prefix"></dd>
-                        <dt>First name</dt>
-                        <dd><input type="text" name="first_name" id="first_name" class="required" autocomplete="off" required></dd>
-                        <dt>Last name</dt>
-                        <dd><input type="text" name="last_name" id="last_name" class="required" autocomplete="off" required></dd>
-                        <dt>Mail address</dt>
-                        <dd><input type="email" name="username" id="username" class="required" autocomplete="off" required></dd>
-                        <dt>Password</dt>
-                        <dd><input type="password" name="password" id="password" class="required" autocomplete="off" required></dd>
-                        <dt>City</dt>
-                        <dd><input type="text" name="physical_city" id="physical_city" autocomplete="on" value="Auckland" required></dd>
-                        <dt class="hidden">Country</dt>
-                        <dd class="hidden"><input type="text" name="physical_country_id" id="physical_country_id" value="NZ"></dd>
-                        <dt class="hidden">Default currency</dt>
-                        <dd class="hidden"><input type="text" name="default_currency" id="default_currency" value="NZD"></dd>
-                        <dt class="hidden">Timezone</dt>
-                        <dd class="hidden"><input type="text" name="time_zone" id="time_zone" value="Pacific/Auckland"></dd>
-                    </dl>
-                    <div class="dashed-line-gr"></div>
-                    <dl>
-                        <!--
-                        <dt>Type</dt>
-                        <dd>
-                            <select id="plan_id_1" name="plan_id_1">
-                                <option value="subscriber_plan_retailer">Single Merchant</option>
-                                <option value="subscriber_plan_franchise">Join Franchise</option>
-                                <option value="subscriber_plan_franchise_hq">Open Franchise</option>
-                                <option value="subscriber_plan_retailer_trial" selected>Trial</option>
-                            </select>
-                        </dd>
-                        <dt class="plan_id_2" style="display: none;">Plan</dt>
-                        <dd class="plan_id_2" style="display: none;">
-                            <select id="plan_id_2" name="plan_id_2">
-                                <option value="small">Small</option>
-                                <option value="medium">Medium</option>
-                                <option value="large">Large</option>
-                                <option value="xlarge">Extra Large</option>
-                            </select>
-                            <h5><a>Detail about our plan</a></h5>
-                        </dd>
-                        -->
-                        <input type="hidden" id="plan_id" name="plan_id" value="subscriber_plan_retailer_trial">
-                        <dt class="store_name">Store name</dt>
-                        <dd class="store_name"><input type="text" name="store_name" id="store_name" class="required" autocomplete="off" required><div class="help-block with-errors"></div></dd>
-                        <dt class="merchant_code" style="display: none;">Store code</dt>
-                        <dd class="merchant_code" style="display: none;">
-                            <input type="text" id="merchant_code" name="merchant_code" maxlength="6" placeholder="Enter store code" autocomplete="off">
-                            <input type="hidden" id="subscriber_id" name="subscriber_id">
-                            <input type="hidden" id="parent_merchant_id" name="parent_merchant_id">
-                        </dd>
-                    </dl>
-                    <div class="dashed-line-gr"></div>
-                    <button type="submit" id="signup" class="btn btn-success" >Start</button>
-                </form>
+    <!-- BEGIN CONTENT -->
+    <div class="page-content-wrapper">
+        <div class="page-content sell-index col-lg-12 col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
+            <div class="maximum col-lg-12 col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="col-lg-7 col-md-7 col-sm-7 col-xs-7 signup-img">
+                        <img src="/img/ipad.png" alt="signup-img" >
+                    </div>
+                    <!-- General Information -->
+                    <form action="/signup/index" method="post" role="form" data-toggle="validator">
+                    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container line-box">
+                        <h1>Sign up</h1>
+                        <div class="dashed-line-gr"><?php echo $this->Session->flash(); ?></div>
+                        <dl>
+                            <dt class="hidden">Private web address</dt>
+                            <dd class="hidden">
+                                <input type="hidden" name="domain_prefix" id="domain_prefix">
+                            </dd>
+                            <dt>First name</dt>
+                            <dd>
+                                <input type="text" name="first_name" id="first_name" class="required" autocomplete="off" required>
+                            </dd>
+                            <dt>Last name</dt>
+                            <dd>
+                                <input type="text" name="last_name" id="last_name" class="required" autocomplete="off" required>
+                            </dd>
+                            <dt>Mail address</dt>
+                            <dd>
+                                <input type="email" name="username" id="username" class="required" autocomplete="off" required>
+                            </dd>
+                            <dt>Password</dt>
+                            <dd>
+                                <input type="password" name="password" id="password" class="required" autocomplete="off" required>
+                            </dd>
+                            <dt>City</dt>
+                            <dd>
+                                <input type="text" name="physical_city" id="physical_city" autocomplete="on" value="Auckland" required>
+                            </dd>
+                            <dt class="hidden">Country</dt>
+                            <dd class="hidden">
+                                <input type="text" name="physical_country_id" id="physical_country_id" value="NZ">
+                            </dd>
+                            <dt class="hidden">Default currency</dt>
+                            <dd class="hidden">
+                                <input type="text" name="default_currency" id="default_currency" value="NZD">
+                            </dd>
+                            <dt class="hidden">Timezone</dt>
+                            <dd class="hidden">
+                                <input type="text" name="time_zone" id="time_zone" value="Pacific/Auckland">
+                            </dd>
+                        </dl>
+                        <div class="dashed-line-gr"></div>
+                        <dl>
+                            <!--
+                            <dt>Type</dt>
+                            <dd>
+                                <select id="plan_id_1" name="plan_id_1">
+                                    <option value="subscriber_plan_retailer">Single Merchant</option>
+                                    <option value="subscriber_plan_franchise">Join Franchise</option>
+                                    <option value="subscriber_plan_franchise_hq">Open Franchise</option>
+                                    <option value="subscriber_plan_retailer_trial" selected>Trial</option>
+                                </select>
+                            </dd>
+                            <dt class="plan_id_2" style="display: none;">Plan</dt>
+                            <dd class="plan_id_2" style="display: none;">
+                                <select id="plan_id_2" name="plan_id_2">
+                                    <option value="small">Small</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="large">Large</option>
+                                    <option value="xlarge">Extra Large</option>
+                                </select>
+                                <h5><a>Detail about our plan</a></h5>
+                            </dd>
+                            -->
+                            <input type="hidden" id="plan_id" name="plan_id" value="subscriber_plan_retailer_trial">
+                            <dt class="store_name">Store name</dt>
+                            <dd class="store_name">
+                                <input type="text" name="store_name" id="store_name" class="required" autocomplete="off" required><div class="help-block with-errors"></div>
+                            </dd>
+                            <dt class="merchant_code" style="display: none;">Store code</dt>
+                            <dd class="merchant_code" style="display: none;">
+                                <input type="text" id="merchant_code" name="merchant_code" maxlength="6" placeholder="Enter store code" autocomplete="off">
+                                <input type="hidden" id="subscriber_id" name="subscriber_id">
+                                <input type="hidden" id="parent_merchant_id" name="parent_merchant_id">
+                            </dd>
+                        </dl>
+                        <div class="dashed-line-gr"></div>
+                        <button type="submit" id="signup" class="btn btn-success" >Start</button>
+                    </div>
+                    </form>
+                </div>
             </div>
         </div>
-      </div>
     </div>
-  </div>
-  <!-- END CONTENT --> 
+    <!-- END CONTENT --> 
 </div>
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
@@ -110,47 +130,9 @@ jQuery(document).ready(function() {
     Metronic.init(); // init metronic core components
     Layout.init(); // init current layout
     Login.init();
-});
-</script>
-<!-- END JAVASCRIPTS -->
 
-<script>
-$(document).ready(function(){
-    /*
-    var country_code;
-    var city;
-    var timezone;
-    function initialize() {
-        var input = document.getElementById('physical_city');
-        var options = {
-            types: ['(cities)'],
-        };
-        var autocomplete = new google.maps.places.Autocomplete(input, options);
-        google.maps.event.addListener(autocomplete, 'place_changed', function(){
-            var place = autocomplete.getPlace();
-            for(var i = 0; i < place.address_components.length; i++){
-                var placeComponents = place.address_components[i];
-                for(var j = 0; j < placeComponents.types.length; j++){
-                    if(placeComponents.types[j] == 'country'){
-                        country_code = placeComponents.short_name;
-                    }
-                    if(placeComponents.types[j] == 'locality'){
-                        city = placeComponents.long_name;
-                    }
-                }
-            }
-            $.ajax({
-                url: 'https://maps.googleapis.com/maps/api/timezone/json?location='+place.geometry.location.k+','+place.geometry.location.D+'&timestamp=1331161200&sensor=false',
-                success: function(result){
-                    timezone = result.timeZoneId;    
-                }
-            });
-        });
-    }
-    google.maps.event.addDomListener(window, 'load', initialize);
-
-
-    */
+    // initialize Google Maps API
+    initGoogleMapsApi();
 
     /*
     $("#register_form").submit(function(){
@@ -175,6 +157,7 @@ $(document).ready(function(){
         validation();
     });
     */
+
     /*
      * Account Type Select
      */
@@ -198,24 +181,25 @@ $(document).ready(function(){
             $(".store_name").show();
         }
     });
+
     $(document).on("keyup", "#store_name", function() {
         if($(this).val().length > 0) {
             $(".with-errors").text('verifying...');
             $.ajax({
-                url: '/users/check_store_name.json',
+                url: '/signup/check_store_name.json',
                 type: 'POST',
                 data: {
                     name: $("#store_name").val()
                 },
                 success: function(result) {
-                    if(result.success) {
-                        $(".with-errors").text('');
-                        $("#store_name").removeClass("invalid");
-                        $("#signup").attr({"disabled":false});
-                    } else {
+                    if (result.success) {
                         $(".with-errors").text('store name already in use');
                         $("#store_name").addClass("invalid");
                         $("#signup").attr({"disabled":true});
+                    } else {
+                        $(".with-errors").text('');
+                        $("#store_name").removeClass("invalid");
+                        $("#signup").attr({"disabled":false});
                     }
                 }
             });
@@ -223,12 +207,13 @@ $(document).ready(function(){
             $(".with-errors").text('');
         }
     });
+
     $(document).on("keyup", "#merchant_code", function() {
         if($(this).val().length == 6) {
             console.log("Identifying...");
 
             $.ajax({
-                url: '/users/check_exist.json',
+                url: '/signup/check_exist.json',
                 type: 'POST',
                 data: {
                     merchant_code: $("#merchant_code").val()
@@ -252,4 +237,40 @@ $(document).ready(function(){
         }
     });
 });
+
+function initGoogleMapsApi() {
+    var input = document.getElementById('physical_city');
+    var options = {
+        types: ['(cities)'],
+        componentRestrictions: {country: 'nz'}
+    };
+
+    var autocomplete = new google.maps.places.Autocomplete(input, options);
+
+    google.maps.event.addListener(autocomplete, 'place_changed', function() {
+        var place = autocomplete.getPlace();
+        for (var i = 0; i < place.address_components.length; i++){
+            for (var j = 0; j < place.address_components[i].types.length; j++){
+                var addressType = place.address_components[i].types[j];
+                if (addressType == 'locality') {
+                    city = place.address_components[i].long_name;
+                }
+                if (addressType == 'country') {
+                    country_code = place.address_components[i].short_name;
+                }
+            }
+        }
+
+        timestamp = new Date().getTime() / 1000;
+        $.ajax({
+            url: 'https://maps.googleapis.com/maps/api/timezone/json?location='
+                +place.geometry.location.lat()+','+place.geometry.location.lng()+'&timestamp='+timestamp+'&sensor=false',
+            success: function(result){
+                console.log(result);
+                timezone = result.timeZoneId;    
+            }
+        });
+    });
+}
 </script>
+<!-- END JAVASCRIPTS -->

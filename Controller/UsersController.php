@@ -42,7 +42,7 @@ class UsersController extends AppController {
  */
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('login', 'check_exist', 'check_store_name');
+        $this->Auth->allow('login');
     }
 
 /**
@@ -276,63 +276,6 @@ class UsersController extends AppController {
             ));
         } else {
             $this->layout = 'ajax';
-        }
-    }
-
-/**
- * Check the merchant code.
- *
- * @return void
- */
-    public function check_exist() {
-        if ($this->request->is('post') || $this->request->is('ajax')) {
-            $this->loadModel('Merchant');
-            $result = array(
-                'success' => false
-            );
-
-            try {
-                $data = $this->request->data;
-                $merchant = $this->Merchant->findByMerchantCode($data);
-
-                if (!empty($merchant)) {
-                    $result['success'] = true;
-                    $result['merchant_id'] = $merchant['Merchant']['id'];
-                    $result['store_name'] = $merchant['Merchant']['name'];
-                    $result['subscriber_id'] = $merchant['Merchant']['subscriber_id'];
-                }
-            } catch (Exception $e) {
-                $result['message'] = $e->getMessage();
-            }
-            $this->serialize($result);
-            return;
-        }
-    }
-
-/**
- * Check the merchant name.
- *
- * @return void
- */
-    public function check_store_name() {
-        if ($this->request->is('post') || $this->request->is('ajax')) {
-            $this->loadModel('Merchant');
-            $result = array(
-                'success' => true
-            );
-
-            try {
-                $data = $this->request->data;
-                $merchant = $this->Merchant->findByName($data);
-
-                if(!empty($merchant)) {
-                    $result['success'] = false;
-                }
-            } catch (Exception $e) {
-                $result['message'] = $e->getMessage();
-            }
-            $this->serialize($result);
-            return;
         }
     }
 
