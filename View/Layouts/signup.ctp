@@ -39,7 +39,7 @@
     <link href="/css/pos.css" rel="stylesheet" type="text/css"/>
     <link href="/css/custom.keypad.css" rel="stylesheet" type="text/css">
     <!-- END THEME STYLES -->
-    <link rel="shortcut icon" href="onzsa.ico"/>
+    <link rel="shortcut icon" href="/onzsa.ico"/>
 </head>
 <body class="page-header-fixed page-quick-sidebar-over-content page-full-width">
     <div id="container">
