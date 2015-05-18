@@ -347,7 +347,7 @@ jQuery(document).ready(function() {
         $(".message").remove();
         $('<h5 class="message">verifying...</h5>').insertAfter($("#merchant_code"));
         $.ajax({
-            url: '/users/check_exist.json',
+            url: '/signup/check_exist.json',
             type: 'POST',
             data: {
                 merchant_code: $("#merchant_code").val()

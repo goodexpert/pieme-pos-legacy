@@ -226,9 +226,9 @@ class UsersController extends AppController {
 
                 $_SESSION["Auth"]["User"]["Subscriber"] = $this->Subscriber->findById($user['Merchant']['subscriber_id']);
                 $_SESSION["Auth"]["User"]["Loyalty"] = $this->MerchantLoyalty->findByMerchantId($user['merchant_id']);
+
                 // Create a cookie variable
                 $this->Cookie->write('session_id', rand());
-
                 return $this->redirect($this->Auth->redirect());
             }
             $this->Session->setFlash(__('Invalid username or password, try again'));
@@ -277,36 +277,6 @@ class UsersController extends AppController {
         } else {
             $this->layout = 'ajax';
         }
-    }
-
-/**
- * Check the merchant code.
- *
- * @return void
- */
-    public function check_exist() {
-        $result = array(
-            'success' => false
-        );
-
-        if ($this->request->is('post') || $this->request->is('ajax')) {
-            $this->loadModel('Merchant');
-
-            try {
-                $data = $this->request->data;
-                $merchant = $this->Merchant->findByMerchantCode($data);
-
-                if (!empty($merchant) && is_array($merchant)) {
-                    $result['success'] = true;
-                    $result['merchant_id'] = $merchant['Merchant']['id'];
-                    $result['store_name'] = $merchant['Merchant']['name'];
-                    $result['subscriber_id'] = $merchant['Merchant']['subscriber_id'];
-                }
-            } catch (Exception $e) {
-                $result['message'] = $e->getMessage();
-            }
-        }
-        $this->serialize($result);
     }
 
 }

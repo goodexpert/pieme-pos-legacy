@@ -10,7 +10,7 @@
             <div class="maximum col-lg-12 col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="signin-container">
-                        <form action="/users/login" method="post">
+                        <form action="/users/login" method="post" id="login_form">
                         <div class="line-box">
                             <h1>Sign in</h1>
                             <div class="dashed-line-gr"></div>
@@ -27,7 +27,7 @@
                                     if (empty($subdomain) || $subdomain === 'secure') :
                                  ?>
                                     <?php
-                                        echo $this->Form->input('domain_prefix', array(
+                                        echo $this->Form->input('Merchant.domain_prefix', array(
                                             'id' => 'domain_prefix',
                                             'type' => 'text',
                                             'div' => false,
@@ -38,9 +38,9 @@
                                 <?php
                                     else :
                                  ?>
-                                    <div class="form-row mb-10">
-                                        <h5 class="form-heading"><?php echo $subdomain; ?></h5>
-                                        <a href="https://secure.onzsa.com/signin">Not your store?</a>
+                                    <div>
+                                        <span class="pull-left"><?php echo $subdomain; ?></span>
+                                        <a href="https://secure.onzsa.com/users/login" class="pull-right">Not your store?</a>
                                     </div>
                                 <?php
                                     endif;
@@ -49,7 +49,7 @@
                                 <dt>Email or Username</dt>
                                 <dd>
                                     <?php
-                                        echo $this->Form->input('username', array(
+                                        echo $this->Form->input('MerchantUser.username', array(
                                             'id' => 'username',
                                             'type' => 'text',
                                             'div' => false,
@@ -61,7 +61,7 @@
                                 <dt>Password</dt>
                                 <dd>
                                     <?php
-                                        echo $this->Form->input('password', array(
+                                        echo $this->Form->input('MerchantUser.password', array(
                                             'id' => 'password',
                                             'type' => 'password',
                                             'div' => false,
@@ -72,7 +72,7 @@
                                 </dd>
                             </dl>
                             <div class="dashed-line-gr"></div>
-                            <button class="btn btn-success"><img src="/img/ONZSA_eye.png">Start onzsa</button>
+                            <button class="btn btn-success submit"><img src="/img/ONZSA_eye.png">Start onzsa</button>
                         </div>
                         </form>
                     </div>
@@ -115,6 +115,13 @@ jQuery(document).ready(function() {
     Metronic.init(); // init metronic core components
     Layout.init(); // init current layout
     Login.init();
+
+    $(".submit").click(function(e) {
+        if ($("#domain_prefix")) {
+            var form = $("#login_form");
+            form.attr("action", "https://"+$("#domain_prefix").val()+".onzsa.com/users/login");
+        }
+    });
 });
 </script>
 <!-- END JAVASCRIPTS -->

@@ -872,17 +872,29 @@ class AuthComponent extends Component {
  * @return bool true if a domain can be found, false if one cannot.
  */
 	protected function _checkDomain($domain) {
-        if (!in_array($domain, array('secure'))) {
-            $result = ClassRegistry::init('Merchant')->find('first', array(
-                'conditions' => array(
-                    'Merchant.domain_prefix' => $domain
-                )
-            ));
-            if (empty($result['Merchant'])) {
-                return false;
-            }
-        }
+		if (!in_array($domain, array('secure'))) {
+			$result = ClassRegistry::init('Merchant')->find('first', array(
+				'conditions' => array(
+				'Merchant.domain_prefix' => $domain
+				)
+			));
+			if (empty($result['Merchant'])) {
+				return false;
+			}
+		}
 		return true;
+	}
+
+/**
+ * Set a domain prefix to login.
+ *
+ * @param string $domain_prefix The domain name to set.
+ * @return void
+ */
+	public function setLoginDomain($domain_prefix) {
+		$this->authenticate['Form']['scope'] = array(
+			'Merchant.domain_prefix' => $domain_prefix
+		);
 	}
 
 }

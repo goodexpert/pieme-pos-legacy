@@ -9,51 +9,138 @@
                         <img src="/img/ipad.png" alt="signup-img" >
                     </div>
                     <!-- General Information -->
-                    <form action="/signup/index" method="post" role="form" data-toggle="validator">
+                    <form action="/signup" method="post" id="signup_form">
+                    <?php
+                        echo $this->Form->input('plan_id', array(
+                            'id' => 'plan_id',
+                            'type' => 'hidden',
+                            'value' => 'subscriber_plan_retailer_trial'
+                        ));
+
+                        echo $this->Form->input('physical_city', array(
+                            'id' => 'physical_city',
+                            'type' => 'hidden'
+                        ));
+
+                        echo $this->Form->input('physical_country_id', array(
+                            'id' => 'physical_country_id',
+                            'type' => 'hidden'
+                        ));
+
+                        echo $this->Form->input('time_zone', array(
+                            'id' => 'time_zone',
+                            'type' => 'hidden'
+                        ));
+                     ?>
                     <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container line-box">
                         <h1>Sign up</h1>
                         <div class="dashed-line-gr"><?php echo $this->Session->flash(); ?></div>
                         <dl>
-                            <dt class="hidden">Private web address</dt>
-                            <dd class="hidden">
-                                <input type="hidden" name="domain_prefix" id="domain_prefix">
+                            <dt>Store name</dt>
+                            <dd>
+                                <?php
+                                    echo $this->Form->input('name', array(
+                                        'id' => 'name',
+                                        'type' => 'text',
+                                        'div' => false,
+                                        'label' => false,
+                                        'placeholder' => 'Store name'
+                                    ));
+                                 ?>
+                                <div class="help-block with-errors"></div>
+                            </dd>
+                            <dt>Private web address</dt>
+                            <dd>
+                                <?php
+                                    echo $this->Form->input('domain_prefix', array(
+                                        'id' => 'domain_prefix',
+                                        'type' => 'text',
+                                        'div' => false,
+                                        'label' => false,
+                                        'placeholder' => 'Private web address'
+                                    ));
+                                 ?>
+                                <div class="help-block with-errors"></div>
                             </dd>
                             <dt>First name</dt>
                             <dd>
-                                <input type="text" name="first_name" id="first_name" class="required" autocomplete="off" required>
+                                <?php
+                                    echo $this->Form->input('first_name', array(
+                                        'id' => 'first_name',
+                                        'type' => 'text',
+                                        'div' => false,
+                                        'label' => false,
+                                        'placeholder' => 'First name'
+                                    ));
+                                 ?>
+                                <div class="help-block with-errors"></div>
                             </dd>
                             <dt>Last name</dt>
                             <dd>
-                                <input type="text" name="last_name" id="last_name" class="required" autocomplete="off" required>
+                                <?php
+                                    echo $this->Form->input('last_name', array(
+                                        'id' => 'last_name',
+                                        'type' => 'text',
+                                        'div' => false,
+                                        'label' => false,
+                                        'placeholder' => 'Last name'
+                                    ));
+                                 ?>
+                                <div class="help-block with-errors"></div>
                             </dd>
-                            <dt>Mail address</dt>
+                            <dt>Email address</dt>
                             <dd>
-                                <input type="email" name="username" id="username" class="required" autocomplete="off" required>
+                                <?php
+                                    echo $this->Form->input('username', array(
+                                        'id' => 'username',
+                                        'type' => 'text',
+                                        'div' => false,
+                                        'label' => false,
+                                        'placeholder' => 'Email address'
+                                    ));
+                                 ?>
+                                <div class="help-block with-errors"></div>
                             </dd>
                             <dt>Password</dt>
                             <dd>
-                                <input type="password" name="password" id="password" class="required" autocomplete="off" required>
+                                <?php
+                                    echo $this->Form->input('password', array(
+                                        'id' => 'password',
+                                        'type' => 'password',
+                                        'div' => false,
+                                        'label' => false,
+                                        'placeholder' => 'Password'
+                                    ));
+                                 ?>
+                                <div class="help-block with-errors"></div>
                             </dd>
                             <dt>City</dt>
                             <dd>
-                                <input type="text" name="physical_city" id="physical_city" autocomplete="on" value="Auckland" required>
+                                <?php
+                                    echo $this->Form->input('address_lookup', array(
+                                        'id' => 'address_lookup',
+                                        'type' => 'text',
+                                        'div' => false,
+                                        'label' => false,
+                                        'placeholder' => 'City'
+                                    ));
+                                 ?>
                             </dd>
-                            <dt class="hidden">Country</dt>
-                            <dd class="hidden">
-                                <input type="text" name="physical_country_id" id="physical_country_id" value="NZ">
-                            </dd>
-                            <dt class="hidden">Default currency</dt>
-                            <dd class="hidden">
-                                <input type="text" name="default_currency" id="default_currency" value="NZD">
-                            </dd>
-                            <dt class="hidden">Timezone</dt>
-                            <dd class="hidden">
-                                <input type="text" name="time_zone" id="time_zone" value="Pacific/Auckland">
+                            <dt>Currency</dt>
+                            <dd>
+                                <select name="data[default_currency]" id="default_currency">
+                                    <option value="USD" disabled>US Dollar</option>
+                                    <option value="GBP" disabled>UK Pounds</option>
+                                    <option value="EUR" disabled>Euro</option>
+                                    <option value="AUD" disabled>Australian Dollar</option>
+                                    <option value="NZD">New Zealand Dollar</option>
+                                    <option value="KRW" disabled>South Korean Won</option>
+                                </select>
                             </dd>
                         </dl>
+                        <!--
                         <div class="dashed-line-gr"></div>
                         <dl>
-                            <!--
                             <dt>Type</dt>
                             <dd>
                                 <select id="plan_id_1" name="plan_id_1">
@@ -73,12 +160,6 @@
                                 </select>
                                 <h5><a>Detail about our plan</a></h5>
                             </dd>
-                            -->
-                            <input type="hidden" id="plan_id" name="plan_id" value="subscriber_plan_retailer_trial">
-                            <dt class="store_name">Store name</dt>
-                            <dd class="store_name">
-                                <input type="text" name="store_name" id="store_name" class="required" autocomplete="off" required><div class="help-block with-errors"></div>
-                            </dd>
                             <dt class="merchant_code" style="display: none;">Store code</dt>
                             <dd class="merchant_code" style="display: none;">
                                 <input type="text" id="merchant_code" name="merchant_code" maxlength="6" placeholder="Enter store code" autocomplete="off">
@@ -86,6 +167,7 @@
                                 <input type="hidden" id="parent_merchant_id" name="parent_merchant_id">
                             </dd>
                         </dl>
+                        -->
                         <div class="dashed-line-gr"></div>
                         <button type="submit" id="signup" class="btn btn-success" >Start</button>
                     </div>
@@ -123,7 +205,7 @@
 <script src="/theme/onzsa/assets/global/scripts/metronic.js" type="text/javascript"></script>
 <script src="/theme/onzsa/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
 <script src="/theme/onzsa/assets/admin/pages/scripts/login-soft.js" type="text/javascript"></script>
-<script src="http://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places&language=kr" type="text/javascript"></script>
+<script src="https://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places&language=kr" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
 jQuery(document).ready(function() {
@@ -133,6 +215,8 @@ jQuery(document).ready(function() {
 
     // initialize Google Maps API
     initGoogleMapsApi();
+
+    formValidation();
 
     /*
     $("#register_form").submit(function(){
@@ -161,6 +245,7 @@ jQuery(document).ready(function() {
     /*
      * Account Type Select
      */
+/*
     var plan_id = "";
     $(document).on("change", "select", function() {
         $("#store_name").val('');
@@ -179,32 +264,6 @@ jQuery(document).ready(function() {
         } else {
             $(".merchant_code").hide();
             $(".store_name").show();
-        }
-    });
-
-    $(document).on("keyup", "#store_name", function() {
-        if($(this).val().length > 0) {
-            $(".with-errors").text('verifying...');
-            $.ajax({
-                url: '/signup/check_store_name.json',
-                type: 'POST',
-                data: {
-                    name: $("#store_name").val()
-                },
-                success: function(result) {
-                    if (result.success) {
-                        $(".with-errors").text('store name already in use');
-                        $("#store_name").addClass("invalid");
-                        $("#signup").attr({"disabled":true});
-                    } else {
-                        $(".with-errors").text('');
-                        $("#store_name").removeClass("invalid");
-                        $("#signup").attr({"disabled":false});
-                    }
-                }
-            });
-        } else {
-            $(".with-errors").text('');
         }
     });
 
@@ -236,10 +295,11 @@ jQuery(document).ready(function() {
             });
         }
     });
+*/
 });
 
 function initGoogleMapsApi() {
-    var input = document.getElementById('physical_city');
+    var input = document.getElementById('address_lookup');
     var options = {
         types: ['(cities)'],
         componentRestrictions: {country: 'nz'}
@@ -249,14 +309,17 @@ function initGoogleMapsApi() {
 
     google.maps.event.addListener(autocomplete, 'place_changed', function() {
         var place = autocomplete.getPlace();
+        console.log(place);
         for (var i = 0; i < place.address_components.length; i++){
             for (var j = 0; j < place.address_components[i].types.length; j++){
                 var addressType = place.address_components[i].types[j];
                 if (addressType == 'locality') {
                     city = place.address_components[i].long_name;
+                    document.getElementById('physical_city').value = city;
                 }
                 if (addressType == 'country') {
                     country_code = place.address_components[i].short_name;
+                    document.getElementById('physical_country_id').value = country_code;
                 }
             }
         }
@@ -266,10 +329,94 @@ function initGoogleMapsApi() {
             url: 'https://maps.googleapis.com/maps/api/timezone/json?location='
                 +place.geometry.location.lat()+','+place.geometry.location.lng()+'&timestamp='+timestamp+'&sensor=false',
             success: function(result){
-                console.log(result);
                 timezone = result.timeZoneId;    
+                document.getElementById('time_zone').value = time_zone;
             }
         });
+    });
+}
+
+// form validation
+var formValidation = function() {
+    // for more info visit the official plugin documentation: 
+    // http://docs.jquery.com/Plugins/Validation
+    $("#signup_form").validate({
+        rules: {
+            'data[name]': {
+                required: true,
+                minlength: 4
+            },
+            'data[domain_prefix]': {
+                required: true,
+                minlength: 5,
+                remote: {
+                    url: '/signup/check_domain_prefix.json',
+                    type: 'post',
+                    data: {
+                        domain_prefix: function() {
+                            return $("#domain_prefix").val();
+                        }
+                    },
+                    dataFilter: function(data) {
+                        var json = JSON.parse(data);
+                        return JSON.stringify(!json.is_exist);
+                    }
+                }
+            },
+            'data[first_name]': {
+                required: true
+            },
+            'data[last_name]': {
+                required: true
+            },
+            'data[username]': {
+                required: true,
+                email: true
+            },
+            'data[password]': {
+                required: true,
+                minlength: 4
+            },
+            'data[address_lookup]': {
+                required: true,
+                addressLookup: true
+            }
+        },
+        messages: {
+            'data[name]': {
+                required: "Please enter your store name.",
+                minlength: "Your store name must be at least 4 characters."
+            },
+            'data[domain_prefix]': {
+                required: "Please enter a private web address.",
+                minlength: "Your web address must be at least 5 characters.",
+                remote: "This web address is unavailable."
+            },
+            'data[first_name]': {
+                required: "Please enter your full name."
+            },
+            'data[last_name]': {
+                required: "Please enter your full name."
+            },
+            'data[username]': {
+                required: "Please enter your email address.",
+                email: "Please enter a valid email address."
+            },
+            'data[password]': {
+                required: "Please enter a password.",
+                minlength: "Your password must be at least 4 characters."
+            },
+            'data[address_lookup]': {
+                required: "Please enter your city and select from the list.",
+                addressLookup: "Please enter your city and select from the list."
+            }
+        }
+    });
+
+    jQuery.validator.addMethod("addressLookup", function(value, element) {
+        var physical_city = $("#physical_city").val();
+        var physical_country_id = $("#physica_country_id").val();
+        return physical_city != '' && physical_country_id != '';
     });
 }
 </script>

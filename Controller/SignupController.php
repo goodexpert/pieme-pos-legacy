@@ -40,7 +40,7 @@ class SignupController extends AppController {
     public function beforeFilter() {
         parent::beforeFilter();
 
-        $this->Auth->allow('index', 'check_exist', 'check_store_name', 'setup');
+        $this->Auth->allow('index', 'check_domain_prefix', 'check_exist', 'setup');
     }
 
 /**
@@ -51,8 +51,8 @@ class SignupController extends AppController {
     public function index() {
         if ($this->request->is('post')) {
             $data = $this->request->data;
-            $data['name'] = $data['store_name'];
-            $data['domain_prefix'] = str_replace(' ', '_', strtolower($data['name']));
+            //$data['name'] = $data['store_name'];
+            //$data['domain_prefix'] = str_replace(' ', '_', strtolower($data['name']));
 
             if (in_array($data['domain_prefix'], array('secure'))) {
                 $this->Session->setFlash('This web address is unavailable.');
@@ -61,6 +61,39 @@ class SignupController extends AppController {
             }
         }
     }
+
+/**
+ * Check the domain prefix name.
+ *
+ * @return void
+ */
+    public function check_domain_prefix() {
+        $result = array(
+            'success' => false,
+            'is_exist' => false
+        );
+
+        if ($this->request->is('ajax') || $this->request->is('post')) {
+            $this->loadModel('Merchant');
+
+            try {
+                $data = $this->request->data;
+
+                if (!in_array($data['domain_prefix'], array('secure'))) {
+                    $merchant = $this->Merchant->findByDomainPrefix($data);
+
+                    if (!empty($merchant) && is_array($merchant)) {
+                        $result['is_exist'] = true;
+                    }
+                }
+                $result['success'] = true;
+            } catch (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+        }
+        $this->serialize($result);
+    }
+
 
 /**
  * Check the merchant code.
@@ -92,38 +125,6 @@ class SignupController extends AppController {
         $this->serialize($result);
     }
 
-/**
- * Check the merchant name.
- *
- * @return void
- */
-    public function check_store_name() {
-        $result = array(
-            'success' => false
-        );
-
-        if ($this->request->is('ajax') || $this->request->is('post')) {
-            $this->loadModel('Merchant');
-
-            try {
-                $data = $this->request->data;
-
-                if (in_array($data, array('secure'))) {
-                    $result['message'] = 'This web address is unavailable.';
-                } else {
-                    $merchant = $this->Merchant->findByName($data);
-
-                    if (!empty($merchant) && is_array($merchant)) {
-                        $result['success'] = true;
-                    }
-                }
-            } catch (Exception $e) {
-                $result['message'] = $e->getMessage();
-            }
-        }
-        $this->serialize($result);
-    }
-    
 /**
  * Test setup function.
  *
