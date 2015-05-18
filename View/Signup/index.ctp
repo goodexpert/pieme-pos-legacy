@@ -9,169 +9,172 @@
                         <img src="/img/ipad.png" alt="signup-img" >
                     </div>
                     <!-- General Information -->
-                    <form action="/signup" method="post" id="signup_form">
-                    <?php
-                        echo $this->Form->input('plan_id', array(
-                            'id' => 'plan_id',
-                            'type' => 'hidden',
-                            'value' => 'subscriber_plan_retailer_trial'
-                        ));
+                    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container">
+                        <p class="pull-right grey-text signin">Already have an account? <a href="/users/login">Sign in</a></p>
+                        <div class="line-box">
+                            <form action="/signup" method="post" id="signup_form">
+                            <?php
+                                echo $this->Form->input('plan_id', array(
+                                    'id' => 'plan_id',
+                                    'type' => 'hidden',
+                                    'value' => 'subscriber_plan_retailer_trial'
+                                ));
 
-                        echo $this->Form->input('physical_city', array(
-                            'id' => 'physical_city',
-                            'type' => 'hidden'
-                        ));
+                                echo $this->Form->input('physical_city', array(
+                                    'id' => 'physical_city',
+                                    'type' => 'hidden'
+                                ));
 
-                        echo $this->Form->input('physical_country_id', array(
-                            'id' => 'physical_country_id',
-                            'type' => 'hidden'
-                        ));
+                                echo $this->Form->input('physical_country_id', array(
+                                    'id' => 'physical_country_id',
+                                    'type' => 'hidden'
+                                ));
 
-                        echo $this->Form->input('time_zone', array(
-                            'id' => 'time_zone',
-                            'type' => 'hidden'
-                        ));
-                     ?>
-                    <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container line-box">
-                        <h1>Sign up</h1>
-                        <div class="dashed-line-gr"><?php echo $this->Session->flash(); ?></div>
-                        <dl>
-                            <dt>Store name</dt>
-                            <dd>
-                                <?php
-                                    echo $this->Form->input('name', array(
-                                        'id' => 'name',
-                                        'type' => 'text',
-                                        'div' => false,
-                                        'label' => false,
-                                        'placeholder' => 'Store name'
-                                    ));
-                                 ?>
-                                <div class="help-block with-errors"></div>
-                            </dd>
-                            <dt>Private web address</dt>
-                            <dd>
-                                <?php
-                                    echo $this->Form->input('domain_prefix', array(
-                                        'id' => 'domain_prefix',
-                                        'type' => 'text',
-                                        'div' => false,
-                                        'label' => false,
-                                        'placeholder' => 'Private web address'
-                                    ));
-                                 ?>
-                                <div class="help-block with-errors"></div>
-                            </dd>
-                            <dt>First name</dt>
-                            <dd>
-                                <?php
-                                    echo $this->Form->input('first_name', array(
-                                        'id' => 'first_name',
-                                        'type' => 'text',
-                                        'div' => false,
-                                        'label' => false,
-                                        'placeholder' => 'First name'
-                                    ));
-                                 ?>
-                                <div class="help-block with-errors"></div>
-                            </dd>
-                            <dt>Last name</dt>
-                            <dd>
-                                <?php
-                                    echo $this->Form->input('last_name', array(
-                                        'id' => 'last_name',
-                                        'type' => 'text',
-                                        'div' => false,
-                                        'label' => false,
-                                        'placeholder' => 'Last name'
-                                    ));
-                                 ?>
-                                <div class="help-block with-errors"></div>
-                            </dd>
-                            <dt>Email address</dt>
-                            <dd>
-                                <?php
-                                    echo $this->Form->input('username', array(
-                                        'id' => 'username',
-                                        'type' => 'text',
-                                        'div' => false,
-                                        'label' => false,
-                                        'placeholder' => 'Email address'
-                                    ));
-                                 ?>
-                                <div class="help-block with-errors"></div>
-                            </dd>
-                            <dt>Password</dt>
-                            <dd>
-                                <?php
-                                    echo $this->Form->input('password', array(
-                                        'id' => 'password',
-                                        'type' => 'password',
-                                        'div' => false,
-                                        'label' => false,
-                                        'placeholder' => 'Password'
-                                    ));
-                                 ?>
-                                <div class="help-block with-errors"></div>
-                            </dd>
-                            <dt>City</dt>
-                            <dd>
-                                <?php
-                                    echo $this->Form->input('address_lookup', array(
-                                        'id' => 'address_lookup',
-                                        'type' => 'text',
-                                        'div' => false,
-                                        'label' => false,
-                                        'placeholder' => 'City'
-                                    ));
-                                 ?>
-                            </dd>
-                            <dt>Currency</dt>
-                            <dd>
-                                <select name="data[default_currency]" id="default_currency">
-                                    <option value="USD" disabled>US Dollar</option>
-                                    <option value="GBP" disabled>UK Pounds</option>
-                                    <option value="EUR" disabled>Euro</option>
-                                    <option value="AUD" disabled>Australian Dollar</option>
-                                    <option value="NZD">New Zealand Dollar</option>
-                                    <option value="KRW" disabled>South Korean Won</option>
-                                </select>
-                            </dd>
-                        </dl>
-                        <!--
-                        <div class="dashed-line-gr"></div>
-                        <dl>
-                            <dt>Type</dt>
-                            <dd>
-                                <select id="plan_id_1" name="plan_id_1">
-                                    <option value="subscriber_plan_retailer">Single Merchant</option>
-                                    <option value="subscriber_plan_franchise">Join Franchise</option>
-                                    <option value="subscriber_plan_franchise_hq">Open Franchise</option>
-                                    <option value="subscriber_plan_retailer_trial" selected>Trial</option>
-                                </select>
-                            </dd>
-                            <dt class="plan_id_2" style="display: none;">Plan</dt>
-                            <dd class="plan_id_2" style="display: none;">
-                                <select id="plan_id_2" name="plan_id_2">
-                                    <option value="small">Small</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="large">Large</option>
-                                    <option value="xlarge">Extra Large</option>
-                                </select>
-                                <h5><a>Detail about our plan</a></h5>
-                            </dd>
-                            <dt class="merchant_code" style="display: none;">Store code</dt>
-                            <dd class="merchant_code" style="display: none;">
-                                <input type="text" id="merchant_code" name="merchant_code" maxlength="6" placeholder="Enter store code" autocomplete="off">
-                                <input type="hidden" id="subscriber_id" name="subscriber_id">
-                                <input type="hidden" id="parent_merchant_id" name="parent_merchant_id">
-                            </dd>
-                        </dl>
-                        -->
-                        <div class="dashed-line-gr"></div>
-                        <button type="submit" id="signup" class="btn btn-success" >Start</button>
+                                echo $this->Form->input('time_zone', array(
+                                    'id' => 'time_zone',
+                                    'type' => 'hidden'
+                                ));
+                             ?>
+                            <h1>Sign up</h1>
+                            <div class="dashed-line-gr"><?php echo $this->Session->flash(); ?></div>
+                            <dl>
+                                <dt>Store name</dt>
+                                <dd>
+                                    <?php
+                                        echo $this->Form->input('name', array(
+                                            'id' => 'name',
+                                            'type' => 'text',
+                                            'div' => false,
+                                            'label' => false,
+                                            'placeholder' => 'Store name'
+                                        ));
+                                     ?>
+                                    <div class="help-block with-errors"></div>
+                                </dd>
+                                <dt>Private web address</dt>
+                                <dd>
+                                    <?php
+                                        echo $this->Form->input('domain_prefix', array(
+                                            'id' => 'domain_prefix',
+                                            'type' => 'text',
+                                            'div' => false,
+                                            'label' => false,
+                                            'placeholder' => 'Private web address'
+                                        ));
+                                     ?>
+                                    <div class="help-block with-errors"></div>
+                                </dd>
+                                <dt>First name</dt>
+                                <dd>
+                                    <?php
+                                        echo $this->Form->input('first_name', array(
+                                            'id' => 'first_name',
+                                            'type' => 'text',
+                                            'div' => false,
+                                            'label' => false,
+                                            'placeholder' => 'First name'
+                                        ));
+                                     ?>
+                                    <div class="help-block with-errors"></div>
+                                </dd>
+                                <dt>Last name</dt>
+                                <dd>
+                                    <?php
+                                        echo $this->Form->input('last_name', array(
+                                            'id' => 'last_name',
+                                            'type' => 'text',
+                                            'div' => false,
+                                            'label' => false,
+                                            'placeholder' => 'Last name'
+                                        ));
+                                     ?>
+                                    <div class="help-block with-errors"></div>
+                                </dd>
+                                <dt>Email address</dt>
+                                <dd>
+                                    <?php
+                                        echo $this->Form->input('username', array(
+                                            'id' => 'username',
+                                            'type' => 'text',
+                                            'div' => false,
+                                            'label' => false,
+                                            'placeholder' => 'Email address'
+                                        ));
+                                     ?>
+                                    <div class="help-block with-errors"></div>
+                                </dd>
+                                <dt>Password</dt>
+                                <dd>
+                                    <?php
+                                        echo $this->Form->input('password', array(
+                                            'id' => 'password',
+                                            'type' => 'password',
+                                            'div' => false,
+                                            'label' => false,
+                                            'placeholder' => 'Password'
+                                        ));
+                                     ?>
+                                    <div class="help-block with-errors"></div>
+                                </dd>
+                                <dt>City</dt>
+                                <dd>
+                                    <?php
+                                        echo $this->Form->input('address_lookup', array(
+                                            'id' => 'address_lookup',
+                                            'type' => 'text',
+                                            'div' => false,
+                                            'label' => false,
+                                            'placeholder' => 'City'
+                                        ));
+                                     ?>
+                                </dd>
+                                <dt>Currency</dt>
+                                <dd>
+                                    <select name="data[default_currency]" id="default_currency">
+                                        <option value="USD" disabled>US Dollar</option>
+                                        <option value="GBP" disabled>UK Pounds</option>
+                                        <option value="EUR" disabled>Euro</option>
+                                        <option value="AUD" disabled>Australian Dollar</option>
+                                        <option value="NZD">New Zealand Dollar</option>
+                                        <option value="KRW" disabled>South Korean Won</option>
+                                    </select>
+                                </dd>
+                            </dl>
+                            <!--
+                            <div class="dashed-line-gr"></div>
+                            <dl>
+                                <dt>Type</dt>
+                                <dd>
+                                    <select id="plan_id_1" name="plan_id_1">
+                                        <option value="subscriber_plan_retailer">Single Merchant</option>
+                                        <option value="subscriber_plan_franchise">Join Franchise</option>
+                                        <option value="subscriber_plan_franchise_hq">Open Franchise</option>
+                                        <option value="subscriber_plan_retailer_trial" selected>Trial</option>
+                                    </select>
+                                </dd>
+                                <dt class="plan_id_2" style="display: none;">Plan</dt>
+                                <dd class="plan_id_2" style="display: none;">
+                                    <select id="plan_id_2" name="plan_id_2">
+                                        <option value="small">Small</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="large">Large</option>
+                                        <option value="xlarge">Extra Large</option>
+                                    </select>
+                                    <h5><a>Detail about our plan</a></h5>
+                                </dd>
+                                <dt class="merchant_code" style="display: none;">Store code</dt>
+                                <dd class="merchant_code" style="display: none;">
+                                    <input type="text" id="merchant_code" name="merchant_code" maxlength="6" placeholder="Enter store code" autocomplete="off">
+                                    <input type="hidden" id="subscriber_id" name="subscriber_id">
+                                    <input type="hidden" id="parent_merchant_id" name="parent_merchant_id">
+                                </dd>
+                            </dl>
+                            -->
+                            <div class="dashed-line-gr"></div>
+                            <button type="submit" id="signup" class="btn btn-success" >Start</button>
+                            </form>
+                        </div>
                     </div>
-                    </form>
                 </div>
             </div>
         </div>
