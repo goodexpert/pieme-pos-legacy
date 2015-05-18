@@ -52,9 +52,24 @@ class Merchant extends AppModel {
     public $validate = array(
         'name' => array(
             'notEmpty' => array(
-                'rule' => 'notEmpty'
+                'rule' => 'notEmpty',
+                'message' => 'Please enter your store name.'
+            ),
+            'minLength' => array(
+                'rule' => array('minLength', 4),
+                'message' => 'Your store name must be at least 4 characters.'
             ),
         ),
+        'domain_prefix' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please enter a private web address.'
+            ),
+            'minLength' => array(
+                'rule' => array('minLength', 5),
+                'message' => 'Your web address must be at least 5 characters.'
+            ),
+        )
     );
 
 }

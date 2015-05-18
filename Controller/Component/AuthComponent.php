@@ -872,14 +872,16 @@ class AuthComponent extends Component {
  * @return bool true if a domain can be found, false if one cannot.
  */
 	protected function _checkDomain($domain) {
-		$result = ClassRegistry::init('Merchant')->find('first', array(
-			'conditions' => array(
-				'Merchant.domain_prefix' => $domain
-			)
-		));
-		if (empty($result['Merchant'])) {
-			return false;
-		}
+        if (!in_array($domain, array('secure'))) {
+            $result = ClassRegistry::init('Merchant')->find('first', array(
+                'conditions' => array(
+                    'Merchant.domain_prefix' => $domain
+                )
+            ));
+            if (empty($result['Merchant'])) {
+                return false;
+            }
+        }
 		return true;
 	}
 

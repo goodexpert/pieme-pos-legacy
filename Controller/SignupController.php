@@ -53,7 +53,12 @@ class SignupController extends AppController {
             $data = $this->request->data;
             $data['name'] = $data['store_name'];
             $data['domain_prefix'] = str_replace(' ', '_', strtolower($data['name']));
-            $this->_createSubscriber($data);
+
+            if (in_array($data['domain_prefix'], array('secure'))) {
+                $this->Session->setFlash('This web address is unavailable.');
+            } else {
+                $this->_createSubscriber($data);
+            }
         }
     }
 
@@ -102,10 +107,15 @@ class SignupController extends AppController {
 
             try {
                 $data = $this->request->data;
-                $merchant = $this->Merchant->findByName($data);
 
-                if (!empty($merchant) && is_array($merchant)) {
-                    $result['success'] = true;
+                if (in_array($data, array('secure'))) {
+                    $result['message'] = 'This web address is unavailable.';
+                } else {
+                    $merchant = $this->Merchant->findByName($data);
+
+                    if (!empty($merchant) && is_array($merchant)) {
+                        $result['success'] = true;
+                    }
                 }
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();

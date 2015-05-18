@@ -15,25 +15,58 @@
                             <h1>Sign in</h1>
                             <div class="dashed-line-gr"></div>
                             <dl>
+                                <dt>Store address</dt>
+                                <dd>
+                                <?php
+		                            $names = explode(".", $_SERVER['HTTP_HOST']);
+                                    if ($_SERVER['HTTP_HOST'] !== 'localhost' && !is_numeric($names[0])) {
+                                        $subdomain = $names[0];
+                                    }
+                                 ?>
+                                <?php
+                                    if (empty($subdomain) || $sudomain === 'secure') :
+                                 ?>
+                                    <?php
+                                        echo $this->Form->input('domain_prefix', array(
+                                            'id' => 'domain_prefix',
+                                            'type' => 'text',
+                                            'div' => false,
+                                            'label' => false,
+                                            'placeholder' => 'Your store address'
+                                        ));
+                                     ?>
+                                <?php
+                                    else :
+                                 ?>
+                                    <div class="form-row mb-10">
+                                        <h5 class="form-heading"><?php echo $subdomain; ?></h5>
+                                        <a href="https://secure.onzsa.com/signin">Not your store?</a>
+                                    </div>
+                                <?php
+                                    endif;
+                                 ?>
+                                </dd>
                                 <dt>Email or Username</dt>
                                 <dd>
                                     <?php
-                                        echo $this->Form->input('MerchantUser.username', array(
-                                            'type' => 'text',
+                                        echo $this->Form->input('username', array(
                                             'id' => 'username',
+                                            'type' => 'text',
                                             'div' => false,
-                                            'label' => false
+                                            'label' => false,
+                                            'placeholder' => 'Email or Username'
                                         ));
                                      ?>
                                 </dd>
                                 <dt>Password</dt>
                                 <dd>
                                     <?php
-                                        echo $this->Form->input('MerchantUser.password', array(
-                                            'type' => 'password',
+                                        echo $this->Form->input('password', array(
                                             'id' => 'password',
+                                            'type' => 'password',
                                             'div' => false,
-                                            'label' => false
+                                            'label' => false,
+                                            'placeholder' => 'Password'
                                         ));
                                      ?>
                                 </dd>
