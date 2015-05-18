@@ -117,9 +117,10 @@ jQuery(document).ready(function() {
     Login.init();
 
     $(".submit").click(function(e) {
-        if ($("#domain_prefix")) {
-            var form = $("#login_form");
-            form.attr("action", "https://"+$("#domain_prefix").val()+".onzsa.com/users/login");
+        var domain_prefix = document.getElementById('domain_prefix');
+        if (domain_prefix != null) {
+            var form = document.getElementById('login_form');
+            form.action = "https://"+domain_prefix.value+".onzsa.com/users/login";
         }
     });
 });
