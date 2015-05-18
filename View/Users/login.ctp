@@ -24,7 +24,7 @@
                                     }
                                  ?>
                                 <?php
-                                    if (empty($subdomain) || $sudomain === 'secure') :
+                                    if (empty($subdomain) || $subdomain === 'secure') :
                                  ?>
                                     <?php
                                         echo $this->Form->input('domain_prefix', array(
