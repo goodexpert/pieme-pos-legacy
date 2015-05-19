@@ -10,7 +10,11 @@
             <div class="maximum col-lg-12 col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                     <div class="signin-container">
-                        <form action="/users/login" method="post" id="login_form">
+                        <?php
+                            echo $this->Form->create('MerchantUser', array(
+                                'id' => 'login_form'
+                            ));
+                         ?>
                         <div class="line-box">
                             <h1>Sign in</h1>
                             <div class="dashed-line-gr"></div>
@@ -18,7 +22,7 @@
                                 <dt>Store address</dt>
                                 <dd>
                                 <?php
-		                            $names = explode(".", $_SERVER['HTTP_HOST']);
+                                    $names = explode(".", $_SERVER['HTTP_HOST']);
                                     if ($_SERVER['HTTP_HOST'] !== 'localhost' && !is_numeric($names[0])) {
                                         $subdomain = $names[0];
                                     }
@@ -26,15 +30,21 @@
                                 <?php
                                     if (empty($subdomain) || $subdomain === 'secure') :
                                  ?>
+                                    <div class="input-group">
                                     <?php
-                                        echo $this->Form->input('Merchant.domain_prefix', array(
+                                        echo $this->Form->input('domain_prefix', array(
                                             'id' => 'domain_prefix',
                                             'type' => 'text',
+                                            'class' => 'form-control',
                                             'div' => false,
                                             'label' => false,
+                                            'required' => 'required',
                                             'placeholder' => 'Your store address'
                                         ));
                                      ?>
+                                        <span class="input-group-addon">.onzsa.com</span>
+                                    </div>
+                                    <div class="help-block with-errors"><?php echo isset($errors['domain_prefix']) ? $errors['domain_prefix'] : ''; ?></div>
                                 <?php
                                     else :
                                  ?>
@@ -46,35 +56,44 @@
                                     endif;
                                  ?>
                                 </dd>
+                            </dl>
+                            <div class="help-block"><?php echo $this->Session->flash(); ?></div>
+                            <dl>
                                 <dt>Email or Username</dt>
                                 <dd>
                                     <?php
-                                        echo $this->Form->input('MerchantUser.username', array(
+                                        echo $this->Form->input('username', array(
                                             'id' => 'username',
                                             'type' => 'text',
+                                            'class' => 'form-control',
                                             'div' => false,
                                             'label' => false,
                                             'placeholder' => 'Email or Username'
                                         ));
                                      ?>
+                                    <div class="help-block with-errors"><?php echo isset($errors['username']) ? $errors['username'] : ''; ?></div>
                                 </dd>
                                 <dt>Password</dt>
                                 <dd>
                                     <?php
-                                        echo $this->Form->input('MerchantUser.password', array(
+                                        echo $this->Form->input('password', array(
                                             'id' => 'password',
                                             'type' => 'password',
+                                            'class' => 'form-control',
                                             'div' => false,
                                             'label' => false,
                                             'placeholder' => 'Password'
                                         ));
                                      ?>
+                                    <div class="help-block with-errors"><?php echo isset($errors['password']) ? $errors['password'] : ''; ?></div>
                                 </dd>
                             </dl>
                             <div class="dashed-line-gr"></div>
                             <button class="btn btn-success submit"><img src="/img/ONZSA_eye.png">Start onzsa</button>
                         </div>
-                        </form>
+                        <?php
+                            echo $this->Form->end();
+                         ?>
                     </div>
                     <p class="create_account">Don't have an account? <a href="https://secure.onzsa.com/signup">Try Onzsa for free</a></p>
                 </div>
@@ -116,6 +135,7 @@ jQuery(document).ready(function() {
     Layout.init(); // init current layout
     Login.init();
 
+    /*
     $(".submit").click(function(e) {
         var domain_prefix = document.getElementById('domain_prefix');
         if (domain_prefix != null) {
@@ -123,6 +143,7 @@ jQuery(document).ready(function() {
             form.action = "https://"+domain_prefix.value+".onzsa.com/users/login";
         }
     });
+     */
 });
 </script>
 <!-- END JAVASCRIPTS -->

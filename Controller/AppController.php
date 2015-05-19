@@ -40,11 +40,7 @@ class AppController extends Controller {
             'secure' => true
         ),
         'Auth' => array(
-            'loginRedirect' => array(
-                'controller' => 'home',
-                'action' => 'index'
-            ),
-            'logoutRedirect' => array(
+            'loginAction' => array(
                 'controller' => 'signin',
                 'action' => 'index'
             ),

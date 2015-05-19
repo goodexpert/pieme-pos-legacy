@@ -1,63 +1,67 @@
-<?php
-/**
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
- * Licensed under The MIT License
- * For full copyright and license information, please see the LICENSE.txt
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       app.View.Layouts
- * @since         CakePHP(tm) v 0.10.0.1076
- * @license       http://www.opensource.org/licenses/mit-license.php MIT License
- */
-
-$cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework');
-$cakeVersion = __d('cake_dev', 'CakePHP %s', Configure::version())
-?>
 <!DOCTYPE html>
-<html>
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en" >
+<!--<![endif]-->
 <head>
-	<?php echo $this->Html->charset(); ?>
-	<title>
-		<?php echo $cakeDescription ?>:
-		<?php echo $this->fetch('title'); ?>
-	</title>
-	<?php
-		echo $this->Html->meta('icon');
-
-		echo $this->Html->css('cake.generic');
-
-		echo $this->fetch('meta');
-		echo $this->fetch('css');
-		echo $this->fetch('script');
-	?>
+    <?php echo $this->Html->charset(); ?>
+    <title>ONZSA | <?php echo $this->fetch('title'); ?></title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta content="" name="description"/>
+    <meta content="" name="author"/>
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all" rel="stylesheet" type="text/css"/>
+    <link href="/theme/onzsa/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/theme/onzsa/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/theme/onzsa/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/theme/onzsa/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
+    <link href="/theme/onzsa/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!-- BEGIN PAGE LEVEL PLUGIN STYLES -->
+    <link href="/theme/onzsa/assets/global/plugins/gritter/css/jquery.gritter.css" rel="stylesheet" type="text/css"/>
+    <link href="/theme/onzsa/assets/global/plugins/bootstrap-daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css"/>
+    <link href="/theme/onzsa/assets/global/plugins/fullcalendar/fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css"/>
+    <link href="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/jqvmap.css" rel="stylesheet" type="text/css"/>
+    <!-- END PAGE LEVEL PLUGIN STYLES -->
+    <!-- BEGIN PAGE STYLES -->
+    <link href="/theme/onzsa/assets/admin/pages/css/tasks.css" rel="stylesheet" type="text/css"/>
+    <!-- END PAGE STYLES -->
+    <!-- BEGIN THEME STYLES -->
+    <link href="/theme/onzsa/assets/global/css/components.css" rel="stylesheet" type="text/css"/>
+    <link href="/theme/onzsa/assets/global/css/plugins.css" rel="stylesheet" type="text/css">
+    <link href="/theme/onzsa/assets/admin/layout/css/layout.css" rel="stylesheet" type="text/css"/>
+    <link href="/theme/onzsa/assets/admin/layout/css/themes/default.css" rel="stylesheet" type="text/css" id="style_color"/>
+    <link href="/theme/onzsa/assets/admin/layout/css/custom.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/pos.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/custom.keypad.css" rel="stylesheet" type="text/css">
+    <!-- END THEME STYLES -->
+    <link rel="shortcut icon" href="/onzsa.ico"/>
 </head>
-<body>
-	<div id="container">
-		<div id="header">
-			<h1><?php echo $this->Html->link($cakeDescription, 'http://cakephp.org'); ?></h1>
-		</div>
-		<div id="content">
-
-			<?php echo $this->Session->flash(); ?>
-
-			<?php echo $this->fetch('content'); ?>
-		</div>
-		<div id="footer">
-			<?php echo $this->Html->link(
-					$this->Html->image('cake.power.gif', array('alt' => $cakeDescription, 'border' => '0')),
-					'http://www.cakephp.org/',
-					array('target' => '_blank', 'escape' => false, 'id' => 'cake-powered')
-				);
-			?>
-			<p>
-				<?php echo $cakeVersion; ?>
-			</p>
-		</div>
-	</div>
-	<?php echo $this->element('sql_dump'); ?>
+<body class="page-header-fixed page-quick-sidebar-over-content page-full-width">
+    <div id="container">
+        <div id="header">
+            <div class="page-header navbar navbar-fixed-top">
+                <div class="page-header-inner container">
+                    <div class="page-logo">
+                        <a href="http://www.onzsa.com">
+                            <img src="/img/ONZSA_logo-05.png" alt="logo" class="logo-default"/>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="content">
+            <?php echo $this->fetch('content'); ?>
+        </div>
+        <div id="footer">
+            <div class="page-footer">
+                <div class="page-footer-inner">
+                    2015 &copy; Onzsa Limited
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

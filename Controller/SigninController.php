@@ -60,7 +60,7 @@ class SigninController extends AppController {
 
                 if (empty($domain_prefix) || strlen($domain_prefix) < 5) {
                     $errors['domain_prefix'] = 'Your address must be at least 5 characters.';
-                } elseif (!$this->_check_domain_prefix($domain_prefix)) {
+                } elseif (!$this->Auth->isExistDomain($domain_prefix)) {
                     $errors['domain_prefix'] = 'does not exist';
                 } else {
                     $this->Auth->setLoginDomain($domain_prefix);
@@ -133,7 +133,7 @@ class SigninController extends AppController {
 
                 // Create a cookie variable
                 $this->Cookie->write('session_id', rand());
-                return $this->redirect($this->Auth->redirect());
+                return $this->redirect($this->Auth->redirect(), 301, false);
             } else {
                 $this->Session->setFlash(__('Invalid username or password, try again'));
             }
@@ -181,10 +181,10 @@ class SigninController extends AppController {
     }
 
 /**
- * Check the domain prefix name.
+ * Check if a domain name exists.
  *
  * @param string subdomain name.
- * @return boolean
+ * @return bool true if a domain can be found, false if one cannot.
  */
     protected function _check_domain_prefix($domain_prefix) {
         $this->loadModel('Merchant');

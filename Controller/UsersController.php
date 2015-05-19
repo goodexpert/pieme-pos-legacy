@@ -170,12 +170,35 @@ class UsersController extends AppController {
  * @return void
  */
     public function login() {
-        // set a default notification message.
-        $this->Session->setFlash(__('Enter any username and password.'), 'default');
-        $show_alert = false;
-
         if ($this->request->is('post')) {
-            if ($this->Auth->login()) {
+            $data = $this->request->data;
+            $errors = array();
+
+            if (isset($data['MerchantUser']['domain_prefix'])) {
+                $domain_prefix = trim($data['MerchantUser']['domain_prefix']);
+
+                if (empty($domain_prefix) || strlen($domain_prefix) < 5) {
+                    $errors['domain_prefix'] = 'Your address must be at least 5 characters.';
+                } elseif (!$this->Auth->isExistDomain($domain_prefix)) {
+                    $errors['domain_prefix'] = 'does not exist';
+                } else {
+                    $this->Auth->setLoginDomain($domain_prefix);
+                }
+            }
+
+            if (isset($data['MerchantUser']['username']) &&
+                empty($data['MerchantUser']['username'])) {
+                $errors['username'] = 'An email address or username is required.';
+            }
+
+            if (isset($data['MerchantUser']['password']) &&
+                empty($data['MerchantUser']['password'])) {
+                $errors['password'] = 'A password is required.';
+            }
+
+            if (!empty($errors)) {
+                $this->set('errors', $errors);
+            } elseif ($this->Auth->login()) {
                 $user = $this->Auth->user();
 
                 $conditions = array(
@@ -203,7 +226,7 @@ class UsersController extends AppController {
                         )
                     )
                 ));
-                
+
                 $plan = $this->Plan->findById($user['Merchant']['plan_id']);
                 $this->Session->write('Auth.User.Merchant.Plan', $plan['Plan']);
 
@@ -229,14 +252,12 @@ class UsersController extends AppController {
 
                 // Create a cookie variable
                 $this->Cookie->write('session_id', rand());
-                return $this->redirect($this->Auth->redirect());
+                return $this->redirect($this->Auth->redirect(), 301, false);
+            } else {
+                $this->Session->setFlash(__('Invalid username or password, try again'));
             }
-            $this->Session->setFlash(__('Invalid username or password, try again'));
-            $show_alert = true;
         }
-        $this->set('show_alert', $show_alert);
-
-        $this->layout = 'login';
+        $this->layout = 'signin';
     }
 
 /**

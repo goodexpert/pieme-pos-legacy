@@ -40,7 +40,7 @@ class SignupController extends AppController {
     public function beforeFilter() {
         parent::beforeFilter();
 
-        $this->Auth->allow('index', 'check_domain_prefix', 'check_exist', 'setup');
+        $this->Auth->allow('index', 'check_domain_prefix', 'check_username', 'check_exist', 'setup');
     }
 
 /**
@@ -94,6 +94,35 @@ class SignupController extends AppController {
         $this->serialize($result);
     }
 
+/**
+ * Check the username.
+ *
+ * @return void
+ */
+    public function check_username() {
+        $result = array(
+            'success' => false,
+            'is_exist' => false
+        );
+
+        if ($this->request->is('ajax') || $this->request->is('post')) {
+            $this->loadModel('Subscriber');
+
+            try {
+                $data = $this->request->data;
+
+                $subscriber = $this->Subscriber->findByUsername($data);
+
+                if (!empty($subscriber) && is_array($subscriber)) {
+                    $result['is_exist'] = true;
+                }
+                $result['success'] = true;
+            } catch (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+        }
+        $this->serialize($result);
+    }
 
 /**
  * Check the merchant code.
@@ -169,6 +198,104 @@ class SignupController extends AppController {
         $dataSource = $this->Contact->getDataSource();
         $dataSource->begin();
 
+        $errors = array();
+
+        try {
+            $subscriber = $this->Subscriber->findByUsername($data['username']);
+            if (!empty($subscriber) && is_array($subscriber)) {
+                $errors['subscriber'] = array(
+                    'username' => 'Already subscriber'
+                );
+                return;
+            }
+
+            // create a contact
+            $contact['Contact'] = $data;
+            $contact['Contact']['first_name'] = $data['first_name'];
+            $contact['Contact']['last_name'] = $data['last_name'];
+            $contact['Contact']['email'] = $data['username'];
+            $contact['Contact']['physical_city'] = $data['physical_city'];
+            $contact['Contact']['physical_country_id'] = $data['physical_country_id'];
+            $this->Contact->create();
+            if (!$this->Contact->save($contact)) {
+                $errors['contact'] = $this->Subscriber->validationErrors;
+                throw new Exception(json_encode($errors));
+            }
+
+            // create a subscriber
+            $subscriber = array();
+            $subscriber['Subscriber']['contact_id'] = $this->Contact->id;
+            $subscriber['Subscriber']['username'] = $data['username'];
+            $subscriber['Subscriber']['password'] = $data['password'];
+            $this->Subscriber->create();
+            if (!$this->Subscriber->save($subscriber)) {
+                $errors['subscriber'] = $this->Subscriber->validationErrors;
+                throw new Exception(json_encode($errors));
+            }
+            $data['subscriber_id'] = $this->Subscriber->id;
+
+            // create a merchant
+            $merchant['Merchant'] = $data;
+            $merchant['Merchant']['merchant_code'] = $this->_generateMerchantCode(6);
+            if ($data['plan_id'] == 'subscriber_plan_retailer_trial') {
+                $merchant['Merchant']['trial_ends'] = CakeTime::format('+30 days', '%Y-%m-%d');
+            }
+            $this->Merchant->create();
+            if (!$this->Merchant->save($merchant)) {
+                $errors['merchant'] = $this->Merchant->validationErrors;
+                throw new Exception(json_encode($errors));
+            }
+            $merchant_id = $this->Merchant->id;
+            
+            // create a default user
+            $this->_createDefaultUser($merchant_id, NULL, $data['username'], $data['password'], $data['first_name'] . ' ' . $data['last_name']);
+            
+            // create a default customer group
+            $customer_group_id = $this->_createDefaultCustomerGroup($merchant_id);
+
+            // create a default customer
+            $this->_createDefaultCustomer($merchant_id, $customer_group_id);
+
+            // create default tax rates
+            $default_tax_id = $this->_createDefaultTaxRates($merchant_id, $data['physical_country_id']);
+
+            // create default payment types
+            $this->_createDefaultPaymentTypes($merchant_id);
+
+            // create a quick key
+            $quick_key_id = $this->_createDefaultQuickKey($merchant_id, NULL);
+
+            // create a receipt template
+            $receipt_template_id = $this->_createDefaultReceiptTemplate($merchant_id, NULL, $data['name']);
+
+            // create a main outlet and register
+            $this->_createDefaultOutlet($merchant_id, NULL, $quick_key_id, $receipt_template_id);
+
+            // create default supplier
+            $supplier_id = $this->_createDefaultSupplier($merchant_id, $contact, $data['name']);
+
+            // create default products
+            $this->_createDefaultProducts($merchant_id, $supplier_id, $default_tax_id, $quick_key_id);
+
+            // create a default price book
+            $this->_createDefaultPriceBook($merchant_id, $customer_group_id);
+
+            // create a default inventories
+            $this->_createDefaultInventory($merchant_id);
+
+            // create a merchant loyalty
+            $this->_createMerchantLoyalty($merchant_id, $data['name']);
+
+            $dataSource->commit();
+            $this->redirect('/users/login');
+        } catch (Exception $e) {
+            $dataSource->rollback();
+            $this->Session->setFlash($e->getMessage());
+        } finally {
+            $this->set('errors', $errors);
+        }
+
+        /*
         try {
             if (isset($data['plan_id_1']) && !empty($data['plan_id_1']) && $data['plan_id_1'] == 'subscriber_plan_franchise') {
                 // create a retailer
@@ -203,7 +330,7 @@ class SignupController extends AppController {
                 $subscriber['Subscriber']['password'] = $data['password'];
                 $this->Subscriber->save($subscriber);
                 $data['subscriber_id'] = $this->Subscriber->id;
-    
+
                 // create a merchant
                 $this->Merchant->create();
                 $merchant['Merchant'] = $data;
@@ -256,7 +383,7 @@ class SignupController extends AppController {
 
             $dataSource->commit();
 
-		    $names = explode(".", $_SERVER['HTTP_HOST']);
+            $names = explode(".", $_SERVER['HTTP_HOST']);
             if ($_SERVER['HTTP_HOST'] !== 'localhost' && !is_numeric($names[0])) {
                 $this->redirect('https://'.$data['domain_prefix'].'.onzsa.com/users/login');
             } else {
@@ -266,6 +393,7 @@ class SignupController extends AppController {
             $dataSource->rollback();
             $this->Session->setFlash($e->getMessage());
         }
+         */
     }
 
 /**

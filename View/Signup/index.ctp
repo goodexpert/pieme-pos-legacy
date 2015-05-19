@@ -10,7 +10,7 @@
                     </div>
                     <!-- General Information -->
                     <div class="col-lg-5 col-md-5 col-sm-5 col-xs-5 signup-container">
-                        <p class="pull-right grey-text signin">Already have an account? <a href="/users/login">Sign in</a></p>
+                        <p class="pull-right grey-text signin">Already have an account? <a href="/signin">Sign in</a></p>
                         <div class="line-box">
                             <form action="/signup" method="post" id="signup_form">
                             <?php
@@ -44,6 +44,7 @@
                                         echo $this->Form->input('name', array(
                                             'id' => 'name',
                                             'type' => 'text',
+                                            'class' => 'form-control',
                                             'div' => false,
                                             'label' => false,
                                             'placeholder' => 'Store name'
@@ -53,15 +54,19 @@
                                 </dd>
                                 <dt>Private web address</dt>
                                 <dd>
+                                    <div class="input-group">
                                     <?php
                                         echo $this->Form->input('domain_prefix', array(
                                             'id' => 'domain_prefix',
                                             'type' => 'text',
+                                            'class' => 'form-control',
                                             'div' => false,
                                             'label' => false,
                                             'placeholder' => 'Private web address'
                                         ));
                                      ?>
+                                        <span class="input-group-addon">.onzsa.com</span>
+                                    </div>
                                     <div class="help-block with-errors"></div>
                                 </dd>
                                 <dt>First name</dt>
@@ -70,6 +75,7 @@
                                         echo $this->Form->input('first_name', array(
                                             'id' => 'first_name',
                                             'type' => 'text',
+                                            'class' => 'form-control',
                                             'div' => false,
                                             'label' => false,
                                             'placeholder' => 'First name'
@@ -83,6 +89,7 @@
                                         echo $this->Form->input('last_name', array(
                                             'id' => 'last_name',
                                             'type' => 'text',
+                                            'class' => 'form-control',
                                             'div' => false,
                                             'label' => false,
                                             'placeholder' => 'Last name'
@@ -96,6 +103,7 @@
                                         echo $this->Form->input('username', array(
                                             'id' => 'username',
                                             'type' => 'text',
+                                            'class' => 'form-control',
                                             'div' => false,
                                             'label' => false,
                                             'placeholder' => 'Email address'
@@ -109,6 +117,7 @@
                                         echo $this->Form->input('password', array(
                                             'id' => 'password',
                                             'type' => 'password',
+                                            'class' => 'form-control',
                                             'div' => false,
                                             'label' => false,
                                             'placeholder' => 'Password'
@@ -122,6 +131,7 @@
                                         echo $this->Form->input('address_lookup', array(
                                             'id' => 'address_lookup',
                                             'type' => 'text',
+                                            'class' => 'form-control',
                                             'div' => false,
                                             'label' => false,
                                             'placeholder' => 'City'
@@ -130,7 +140,7 @@
                                 </dd>
                                 <dt>Currency</dt>
                                 <dd>
-                                    <select name="data[default_currency]" id="default_currency">
+                                    <select name="data[default_currency]" id="default_currency" class="form-control">
                                         <option value="USD" disabled>US Dollar</option>
                                         <option value="GBP" disabled>UK Pounds</option>
                                         <option value="EUR" disabled>Euro</option>
@@ -221,55 +231,12 @@ jQuery(document).ready(function() {
 
     formValidation();
 
-    /*
-    $("#register_form").submit(function(){
-        $("#domain_prefix").val($("#name").val());
-        $("#physical_city").val(city);
-        $("#physical_country_id").val(country_code);
-        $("#default_currency").val("NZD");
-        $("#time_zone").val(timezone);
+    $(document).on("change", "#address_lookup", function(e) {
+        document.getElementById('physical_city').value = null;
+        document.getElementById('physical_country_id').value = null;
     });
-    */
-    /*
-    function validation() {
-        $(".required").each(function() {
-            if($(this).val().length > 0 && $("#store_name").hasClass("invalid") == false && $("#merchant_code").hasClass("invalid") == false) {
-                $("#signup").attr({"disabled":false});
-            } else {
-                $("#signup").attr({"disabled":true});
-            }
-        });
-    }
-    $(document).on("keyup", function() {
-        validation();
-    });
-    */
 
-    /*
-     * Account Type Select
-     */
 /*
-    var plan_id = "";
-    $(document).on("change", "select", function() {
-        $("#store_name").val('');
-        $("#merchant_code").val('');
-        $("#signup").attr({"disabled":true});
-        if($(this).val() !== "subscriber_plan_franchise_hq" && $(this).val() !== "subscriber_plan_retailer_trial") {
-            $(".plan_id_2").show();
-            $("#plan_id").val($("#plan_id_1").val() + '_' + $("#plan_id_2").val());
-        } else {
-            $(".plan_id_2").hide();
-            $("#plan_id").val($(this).val());
-        }
-        if($("#plan_id_1").val() == "subscriber_plan_franchise") {
-            $(".merchant_code").show();
-            $(".store_name").hide();
-        } else {
-            $(".merchant_code").hide();
-            $(".store_name").show();
-        }
-    });
-
     $(document).on("keyup", "#merchant_code", function() {
         if($(this).val().length == 6) {
             console.log("Identifying...");
@@ -374,11 +341,24 @@ var formValidation = function() {
             },
             'data[username]': {
                 required: true,
-                email: true
+                email: true,
+                remote: {
+                    url: '/signup/check_username.json',
+                    type: 'post',
+                    data: {
+                        username: function() {
+                            return $("#username").val();
+                        }
+                    },
+                    dataFilter: function(data) {
+                        var json = JSON.parse(data);
+                        return JSON.stringify(!json.is_exist);
+                    }
+                }
             },
             'data[password]': {
                 required: true,
-                minlength: 4
+                minlength: 6
             },
             'data[address_lookup]': {
                 required: true,
@@ -403,11 +383,12 @@ var formValidation = function() {
             },
             'data[username]': {
                 required: "Please enter your email address.",
-                email: "Please enter a valid email address."
+                email: "Please enter a valid email address.",
+                remote: "Your email already registered."
             },
             'data[password]': {
                 required: "Please enter a password.",
-                minlength: "Your password must be at least 4 characters."
+                minlength: "Your password must be at least 6 characters."
             },
             'data[address_lookup]': {
                 required: "Please enter your city and select from the list.",

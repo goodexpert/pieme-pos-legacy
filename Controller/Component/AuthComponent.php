@@ -296,12 +296,10 @@ class AuthComponent extends Component {
 			header('Location: http://www.onzsa.com' . $_SERVER['REQUEST_URI']);
 		} elseif ($_SERVER['HTTP_HOST'] !== 'localhost' && !is_numeric($names[0])) {
 			$this->subdomain = $names[0];
-			if (!$this->_checkDomain($this->subdomain)) {
+			if (!$this->isExistDomain($this->subdomain)) {
 				throw new NotFoundException();
 			}
-			$this->authenticate['Form']['scope'] = array(
-				'Merchant.domain_prefix' => $this->subdomain
-			);
+			$this->setLoginDomain($this->subdomain);
 		}
 
 		$isMissingAction = (
@@ -317,12 +315,48 @@ class AuthComponent extends Component {
 			return false;
 		}
 
+		/*
 		if ($this->_isAllowed($controller)) {
 			return true;
 		}
 
 		if (!$this->_getUser()) {
 			return $this->_unauthenticated($controller);
+		}
+		 */
+
+		$isAllowed = $this->_isAllowed($controller);
+		$isLogined = $this->_getUser();
+
+		if ($isAllowed && !$isLogined) {
+			return true;
+		} elseif (!$isAllowed && !$isLogined) {
+			return $this->_unauthenticated($controller);
+		}
+
+		$user = $this->user();
+		$domain_prefix = $user['Merchant']['domain_prefix'];
+		$isAllowedDomain = (
+			empty($this->subdomain) ||
+			in_array($this->subdomain, array('secure', $domain_prefix))
+		);
+
+		if ($isAllowed && !$isAllowedDomain) {
+			return true;
+		} elseif (!$isAllowed && !$isAllowedDomain) {
+			return $this->_unauthenticated($controller);
+		}
+
+		if ($isAllowed) {
+			$redirect_url = '/';
+			if (!empty($this->subdomain) && $this->subdomain === 'secure') {
+				$redirect_url = 'https://' . $domain_prefix . '.onzsa.com';
+			}
+			$controller->redirect($redirect_url, 301, true);
+		}
+
+		if (!empty($this->subdomain) && $this->subdomain === 'secure') {
+			$controller->redirect('https://' . $domain_prefix . '.onzsa.com' . $_SERVER['REQUEST_URI']);
 		}
 
 		if ($this->_isLoginAction($controller) ||
@@ -697,9 +731,6 @@ class AuthComponent extends Component {
 	protected function _getUser() {
 		$user = $this->user();
 		if ($user) {
-			if (!empty($this->subdomain) && $this->subdomain !== $user['Merchant']['domain_prefix']) {
-				return false;
-			}
 			$this->Session->delete('Auth.redirect');
 			return true;
 		}
@@ -869,16 +900,17 @@ class AuthComponent extends Component {
 /**
  * Check if a domain name exists.
  *
+ * @param string domain name.
  * @return bool true if a domain can be found, false if one cannot.
  */
-	protected function _checkDomain($domain) {
+	public function isExistDomain($domain) {
 		if (!in_array($domain, array('secure'))) {
 			$result = ClassRegistry::init('Merchant')->find('first', array(
 				'conditions' => array(
 				'Merchant.domain_prefix' => $domain
 				)
 			));
-			if (empty($result['Merchant'])) {
+			if (empty($result) || !is_array($result)) {
 				return false;
 			}
 		}
@@ -892,9 +924,17 @@ class AuthComponent extends Component {
  * @return void
  */
 	public function setLoginDomain($domain_prefix) {
-		$this->authenticate['Form']['scope'] = array(
-			'Merchant.domain_prefix' => $domain_prefix
-		);
+		if (empty($this->_authenticateObjects)) {
+			$this->authenticate['Form']['scope'] = array(
+				'Merchant.domain_prefix' => $domain_prefix
+			);
+		} else {
+			foreach ($this->_authenticateObjects as $auth) {
+				$auth->settings['scope'] = array(
+					'Merchant.domain_prefix' => $domain_prefix
+				);
+			}
+		}
 	}
 
 }

@@ -216,10 +216,13 @@
  *
  */
 	Configure::write('Session', array(
-        'defaults' => 'php',
-        'timeout' => 10,
-        'cookieTimeout' => 1440,
-        'checkAgent' => false
+		'defaults' => 'php',
+		'timeout' => 10,
+		'cookieTimeout' => 1440,
+		'checkAgent' => false,
+		'ini' => array(
+			'session.cookie_domain' => '.onzsa.com'
+		)
 	));
 
 /**

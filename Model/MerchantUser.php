@@ -62,26 +62,39 @@ class MerchantUser extends AppModel {
  */
     public $validate = array(
         'username' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please enter your email address.'
+            ),
             'email' => array(
-                'rule' => 'email'
+                'rule' => 'email',
+                'message' => 'Please enter a valid email address.'
             ),
         ),
         'password' => array(
+            'notEmpty' => array(
+                'rule' => 'notEmpty',
+                'message' => 'Please enter a password.'
+            ),
             'minLength' => array(
-                'rule' => array('minLength', 6)
+                'rule' => array('minLength', 6),
+                'message' => 'Your password must be at least 6 characters.'
             ),
         ),
         'display_name' => array(
             'notEmpty' => array(
-                'rule' => 'notEmpty'
+                'rule' => 'notEmpty',
+                'message' => 'Please enter your full name.'
             ),
         ),
         'email' => array(
-            'email' => array(
-                'rule' => 'email'
-            ),
             'notEmpty' => array(
-                'rule' => 'notEmpty'
+                'rule' => 'notEmpty',
+                'message' => 'Please enter your email address.'
+            ),
+            'email' => array(
+                'rule' => 'email',
+                'message' => 'Please enter a valid email address.'
             ),
         ),
     );

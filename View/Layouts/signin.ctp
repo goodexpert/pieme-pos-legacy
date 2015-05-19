@@ -58,7 +58,7 @@
         <div id="footer">
             <div class="page-footer">
                 <div class="page-footer-inner">
-                    2015 © Onzsa Limited
+                    2015 &copy; Onzsa Limited
                 </div>
             </div>
         </div>

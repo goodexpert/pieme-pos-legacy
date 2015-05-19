@@ -12,7 +12,7 @@
                     <div class="signin-container">
                         <?php
                             echo $this->Form->create('MerchantUser', array(
-                                //'id' => 'login_form'
+                                'id' => 'login_form'
                             ));
                          ?>
                         <div class="line-box">
@@ -22,7 +22,7 @@
                                 <dt>Store address</dt>
                                 <dd>
                                 <?php
-		                            $names = explode(".", $_SERVER['HTTP_HOST']);
+                                    $names = explode(".", $_SERVER['HTTP_HOST']);
                                     if ($_SERVER['HTTP_HOST'] !== 'localhost' && !is_numeric($names[0])) {
                                         $subdomain = $names[0];
                                     }
@@ -42,7 +42,7 @@
                                             'placeholder' => 'Your store address'
                                         ));
                                      ?>
-                                        <span class="input-group-addon">.onzs.com</span>
+                                        <span class="input-group-addon">.onzsa.com</span>
                                     </div>
                                     <div class="help-block with-errors"><?php echo isset($errors['domain_prefix']) ? $errors['domain_prefix'] : ''; ?></div>
                                 <?php
@@ -50,7 +50,7 @@
                                  ?>
                                     <div>
                                         <span class="pull-left"><?php echo $subdomain; ?></span>
-                                        <a href="https://secure.onzsa.com/users/login" class="pull-right">Not your store?</a>
+                                        <a href="https://secure.onzsa.com/signin" class="pull-right">Not your store?</a>
                                     </div>
                                 <?php
                                     endif;
