@@ -204,6 +204,7 @@ a { cursor:pointer;}
 .margin-bottom-min-50 { margin-bottom:-50px;}
 .margin-left-10 {margin-left:10px;}
 .padding-right-5 { padding-right:5px;}
+.padding-20 {padding:20px;}
 
 .inline-block { display:inline-block; width:100%;}
 .inline-block-z { display:inline-block;}
@@ -1700,6 +1701,8 @@ table.dataTable-sm td {
 .addons .line-box {
     min-height : 165px;
     margin-bottom:20px;
+    z-index:1;
+    padding:0;
 }
 .addons button {
     bottom:20px;
@@ -1717,6 +1720,7 @@ table.dataTable-sm td {
     height: 100%;
     position: absolute;
     border-radius: 5px;
+    z-index:4;
 }
 /** footer **/
 

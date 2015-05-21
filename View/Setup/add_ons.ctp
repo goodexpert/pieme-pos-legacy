@@ -65,27 +65,31 @@
             </div>
             <div class="col-lg-6 col-md-12 col-xs-12 col-sm-12 addons">
                 <div class="col-xs-12 col-alpha col-omega line-box">
-                    <div class="col-md-4 col-xs-4 col-sm-4 text-center line-box-brand">
-                        <img src="/img/xero.png">
+                    <div class="padding-20">
+                        <div class="col-md-4 col-xs-4 col-sm-4 text-center line-box-brand">
+                            <img src="/img/xero.png">
+                        </div>
+                        <div class="col-md-8 col-xs-8 col-sm-8">
+                            <h3 class="no-margin">Xero</h3>
+                            <p>Onzsa integrates seamlessly with the Xero accounting software to share customers, product sales, and invoices.</p>
+                        </div>
+                        <button class="btn btn-default"><span class="glyphicon glyphicon-plus margin-right-5"></span>Add to Onzsa</button>
                     </div>
-                    <div class="col-md-8 col-xs-8 col-sm-8">
-                        <h3 class="no-margin">Xero</h3>
-                        <p>Onzsa integrates seamlessly with the Xero accounting software to share customers, product sales, and invoices.</p>
-                    </div>
-                    <button class="btn btn-default"><span class="glyphicon glyphicon-plus margin-right-5"></span>Add to Onzsa</button>
                 </div>
             </div>
             <div class="col-lg-6 col-md-12 col-xs-12 col-sm-12 addons">
                 <div class="col-xs-12 col-alpha col-omega line-box">
-                    <div class="col-md-4 col-xs-4 col-sm-4 col-alpha text-center line-box-brand">
-                        <div class="opacity-bk"></div>
-                        <img src="/img/shopify.png">
+                    <div class="opacity-bk"></div>
+                    <div class="padding-20">
+                        <div class="col-md-4 col-xs-4 col-sm-4 col-alpha text-center line-box-brand">
+                            <img src="/img/shopify.png">
+                        </div>
+                        <div class="col-md-8 col-xs-8 col-sm-8">
+                            <h3 class="no-margin">Shopify</h3>
+                            <p>Create an online store with Shopify.</p>
+                        </div>
+                        <button class="btn btn-default"><span class="glyphicon glyphicon-cog margin-right-5"></span>Setting</button>
                     </div>
-                    <div class="col-md-8 col-xs-8 col-sm-8">
-                        <h3 class="no-margin">Shopify</h3>
-                        <p>Create an online store with Shopify.</p>
-                    </div>
-                    <button class="btn btn-default"><span class="glyphicon glyphicon-cog margin-right-5"></span>Setting</button>
                 </div>
             </div>
         </div>
