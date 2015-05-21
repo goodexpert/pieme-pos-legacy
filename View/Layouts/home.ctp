@@ -44,6 +44,7 @@
     <div>
 </body>
 <!-- BEGIN SESSION TIMEOUT SCRIPTS -->
+<!--
 <script src="/theme/onzsa/assets/global/plugins/bootstrap-sessiontimeout/jquery.sessionTimeout.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 $(document).ready(function() {    
@@ -59,6 +60,7 @@ $(document).ready(function() {
     });
 });
 </script>
+-->
 <!-- END SESSION TIMEOUT SCRIPTS -->
 <!-- BEGIN GOOGLE ANALYTICS SCRIPTS -->
 <script>

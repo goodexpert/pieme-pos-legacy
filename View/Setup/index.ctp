@@ -37,7 +37,9 @@
         <div id="notify" class="hidden col-lg-12 col-md-12 col-sm-12">
             <div class="notify-content"><p>Setup has been changed. Please login again to your account.</p></div>
         </div>
-      <div class="col-md-12 col-xs-12 col-sm-12"><h3>General Setup</h3></div>
+      <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-bottom-20">
+        <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">General Setup</h2>
+      </div>
       <div class="portlet-body form"> 
         <!-- BEGIN FORM-->
         <div class="form-horizontal col-md-12 col-xs-12 col-sm-12">
@@ -259,6 +261,7 @@
         </div>
     </div>
   </div>
+  <!-- END CONTENT --> 
     <!-- ADD TAX POPUP BOX -->
     <div id="popup-add_tax" class="confirmation-modal modal fade in" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;">
         <div class="modal-dialog">
@@ -284,7 +287,6 @@
         </div>
     </div>
     <!-- ADD TAX POPUP BOX END -->
-  <!-- END CONTENT --> 
 </div>
 <div class="modal-backdrop fade in" style="display: none;"></div>
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) --> 

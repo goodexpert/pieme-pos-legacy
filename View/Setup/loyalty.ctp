@@ -12,42 +12,45 @@
 </style>
 <div class="clearfix"></div>
 <div class="container">
-  <div id="notify"></div>
-  <!-- BEGIN SIDEBAR -->
-  <div class="page-sidebar-wrapper"> 
-    <!-- BEGIN HORIZONTAL RESPONSIVE MENU --> 
-    <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing --> 
-    <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-    <div class="page-sidebar navbar-collapse collapse">
-      <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
-        <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element --> 
-        <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
-        <li class="sidebar-search-wrapper"> 
-          <!-- BEGIN RESPONSIVE QUICK SEARCH FORM --> 
-          <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box --> 
-          <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-          <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
-            <a href="javascript:;" class="remove"> <i class="icon-close"></i> </a>
-            <div class="input-group">
-              <input type="text" placeholder="Search...">
-              <span class="input-group-btn">
-              <button class="btn submit"><i class="icon-magnifier"></i></button>
-              </span> </div>
-          </form>
-          <!-- END RESPONSIVE QUICK SEARCH FORM --> 
-        </li>
-        <li> <a href="index"> Sell </a> </li>
-        <li> <a href="history"> History </a> </li>
-        <li class="active"> <a href="history"> Product <span class="selected"> </span> </a> </li>
-      </ul>
+    <div id="notify"></div>
+    <!-- BEGIN SIDEBAR -->
+    <div class="page-sidebar-wrapper"> 
+        <!-- BEGIN HORIZONTAL RESPONSIVE MENU --> 
+        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing --> 
+        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+        <div class="page-sidebar navbar-collapse collapse">
+            <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
+                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element --> 
+                <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
+                <li class="sidebar-search-wrapper"> 
+                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM --> 
+                    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box --> 
+                    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
+                    <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
+                        <a href="javascript:;" class="remove"> <i class="icon-close"></i> </a>
+                        <div class="input-group">
+                            <input type="text" placeholder="Search...">
+                            <span class="input-group-btn">
+                            <button class="btn submit"><i class="icon-magnifier"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <!-- END RESPONSIVE QUICK SEARCH FORM --> 
+                </li>
+                <li> <a href="index"> Sell </a> </li>
+                <li> <a href="history"> History </a> </li>
+                <li class="active"> <a href="history"> Product <span class="selected"> </span> </a> </li>
+            </ul>
+        </div>
+        <!-- END HORIZONTAL RESPONSIVE MENU --> 
     </div>
-    <!-- END HORIZONTAL RESPONSIVE MENU --> 
-  </div>
-  <!-- END SIDEBAR --> 
-  <!-- BEGIN CONTENT -->
+    <!-- END SIDEBAR --> 
+    <!-- BEGIN CONTENT -->
     <div class="page-content-wrapper">
         <div class="page-content">
-            <h3>Loyalty</h3>
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-bottom-20">
+                <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">Loyalty</h2>
+            </div>
             <div class="portlet-body form"> 
                 <!-- BEGIN FORM-->
                 <div class="form-horizontal col-md-12 col-xs-12 col-sm-12">
@@ -106,7 +109,8 @@
             </div>
         </div>
     </div>
-  <!-- LOYALTY POPUP BOX -->
+    <!-- END CONTENT --> 
+    <!-- LOYALTY POPUP BOX -->
     <div class="confirmation-modal modal fade in void" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -141,8 +145,7 @@
             </div>
         </div>
     </div>
-  <!-- LOYALTY POPUP BOX END -->
-  <!-- END CONTENT --> 
+    <!-- LOYALTY POPUP BOX END -->
 </div>
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) --> 
 <!-- BEGIN CORE PLUGINS --> 
@@ -192,9 +195,9 @@
 <!-- END PAGE LEVEL SCRIPTS --> 
 <script>
 jQuery(document).ready(function() {    
-   Metronic.init(); // init metronic core componets
-   Layout.init(); // init layout
-   Index.init();
+    Metronic.init(); // init metronic core componets
+    Layout.init(); // init layout
+    Index.init();
 
     $("#preview_email").click(function(){
         $(".confirmation-modal").show();
@@ -280,9 +283,7 @@ jQuery(document).ready(function() {
                 },
             });
         }
-
     });
 });
-
 </script> 
 <!-- END JAVASCRIPTS -->

@@ -287,7 +287,7 @@ class SignupController extends AppController {
             $this->_createMerchantLoyalty($merchant_id, $data['name']);
 
             $dataSource->commit();
-            $this->redirect('/users/login');
+            $this->redirect('/signin');
         } catch (Exception $e) {
             $dataSource->rollback();
             $this->Session->setFlash($e->getMessage());
