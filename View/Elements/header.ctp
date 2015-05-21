@@ -94,7 +94,7 @@
                                 <a href="/setup/user">Users</a>
                             </li>
                             <li>
-                                <a href="/setup/add-ons">Add-ons</a>
+                                <a href="/setup/add_ons">Add-ons</a>
                             </li>
                         </ul>
                     </li>
