@@ -852,13 +852,17 @@ text-align:right;
 .line-box{
 	border:1px solid #D5D5D5;
 	box-shadow:0 3px 3px rgba(0,0,0,0.1);
-	border: 1px solid #D5D5D5;
-	box-shadow: 0 3px 3px rgba(0,0,0,0.1);
 	background: #ffffff;
 	border-radius: 5px;
 	padding: 20px;
 	display:inline-block;
 	z-index: 1;
+}
+.line-box-brand{
+	border:1px solid #D5D5D5;
+	background: #ffffff;
+	border-radius: 5px;
+	padding: 6px;
 }
 .line-box-content{
 	border-radius: 0 0 5px 5px;
@@ -1691,6 +1695,18 @@ table.dataTable-sm td {
   box-shadow: 0 2px 3px rgba(0,0,0,0.1);	
 }
 .notify-content p { margin:0}
+
+
+.addons .line-box {
+    min-height : 165px;
+    margin-bottom:20px;
+}
+.bg-gr {
+    padding: 5px 15px;
+    background:#E7E7E7;
+    border:1px solid #D5D5D5; 
+}
+
 
 /** footer **/
 

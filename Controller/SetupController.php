@@ -164,7 +164,6 @@ class SetupController extends AppController {
         ));
         $this->set("taxes", $taxes);
     }
-
     public function quick_keys() {
         $this->loadModel('MerchantQuickKey');
         $this->loadModel('MerchantOutlet');
@@ -251,5 +250,6 @@ class SetupController extends AppController {
         ));
         $this->set('users', $users);
     }
-
+    public function addon() {
+    }
 }
