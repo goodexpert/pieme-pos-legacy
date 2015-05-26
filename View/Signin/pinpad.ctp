@@ -3,8 +3,8 @@
     <div class="page-content-wrapper">
         <div class="page-content col-xs-12 col-alpha col-omega">
             <div class="col-xs-12 signin-pin-content">
-                <ul class="col-lg-6 col-xs-12 numpad-enter">
-                    <h3 class="text-center"><strong>CLICK THE PASSWORD</strong></h3>
+                <ul class="col-xs-12 numpad-enter">
+                    <h2 class="text-center"><strong>CLICK THE PASSWORD</strong></h2>
                     <li>
                         <div class="numpad-enter-button"></div>
                     </li>
@@ -18,20 +18,20 @@
                         <div class="numpad-enter-button"></div>
                     </li>
                 </ul>
-                <div class="col-lg-6 col-xs-12">
+                <div class="col-xs-12">
                     <div id="numpad-signin" class="col-xs-12">
+                        <div class="number_button">1</div>
+                        <div class="number_button">2</div>
+                        <div class="number_button">3</div>
+                        <div class="number_button">4</div>
                         <div class="number_button"></div>
                         <div class="number_button"></div>
                         <div class="number_button"></div>
                         <div class="number_button"></div>
                         <div class="number_button"></div>
+                        <div class="number_button-gr number_button">CLR</div>
                         <div class="number_button"></div>
-                        <div class="number_button"></div>
-                        <div class="number_button"></div>
-                        <div class="number_button"></div>
-                        <div class="number_button-gr number_button">CLEAR</div>
-                        <div class="number_button"></div>
-                        <div class="number_button-gr number_button">ENTER</div>
+                        <div class="number_button-gr number_button">ENT</div>
                     </div>
                 </div>
             </div>

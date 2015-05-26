@@ -139,7 +139,8 @@ class SigninController extends AppController {
             }
         }
     }
-
+    public function pinpad() {
+    }
 /**
  * Logout function.
  *

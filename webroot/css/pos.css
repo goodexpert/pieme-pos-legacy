@@ -1756,30 +1756,21 @@ table.dataTable-sm td {
 }
 #numpad-signin .number_button{
     height: 110px;
-    width: 31%;
+    width: 32%;
     line-height: 74px;
-    font-size: 25px;
+    font-size: 56px;
 }
 .signin-pin-content {
-  position: absolute;
+position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 50%;
+  height: 73%;
   margin: auto;
-}
-@media(max-width : 1199px){ 
-    .signin-pin-content {
-      height: inherit;
-      margin-top:100px
-    }
-    .signin-pin-content ul {
-        margin-bottom:20px;
-    }
-}
+  width: 550px;
+  }
 .numpad-enter {
-    top: 36%;
     padding: 7px;
     border-radius: 10px;
 }
@@ -1793,7 +1784,18 @@ table.dataTable-sm td {
     border-radius: 5px;
     height: 110px;
     line-height: 74px;
-    font-size: 25px;
+    font-size: 56px;
+}
+@media(max-width : 1280px) {
+.signin-pin-content {
+  width: 420px;
+}
+.numpad-enter-button, #numpad-signin .number_button {
+    height: 85px;
+    font-size: 30px;
+    line-height: 52px;
+
+}
 }
 @media(max-width : 1280px){ 
 #content, .page-container{
