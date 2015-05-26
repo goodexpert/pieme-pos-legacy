@@ -283,7 +283,9 @@ div.radio, div.checker {
 .height-inherit {
 	height:inherit !important;
 }
-
+.text-wh {
+    color:#ffffff;   
+}
 
 
 /** START FROM HERE **/
@@ -1745,10 +1747,54 @@ table.dataTable-sm td {
 	margin-right: 20px;
 }
 
-
-
-
-
+/** signin **/
+#numpad-signin {
+    padding: 30px;
+    background: rgba(0,0,0,0.7);
+    border-radius: 10px;
+    text-align: center;
+}
+#numpad-signin .number_button{
+    height: 110px;
+    width: 31%;
+    line-height: 74px;
+    font-size: 25px;
+}
+.signin-pin-content {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  margin: auto;
+}
+@media(max-width : 1199px){ 
+    .signin-pin-content {
+      height: inherit;
+      margin-top:100px
+    }
+    .signin-pin-content ul {
+        margin-bottom:20px;
+    }
+}
+.numpad-enter {
+    top: 36%;
+    padding: 7px;
+    border-radius: 10px;
+}
+.numpad-enter li{
+    padding:2px; 
+    float:left;
+    width:25%;
+}
+.numpad-enter-button {
+    background: rgba(0,0,0,0.3);
+    border-radius: 5px;
+    height: 110px;
+    line-height: 74px;
+    font-size: 25px;
+}
 @media(max-width : 1280px){ 
 #content, .page-container{
 	padding-bottom:20px;	
