@@ -5,10 +5,10 @@ var DpsClient = function DpsClient(config) {
         accountNumber: 1,
 
         // hostname or ip address.
-        hostname: 'localhost',
+        hostname: '127.0.0.1',
 
         // port number.
-        portNumber: 1025,
+        portNumber: 8443,
 
         // socket type.
         socket: 'websocket',
@@ -31,9 +31,10 @@ DpsClient.prototype.connect = function (callback) {
     var self = this;
 
     // Host we are connecting to
-    var host_url = 'ws://' + self.config.hostname + ':' + self.config.portNumber;
+    var url = 'wss://' + self.config.hostname + ':' + self.config.portNumber;
+    var wsCtor = window['MozWebSocket'] ? MozWebSocket : WebSocket;
 
-    self.socket = new WebSocket(host_url);
+    self.socket = new wsCtor(url, 'dps-gateway');
     self.connected = false;
 
     self.socket.onopen = function () {

@@ -747,4 +747,5 @@ class HomeController extends AppController {
             $this->serialize($result);
         }
     }
+
 }

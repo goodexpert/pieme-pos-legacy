@@ -69,7 +69,7 @@ class XeroController extends AppController {
         } else {
             $here = XeroOAuth::php_self ();
         }
-
+/*
         if (isset($_REQUEST['oauth_verifier'])) {
             $XeroOAuth->config['access_token'] = $_SESSION['oauth']['oauth_token'];
             $XeroOAuth->config['access_token_secret'] = $_SESSION['oauth']['oauth_token_secret'];
@@ -109,6 +109,7 @@ class XeroController extends AppController {
             } else {
             }
         }
+*/
         exit;
     }
 
