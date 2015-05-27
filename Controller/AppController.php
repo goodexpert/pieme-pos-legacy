@@ -71,7 +71,7 @@ class AppController extends Controller {
  */
     public function beforeFilter() {
         $this->headers = $this->readHeaders();
-        $this->set('authUser',$this->Auth->user());
+        $this->set('authUser', $this->Auth->user());
         $this->set('menu', '');
         $this->set('submenu', '');
     }

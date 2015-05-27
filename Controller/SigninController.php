@@ -42,7 +42,7 @@ class SigninController extends AppController {
  */
     public function beforeFilter() {
         parent::beforeFilter();
-        $this->Auth->allow('index');
+        $this->Auth->allow('index', 'pinpad');
     }
 
 /**
@@ -139,8 +139,7 @@ class SigninController extends AppController {
             }
         }
     }
-    public function pinpad() {
-    }
+
 /**
  * Logout function.
  *
@@ -178,6 +177,16 @@ class SigninController extends AppController {
             ));
         } else {
             $this->layout = 'ajax';
+        }
+    }
+
+/**
+ * Login by pinpad function.
+ *
+ * @return void
+ */
+    public function pinpad() {
+        if ($this->request->is('post')) {
         }
     }
 
