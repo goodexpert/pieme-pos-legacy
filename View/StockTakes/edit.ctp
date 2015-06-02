@@ -2,9 +2,7 @@
     $data = $this->request->data;
 
     $current = time();
-    $start_date = date('Y-m-d', $current);
-    $start_time = date('h:i A', $current - $current % 3600 + 3600);
-    $due_date = $start_date . ' ' . $start_time;
+    $due_date = date('Y-m-d H:i:s', $current- $current % 3600 + 3600);
     $full_count = 0;
     $show_inactive = 0;
     $filters = array();
@@ -21,13 +19,14 @@
             $products = json_decode($data['products'], true);
         }
 
-        $due_date = explode(['MerchantStockTake']['due_date']);
-        $start_date = $data['MerchantStockTake']['start_date'];
-        $start_time = $data['MerchantStockTake']['start_time'];
+        $due_date = $data['MerchantStockTake']['due_date'];
         $full_count = $data['MerchantStockTake']['full_count'];
         $show_inactive = $data['MerchantStockTake']['show_inactive'];
         $can_save = ($full_count == 1 || count($products) > 0);
     }
+
+    $start_date = date('Y-m-d', strtotime($due_date));
+    $start_time = date('h:i A', strtotime($due_date));
  ?>
 <style>
 /*
@@ -93,7 +92,7 @@
                     </h2>
                 </div>
             </div>
-            <form action="/stock_takes/edit" method="post" id="stock_take_form">
+            <form action="/stock_takes/create" method="post" id="stock_take_form">
             <?php
                 echo $this->Form->input('MerchantStockTake.id', array(
                     'id' => 'id',
@@ -134,6 +133,7 @@
                                     'class' => 'status outlet',
                                     'div' => false,
                                     'label' => false,
+                                    'disabled' => 'disabled',
                                     'empty' => 'Which outlet?'
                                 ));
                              ?>
@@ -152,6 +152,7 @@
                                     'class' => 'hasDatepicker',
                                     'div' => false,
                                     'label' => false,
+                                    'placeholder' => 'e.g. 2000-06-02',
                                     'value' => $start_date
                                 ));
                              ?>
@@ -168,6 +169,7 @@
                                     'type' => 'text',
                                     'div' => false,
                                     'label' => false,
+                                    'placeholder' => 'e.g. 6:00 PM',
                                     'value' => $start_time
                                 ));
                              ?>
@@ -336,6 +338,7 @@
 <!-- IMPORTANT! fullcalendar depends on jquery-ui-1.10.3.custom.min.js for drag & drop support -->
 <script src="/theme/onzsa/assets/global/plugins/fullcalendar/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
 <script src="/theme/onzsa/assets/global/plugins/jquery-easypiechart/jquery.easypiechart.min.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
 <script src="/theme/onzsa/assets/global/plugins/jquery.sparkline.min.js" type="text/javascript"></script>
 <script src="/theme/onzsa/assets/global/plugins/gritter/js/jquery.gritter.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL PLUGINS -->
@@ -349,8 +352,8 @@
 <script>
 var modifiedName = false;
 var countName= $("#name").val();
-var dueDate = $("#due_date").val();
 var outletName = $(".outlet").val();
+var isFullCount = 0;
 var filters = $("#filters").val() == "" ? [] : JSON.parse($("#filters").val());
 var products = $("#products").val() == "" ? {} : JSON.parse($("#products").val());
 
@@ -358,7 +361,9 @@ jQuery(document).ready(function() {
     Metronic.init(); // init metronic core componets
     Layout.init(); // init layout
     Index.init();
+
     autoCompleteForSearch();
+    formValidation();
 
     $("#name").keyup(function(e) {
         if (countName != $(this).val()) {
@@ -373,30 +378,69 @@ jQuery(document).ready(function() {
         outletName = $("select option:selected").text();
         $("#outlet_id").val($(this).val());
 
-        countName = outletName + ' ' + dueDate;
+        countName = outletName;
+
+        var dateRegex = /[0-9]{4}.(0[1-9]|1[012]).(0[1-9]|1[0-9]|2[0-9]|3[01])/;
+        if (dateRegex.test($("#start_date").val())) {
+            countName += ' ' + $("#start_date").val();
+        }
+
+        var timeRegex = /^([0-9]|0[0-9]|1[0-2])(:[0-5][0-9]){1}\s?(am|pm){1}/i;
+        if (timeRegex.test($("#start_time").val())) {
+            countName += ' ' + $("#start_time").val();
+        }
         $("#name").val(countName);
+
     });
 
     $("#start_date").on("change", function(e) {
         if (modifiedName || outletName == '')
             return;
 
-        due_date = $("#start_date").val() + ' ' + $("#start_time").val();
-        $("#due_date").val(dueDate);
+        countName = outletName;
 
-        countName = outletName + ' ' + dueDate;
+        var dateRegex = /[0-9]{4}.(0[1-9]|1[012]).(0[1-9]|1[0-9]|2[0-9]|3[01])/;
+        if (dateRegex.test($("#start_date").val())) {
+            countName += ' ' + $("#start_date").val();
+        }
+
+        var timeRegex = /^([0-9]|0[0-9]|1[0-2])(:[0-5][0-9]){1}\s?(am|pm){1}/i;
+        if (timeRegex.test($("#start_time").val())) {
+            countName += ' ' + $("#start_time").val();
+        }
         $("#name").val(countName);
+
+        if (dateRegex.test($("#start_date").val()) && timeRegex.test($("#start_time").val())) {
+            var dueDate = new Date($("#start_date").val() + ' ' + $("#start_time").val());
+            $("#due_date").val(dueDate.getFullYear() + "-" + (dueDate.getMonth() + 1) + 
+                dueDate.getDate() + " " + dueDate.getHours() + ":" + dueDate.getMinutes() + ":" +
+                dueDate.getSeconds());
+        }
     });
 
     $("#start_time").on("change", function(e) {
         if (modifiedName || outletName == '')
             return;
 
-        due_date = $("#start_date").val() + ' ' + $("#start_time").val();
-        $("#due_date").val(dueDate);
+        countName = outletName;
 
-        countName = outletName + ' ' + dueDate;
+        var dateRegex = /[0-9]{4}.(0[1-9]|1[012]).(0[1-9]|1[0-9]|2[0-9]|3[01])/;
+        if (dateRegex.test($("#start_date").val())) {
+            countName += ' ' + $("#start_date").val();
+        }
+
+        var timeRegex = /^([0-9]|0[0-9]|1[0-2])(:[0-5][0-9]){1}\s?(am|pm){1}/i;
+        if (timeRegex.test($("#start_time").val())) {
+            countName += ' ' + $("#start_time").val();
+        }
         $("#name").val(countName);
+
+        if (dateRegex.test($("#start_date").val()) && timeRegex.test($("#start_time").val())) {
+            var dueDate = new Date($("#start_date").val() + ' ' + $("#start_time").val());
+            $("#due_date").val(dueDate.getFullYear() + "-" + (dueDate.getMonth() + 1) + 
+                dueDate.getDate() + " " + dueDate.getHours() + ":" + dueDate.getMinutes() + ":" +
+                dueDate.getSeconds());
+        }
     });
 
     $("#show_inactive").change(function(e) {
@@ -444,6 +488,9 @@ jQuery(document).ready(function() {
             $("#filters").val('');
             $("#products").val('');
         }
+        isFullCount = $(this).val(); 
+        $("#full_count0").attr('checked', isFullCount == 0);
+        $("#full_count1").attr('checked', isFullCount == 1);
     });
 
     $(".save").click(function(e) {
@@ -518,7 +565,8 @@ function autoCompleteForSearch() {
                             label: item.name,
                             category: "Supplier",
                             type: "suppliers",
-                            value: item.id,
+                            typeValue: item.id,
+                            value: item.name,
                             data: item.MerchantProduct
                         });
                     });
@@ -528,7 +576,8 @@ function autoCompleteForSearch() {
                             label: item.name,
                             category: "Brand",
                             type: "brands",
-                            value: item.id,
+                            typeValue: item.id,
+                            value: item.name,
                             data: item.MerchantProduct
                         });
                     });
@@ -538,7 +587,8 @@ function autoCompleteForSearch() {
                             label: item.name,
                             category: "Type",
                             type: "types",
-                            value: item.id,
+                            typeValue: item.id,
+                            value: item.name,
                             data: item.MerchantProduct
                         });
                     });
@@ -548,7 +598,8 @@ function autoCompleteForSearch() {
                             label: item.name,
                             category: "Tag",
                             type: "tags",
-                            value: item.id,
+                            typeValue: item.id,
+                            value: item.name,
                             data: item.MerchantProduct
                         });
                     });
@@ -558,7 +609,8 @@ function autoCompleteForSearch() {
                             label: item.name,
                             category: "Product",
                             type: "products",
-                            value: item.id,
+                            typeValue: item.id,
+                            value: item.sku,
                             data: item
                         });
                     });
@@ -567,25 +619,25 @@ function autoCompleteForSearch() {
                 }
             });
         },
-        minLength: 3,
+        minLength: 2,
         select: function( event, ui ) {
             var category = ui.item.category;
             var name = ui.item.label;
             var type = ui.item.type;
-            var value =  ui.item.value;
+            var typeValue =  ui.item.typeValue;
             var found = false;
             var data = ui.item.data;
 
             if (ui.item.category == 'Product') {
-                addProduct(data.id, data, type, value);
+                addProduct(data.id, data, type, typeValue);
             } else {
                 $.each(data, function(index, product) {
-                    addProduct(product.id, product, type, value);
+                    addProduct(product.id, product, type, typeValue);
                 });
             }
 
             for (var index in filters) {
-                if (type == filters[index]['type'] && value == filters[index]['value']) {
+                if (type == filters[index]['type'] && typeValue == filters[index]['value']) {
                     found = true;
                 }
             }
@@ -595,7 +647,7 @@ function autoCompleteForSearch() {
                     category: category,
                     name: name,
                     type: type,
-                    value: value
+                    value: typeValue
                 })
                 $("#filters").val(JSON.stringify(filters));
             }
@@ -668,7 +720,7 @@ function updateView() {
     $(".filter-selection").empty();
     $(".dataTable tbody").empty();
 
-    if ($(".full_count").val() == 0) {
+    if (isFullCount == 0) {
         $(".full-count").css('display', 'none');
         $(".product-search-container").css('display', '');
 
@@ -715,6 +767,52 @@ function updateView() {
         $(".save").attr('disabled', false);
         $(".start").attr('disabled', false);
     }
+}
+
+// form validation
+var formValidation = function() {
+    // for more info visit the official plugin documentation: 
+    // http://docs.jquery.com/Plugins/Validation
+    $("#stock_take_form").validate({
+        rules: {
+            'data[MerchantStockTake][outlet_id]': {
+                required: true 
+            },
+            'data[MerchantStockTake][start_date]': {
+                required: true,
+                dateFormat: true
+            },
+            'data[MerchantStockTake][start_time]': {
+                required: true,
+                timeFormat: true
+            }
+        },
+        messages: {
+            'data[MerchantStockTake][outlet_id]': {
+                required: "Required"
+            },
+            'data[MerchantStockTake][start_date]': {
+                required: "Please enter a valid date. The date format is YYYY-MM-DD",
+                dateFormat: "Please enter a valid date. The date format is YYYY-MM-DD"
+            },
+            'data[MerchantStockTake][start_time]': {
+                required: "Please enter a valid time. The date format is hh:mm am/pm",
+                timeFormat: "Please enter a valid time. The date format is hh:mm am/pm"
+            }
+        },
+    });
+
+    jQuery.validator.addMethod("dateFormat", function(value, element) {
+        //match date in format YYYY-MM-DD
+        var dateRegex = /[0-9]{4}.(0[1-9]|1[012]).(0[1-9]|1[0-9]|2[0-9]|3[01])/;
+        return dateRegex.test(value);
+    });
+
+    jQuery.validator.addMethod("timeFormat", function(value, element) {
+        //match time in format hh:mm am/pm
+        var timeRegex = /^([0-9]|0[0-9]|1[0-2])(:[0-5][0-9]){1}\s?(am|pm){1}/i;
+        return timeRegex.test(value);
+    });
 }
 </script>
 <!-- END JAVASCRIPTS -->

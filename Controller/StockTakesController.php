@@ -488,10 +488,10 @@ class StockTakesController extends AppController {
         }
 
         if ($stocktake['MerchantStockTake']['full_count'] == 0) {
-            $filters = json_decode($data['filters'], true);
+            $filters = json_decode($stocktake['MerchantStockTake']['filters'], true);
             $show_inactive = $stocktake['MerchantStockTake']['show_inactive'];
 
-            $stocktake['products'] = $this->_searchByFilters($filters, $show_inactive);
+            $stocktake['products'] = $this->_searchByFilters($merchant_id, $retailer_id, $filters, $show_inactive);
         }
         return $stocktake;
     }
@@ -575,126 +575,126 @@ class StockTakesController extends AppController {
  * @param int   show inactive flag
  * @return void
  */
-    public function _searchByFilters($merchant_id, $retailer_id, $filters, $show_inactive) {
+    protected function _searchByFilters($merchant_id, $retailer_id, $filters, $show_inactive) {
         $products = array();
 
-        foreach ($filters as $filter) {
-            $joins = array();
-            $conditions = array();
+        if (!empty($filters) && is_array($filters)) {
+            foreach ($filters as $filter) {
+                $joins = array();
+                $conditions = array();
 
-            if ($filter['type'] === 'brands') {
-                $joins = array(
-                    array(
-                        'table' => 'merchant_product_brands',
-                        'alias' => 'MerchantProductBrand',
-                        'type' => 'INNER',
-                        'conditions' => array(
-                            'MerchantProductBrand.id = MerchantProduct.product_brand_id'
+                if ($filter['type'] === 'brands') {
+                    $joins = array(
+                        array(
+                            'table' => 'merchant_product_brands',
+                            'alias' => 'MerchantProductBrand',
+                            'type' => 'INNER',
+                            'conditions' => array(
+                                'MerchantProductBrand.id = MerchantProduct.product_brand_id'
+                            )
                         )
-                    )
-                );
+                    );
 
-                $conditions = array(
-                    'MerchantProductBrand.id' => $filter['value']
-                );
-            } elseif ($filter['type'] === 'tags') {
-                $joins = array(
-                    array(
-                        'table' => 'merchant_product_categories',
-                        'alias' => 'MerchantProductCategory',
-                        'type' => 'INNER',
-                        'conditions' => array(
-                            'MerchantProductCategory.product_id = MerchantProduct.id'
+                    $conditions = array(
+                        'MerchantProductBrand.id' => $filter['value']
+                    );
+                } elseif ($filter['type'] === 'tags') {
+                    $joins = array(
+                        array(
+                            'table' => 'merchant_product_categories',
+                            'alias' => 'MerchantProductCategory',
+                            'type' => 'INNER',
+                            'conditions' => array(
+                                'MerchantProductCategory.product_id = MerchantProduct.id'
+                            )
+                        ),
+                        array(
+                            'table' => 'merchant_product_tags',
+                            'alias' => 'MerchantProductTag',
+                            'type' => 'INNER',
+                            'conditions' => array(
+                                'MerchantProductTag.id = MerchantProductCategory.product_tag_id'
+                            )
                         )
-                    ),
-                    array(
-                        'table' => 'merchant_product_tags',
-                        'alias' => 'MerchantProductTag',
-                        'type' => 'INNER',
-                        'conditions' => array(
-                            'MerchantProductTag.id = MerchantProductCategory.product_tag_id'
+                    );
+
+                    $conditions = array(
+                        'MerchantProductTag.id' => $filter['value']
+                    );
+                } elseif ($filter['type'] === 'types') {
+                    $joins = array(
+                        array(
+                            'table' => 'merchant_product_types',
+                            'alias' => 'MerchantProductType',
+                            'type' => 'INNER',
+                            'conditions' => array(
+                                'MerchantProductType.id = MerchantProduct.product_type_id'
+                            )
                         )
-                    )
-                );
+                    );
 
-                $conditions = array(
-                    'MerchantProductTag.id' => $filter['value']
-                );
-            } elseif ($filter['type'] === 'types') {
-                $joins = array(
-                    array(
-                        'table' => 'merchant_product_types',
-                        'alias' => 'MerchantProductType',
-                        'type' => 'INNER',
-                        'conditions' => array(
-                            'MerchantProductType.id = MerchantProduct.product_type_id'
+                    $conditions = array(
+                        'MerchantProductType.id' => $filter['value']
+                    );
+                } elseif ($filter['type'] === 'suppliers') {
+                    $joins = array(
+                        array(
+                            'table' => 'merchant_suppliers',
+                            'alias' => 'MerchantSupplier',
+                            'type' => 'INNER',
+                            'conditions' => array(
+                                'MerchantSupplier.id = MerchantProduct.supplier_id'
+                            )
                         )
-                    )
-                );
+                    );
 
-                $conditions = array(
-                    'MerchantProductType.id' => $filter['value']
-                );
-            } elseif ($filter['type'] === 'suppliers') {
-                $joins = array(
-                    array(
-                        'table' => 'merchant_suppliers',
-                        'alias' => 'MerchantSupplier',
-                        'type' => 'INNER',
-                        'conditions' => array(
-                            'MerchantSupplier.id = MerchantProduct.supplier_id'
-                        )
-                    )
-                );
-
-                $conditions = array(
-                    'MerchantSupplier.id' => $value
-                );
-            } elseif ($filter['type'] === 'products') {
-                $conditions = array(
-                    'MerchantProduct.id' => $filter['value']
-                );
-            }
-
-            $conditions = array_merge($conditions, array(
-                'MerchantProduct.merchant_id' => $merchant_id,
-                'MerchantProduct.retailer_id' => $retailer_id,
-                'MerchantProduct.track_inventory' => 1,
-                'MerchantProduct.stock_type' => 'STANDARD'
-            ));
-
-            if (0 == $showInactive) {
-                $conditions = array_merge($conditions, array(
-                    'MerchantProduct.is_active = 1',
-                ));
-            }
-
-            $items = $this->MerchantProduct->find('all', array(
-                'joins' => $joins,
-                'conditions' => $conditions
-            ));
-
-            $items = Hash::map($items, "{n}", function($array) {
-                return $array['MerchantProduct'];
-            });
-
-            foreach ($items as $item) {
-                $temp = $item['MerchantProduct'];
-                $product_id = $temp['id'];
-
-                if (!isset($products[$product_id])) {
-                    $products[$product_id] = array(
-                        'product' => $temp,
-                        'types' => array()
+                    $conditions = array(
+                        'MerchantSupplier.id' => $value
+                    );
+                } elseif ($filter['type'] === 'products') {
+                    $conditions = array(
+                        'MerchantProduct.id' => $filter['value']
                     );
                 }
-                array_push($products[$product_id]['types'], array(
-                    'type' => $filter['type'],
-                    'value' => $filter['value']
+
+                $conditions = array_merge($conditions, array(
+                    'MerchantProduct.merchant_id' => $merchant_id,
+                    'MerchantProduct.track_inventory' => 1,
+                    'MerchantProduct.stock_type' => 'STANDARD'
                 ));
+
+                if (0 == $show_inactive) {
+                    $conditions = array_merge($conditions, array(
+                        'MerchantProduct.is_active = 1',
+                    ));
+                }
+
+                $items = $this->MerchantProduct->find('all', array(
+                    'joins' => $joins,
+                    'conditions' => $conditions
+                ));
+
+                $items = Hash::map($items, "{n}", function($array) {
+                    return $array['MerchantProduct'];
+                });
+
+                foreach ($items as $item) {
+                    $product_id = $item['id'];
+
+                    if (!isset($products[$product_id])) {
+                        $products[$product_id] = array(
+                            'product' => $item,
+                            'types' => array()
+                        );
+                    }
+                    array_push($products[$product_id]['types'], array(
+                        'type' => $filter['type'],
+                        'value' => $filter['value']
+                    ));
+                }
             }
         }
-        return $products;
+        return json_encode($products, false);
     }
 
 }

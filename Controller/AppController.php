@@ -53,6 +53,13 @@ class AppController extends Controller {
                     'userModel' => 'MerchantUser'
                 )
             )
+        ),
+        'Xero' => array(
+            /*
+            // Production key
+            'consumer_key' => 'PLCTPJLQ2FSH2JQDO6NDJ5GLUWMSFV',
+            'shared_secret' => 'LDDWUKJT6E0DPMEZTCK1HPDQOHUKDE',
+             */
         )
     );
 

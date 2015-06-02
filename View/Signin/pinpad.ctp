@@ -3,37 +3,52 @@
     <div class="page-content-wrapper">
         <div class="page-content col-xs-12 col-alpha col-omega">
             <div class="col-xs-12 signin-pin-content">
+                <?php
+                    echo $this->Form->create('MerchantUser', array(
+                        'id' => 'login_form'
+                    ));
+                    echo $this->Form->input('password', array(
+                        'id' => 'password',
+                        'type' => 'password',
+                        'style' => 'display:none',
+                        'div' => false,
+                        'label' => false
+                    ));
+                 ?>
                 <ul class="col-xs-12 numpad-enter">
                     <h2 class="text-center"><strong>CLICK THE PASSWORD</strong></h2>
                     <li>
-                        <div class="numpad-enter-button"></div>
+                        <div class="numpad-enter-button" id="pin_number0"></div>
                     </li>
                     <li>
-                        <div class="numpad-enter-button"></div>
+                        <div class="numpad-enter-button" id="pin_number1"></div>
                     </li>
                     <li>
-                        <div class="numpad-enter-button"></div>
+                        <div class="numpad-enter-button" id="pin_number2"></div>
                     </li>
                     <li>
-                        <div class="numpad-enter-button"></div>
+                        <div class="numpad-enter-button" id="pin_number3"></div>
                     </li>
                 </ul>
                 <div class="col-xs-12">
                     <div id="numpad-signin" class="col-xs-12">
-                        <div class="number_button">1</div>
-                        <div class="number_button">2</div>
-                        <div class="number_button">3</div>
-                        <div class="number_button">4</div>
-                        <div class="number_button"></div>
-                        <div class="number_button"></div>
-                        <div class="number_button"></div>
-                        <div class="number_button"></div>
-                        <div class="number_button"></div>
-                        <div class="number_button-gr number_button">CLR</div>
-                        <div class="number_button"></div>
-                        <div class="number_button-gr number_button">ENT</div>
+                        <div class="number_button pincode" id="pincode1">1</div>
+                        <div class="number_button pincode" id="pincode2">2</div>
+                        <div class="number_button pincode" id="pincode3">3</div>
+                        <div class="number_button pincode" id="pincode4">4</div>
+                        <div class="number_button pincode" id="pincode5">5</div>
+                        <div class="number_button pincode" id="pincode6">6</div>
+                        <div class="number_button pincode" id="pincode7">7</div>
+                        <div class="number_button pincode" id="pincode8">8</div>
+                        <div class="number_button pincode" id="pincode9">9</div>
+                        <div class="number_button-gr number_button pin-clear">CLR</div>
+                        <div class="number_button pincode" id="pincode0">0</div>
+                        <div class="number_button-gr number_button pin-enter">ENT</div>
                     </div>
                 </div>
+                <?php
+                    echo $this->Form->end();
+                 ?>
             </div>
         </div>
     </div>
@@ -63,23 +78,52 @@
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <script src="/theme/onzsa/assets/global/scripts/metronic.js" type="text/javascript"></script>
 <script src="/theme/onzsa/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/admin/pages/scripts/login-soft.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
+var pincode = ['', '', '', ''];
+var pinidx = 0;
+
 jQuery(document).ready(function() {
     Metronic.init(); // init metronic core components
     Layout.init(); // init current layout
-    Login.init();
 
-    /*
-    $(".submit").click(function(e) {
-        var domain_prefix = document.getElementById('domain_prefix');
-        if (domain_prefix != null) {
-            var form = document.getElementById('login_form');
-            form.action = "https://"+domain_prefix.value+".onzsa.com/users/login";
+    $(".pincode").click(function(e) {
+        if (pinidx >= 4) {
+            clear();
         }
+
+        pincode[pinidx++] = $(this).text();
+        updateView();
     });
-     */
+
+    $(".pin-clear").click(function(e) {
+        clear();
+    });
+
+    $(".pin-enter").click(function(e) {
+        if (pinidx < 4)
+            return;
+
+        var pinNumber = '';
+        for (var i = 0; i < 4; i++) {
+            pinNumber += pincode[i];
+        }
+
+        $("#password").val(pinNumber);
+        $("#login_form").submit();
+    });
 });
+
+function clear() {
+    pincode = ['', '', '', ''];
+    pinidx = 0;
+    updateView();
+}
+
+function updateView() {
+    for (var i = 0; i < 4; i++) {
+        $("#pin_number" + i).text(pincode[i]);
+    }
+}
 </script>
 <!-- END JAVASCRIPTS -->

@@ -77,8 +77,8 @@ class MerchantUser extends AppModel {
                 'message' => 'Please enter a password.'
             ),
             'minLength' => array(
-                'rule' => array('minLength', 6),
-                'message' => 'Your password must be at least 6 characters.'
+                'rule' => array('minLength', 4),
+                'message' => 'Your password must be at least 4 characters.'
             ),
         ),
         'display_name' => array(
