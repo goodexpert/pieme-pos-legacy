@@ -58,11 +58,13 @@
             <?php echo $this->fetch('content'); ?>
         </div>
         <div id="footer">
+<!--
             <div class="page-footer">
                 <div class="page-footer-inner">
                     2015 &copy; Onzsa Limited
                 </div>
             </div>
+-->
         </div>
     </div>
 </body>
