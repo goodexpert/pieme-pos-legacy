@@ -103,6 +103,7 @@
                     <dt class="col-md-4">Outlet</dt>
                     <dd class="col-md-8">
                         <select name="merchant_user['outlet_id']" id="merchant_user_outlet_id">
+                            <option value=""></option>
                         <?php
                             foreach($outlets as $outlet) :
                                 $outlet_id = $outlet['MerchantOutlet']['id'];

@@ -115,8 +115,12 @@ class UsersController extends AppController {
                 $data = $this->request->data;
                 $data['merchant_id'] = $user['merchant_id'];
                 
-                if(empty($data['password'])) {
+                if (empty($data['password'])) {
                     unset($data['password']);
+                }
+
+                if (isset($data['outlet_id']) && empty($data['outlet_id'])) {
+                    $data['outlet_id'] = null;
                 }
                 
                 $this->MerchantUser->id = $id;

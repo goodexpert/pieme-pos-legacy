@@ -1,3 +1,6 @@
+<?php
+    $user = $this->Session->read('Auth.User');
+ ?>
 <div class="container">
     <div class="page-header-inner">
         <!-- BEGIN LOGO -->
@@ -13,123 +16,132 @@
         <div class="hor-menu hidden-sm hidden-xs">
             <ul class="nav navbar-nav">
                 <!-- DOC: Remove data-hover="dropdown" and data-close-others="true" attributes below to disable the horizontal opening on mouse hover -->
-                <?php if($authUser['user_type_id'] !== "user_type_cashier") { ?>
-                    <li>
-                        <a href="/dashboard">
+                <li>
+                    <a href="/dashboard">
                         Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/home">Sell</a>
-                    </li>
-                    <li>
-                        <a href="/history">
-                        History </a>
-                    </li>
-                    <li>
-                        <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
-                        Product <i class="fa fa-angle-down"></i></a>
-                        <ul class="dropdown-menu pull-left">
-                            <li>
-                                <a href="/product">Product</a>
-                            </li>
-                            <li>
-                                <a href="/product/brand">Brand</a>
-                            </li>
-                            <li>
-                                <a href="/product/type">Types</a>
-                            </li>
-                            <li>
-                                <a href="/pricebook">Price Books</a>
-                            </li>
-                            <li>
-                                <a href="/supplier">Suppliers</a>
-                            </li>
-                            <li>
-                                <a href="/product/tag">Tags</a>
-                            </li>
-                            <li>
-                                <a href="/stock_orders">Stock Control</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
-                        Customer <i class="fa fa-angle-down"></i></a>
-                        <ul class="dropdown-menu pull-left">
-                            <li>
-                                <a href="/customer">Customer</a>
-                            </li>
-                            <li>
-                                <a href="/customer/group">Group</a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
-                        Setup <i class="fa fa-angle-down"></i></a>
-                        <ul class="dropdown-menu pull-left">
-                            <li>
-                                <a href="/setup">General</a>
-                            </li>
-                            <li>
-                                <a href="/account">Account</a>
-                            </li>
-                            <li>
-                                <a href="/setup/outlets_and_registers">Outlets and Registers</a>
-                            </li>
-                            <li>
-                                <a href="/setup/quick_keys">Quick Keys</a>
-                            </li>
-                            <li>
-                                <a href="/setup/payments">Payment Types</a>
-                            </li>
-                            <li>
-                                <a href="/setup/taxes">Sales Taxes</a>
-                            </li>
-                            <li>
-                                <a href="/setup/loyalty">Loyalty</a>
-                            </li>
-                            <li>
-                                <a href="/setup/user">Users</a>
-                            </li>
-                            <li>
-                                <a href="/setup/add_ons">Add-ons</a>
-                            </li>
-                        </ul>
-                    </li>
-                <?php } ?>
+                    </a>
+                </li>
+                <li>
+                    <a href="/home">Sell</a>
+                </li>
+                <li>
+                    <a href="/history">
+                    History </a>
+                </li>
+                <?php if ($user['user_type_id'] !== "user_type_cashier") : ?>
+                <li>
+                    <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
+                    Product <i class="fa fa-angle-down"></i></a>
+                    <ul class="dropdown-menu pull-left">
+                    <?php if ($user['user_type_id'] !== "user_type_admin") : ?>
+                        <li>
+                            <a href="/product">Product</a>
+                        </li>
+                        <li>
+                            <a href="/product/brand">Brand</a>
+                        </li>
+                        <li>
+                            <a href="/product/type">Types</a>
+                        </li>
+                        <li>
+                            <a href="/pricebook">Price Books</a>
+                        </li>
+                        <li>
+                            <a href="/supplier">Suppliers</a>
+                        </li>
+                        <li>
+                            <a href="/product/tag">Tags</a>
+                        </li>
+                    <?php endif; ?>
+                        <li>
+                            <a href="/stock_orders">Stock Control</a>
+                        </li>
+                    </ul>
+                </li>
+                <?php endif; ?>
+                <?php if ($user['user_type_id'] === "user_type_admin") : ?>
+                <li>
+                    <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
+                    Customer <i class="fa fa-angle-down"></i></a>
+                    <ul class="dropdown-menu pull-left">
+                        <li>
+                            <a href="/customer">Customer</a>
+                        </li>
+                        <li>
+                            <a href="/customer/group">Group</a>
+                        </li>
+                    </ul>
+                </li>
+                <?php endif; ?>
+                <?php if ($user['user_type_id'] !== "user_type_cashier") : ?>
+                <li>
+                    <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
+                    Setup <i class="fa fa-angle-down"></i></a>
+                    <ul class="dropdown-menu pull-left">
+                        <li>
+                            <a href="/setup">General</a>
+                        </li>
+                        <li>
+                            <a href="/account">Account</a>
+                        </li>
+                        <li>
+                            <a href="/setup/outlets_and_registers">Outlets and Registers</a>
+                        </li>
+                        <li>
+                            <a href="/setup/quick_keys">Quick Keys</a>
+                        </li>
+                        <li>
+                            <a href="/setup/payments">Payment Types</a>
+                        </li>
+                        <li>
+                            <a href="/setup/taxes">Sales Taxes</a>
+                        </li>
+                        <li>
+                            <a href="/setup/loyalty">Loyalty</a>
+                        </li>
+                        <li>
+                            <a href="/setup/user">Users</a>
+                        </li>
+                        <li>
+                            <a href="/setup/add_ons">Add-ons</a>
+                        </li>
+                    </ul>
+                </li>
+                <?php endif; ?>
             </ul>
         </div>
         <!-- END HORIZANTAL MENU -->
         <!-- BEGIN RESPONSIVE MENU TOGGLER -->
-        <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
-        </a>
+        <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"></a>
         <!-- END RESPONSIVE MENU TOGGLER -->
         <!-- BEGIN TOP NAVIGATION MENU -->
         <div class="top-menu">
             <ul class="nav navbar-nav pull-right">
-                <?php if($authUser['RegisterCount'] >= 2 and !empty($authUser['outlet_id'])) { ?>
+                <!-- BEGIN REGISTER DROPDOWN -->
+                <?php if (isset($user['MerchantRegister'])) : ?>
                 <li class="dropdown dropdown-user">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                     <span class="username">
-                    <?php echo $authUser['MerchantRegister']['name'];?> </span>
+                    <?php echo $user['MerchantRegister']['name']; ?> </span>
+                    <?php if ($user['RegisterCount'] > 1) : ?>
                     <i class="fa fa-angle-down"></i>
+                    <?php endif; ?>
                     </a>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu" style="<?php echo $user['RegisterCount'] > 1 ? '' : 'display: none;'; ?>">
                         <li id="change_register">
                             <a href="javascript:;">
                             <i class="icon-user"></i> Change Register </a>
                         </li>
                     </ul>
                 </li>
-                <?php } ?>
+                <?php endif; ?>
+                <!-- END REGISTER DROPDOWN -->
                 <!-- BEGIN USER LOGIN DROPDOWN -->
                 <li class="dropdown dropdown-user">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                     <img alt="" class="img-user" src="/img/user.png"/>
                     <span class="username">
-                    <?=$authUser['display_name'];?> </span>
+                    <?php echo $user['display_name']; ?> </span>
                     <i class="fa fa-angle-down"></i>
                     </a>
                     <ul class="dropdown-menu">

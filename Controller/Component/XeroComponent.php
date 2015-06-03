@@ -27,10 +27,10 @@ class XeroComponent extends Component {
  * @param ComponentCollection $collection A ComponentCollection this component can use to lazy load its components
  * @param array $settings Array of configuration settings.
  */
-	public function __construct(ComponentCollection $collection, $settings = array()) {
-		$settings = array_merge($this->settings, (array)$settings);
-		$this->Controller = $collection->getController();
-		parent::__construct($collection, $settings);
+    public function __construct(ComponentCollection $collection, $settings = array()) {
+        $settings = array_merge($this->settings, (array)$settings);
+        $this->Controller = $collection->getController();
+        parent::__construct($collection, $settings);
     }
 
 /**
@@ -160,13 +160,13 @@ class XeroComponent extends Component {
  * Send a request message to Xero
  *
  * @param string $method
- *        	the HTTP method being used. e.g. POST, GET, HEAD etc
+ *          the HTTP method being used. e.g. POST, GET, HEAD etc
  * @param string $resource
- *        	the request resource path. e.g. Contacts, Invoices, Payments etc
+ *          the request resource path. e.g. Contacts, Invoices, Payments etc
  * @param array $params
- *        	the request parameters as an array of key=value pairs
+ *          the request parameters as an array of key=value pairs
  * @param string $format
- *        	the format of the response. Default json. Set to an empty string to exclude the format
+ *          the format of the response. Default json. Set to an empty string to exclude the format
  * @return false|array
  */
     protected function _request($method, $resource, $params = array(), $xml = "", $format = 'xml') {

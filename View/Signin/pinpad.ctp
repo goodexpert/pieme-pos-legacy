@@ -3,9 +3,38 @@
     <div class="page-content-wrapper">
         <div class="page-content col-xs-12 col-alpha col-omega">
             <div class="col-xs-12 signin-pin-content">
+                <div class="col-xs-6">
                 <?php
                     echo $this->Form->create('MerchantUser', array(
-                        'id' => 'login_form'
+                        'id' => 'pinpad_form',
+                        'type' => 'get'
+                    ));
+                    echo $this->Form->input('outlet_id', array(
+                        'id' => 'outlet_id',
+                        'type' => 'select',
+                        'div' => false,
+                        'label' => false,
+                        'options' => $outlets,
+                        'selected' => $outlet_id,
+                        'empty' => 'Select an outlet',
+                        'onchange' => 'this.form.submit()'
+                    ));
+                    echo $this->Form->end();
+                 ?>
+                </div>
+                <div class="col-xs-6">
+                <?php
+                    echo $this->Form->create('MerchantUser', array(
+                        'id' => 'login_form',
+                    ));
+                    echo $this->Form->input('username', array(
+                        'id' => 'username',
+                        'type' => 'select',
+                        'div' => false,
+                        'label' => false,
+                        'options' => $users,
+                        'selected' => $username,
+                        'empty' => 'Select an username'
                     ));
                     echo $this->Form->input('password', array(
                         'id' => 'password',
@@ -14,7 +43,10 @@
                         'div' => false,
                         'label' => false
                     ));
+                    echo $this->Form->end();
                  ?>
+                </div>
+                <div class="help-block with-errors"><?php echo $this->Session->flash(); ?></div>
                 <ul class="col-xs-12 numpad-enter">
                     <h2 class="text-center"><strong>CLICK THE PASSWORD</strong></h2>
                     <li>
@@ -46,9 +78,6 @@
                         <div class="number_button-gr number_button pin-enter">ENT</div>
                     </div>
                 </div>
-                <?php
-                    echo $this->Form->end();
-                 ?>
             </div>
         </div>
     </div>
@@ -101,6 +130,9 @@ jQuery(document).ready(function() {
     });
 
     $(".pin-enter").click(function(e) {
+        if ($("#username").val() == '')
+            return;
+
         if (pinidx < 4)
             return;
 
@@ -122,7 +154,7 @@ function clear() {
 
 function updateView() {
     for (var i = 0; i < 4; i++) {
-        $("#pin_number" + i).text(pincode[i]);
+        $("#pin_number" + i).text(pincode[i] == '' ? '' : '*');
     }
 }
 </script>

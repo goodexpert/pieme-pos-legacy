@@ -262,7 +262,7 @@ class AuthComponent extends Component {
  *
  * @var string
  */
-	protected $subdomain;
+	public $subdomain;
 
 /**
  * Initializes AuthComponent for use in the controller.
@@ -907,11 +907,14 @@ class AuthComponent extends Component {
 		if (!in_array($domain, array('secure'))) {
 			$result = ClassRegistry::init('Merchant')->find('first', array(
 				'conditions' => array(
-				'Merchant.domain_prefix' => $domain
+					'Merchant.domain_prefix' => $domain
 				)
 			));
 			if (empty($result) || !is_array($result)) {
 				return false;
+			}
+			if ($result['Merchant']['allow_use_pincode'] == 1) {
+				$this->loginAction = '/signin/pinpad';
 			}
 		}
 		return true;
@@ -932,6 +935,32 @@ class AuthComponent extends Component {
 			foreach ($this->_authenticateObjects as $auth) {
 				$auth->settings['scope'] = array(
 					'Merchant.domain_prefix' => $domain_prefix
+				);
+			}
+		}
+	}
+
+/**
+ * Set a access address to login.
+ *
+ * @param string $address The domain name to set.
+ * @return void
+ */
+	public function setLoginAddress($address) {
+		if (empty($this->_authenticateObjects)) {
+			$this->authenticate['Form']['scope'] = array(
+                'OR' => array(
+				    'MerchantUser.allow_ip_address IS NULL',
+				    'MerchantUser.allow_ip_address' => $address
+                )
+			);
+		} else {
+			foreach ($this->_authenticateObjects as $auth) {
+				$auth->settings['scope'] = array(
+                    'OR' => array(
+                        'MerchantUser.allow_ip_address IS NULL',
+                        'MerchantUser.allow_ip_address' => $address
+                    )
 				);
 			}
 		}

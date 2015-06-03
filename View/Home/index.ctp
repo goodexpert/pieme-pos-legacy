@@ -648,15 +648,11 @@
                     <button id="" class="btn btn-white btn-left pull-right"><div class="glyphicon glyphicon-th-list"></div></button>
                 </div>
                 <div class="multi_btn margin-top-10 inline-block" style="display:block;">
-                      <?php foreach($outlets as $outlet){ ?>
-                          <?php foreach($outlet['MerchantRegister'] as $register) { ?>
-                  
-                          <div class="col-md-3 col-sm-3 col-sx-3">
-                            <button class="btn btn-success full-width register-set" register-id="<?php echo $register['id'];?>" outlet-id="<?php echo $register['outlet_id'];?>"><?php echo $register['name'];?></button>
-                        </div>
-                
-                        <?php } ?>
-                    <?php } ?>
+                <?php foreach($registers as $register) : ?>
+                    <div class="col-md-3 col-sm-3 col-sx-3">
+                        <button class="btn btn-success full-width register-set" register-id="<?php echo $register['id'];?>" outlet-id="<?php echo $register['outlet_id'];?>"><?php echo $register['name'];?></button>
+                    </div>
+                <?php endforeach; ?>
                 </div>
                 <!--
                 <div class="multi_btn-list margin-top-10 inline-block">
@@ -1469,13 +1465,11 @@ jQuery(document).ready(function() {
     });
     
     $(".register-set").click(function(){
-        var outlet_id = $(this).attr("outlet-id");
         var register_id = $(this).attr("register-id");
         $.ajax({  
             url: "/home/select_register.json",
             type: "POST",
             data: {
-                outlet_id: outlet_id,
                 register_id: register_id
             }
         });

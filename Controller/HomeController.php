@@ -163,6 +163,8 @@ class HomeController extends AppController {
             $merchant = $this->MerchantRegister->findById($user['MerchantRegister']['id']);
             $this->set('merchant',$merchant);
         }
+
+        /*
         $this->MerchantOutlet->bindModel(array(
             'hasMany' => array(
                 'MerchantRegister' => array(
@@ -178,6 +180,9 @@ class HomeController extends AppController {
             )
         ));
         $this->set('outlets',$outlets);
+        */
+        $registers = $this->_getRegisterByOutletId($user['merchant_id'], $user['outlet_id']);
+        $this->set('registers', $registers);
         
         if(!empty($this->Auth->user()['MerchantRegister'])){
             $this->loadModel('MerchantRegisterOpen');
@@ -726,26 +731,113 @@ class HomeController extends AppController {
     }
     
     public function select_register() {
-        if($this->request->is('post')) {
-            $this->loadModel("MerchantRegister");
-            $result = array(
-                'success' => false
-            );
-            try {
-                $data = $this->request->data;
-                
-                $_SESSION["Auth"]["User"]["outlet_id"] = $data['outlet_id'];
-                
-                $outlet = $this->MerchantOutlet->findById($data['outlet_id']);
-                $_SESSION["Auth"]["User"]["MerchantOutlet"] = $outlet['MerchantOutlet'];
-                
-                $register = $this->MerchantRegister->findById($data['register_id']);
-                $_SESSION["Auth"]["User"]["MerchantRegister"] = $register['MerchantRegister'];
-            } catch (Exception $e) {
-                $result['message'] = $e->getMessage();
-            }
-            $this->serialize($result);
+        if (!$this->request->is('ajax') || !$this->request->is('post')) {
+            return $this->redirect('/dashboard', 301, false);
         }
+
+        $data = $this->request->data;
+        $register = $this->_getRegisterById($data['register_id']);
+
+        if (is_array($register)) {
+            $outlet = $register['MerchantOutlet'];
+            unset($register['MerchantOutlet']);
+
+            $this->Session->delete('Auth.User.MerchantOutlet');
+            $this->Session->delete('Auth.User.MerchantRegister');
+
+            $this->Session->write('Auth.User.MerchantOutlet', $outlet);
+            $this->Session->write('Auth.User.MerchantRegister', $register);
+        }
+
+        if ($this->request->is('ajax')) {
+            $result = array(
+                'success' => is_array($register)
+            );
+            $this->serialize($result);
+        } elseif ($this->request->is('post')) {
+            return $this->redirect('/home', 301, false);
+        }
+    }
+
+/**
+ * Get the merchant's register.
+ *
+ * @param string register id.
+ * @return array the list.
+ */
+    protected function _getRegisterById($register_id) {
+        $this->loadModel('MerchantRegister');
+
+        $register = $this->MerchantRegister->find('first', array(
+            'fields' => array(
+                'MerchantRegister.*',
+                'MerchantOutlet.*'
+            ),
+            'joins' => array(
+                array(
+                    'table' => 'merchant_outlets',
+                    'alias' => 'MerchantOutlet',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'MerchantOutlet.id = MerchantRegister.outlet_id'
+                    )
+                )
+            ),
+            'conditions' => array(
+                'MerchantRegister.id' => $register_id
+            )
+        ));
+        if (!empty($register) && is_array($register)) {
+            $temp = $register['MerchantRegister'];
+            $temp['MerchantOutlet'] = $register['MerchantOutlet'];
+            $register = $temp;
+        }
+        return $register;
+    }
+
+/**
+ * Get the user's register.
+ *
+ * @param string merchant id.
+ * @param string outlet id.
+ * @return array the list.
+ */
+    protected function _getRegisterByOutletId($merchant_id, $outlet_id) {
+        $this->loadModel('MerchantRegister');
+
+        $conditions = array(
+            'MerchantOutlet.merchant_id' => $merchant_id
+        );
+
+        if (!empty($outlet_id)) {
+            $conditions = array_merge($conditions, array(
+                'MerchantOutlet.id' => $outlet_id
+            ));
+        }
+
+        $registers = $this->MerchantRegister->find('all', array(
+            'fields' => array(
+                'MerchantRegister.*',
+                'MerchantOutlet.*'
+            ),
+            'joins' => array(
+                array(
+                    'table' => 'merchant_outlets',
+                    'alias' => 'MerchantOutlet',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'MerchantOutlet.id = MerchantRegister.outlet_id'
+                    )
+                )
+            ),
+            'conditions' => $conditions
+        ));
+        $registers = Hash::map($registers, "{n}", function($array) {
+            $newArray = $array['MerchantRegister'];
+            $newArray['MerchantOutlet'] = $array['MerchantOutlet'];
+            return $newArray;
+        });
+        return $registers;
     }
 
 }
