@@ -148,6 +148,9 @@ class StockTakesController extends AppController {
  */
     public function perform($id) {
         $user = $this->Auth->user();
+
+        $stockTake = $this->_getStockTake($id, $user['merchant_id'], $user['retailer_id']);
+        $this->set('stockTake', $stockTake);
     }
 
 /**

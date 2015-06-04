@@ -60,7 +60,7 @@
                     <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                         <h5 class="col-lg-4 col-md-5 col-xs-12 col-sm-6 col-alpha col-omega">
                             <span class="glyphicon glyphicon-calendar"></span>&nbsp;
-                            Start: <?php echo date('d M Y, g:m A', strtotime($stockTake['MerchantStockTake']['start_date'])); ?>
+                            Start: <?php echo date('d M Y, g:m A', strtotime($stockTake['MerchantStockTake']['due_date'])); ?>
                         </h5>
                         <h5 class="col-lg-8 col-md-7 col-xs-12 col-sm-6 col-alpha col-omega">
                             <span class="glyphicon glyphicon-map-marker"></span>&nbsp;

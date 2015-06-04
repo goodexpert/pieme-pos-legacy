@@ -75,9 +75,9 @@
                     </h4>
                     <?php foreach($plans as $plan) { ?>
                         <div class="col-md-3 col-sm-6 col-xs-6 margin-bottom-20 <?php if(strpos($plan['Plan']['id'], 'franchise') == true && strpos($plan['Plan']['id'], 'hq') == false){echo 'franchise hidden';} else if(strpos($plan['Plan']['id'], 'hq') == true){echo 'franchise_hq hidden';} else if(strpos($plan['Plan']['id'], 'retailer') == true){echo 'retailer';}?>">
-                            <div class="plan-item clickable <?php if($user['Merchant']['plan_id'] == $plan['Plan']['id']){echo "selected_plan";}?> line-box">
+                            <div class="plan-item clickable <?php if($user['Plan']['id'] == $plan['Plan']['id']){echo "selected_plan";}?> line-box">
                                 <div class="col-md-12 col-sm-12 col-xs-12 plan-header">
-                                    <input type="radio" value="<?php echo $plan['Plan']['id'];?>" data-outlet="<?php echo $plan['Plan']['limit_outlets'];?>" data-register="<?php echo $plan['Plan']['limit_registers'];?>" data-product="<?php echo $plan['Plan']['limit_products'];?>" data-customer="<?php echo $plan['Plan']['limit_customers'];?>" data-user="<?php echo $plan['Plan']['limit_users'];?>" name="account_plan" <?php if($user['Merchant']['plan_id'] == $plan['Plan']['id']){echo "checked";}?>> <lable for="account_plan"><?php echo $plan['Plan']['name'];?></lable>
+                                    <input type="radio" value="<?php echo $plan['Plan']['id'];?>" data-outlet="<?php echo $plan['Plan']['limit_outlets'];?>" data-register="<?php echo $plan['Plan']['limit_registers'];?>" data-product="<?php echo $plan['Plan']['limit_products'];?>" data-customer="<?php echo $plan['Plan']['limit_customers'];?>" data-user="<?php echo $plan['Plan']['limit_users'];?>" name="account_plan" <?php if($user['Plan']['id'] == $plan['Plan']['id']){echo "checked";}?>> <lable for="account_plan"><?php echo $plan['Plan']['name'];?></lable>
                                 </div>
                                 <div class="col-md-12 col-sm-12 col-xs-12">
                                     <div class="plan-price">
