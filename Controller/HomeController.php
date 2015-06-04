@@ -61,8 +61,8 @@ class HomeController extends AppController {
         $this->loadModel('MerchantQuickKey');
         $this->loadModel('MerchantPriceBook');
         
-        if(!empty($this->Auth->user()['outlet_id'])) {
-            $key_id = $this->MerchantRegister->findById($this->Auth->user()['MerchantRegister']['id'])['MerchantRegister']['quick_key_id'];
+        if(!empty($user['current_outlet_id'])) {
+            $key_id = $this->MerchantRegister->findById($user['MerchantRegister']['id'])['MerchantRegister']['quick_key_id'];
             $quick = $this->MerchantQuickKey->findById($key_id);
             $quick = json_decode($quick['MerchantQuickKey']['key_layouts'],true);
             $products_ids = array();
@@ -150,7 +150,7 @@ class HomeController extends AppController {
                     ),
                     array(
                         'OR' => array(
-                            array('MerchantPriceBook.outlet_id' => $user['outlet_id']),
+                            array('MerchantPriceBook.outlet_id' => $user['current_outlet_id']),
                             array('MerchantPriceBook.outlet_id' => null)
                         )
                     )
@@ -176,30 +176,30 @@ class HomeController extends AppController {
         
         $outlets = $this->MerchantOutlet->find('all', array(
             'conditions' => array(
-                'MerchantOutlet.merchant_id' => $this->Auth->user()['merchant_id']
+                'MerchantOutlet.merchant_id' => $user['merchant_id']
             )
         ));
         $this->set('outlets',$outlets);
         */
-        $registers = $this->_getRegisterByOutletId($user['merchant_id'], $user['outlet_id']);
+        $registers = $this->_getRegisterByOutletId($user['merchant_id'], $user['current_outlet_id']);
         $this->set('registers', $registers);
         
-        if(!empty($this->Auth->user()['MerchantRegister'])){
+        if(!empty($user['MerchantRegister'])){
             $this->loadModel('MerchantRegisterOpen');
             $registerOpen = $this->MerchantRegisterOpen->find('all',array(
                 'conditions' => array(
-                    'MerchantRegisterOpen.register_id' => $this->Auth->user()['MerchantRegister']['id'],
+                    'MerchantRegisterOpen.register_id' => $user['MerchantRegister']['id'],
                     'MerchantRegisterOpen.register_close_time' => ''
                 )
             ));
             $sequence = $this->MerchantRegisterOpen->find('count',array(
                 'conditions' => array(
-                    'MerchantRegisterOpen.register_id' => $this->Auth->user()['MerchantRegister']['id'],
+                    'MerchantRegisterOpen.register_id' => $user['MerchantRegister']['id'],
                 )
             ));
             if(count($registerOpen) == 0){
                 $this->MerchantRegisterOpen->create();
-                $open->MerchantRegisterOpen['register_id'] = $this->Auth->user()['MerchantRegister']['id'];
+                $open->MerchantRegisterOpen['register_id'] = $user['MerchantRegister']['id'];
                 $open->MerchantRegisterOpen['register_open_count_sequence'] = $sequence;
                 $open->MerchantRegisterOpen['register_open_time'] = date('Y-m-d H:i:s');
                 $this->MerchantRegisterOpen->save($open);
@@ -268,7 +268,7 @@ class HomeController extends AppController {
     
             $groups = $this->MerchantCustomerGroup->find('all', array(
                 'conditions' => array(
-                    'MerchantCustomerGroup.merchant_id' => $this->Auth->user()['merchant_id']
+                    'MerchantCustomerGroup.merchant_id' => $user['merchant_id']
                 ),
                 'order' => array('MerchantCustomerGroup.created ASC')
             ));
@@ -293,32 +293,32 @@ class HomeController extends AppController {
             );
             try {
                 $data = $this->request->data;
-                $data['register_id'] = $this->Auth->user()['MerchantRegister']['id'];
-                $data['user_id'] = $this->Auth->user()['id'];
+                $data['register_id'] = $user['MerchantRegister']['id'];
+                $data['user_id'] = $user['id'];
                 $data['sale_date'] = date('Y-m-d H:i:s');
 
                 $registerOpen = $this->MerchantRegisterOpen->find('all',array(
                     'conditions' => array(
-                        'MerchantRegisterOpen.register_id' => $this->Auth->user()['MerchantRegister']['id'],
+                        'MerchantRegisterOpen.register_id' => $user['MerchantRegister']['id'],
                         'MerchantRegisterOpen.register_close_time' => null
                     )
                 ));
                 $sequence = $this->MerchantRegisterOpen->find('count',array(
                     'conditions' => array(
-                        'MerchantRegisterOpen.register_id' => $this->Auth->user()['MerchantRegister']['id'],
+                        'MerchantRegisterOpen.register_id' => $user['MerchantRegister']['id'],
                     )
                 ));
                 
                 $customer = $this->MerchantCustomer->find('all',array(
                     'conditions' => array(
-                        'MerchantCustomer.merchant_id' => $this->Auth->user()['merchant_id']
+                        'MerchantCustomer.merchant_id' => $user['merchant_id']
                     ),
                     'order' => array('MerchantCustomer.created ASC')
                 ));
 
                 if(count($registerOpen) == 0){
                     $this->MerchantRegisterOpen->create();
-                    $open->MerchantRegisterOpen['register_id'] = $this->Auth->user()['MerchantRegister']['id'];
+                    $open->MerchantRegisterOpen['register_id'] = $user['MerchantRegister']['id'];
                     $open->MerchantRegisterOpen['register_open_count_sequence'] = $sequence;
                     
                     if($customer[0]['MerchantCustomer']['id'] == $data['customer_id']){
@@ -405,7 +405,7 @@ class HomeController extends AppController {
                     ));
                     foreach($quantities as $quantity) {
                         $generalQuantity += $quantity['MerchantProductInventory']['count'];
-                        if($quantity['MerchantProductInventory']['outlet_id'] == $user['outlet_id']) {
+                        if($quantity['MerchantProductInventory']['outlet_id'] == $user['current_outlet_id']) {
                             $outletQuantity = $quantity['MerchantProductInventory']['count'];
                             
                             $this->MerchantProductInventory->id = $quantity['MerchantProductInventory']['id'];
@@ -418,7 +418,7 @@ class HomeController extends AppController {
                         $this->MerchantProductLog->create();
                         $log['MerchantProductLog']['product_id'] = $item['product_id'];
                         $log['MerchantProductLog']['user_id'] = $user['id'];
-                        $log['MerchantProductLog']['outlet_id'] = $user['outlet_id'];
+                        $log['MerchantProductLog']['outlet_id'] = $user['current_outlet_id'];
                         $log['MerchantProductLog']['quantity'] = $generalQuantity - $item['quantity'];
                         $log['MerchantProductLog']['outlet_quantity'] = $outletQuantity - $item['quantity'];
                         $log['MerchantProductLog']['change'] = -$item['quantity'];
@@ -450,7 +450,7 @@ class HomeController extends AppController {
             );
             try {
                 $data = $this->request->data;
-                $data['register_id'] = $this->Auth->user()['MerchantRegister']['id'];
+                $data['register_id'] = $user['MerchantRegister']['id'];
                 $data['user_id'] = $user['id'];
 
                 if(isset($_POST['sale_id'])){
@@ -484,7 +484,7 @@ class HomeController extends AppController {
                     $outletQuantity = 0;
                     foreach($quantities as $quantity) {
                         $generalQuantity += $quantity['MerchantProductInventory']['count'];
-                        if($quantity['MerchantProductInventory']['outlet_id'] == $user['outlet_id']) {
+                        if($quantity['MerchantProductInventory']['outlet_id'] == $user['current_outlet_id']) {
                             $outletQuantity = $quantity['MerchantProductInventory']['count'];
                             
                             $this->MerchantProductInventory->id = $quantity['MerchantProductInventory']['id'];
@@ -497,7 +497,7 @@ class HomeController extends AppController {
                         $this->MerchantProductLog->create();
                         $log['MerchantProductLog']['product_id'] = $item['product_id'];
                         $log['MerchantProductLog']['user_id'] = $user['id'];
-                        $log['MerchantProductLog']['outlet_id'] = $user['outlet_id'];
+                        $log['MerchantProductLog']['outlet_id'] = $user['current_outlet_id'];
                         $log['MerchantProductLog']['quantity'] = $generalQuantity - $item['quantity'];
                         $log['MerchantProductLog']['outlet_quantity'] = $outletQuantity - $item['quantity'];
                         $log['MerchantProductLog']['change'] = -$item['quantity'];
@@ -532,19 +532,19 @@ class HomeController extends AppController {
                     $this->loadModel('MerchantRegisterOpen');
                     $registerOpen = $this->MerchantRegisterOpen->find('all',array(
                         'conditions' => array(
-                            'MerchantRegisterOpen.register_id' => $this->Auth->user()['MerchantRegister']['id'],
+                            'MerchantRegisterOpen.register_id' => $user['MerchantRegister']['id'],
                             'MerchantRegisterOpen.register_close_time' => ''
                         )
                     ));
                     $sequence = $this->MerchantRegisterOpen->find('count',array(
                         'conditions' => array(
-                            'MerchantRegisterOpen.register_id' => $this->Auth->user()['MerchantRegister']['id'],
+                            'MerchantRegisterOpen.register_id' => $user['MerchantRegister']['id'],
                         )
                     ));
                     
                     $customer = $this->MerchantCustomer->find('all',array(
                         'conditions' => array(
-                            'MerchantCustomer.merchant_id' => $this->Auth->user()['merchant_id']
+                            'MerchantCustomer.merchant_id' => $user['merchant_id']
                         )
                     ));
                     
@@ -554,7 +554,7 @@ class HomeController extends AppController {
                     
                     if(count($registerOpen) == 0){
                         $this->MerchantRegisterOpen->create();
-                        $open->MerchantRegisterOpen['register_id'] = $this->Auth->user()['MerchantRegister']['id'];
+                        $open->MerchantRegisterOpen['register_id'] = $user['MerchantRegister']['id'];
                         $open->MerchantRegisterOpen['register_open_count_sequence'] = $sequence;
                         
                         if($customer[0]['MerchantCustomer']['id'] == $data['customer_id']){
@@ -605,7 +605,7 @@ class HomeController extends AppController {
 
         $opens = $this->MerchantRegisterOpen->find('first',array(
             'conditions' => array(
-                'MerchantRegisterOpen.register_id' => $this->Auth->user()['MerchantRegister']['id'],
+                'MerchantRegisterOpen.register_id' => $user['MerchantRegister']['id'],
                 'MerchantRegisterOpen.register_close_time' => ''
             )
         ));
@@ -745,6 +745,7 @@ class HomeController extends AppController {
             $this->Session->delete('Auth.User.MerchantOutlet');
             $this->Session->delete('Auth.User.MerchantRegister');
 
+            $this->Session->write('Auth.User.current_outlet_id', $outlet['id']);
             $this->Session->write('Auth.User.MerchantOutlet', $outlet);
             $this->Session->write('Auth.User.MerchantRegister', $register);
         }

@@ -52,6 +52,8 @@ class SigninController extends AppController {
  */
     public function index() {
         if ($this->request->is('post')) {
+            $this->_login();
+            /*
             $data = $this->request->data;
             $errors = array();
 
@@ -137,6 +139,7 @@ class SigninController extends AppController {
             } else {
                 $this->Session->setFlash(__('Invalid username or password, try again'));
             }
+             */
         }
     }
 
@@ -270,6 +273,7 @@ class SigninController extends AppController {
                         $outlet = $registers[0]['MerchantOutlet'];
                         unset($registers[0]['MerchantOutlet']);
 
+                        $this->Session->write('Auth.User.current_outlet_id', $outlet['id']);
                         $this->Session->write('Auth.User.MerchantOutlet', $outlet);
                         $this->Session->write('Auth.User.MerchantRegister', $registers[0]);
                     }

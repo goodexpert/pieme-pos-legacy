@@ -146,7 +146,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="/users/<?php echo $authUser['id'];?>">
+                            <a href="/users/<?php echo $user['id'];?>">
                             <i class="icon-user"></i> My Profile </a>
                         </li>
                         <li class="divider">

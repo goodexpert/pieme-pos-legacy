@@ -1,3 +1,6 @@
+<?php
+    $user = $this->Session->read('Auth.User');
+ ?>
 <style>
 .receipt-parent {
     position: absolute;
@@ -44,7 +47,7 @@
                 <div class="receipt-body-info">
                     Invoice #<span class="invoice-id"><?php echo $merchant['MerchantRegister']['invoice_sequence'];?></span><br>
                     <span class="invoice-date">2015-03-10 15:23:49</span><br>
-                    Served by: <?php echo $authUser['display_name'].' on '.$authUser['MerchantRegister']['name'];?>
+                    Served by: <?php echo $user['display_name'].' on '.$user['MerchantRegister']['name'];?>
                 </div>
                 <div class="dashed-line-gr"></div>
                 <div class="col-md-12 col-xs-12 col-sm-12 col-omega col-alpha receipt-body-sales">
@@ -108,7 +111,7 @@
   <!-- BEGIN CONTENT -->
   <div class="page-content-wrapper">
     <div class="page-content" id="sell-index">
-      <input type="hidden" id="discount_auth" value="<?php echo $authUser['Merchant']['allow_cashier_discount'];?>">
+      <input type="hidden" id="discount_auth" value="<?php echo $user['Merchant']['allow_cashier_discount'];?>">
       <div class="maximum">
           <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-top-30">
              <button class="btn btn-white maxi pull-right"><i class="icon-size-fullscreen"></i></button>
@@ -160,7 +163,7 @@
             </div>
           </div>
           <div class="commands col-md-12">
-            <?php if(!empty($authUser['outlet_id'])) { ?>
+            <?php if(!empty($user['current_outlet_id'])) { ?>
             <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 customer-search col-omega col-alpha">
                   <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                     <div class="col-md-9 col-xs-9 col-sm-9 col-alpha col-omega">
@@ -198,7 +201,7 @@
                 <div class="col-md-12 col-xs-12 col-sm-12 buttons col-alpha col-omega">
                   <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha"><button id="park" class="btn btn-primary">Park</button></div>
                   <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha"><button class="btn btn-primary void">VOID</button></div>
-                  <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha"><button class="btn btn-primary discount" <?php if($authUser['Merchant']['allow_cashier_discount'] == 0){echo "disabled";}?>>Discount</button></div>
+                  <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha"><button class="btn btn-primary discount" <?php if($user['Merchant']['allow_cashier_discount'] == 0){echo "disabled";}?>>Discount</button></div>
                 </div>
             </div>
 
@@ -260,7 +263,7 @@
                                                 <?php
                                                 $priceAvailable = false;
                                                 foreach($pricebooks as $pricebook) {
-                                                    if($pricebook['MerchantPriceBook']['outlet_id'] == $authUser['outlet_id']) {
+                                                    if($pricebook['MerchantPriceBook']['outlet_id'] == $user['current_outlet_id']) {
                                                         foreach($pricebook['MerchantPriceBookEntry'] as $entry) {
                                                             if($entry['product_id'] == $key_items[$product['product_id']]['MerchantProduct']['id'] && $entry['min_units'] == null && $entry['max_units'] == null) {
                                                                 echo number_format($entry['price_include_tax'],2,'.','');
@@ -273,7 +276,7 @@
                                                 }
                                                 foreach($pricebooks as $pricebook) {
                                                     if($priceAvailable == false) {
-                                                        if($pricebook['MerchantPriceBook']['outlet_id'] == $authUser['outlet_id']) {
+                                                        if($pricebook['MerchantPriceBook']['outlet_id'] == $user['current_outlet_id']) {
                                                             foreach($pricebook['MerchantPriceBookEntry'] as $entry){
                                                                 if($entry['product_id'] == $key_items[$product['product_id']]['MerchantProduct']['id'] && $entry['min_units'] == null && $entry['max_units'] == null) {
                                                                     echo number_format($entry['price_include_tax'],2,'.','');
@@ -387,7 +390,6 @@
                 </tr>
             </thead>
             <tbody>
-            
                 <?php foreach($retrieves as $sale){ ?>
                     <tr class="clickable retrieve_sale" data-id="<?=$sale['RegisterSale']['id'];?>" data-customer-id="<?php echo $sale['MerchantCustomer']['id'];?>" data-customer-name="<?php echo $sale['MerchantCustomer']['name'];?>" data-customer-balance="<?php echo $sale['MerchantCustomer']['balance'];?>" data-count="<?=count($sale['RegisterSaleItem']);?>">
                     
@@ -564,7 +566,7 @@
   <!-- RETRIEVE POPUP BOX END -->
   
   <!-- CUSTOMER ADD BOX -->
-  <?php if(!empty($authUser['outlet_id'])){ ?>
+  <?php if(!empty($user['current_outlet_id'])){ ?>
   <input type="hidden" id="customer-null" value="<?=$customers[0]['MerchantCustomer']['id'];?>">
   <div class="confirmation-modal modal fade in customer_add" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;margin-left:33%;">
       <div class="modal-dialog col-md-12 col-sm-12 col-xs-12">
@@ -633,7 +635,7 @@
   <!-- CUSTOMER ADD BOX END -->
   
   <!-- SELECT REGISTER POPUP BOX -->
-  <div class="confirmation-modal modal fade in" id="register_box" tabindex="-1" role="dialog" aria-hidden="false" style="display: <?php if(empty($authUser['MerchantRegister'])){echo "block";}else{echo "none";}?>">
+  <div class="confirmation-modal modal fade in" id="register_box" tabindex="-1" role="dialog" aria-hidden="false" style="display: <?php if(empty($user['MerchantRegister'])){echo "block";}else{echo "none";}?>">
       <div class="modal-dialog">
           <div class="modal-content">
               <div class="modal-header">
@@ -817,7 +819,7 @@
     </form>
 
 </div>
-<div class="modal-backdrop fade in" style="display:<?php if(empty($authUser['MerchantRegister'])){echo "block";}else{echo "none";};?>"></div>
+<div class="modal-backdrop fade in" style="display:<?php if(empty($user['MerchantRegister'])){echo "block";}else{echo "none";};?>"></div>
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) --> 
 <!-- BEGIN CORE PLUGINS --> 
 <!--[if lt IE 9]>

@@ -1,3 +1,6 @@
+<?php
+    $user = $this->Session->read('Auth.User');
+ ?>
 <link href="/css/dataTable.css" rel="stylesheet" type="text/css">
 <div class="clearfix"></div>
 <div class="container">
@@ -54,7 +57,7 @@
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                 <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega"><?php echo $user['MerchantUser']['username'];?></h2>
                 <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega">
-                    <?php if($authUser['id'] == $user['MerchantUser']['id'] || ($authUser['Merchant']['id'] == $user['Merchant']['id'] && $authUser['user_type_id'] == 'user_type_admin')) { ?>
+                    <?php if($user['id'] == $user['MerchantUser']['id'] || ($user['Merchant']['id'] == $user['Merchant']['id'] && $user['user_type_id'] == 'user_type_admin')) { ?>
                     <a href="/users/<?php echo $user['MerchantUser']['id'];?>/edit">
                     <button class="btn btn-white add-customer pull-right margin-top-20">
                     <div class="glyphicon glyphicon-edit"></div>&nbsp;Edit</button></a>
