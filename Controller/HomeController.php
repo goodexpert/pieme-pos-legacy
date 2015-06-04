@@ -181,7 +181,7 @@ class HomeController extends AppController {
         ));
         $this->set('outlets',$outlets);
         */
-        $registers = $this->_getRegisterByOutletId($user['merchant_id'], $user['current_outlet_id']);
+        $registers = $this->_getRegisterByOutletId($user['merchant_id'], $user['outlet_id']);
         $this->set('registers', $registers);
         
         if(!empty($user['MerchantRegister'])){
