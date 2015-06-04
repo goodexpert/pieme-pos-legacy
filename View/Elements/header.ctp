@@ -33,7 +33,7 @@
                     <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
                     Product <i class="fa fa-angle-down"></i></a>
                     <ul class="dropdown-menu pull-left">
-                    <?php if ($user['user_type_id'] !== "user_type_admin") : ?>
+                    <?php if ($user['user_type_id'] === "user_type_admin") : ?>
                         <li>
                             <a href="/product">Product</a>
                         </li>
