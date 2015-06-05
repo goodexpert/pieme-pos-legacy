@@ -24,11 +24,11 @@ class OutletController extends AppController {
  * @var array
  */
     public $uses = array(
+        'MerchantOutlet',
         'MerchantRegister',
         'MerchantQuickKey',
         'MerchantProduct',
-        'MerchantProductInventory',
-        'MerchantOutlet'
+        'MerchantProductInventory'
     );
 
 /**
@@ -90,88 +90,110 @@ class OutletController extends AppController {
         $user = $this->Auth->user();
 
         if ($this->request->is('ajax') || $this->request->is('post')) {
-            $result = array(
-                'success' => false
-            );
-
             $dataSource = $this->MerchantOutlet->getDataSource();
             $dataSource->begin();
 
             try {
                 $data = $this->request->data;
-                $data['merchant_id'] = $user['merchant_id'];
+                $data['MerchantOutlet']['merchant_id'] = $user['merchant_id'];
 
-                $this->MerchantOutlet->create();
-                $this->MerchantOutlet->save(array('MerchantOutlet' => $data));
-
-                $products = $this->MerchantProduct->find('all', array(
-                    'conditions' => array(
-                        'MerchantProduct.merchant_id' => $user['merchant_id'],
-                        'MerchantProduct.track_inventory' => 1
-                    )
-                ));
-
-                foreach ($products as $product) {
-                    $inventory = array();
-                    $inventory['outlet_id'] = $this->MerchantOutlet->id;
-                    $inventory['product_id'] = $product['MerchantProduct']['id'];
-
-                    $this->MerchantProductInventory->create();
-                    $this->MerchantProductInventory->save(array('MerchantProductInventory' => $inventory));
+                if (empty($data['MerchantOutlet']['physical_country_id'])) {
+                    unset($data['MerchantOutlet']['physical_country_id']);
                 }
+                $this->MerchantOutlet->create();
+                $this->MerchantOutlet->save($data);
+
                 $dataSource->commit();
 
-                $result['success'] = true;
-                $result['outlet_id'] = $this->MerchantOutlet->id;
+                if ($this->request->is('ajax')) {
+                    return $this->serialize(array(
+                        'success' => true,
+                        'id' => $this->MerchantOutlet->id
+                    ));
+                }
+                return $this->redirect('/register/add?outlet=' . $this->MerchantOutlet->id);
             } catch (Exception $e) {
                 $dataSource->rollback();
-                $result['message'] = $e->getMessage();
-            }
 
-            $this->serialize($result);
+                if ($this->request->is('ajax')) {
+                    return $this->serialize(array(
+                        'success' => false,
+                        'message' => $e->getMessage()
+                    ));
+                }
+            }
         }
+
+        $this->set('countries', $this->_getCountries());
     }
     
     public function edit($id) {
         $user = $this->Auth->user();
 
-        if ($this->request->is('ajax') || $this->request->is('post')) {
-            $result = array(
-                'success' => false
-            );
+        if ($this->request->is('ajax') || $this->request->is('post') || $this->request->is('put')) {
+            $dataSource = $this->MerchantOutlet->getDataSource();
+            $dataSource->begin();
 
             try {
                 $data = $this->request->data;
-                $data['merchant_id'] = $user['merchant_id'];
 
-                $this->MerchantOutlet->id = $data['id'];
-                $this->MerchantOutlet->save(array('MerchantOutlet' => $data));
+                if (empty($data['MerchantOutlet']['physical_country_id'])) {
+                    unset($data['MerchantOutlet']['physical_country_id']);
+                }
+                $this->MerchantOutlet->id = $id;
+                $this->MerchantOutlet->save($data);
 
-                $result['success'] = true;
-                $result['outlet_id'] = $this->MerchantOutlet->id;
+                $dataSource->commit();
+
+                if ($this->request->is('ajax')) {
+                    return $this->serialize(array(
+                        'success' => true,
+                        'id' => $this->MerchantOutlet->id
+                    ));
+                }
+                return $this->redirect('/setup/outlets_and_registers');
             } catch (Exception $e) {
-                $result = $data;
-                $result['message'] = $e->getMessage();
+                $dataSource->rollback();
+
+                if ($this->request->is('ajax')) {
+                    return $this->serialize(array(
+                        'success' => false,
+                        'message' => $e->getMessage()
+                    ));
+                }
             }
-
-            $this->serialize($result);
-        } else if ($this->request->is('get')) {
-            $outlet = $this->MerchantOutlet->findById($id);
-
-            if (empty($outlet) || !isset($outlet['MerchantOutlet'])) {
-                $this->redirect('/outlet');
-            } else if ($outlet['MerchantOutlet']['merchant_id'] != $user['merchant_id']){
-                $this->redirect('/outlet');
-            }
-
-            $this->set("outlet", $outlet['MerchantOutlet']);
-            
-            $this->loadModel('Country');
-            $countries = $this->Country->find('all');
-            $this->set('countries',$countries);
-            
-            
         }
+
+        if (empty($this->request->data)) {
+            $outlet = $this->MerchantOutlet->findById($id);
+            if (empty($outlet) || !is_array($outlet)) {
+                throw new NotFoundException();
+            }
+
+            if (!empty($user['retailer_id']) && $user['retailer_id'] != $outlet['MerchantOutlet']['retailer_id']) {
+                return $this->redirect('/setup/outlets_and_registers', 301, false);
+            }
+
+            $this->request->data = $outlet;
+        }
+
+        $this->set('outlet_id', $id);
+        $this->set('countries', $this->_getCountries());
+    }
+
+/**
+ * Get the countries.
+ *
+ * @return array the list
+ */
+    protected function _getCountries() {
+        $this->loadModel('Country');
+        return $this->Country->find('list', array(
+            'fields' => array(
+                'Country.country_code',
+                'Country.country_name'
+            )
+        ));
     }
 
 }

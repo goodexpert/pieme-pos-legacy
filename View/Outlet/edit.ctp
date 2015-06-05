@@ -55,71 +55,161 @@
                     Edit Outlet
                 </h2>
             </div>
-        
+            <?php
+                echo $this->Form->create('MerchantOutlet', array(
+                    'id' => 'outlet_edit_form'
+                ));
+                echo $this->Form->input('outlet_id', array(
+                    'id' => 'outlet_id',
+                    'type' => 'hidden',
+                    'div' => false,
+                    'label' => false,
+                    'value' => $outlet_id
+                ));
+             ?>
             <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="line-box col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-6 col-sm-6 col-xs-6">
                         <dl>
                             <dt>Outlet name</dt>
                             <dd>
-                                <input type="text" class="outlet_name" name="outlet[name]" id="outlet_name" value="<?php echo $outlet['name'];?>">
+                            <?php
+                                echo $this->Form->input('name', array(
+                                    'id' => 'outlet_name',
+                                    'type' => 'text',
+                                    'class' => 'outlet_class',
+                                    'div' => false,
+                                    'label' => false
+                                ));
+                             ?>
                             </dd>
                         </dl>
                     </div>
                 </div>
             </div>
-            <input type="hidden" class="outlet_id" value="<?php echo $outlet['id'];?>">
             <div class="col-md-12 col-sm-12 col-xs-12" style="margin-top:15px;">
                 <div class="line-box col-md-12 col-sm-12 col-xs-12">
                     <div class="col-md-6 col-sm-6 col-xs-6">
                         <dl>
                             <dt>Street</dt>
                             <dd>
-                                <input type="text" class="outlet_street_1" name="outlet[physical_address1]" id="outlet_physical_address1" value="<?php echo $outlet['physical_address1'];?>">
+                            <?php
+                                echo $this->Form->input('physical_address1', array(
+                                    'id' => 'outlet_physical_address1',
+                                    'type' => 'text',
+                                    'class' => 'outlet_street_1',
+                                    'div' => false,
+                                    'label' => false
+                                ));
+                             ?>
                             </dd>
                             <dt>Street</dt>
                             <dd>
-                                <input type="text" class="outlet_street_2" name="outlet[physical_address2]" id="outlet_physical_address2" value="<?php echo $outlet['physical_address2'];?>">
+                            <?php
+                                echo $this->Form->input('physical_address2', array(
+                                    'id' => 'outlet_physical_address2',
+                                    'type' => 'text',
+                                    'class' => 'outlet_street_2',
+                                    'div' => false,
+                                    'label' => false
+                                ));
+                             ?>
                             </dd>
                             <dt>Suburb</dt>
                             <dd>
-                                <input type="text" class="outlet_suburb" name="outlet[physical_suburb]" id="outlet_physical_suburb" value="<?php echo $outlet['physical_suburb'];?>">
+                            <?php
+                                echo $this->Form->input('physical_suburb', array(
+                                    'id' => 'outlet_physical_suburb',
+                                    'type' => 'text',
+                                    'class' => 'outlet_suburb',
+                                    'div' => false,
+                                    'label' => false
+                                ));
+                             ?>
                             </dd>
                             <dt>City</dt>
                             <dd>
-                                <input type="text" class="outlet_city" name="outlet[physical_city]" id="outlet_physical_city" value="<?php echo $outlet['physical_city'];?>">
+                            <?php
+                                echo $this->Form->input('physical_city', array(
+                                    'id' => 'outlet_physical_city',
+                                    'type' => 'text',
+                                    'class' => 'outlet_city',
+                                    'div' => false,
+                                    'label' => false
+                                ));
+                             ?>
                             </dd>
                             <dt>Physical postcode</dt>
                             <dd>
-                                <input type="text" class="outlet_postcode" name="outlet[physical_postcode]" id="outlet_physical_postcode" value="<?php echo $outlet['physical_postcode'];?>">
+                            <?php
+                                echo $this->Form->input('physical_postcode', array(
+                                    'id' => 'outlet_physical_postcode',
+                                    'type' => 'text',
+                                    'class' => 'outlet_postcode',
+                                    'div' => false,
+                                    'label' => false
+                                ));
+                             ?>
                             </dd>
                             <dt>State</dt>
                             <dd>
-                                <input type="text" class="outlet_state" name="outlet[physical_state]" id="outlet_physical_state" value="<?php echo $outlet['physical_state'];?>">
+                            <?php
+                                echo $this->Form->input('physical_state', array(
+                                    'id' => 'outlet_physical_state',
+                                    'type' => 'text',
+                                    'class' => 'outlet_state',
+                                    'div' => false,
+                                    'label' => false
+                                ));
+                             ?>
                             </dd>
                             <dt>Country</dt>
                             <dd>
-                                <select class="outlet_country" name="outlet[physical_country_id]" id="outlet_physical_country_id">
-                                    <option selected disabled>Select a country</option>
-                                    <?php foreach($countries as $country) { ?>
-                                    <option value="<?php echo $country['Country']['country_code'];?>" <?php if($outlet['physical_country_id'] == $country['Country']['country_code']){echo "selected";}?>><?php echo $country['Country']['country_name'];?></option>
-                                    <?php } ?>
-                                </select>
+                            <?php
+                                echo $this->Form->input('physical_country_id', array(
+                                    'id' => 'outlet_physical_country_id',
+                                    'type' => 'select',
+                                    'class' => 'outlet_country',
+                                    'div' => false,
+                                    'label' => false,
+                                    'options' => $countries,
+                                    'empty' => __('Select a country')
+                                ));
+                             ?>
                             </dd>
                         </dl>
                     </div>
                     <div class="col-md-6 col-sm-6 col-xs-6">
                         <dt>Email</dt>
                         <dd>
-                            <input type="text" class="outlet_email" name="outlet[email]" id="outlet_email" value="<?php echo $outlet['email'];?>">
+                            <?php
+                                echo $this->Form->input('physical_email', array(
+                                    'id' => 'outlet_physical_email',
+                                    'type' => 'text',
+                                    'class' => 'outlet_email',
+                                    'div' => false,
+                                    'label' => false
+                                ));
+                             ?>
                         </dd>
                         <dt>Phone</dt>
                         <dd>
-                            <input type="text" class="outlet_phone" name="outlet[phone]" id="outlet_phone" value="<?php echo $outlet['phone'];?>">
+                            <?php
+                                echo $this->Form->input('physical_phone', array(
+                                    'id' => 'outlet_physical_phone',
+                                    'type' => 'text',
+                                    'class' => 'outlet_phone',
+                                    'div' => false,
+                                    'label' => false
+                                ));
+                             ?>
                         </dd>
                     </div>
                 </div>
             </div>
+            <?php
+                echo $this->Form->end();
+             ?>
             <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
                 <button class="btn btn-primary btn-wide save pull-right save">Save Outlet</button>
                 <button class="btn btn-default btn-wide pull-right margin-right-10 cancel">Cancel</button>
@@ -189,46 +279,25 @@ jQuery(document).ready(function() {
 });
 
 function saveData() {
-    var outlet_id = $(".outlet_id").val();
-    var name = $(".outlet_name").val();
-    var email = $(".outlet_email").val();
-    var phone = $(".outlet_phone").val();
-    var physical_address1 = $(".outlet_street_1").val();
-    var physical_address2 = $(".outlet_street_2").val();
-    var physical_suburb = $(".outlet_suburb").val();
-    var physical_city = $(".outlet_city").val();
-    var physical_state = $(".outlet_state").val();
-    var physical_postcode = $(".outlet_postcode").val();
-    var physical_country_id = $(".outlet_country").val();
-    var save_data = [];
-
+    $("#outlet_add_form").submit();
+    /*
     $.ajax({
-        url: "/outlet/edit.json",
+        url: "/outlet/" + $("#outlet_id").val() +"/edit.json",
         method: "POST",
-        data: {
-            id: outlet_id,
-            name: name,
-            email: email,
-            phone: phone,
-            physical_address1: physical_address1,
-            physical_address2: physical_address2,
-            physical_suburb: physical_suburb,
-            physical_city: physical_city,
-            physical_state: physical_state,
-            physical_postcode: physical_postcode,
-            physical_country_id: physical_country_id
-        },
+        data: $("#outlet_edit_form").serialize(),
         error: function( jqXHR, textStatus, errorThrown ) {
             alert(textStatus);
         },
         success: function( data, textStatus, jqXHR ) {
+            console.log(data);
             if (data.success) {
-                window.location.href = "/outlet";
+                //window.location.href = "/setup/outlets_and_registers";
             } else {
                 alert(data.message);
             }
         }
     });
+     */
 }
 </script>
 <!-- END JAVASCRIPTS -->
