@@ -2102,6 +2102,117 @@ width: 1024px;
     color: #7e7e7e;
 }
 
+/******************************** Quickey *****************************/
+
+.quick-key {
+    margin-top:30px;
+}
+
+#block-center {
+    background: #ffffff;
+    /*height: 100%;*/
+    /* margin-bottom: 30px; */
+    border: 1px solid #b8b8b8;
+    border-radius: 3px;
+    box-shadow: 0 3px 3px rgba(0,0,0,0.2);
+    padding: 20px;
+    margin: auto;
+    max-width: 542px;
+    max-height: 572px;
+}
+
+button#add-category {
+    float: right;
+}
+button.btn.btn-success.add-tab {
+    width: 45%;
+    margin: 7px 2px;
+}
+
+button.cancel-tab {
+    width: 45%;
+    margin: 7px 2px;
+}
+
+.popover-buttons {
+    text-align:center;
+}
+
+select.color-control {
+    margin-top: 4px;
+}
+
+.quick-key-list-footer {
+    border-top: 1px solid #eee;
+    height: 40px;
+    width: 100%;
+    left: 0;
+    bottom: 0;
+    text-align: center;
+    font-weight: bold;
+    padding-top: 10px;
+}
+
+input#layout_name {
+width: 30%;
+float: right;
+line-height: 30px;
+}
+
+span.layout-name {
+    float: right;
+    line-height: 30px;
+    margin-right: 15px;
+}
+
+span.page-add {
+    margin-left: 20px;
+    line-height:30px;
+}
+
+input#search {
+    line-height: 30px;
+}
+
+.quick-key-top {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #b8b8b8;
+    border-radius: 3px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.2);
+    padding: 8px;
+}
+
+.quick-key-btn {
+    float: right;
+}
+span.quick-key-new-layout{
+    font-size:20px;
+}
+
+div.quick-key-search{
+    width:30%;
+    float:left;
+}
+
+div..search_result {
+    position: absolute;
+    z-index: 1;
+    width: 24%;
+    display: none;
+}
+
+.quick-key-list {
+    height: 450px;
+    overflow: overlay;
+}
+
+.search_result {
+    z-index: 1;
+    position: absolute;
+    width: 25%;
+}
+
 @media only screen 
 and (min-device-width : 768px) 
 and (max-device-width : 1024px) 

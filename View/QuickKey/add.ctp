@@ -49,53 +49,80 @@
     <!-- END SIDEBAR -->
     <!-- BEGIN CONTENT -->
     <div class="page-content-wrapper">
-        <div class="page-content">
-            <h3>Add Layout</h3>
-            <div class="col-md-12 col-xs-12 col-sm-12">
-                <div class="col-md-6 col-xs-6 col-sm-6 col-alpha col-omega">
-                    <div id="block-right" class="col-md-12 col-xs-12 col-sm-12">
-                        <div class="col-lg-8 col-md-7 col-xs-7 col-sm-7">
-                           <input type="text" id="layout_name" value="New Quick Key Layout">
+        <div class="page-content" style="min-height:1383px">
+            <div class="quick-key">
+                <div class="new-layout">
+                    <span class="quick-key-new-layout" >
+                        <strong>New Quick Key Layout</strong>
+                    </span>
+                    <div class="quick-key-btn" >
+                        <button class="btn btn-primary cancel">Cancel</button>
+                        <button class="btn btn-primary delete">Delete Layout</button>
+                        <button class="btn btn-success save">Save Layout</button>
+                    </div>
+                </div>
+                <div class="quick-key-top" >
+                    <div class=" quick-key-search">
+                        <input type="search" id="search" placeholder="Search Products">
+                        <div class="search_result">
+                            <span class="search-tri"></span>
+                            <div class="search-default" style="display: block;"> No Result </div>
+                            <?php foreach($items as $item) : ?>
+                                <button type="button" data-id="<?=$item['MerchantProduct']['id'];?>" class="data-found"><?=$item['MerchantProduct']['name'];?></button>
+                            <?php endforeach; ?>
+                            </div>
                         </div>
-                        <div class="col-lg-4 col-md-5 col-xs-5 col-sm-5">
+                        <div class="quick-key-name" >
+                           <input type="text" id="layout_name" value="New Quick Key Layout" >
+                           <span class="layout-name">Layout Name: </span>
+                        </div>
+                        <div class="quick-key-add-page">
                             <span class="page-add">Pages</span>
                             <button id="remove-page" class="btn btn-white btn-left">-</button>
                             <button id="add-page" class="btn btn-white btn-right">+</button>
                         </div>
-                    <div class="dashed-line"></div>
-                       <div class="col-md-12 col-xs-12 col-sm-12 product-list" style="height: 300px;">
-                           <ul id="sortable">
-                           
+                    </div>
+                    <div id="block-center" class="quick-key-body">
+                        <ul class="nav nav-tabs">
+                            <li role="presentation" class="active"><a href="#">Group</a></li>
+                            <li role="presentation"><a href="#">Two</a></li>
+                            <button type="button" id="add-category" class="btn btn-white btn-add-category" data-container="body" data-toggle="popover" data-placement="bottom" data-container="body">
+                            +
+                            </button>
+                        </ul>
+                       <div class="quick-key-list">
+                           <ul id="sortable" class="ui-sortable">
                            </ul>
                         </div>
-                        <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega product-list-footer">
+                        <div class="quick-key-list-footer">
                             <span class="pull-left clickable prev"><i class="glyphicon glyphicon-chevron-left"></i></span>
                             <span class="pull-right clickable next"><i class="glyphicon glyphicon-chevron-right"></i></span>
                             <span rel="1" class="page clickable selected">1</span>
                         </div>
                     </div>
-                    <div class="col-md-12 col-xs-12 col-sm-12 text-align-center">
-                        <button class="btn btn-primary cancel">Cancel</button>
-                        <button class="btn btn-success save">Save Layout</button>
-                    </div>
-                </div>
-                <div class="col-md-6 col-xs-6 col-sm-6 col-omega margin-top-30">
-                    <input type="search" id="search" placeholder="Search Products">
-                    <div class="search_result">
-                        <span class="search-tri"></span>
-                        <div class="search-default"> No Result </div>
-                        <?php foreach($items as $item){ ?>
-                    
-                        <button type="button" data-id="<?=$item['MerchantProduct']['id'];?>" class="data-found"><?=$item['MerchantProduct']['name'];?></button>
-                        
-                        <?php } ?>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- END CONTENT -->
 </div>
+<div id="popover-content" class="hide">
+    <form class="form-line" role="form">
+        <div class="form-group">
+            <input type="text" placeholder="Name" class="form-control">
+            <select class="color-control">
+                <option>Red</option>
+                <option>Blue</option>
+                <option>black</option>
+                <option>Yellow</option>
+            </select> 
+            <div class= "popover-buttons">
+                <button class="btn btn-primary cancel-tab">Cancel</button>
+                <button type="submit" class="btn btn-success add-tab">Add</button>                                  
+            </div>
+        </div>
+    </form>
+</div>
+<!-- END CONTENT -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
 <!--[if lt IE 9]>
@@ -142,152 +169,19 @@
 <script src="/js/notify.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
-var quick = [];
-
 jQuery(document).ready(function() {    
     Metronic.init(); // init metronic core componets
     Layout.init(); // init layout
     Index.init();
-
-    $( "#sortable" ).sortable({
-        revert: true
-    });
-
-    /* DYNAMIC PROUCT SEARCH START */
-    
-    var $cells = $(".data-found");
-    $(".search_result").hide();
-
-    $(document).on("keyup","#search",function() {
-        var val = $.trim(this.value).toUpperCase();
-        if (val === "")
-            $(".search_result").hide();
-        else {
-            $cells.hide();
-            $(".search_result").show();
-            $(".search-default").hide();
-            $cells.filter(function() {
-                return -1 != $(this).text().toUpperCase().indexOf(val);
-            }).show();
-            if($(".search_result").height() == 0){
-                $(".search-default").show();
-            }
-        }
-        $cells.click(function(){
-           $("#search").val($(this).text());
-        });
-    });
-
-    /* DYNAMIC PRODUCT SEARCH END */
-    
-
-    /* PAGE CONTROL */
-
-    $(document).on('click','.page',function(){
-        $(".page").removeClass("selected");
-        $(".qKey").hide();
-        $(".qKey[page="+$(this).attr("rel")+"]").show();
-        $(this).addClass("selected");
-    });
-    
-    var pageCount = 1;
-    $("#add-page").click(function(){
-        pageCount++;
-        $(".product-list-footer").append('<span rel="'+pageCount+'" class="page clickable">'+pageCount+'</span>');
-        $(".page").removeClass("selected");
-        $(".page[rel="+pageCount+"]").addClass("selected");
-        $(".qKey").hide();
-    });
-    $("#remove-page").click(function(){
-        if(pageCount !== 1){
-            $(".product-list-footer").find("span[rel="+pageCount+"]").remove();
-            $(".qKey[page="+pageCount+"]").remove();
-            pageCount--;
-            $(".page").removeClass("selected");
-            $(".page[rel="+pageCount+"]").addClass("selected");
-            $(".qKey[page="+pageCount+"]").show();
-        }
-    });
-
-    /* PAGE CONTROL END */
-
-    /* DATA FOUNDED CLICK EVENT */
-
-    $(".data-found").click(function(){
-        $("#sortable").append('<li class="col-lg-3 col-md-4 col-xs-6 col-sm-6 product clickable col-alpha col-omega button-view qKey" data-id="'+$(this).attr("data-id")+'" page="'+$(".product-list-footer").find(".selected").text()+'"><span class="button-remove"><i class="glyphicon glyphicon-remove"></i></span><p>'+$(this).text()+'</p></li>');
-    });
-
-    /* DATA FOUNDED CLICK EVENT END */
-    
-    $(document).on('click','.button-remove',function(){
-        $(this).parent().remove();
-    });
-
-    /* SAVE TRIGGER */
-
-    $(document).on("click",".save",function(){
-        
-        var layouts = {};
-        var layout = [];
-
-        var pages = {};
-        var keys = [];
-        var products = {};
-        var last_page = 0;
-        var sortable_length = $(".qKey").length;
-        $(".qKey").each(function(){
-            if($(this).attr("page") > last_page){
-                last_page = $(this).attr("page");
-            }
-        });
-        
-        for(var j = 1;j <= last_page;j++) {
-            repeat_each(j);
-        }
-        
-        function repeat_each(page_number){
-            $(".qKey[page="+page_number+"]").each(function(){
-            
-                products.product_id = $(this).attr("data-id");
-                products.position = 0;
-                products.label = $(this).find("p").text();
-                
-                keys.push(products);
-                
-                pages.page = page_number;
-                pages.keys = keys;
-                
-                products = {};
-                
-            });
-            layout.push(pages);
-            keys = [];
-            products = {};
-            pages = {};
-        }
-
-        layouts.pages = layout;
-
-        var key_layouts = JSON.stringify(layouts);
-        
-        $.ajax({
-            url: "/quick_keys/new.json",
-            type: "POST",
-            data: {
-                name: $("#layout_name").val(),
-                key_layouts: key_layouts,
-            },
-        }).done(function(){
-            window.location.href = "/setup/quick_keys";
-        });
-        
-    });
-
-    /* SAVE TRIGGER END */
-    
-    $(".cancel").click(function(){
-        window.history.back();
-    });
 });
+
+/**toggle pop over */
+$("[data-toggle=popover]").popover({
+    html: true, 
+    content: function() {
+        return $('#popover-content').html();
+    }
+});
+
 </script>
 <!-- END JAVASCRIPTS -->
