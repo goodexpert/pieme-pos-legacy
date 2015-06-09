@@ -62,43 +62,48 @@
                     </div>
                 </div>
                 <div class="quick-key-top" >
-                    <div class=" quick-key-search">
+                    <div class="quick-key-search">
                         <input type="search" id="search" placeholder="Search Products">
-                        <div class="search_result">
-                            <span class="search-tri"></span>
-                            <div class="search-default" style="display: block;"> No Result </div>
-                            <?php foreach($items as $item) : ?>
-                                <button type="button" data-id="<?=$item['MerchantProduct']['id'];?>" class="data-found"><?=$item['MerchantProduct']['name'];?></button>
-                            <?php endforeach; ?>
-                            </div>
-                        </div>
-                        <div class="quick-key-name" >
-                           <input type="text" id="layout_name" value="New Quick Key Layout" >
-                           <span class="layout-name">Layout Name: </span>
-                        </div>
-                        <div class="quick-key-add-page">
-                            <span class="page-add">Pages</span>
-                            <button id="remove-page" class="btn btn-white btn-left">-</button>
-                            <button id="add-page" class="btn btn-white btn-right">+</button>
-                        </div>
                     </div>
-                    <div id="block-center" class="quick-key-body">
-                        <ul class="nav nav-tabs">
-                            <li role="presentation" class="active"><a href="#">Group</a></li>
-                            <li role="presentation"><a href="#">Two</a></li>
-                            <button type="button" id="add-category" class="btn btn-white btn-add-category" data-container="body" data-toggle="popover" data-placement="bottom" data-container="body">
-                            +
-                            </button>
+                    <div class="quick-key-name" >
+                       <input type="text" id="layout_name" value="New Quick Key Layout" >
+                       <span class="layout-name">Layout Name: </span>
+                    </div>
+                    <div class="quick-key-add-page">
+                        <span class="page-add">Pages</span>
+                        <button id="remove-page" class="btn btn-white btn-left">-</button>
+                        <button id="add-page" class="btn btn-white btn-right">+</button>
+                    </div>
+                </div>
+                <div id="block-center" class="quick-key-body">
+                    <ul class="nav nav-tabs">
+                        <li class="active" role="presentation">
+                            <a href="#" data-toggle="popover" data-placement="bottom" data-container="body">Group 1</a>
+                        </li>
+                        <button type="button" id="add-category" class="btn btn-white btn-add-category" data-toggle="popover" data-placement="bottom" data-container="body">
+                        +
+                        </button>
+                    </ul>
+                    <div class="quick-key-list">
+                        <ul id="sortable" class="ui-sortable">
+                            <li class="quick-key-item"><p><span>Coke</span></p></li>
+                            <li class="quick-key-item"><p><span>Coke</span></p></li>
+                            <li class="quick-key-item"><p><span>Coke</span></p></li>
+                            <li class="quick-key-item"><p><span>Coke</span></p></li>
+                            <li class="quick-key-item"><p><span>Coke</span></p></li>
+                            <li class="quick-key-item image"><p><span>Coke</span></p></li>
+                            <li class="quick-key-item image"><p><span>Coke</span></p></li>
+                            <li class="quick-key-item image"><p><span>Coke</span></p></li>
+                            <li class="quick-key-item image"><p><span>Coke</span></p></li>
+                            <li class="quick-key-item detail"><p><span>Coke</span></p></li>
+                            <li class="quick-key-item detail"><p><span>Coke</span></p></li>
+                            <li class="quick-key-item detail"><p><span>Coke</span></p></li>
                         </ul>
-                       <div class="quick-key-list">
-                           <ul id="sortable" class="ui-sortable">
-                           </ul>
-                        </div>
-                        <div class="quick-key-list-footer">
-                            <span class="pull-left clickable prev"><i class="glyphicon glyphicon-chevron-left"></i></span>
-                            <span class="pull-right clickable next"><i class="glyphicon glyphicon-chevron-right"></i></span>
-                            <span rel="1" class="page clickable selected">1</span>
-                        </div>
+                    </div>
+                    <div class="quick-key-list-footer">
+                        <span class="pull-left clickable prev"><i class="glyphicon glyphicon-chevron-left"></i></span>
+                        <span class="pull-right clickable next"><i class="glyphicon glyphicon-chevron-right"></i></span>
+                        <span rel="1" class="page clickable selected">1</span>
                     </div>
                 </div>
             </div>
@@ -108,8 +113,10 @@
 <div id="popover-content" class="hide">
     <form class="form-line" role="form">
         <div class="form-group">
-            <input type="text" placeholder="Name" class="form-control">
-            <select class="color-control">
+            <input type="hidden" class="form-control" name="id">
+            <input type="hidden" class="form-control" name="type">
+            <input type="text" class="form-control" name="name" placeholder="Name">
+            <select class="color-control" name="background">
                 <option>Red</option>
                 <option>Blue</option>
                 <option>black</option>
