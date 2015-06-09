@@ -36,6 +36,14 @@ class XeroController extends AppController {
     }
 
 /**
+ * No connected xero accounts function.
+ *
+ * @return void
+ */
+    public function noxero() {
+    }
+
+/**
  * Enable xero accounts function.
  *
  * @return void

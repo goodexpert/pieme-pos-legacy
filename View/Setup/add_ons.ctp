@@ -73,7 +73,7 @@
                             <h3 class="no-margin">Xero</h3>
                             <p>Onzsa integrates seamlessly with the Xero accounting software to share customers, product sales, and invoices.</p>
                         </div>
-                        <button class="btn btn-default"><span class="glyphicon glyphicon-plus margin-right-5"></span>Add to Onzsa</button>
+                        <a href="/xero/noxero" class="btn btn-default"><span class="glyphicon glyphicon-plus margin-right-5"></span>Add to Onzsa</a>
                     </div>
                 </div>
             </div>
@@ -88,7 +88,7 @@
                             <h3 class="no-margin">Shopify</h3>
                             <p>Create an online store with Shopify.</p>
                         </div>
-                        <button class="btn btn-default"><span class="glyphicon glyphicon-cog margin-right-5"></span>Setting</button>
+                        <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-cog margin-right-5"></span>Setting</a>
                     </div>
                 </div>
             </div>

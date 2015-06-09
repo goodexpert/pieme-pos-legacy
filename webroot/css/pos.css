@@ -1706,6 +1706,11 @@ table.dataTable-sm td {
     z-index:1;
     padding:0;
 }
+.addons a {
+    bottom:20px;
+    right:20px;
+    position:absolute
+}
 .addons button {
     bottom:20px;
     right:20px;
