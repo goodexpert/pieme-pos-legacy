@@ -126,7 +126,7 @@
                         <dt>Country</dt>
                         <dd><select class="physical_country"><option disabled>Select a country</option>
                         <?php foreach($countries as $country) { ?>
-                            <option value="<?=$country['Country']['country_code'];?>" <?php if($country['Country']['country_code'] == $supplier['Contact']['physical_country_id']){echo "selected";}?>><?=$country['Country']['country_name'];?></option>
+                            <option value="<?=$country['Country']['country_code'];?>" <?php if($country['Country']['country_code'] == $supplier['Contact']['physical_country']){echo "selected";}?>><?=$country['Country']['country_name'];?></option>
                         <?php } ?>
                         </select></dd>
                     </dl>
@@ -151,7 +151,7 @@
                         <dt>Country</dt>
                         <dd><select class="postal_country"><option selected disabled>Select a country</option>
                         <?php foreach($countries as $country) { ?>
-                            <option value="<?=$country['Country']['country_code'];?>" <?php if($country['Country']['country_code'] == $supplier['Contact']['postal_country_id']){echo "selected";}?>><?=$country['Country']['country_name'];?></option>
+                            <option value="<?=$country['Country']['country_code'];?>" <?php if($country['Country']['country_code'] == $supplier['Contact']['postal_country']){echo "selected";}?>><?=$country['Country']['country_name'];?></option>
                         <?php } ?>
                         </select></dd>
                     </dl>
@@ -257,14 +257,14 @@ jQuery(document).ready(function() {
                 physical_city: $(".physical_city").val(),
                 physical_state: $(".physical_state").val(),
                 physical_postcode: $(".physical_postcode").val(),
-                physical_country_id: $(".physical_country").val(),
+                physical_country: $(".physical_country").val(),
                 postal_address1: $(".postal_street_1").val(),
                 postal_address2: $(".postal_street_2").val(),
                 postal_suburb: $(".postal_suburb").val(),
                 postal_city: $(".postal_city").val(),
                 postal_state: $(".postal_state").val(),
                 postal_postcode: $(".postal_postcode").val(),
-                postal_country_id: $(".postal_country").val()
+                postal_country: $(".postal_country").val()
             }
         }).done(function(result){
             window.location.href = "/supplier";

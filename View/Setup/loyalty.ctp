@@ -1,3 +1,6 @@
+<?php
+    $data = $this->request->data;
+ ?>
 <style>
 .disable {
     background: gray;
@@ -8,6 +11,14 @@
     width:100%;
     height: 100%;
     z-index: 100;
+}
+
+#signup_bonus_loyalty_amount {
+    width: 100px;
+}
+
+#welcome_email_subject {
+    width: 300px;
 }
 </style>
 <div class="clearfix"></div>
@@ -53,48 +64,118 @@
             </div>
             <div class="portlet-body form"> 
                 <!-- BEGIN FORM-->
+                <?php
+                    echo $this->Form->create('MerchantLoyalty', array(
+                        'id' => 'loyalty_setup_form'
+                    ));
+                    echo $this->Form->input('id', array(
+                        'type' => 'hidden',
+                        'div' => false,
+                        'label' => false
+                    ));
+                 ?>
                 <div class="form-horizontal col-md-12 col-xs-12 col-sm-12">
                     <div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">
-                        <input type="checkbox" name="merchant_loyalty[enable_loyalty]" id="merchant_loyalty_enable_loyalty" <?php if($loyalty['MerchantLoyalty']['enable_loyalty'] == 1){echo "checked";}?>><label for="merchant_loyalty_enable_loyalty">Enable loyalty</label>
+                        <?php
+                            echo $this->Form->input('enable_loyalty', array(
+                                'id' => 'enable_loyalty',
+                                'type' => 'checkbox',
+                                'div' => false
+                            ));
+                         ?>
                     </div>
                     <!-- START col-md-12-->
                     <div id="enable_loyalty_body" class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12">
-                        <div class="disable" <?php if($loyalty['MerchantLoyalty']['enable_loyalty'] == 1){echo "style='display:none;'";}?>></div>
+                        <div class="disable" <?php if ($data['MerchantLoyalty']['enable_loyalty'] == 1){echo "style='display:none;'";}?>></div>
                         <h6 class="line-box-stitle">Allow customers to earn Loyalty $ when purchasing products. You can set Loyalty $ earned on individual products from the Edit Product page or from a price book. You can turn off Loyalty for individual customers on the Edit Customer page.</h6>
                         <div class="loyalty-box">
                             <h3>Earning Loyalty</h3>
                             <ul class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                                <li class="col-md-5 col-xs-5 col-sm-5 col-alpha col-omega"><input type="text" name="merchant_loyalty[loyalty_spend_amount]" id="merchant_loyalty_loyalty_spend_amount" value="<?php echo number_format($loyalty['MerchantLoyalty']['loyalty_spend_amount'],2,'.','');?>">NZD</li>
-                                <li class="col-md-2 col-xs-2 col-sm-2 col-alpha col-omega"><span class="glyphicon glyphicon-pause"></span></li>
-                                <li class="col-md-5 col-xs-5 col-sm-5 col-alpha col-omega">$1.00 Loyalty</li>
+                                <li class="col-md-5 col-xs-5 col-sm-5 col-alpha col-omega">
+                                <?php
+                                    echo $this->Form->input('loyalty_spend_amount', array(
+                                        'id' => 'loyalty_spend_amount',
+                                        'type' => 'text',
+                                        'div' => false,
+                                        'label' => false
+                                    ));
+                                 ?>
+                                </li>
+                                <li class="col-md-2 col-xs-2 col-sm-2 col-alpha col-omega">
+                                    <span class="glyphicon glyphicon-pause"></span>
+                                </li>
+                                <li class="col-md-5 col-xs-5 col-sm-5 col-alpha col-omega">
+                                    $1.00 Loyalty
+                                </li>
                             </ul>
                         </div>
-                        <h6 class="text-center">Spending $<span id="merchant_loyalty_loyalty_spend_amount_display"><?php echo number_format($loyalty['MerchantLoyalty']['loyalty_spend_amount'],2,'.','');?></span> earns $1.00 Loyalty.</h6>
+                        <h6 class="text-center">Spending $<span id="spend_amount_display"><?php echo number_format($data['MerchantLoyalty']['loyalty_spend_amount'],2,'.','');?></span> earns $1.00 Loyalty.</h6>
                         <div class="dashed-line-gr"></div>
                         <dl class="dl-oneline">
                             <dt>Bonus Loyalty</dt>
-                            <dd><input type="checkbox" name="merchant_loyalty[offer_signup_bonus_loyalty]" id="merchant_loyalty_offer_signup_bonus_loyalty" <?php if($loyalty['MerchantLoyalty']['offer_signup_bonus_loyalty'] == 1){echo "checked";}?>>&nbsp;Offer bonus Loyalty $ if a customer fills out all of their details in the Customer Portal (see example)
+                            <dd>
+                            <?php
+                                echo $this->Form->input('offer_signup_bonus_loyalty', array(
+                                    'id' => 'offer_signup_bonus_loyalty',
+                                    'type' => 'checkbox',
+                                    'div' => false,
+                                    'label' => false
+                                ));
+                             ?>&nbsp;Offer bonus Loyalty $ if a customer fills out all of their details in the Customer Portal (see example)
                             </dd>
                             <dt></dt>
-                            <dd><input type="text" style="width:100px;" class="text-right"  name="merchant_loyalty[signup_bonus_loyalty_amount]" id="merchant_loyalty_signup_bonus_loyalty_amount" value="<?php echo number_format($loyalty['MerchantLoyalty']['signup_bonus_loyalty_amount'],2,'.','');?>">&nbsp;Loyalty</dd>
+                            <dd>
+                            <?php
+                                echo $this->Form->input('signup_bonus_loyalty_amount', array(
+                                    'id' => 'signup_bonus_loyalty_amount',
+                                    'type' => 'text',
+                                    'class' => 'text-right',
+                                    'div' => false,
+                                    'label' => false
+                                ));
+                             ?>&nbsp;Loyalty
+                            </dd>
                         </dl>
                     </div>
                 </div>
                 <div class="form-horizontal col-md-12 col-xs-12 col-sm-12">
                     <div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">
-                        <div class="disable" <?php if($loyalty['MerchantLoyalty']['enable_loyalty'] == 1){echo "style='display:none;'";}?>></div>
-                        <input type="checkbox" name="merchant_loyalty[send_welcome_email]" id="merchant_loyalty_send_welcome_email" <?php if($loyalty['MerchantLoyalty']['send_welcome_email'] == 1){echo "checked";}?>>
-                        <label for="merchant_loyalty_send_welcome_email">Send welcome email</label>
+                        <div class="disable" <?php if ($data['MerchantLoyalty']['enable_loyalty'] == 1){echo "style='display:none;'";}?>></div>
+                        <?php
+                            echo $this->Form->input('send_welcome_email', array(
+                                'id' => 'send_welcome_email',
+                                'type' => 'checkbox',
+                                'div' => false,
+                            ));
+                         ?>
                     </div>
                     <!-- START col-md-12-->
-                    <div id="send_welcome_email_body" class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12" <?php if($loyalty['MerchantLoyalty']['enable_loyalty'] == 0){echo "style='display:none;'";}?>>
-                        <div class="disable" <?php if($loyalty['MerchantLoyalty']['send_welcome_email'] == 1){echo "style='display:none;'";}?>></div>
+                    <div id="send_welcome_email_body" class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12">
+                        <div class="disable" <?php if ($data['MerchantLoyalty']['send_welcome_email'] == 1){echo "style='display:none;'";}?>></div>
                         <h6 class="line-box-stitle">Selecting this option will send customers an email welcoming them to the Loyalty program. The welcome email will be sent the next time the customer is added to a sale and includes a link where they can edit their details. Please note, the email will not be sent to customers if they haven't provided an email address, or if the customer has Loyalty disabled.</h6>
                         <dl class="dl-oneline">
                             <dt>Email subject</dt>
-                            <dd><input type="text" style="width:300px;" name="merchant_loyalty[welcome_email_subject]" id="merchant_loyalty_welcome_email_subject" value="<?php echo $loyalty['MerchantLoyalty']['welcome_email_subject'];?>"></dd>
+                            <dd>
+                            <?php
+                                echo $this->Form->input('welcome_email_subject', array(
+                                    'id' => 'welcome_email_subject',
+                                    'type' => 'text',
+                                    'div' => false,
+                                    'label' => false
+                                ));
+                             ?>
+                            </dd>
                             <dt>Email message</dt>
-                            <dd style="height: inherit;"><textarea name="merchant_loyalty[welcome_email_body]" id="merchant_loyalty_welcome_email_body"><?php echo base64_decode($loyalty['MerchantLoyalty']['welcome_email_body']);?></textarea></dd>
+                            <dd style="height: inherit;">
+                            <?php
+                                echo $this->Form->input('welcome_email_body', array(
+                                    'id' => 'welcome_email_body',
+                                    'type' => 'textarea',
+                                    'div' => false,
+                                    'label' => false
+                                ));
+                             ?>
+                            </dd>
                             <dt></dt>
                             <dd class="margin-top-10">
                                 <button id="preview_email" class="btn btn-sm btn-default">Preview Welcome Email</button>
@@ -106,6 +187,9 @@
                     <button class="btn btn-primary btn-wide save pull-right">Save</button>
                     <button class="btn btn-default btn-wide pull-right margin-right-10">Cancel</button>
                 </div>            
+                <?php
+                    echo $this->Form->end();
+                 ?>
             </div>
         </div>
     </div>
@@ -192,6 +276,8 @@
 <script src="/theme/onzsa/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script> 
 <script src="/plugin/textboxio/textboxio.js">
 <script src="/js/notify.js" type="text/javascript"></script> 
+<script src="/js/lib/jquery-number/jquery.number.min.js" type="text/javascript"></script> 
+<script src="/js/lib/tinymce/tinymce.min.js" type="text/javascript"></script> 
 <!-- END PAGE LEVEL SCRIPTS --> 
 <script>
 jQuery(document).ready(function() {    
@@ -199,8 +285,33 @@ jQuery(document).ready(function() {
     Layout.init(); // init layout
     Index.init();
 
-    $("#preview_email").click(function(){
+    tinymce.init({
+        selector: "textarea"
+    });
+
+    $("#loyalty_spend_amount").number(true, 2);
+    $("#signup_bonus_loyalty_amount").number(true, 2);
+
+    $("#enable_loyalty").change(function(e) {
+        $(".disable").toggle();
+
+        if (!$(this).is(':checked')) {
+            $("#send_welcome_email").removeAttr("checked");
+        }
+        $("#send_welcome_email_body").find('.disable').show();
+    });
+
+    $("#send_welcome_email").change(function(e) {
+        if($(this).is(':checked')) {
+            $("#send_welcome_email_body").find('.disable').hide();
+        } else {
+            $("#send_welcome_email_body").find('.disable').show();
+        }
+    });
+    
+    $("#preview_email").click(function(e) {
         $(".confirmation-modal").show();
+        return false;
     });
 
     $(".confirm-close").click(function(){
@@ -209,80 +320,6 @@ jQuery(document).ready(function() {
 
     $(".cancel").click(function(){
         $(".confirmation-modal").hide();
-    });
-    
-    $("#merchant_loyalty_enable_loyalty").change(function(){
-        $(".disable").toggle();
-        $("#send_welcome_email_body").toggle();
-        if(!$(this).is(':checked'))
-            $("#merchant_loyalty_send_welcome_email").removeAttr("checked");
-        $("#send_welcome_email_body").find('.disable').show();
-            
-    });
-    $("#merchant_loyalty_send_welcome_email").change(function(){
-        if($(this).is(':checked')) {
-            $("#send_welcome_email_body").find('.disable').hide();
-        } else {
-            $("#send_welcome_email_body").find('.disable').show();
-        }
-    });
-    
-    var textarea = textboxio.replace('#merchant_loyalty_welcome_email_body');
-
-    $(".save").click(function(){
-        var offer_signup_bonus_loyalty;
-        var send_welcome_email;
-        if($("#merchant_loyalty_offer_signup_bonus_loyalty").is(':checked')){
-            offer_signup_bonus_loyalty = 1;
-        } else {
-            offer_signup_bonus_loyalty = 0;
-        }
-        if($("#merchant_loyalty_send_welcome_email").is(':checked')){
-            send_welcome_email = 1;
-        } else {
-            send_welcome_email = 0;
-        }
-
-        if($("#merchant_loyalty_enable_loyalty").is(':checked')){
-            $.ajax({
-                url: '/setup/loyalty.json',
-                type: 'POST',
-                data: {
-                    enable_loyalty: 1,
-                    loyalty_earn_amount: 1,
-                    loyalty_spend_amount: $("#merchant_loyalty_loyalty_spend_amount").val(),
-                    offer_signup_bonus_loyalty: offer_signup_bonus_loyalty,
-                    signup_bonus_loyalty_amount: $("#merchant_loyalty_signup_bonus_loyalty_amount").val(),
-                    send_welcome_email: send_welcome_email,
-                    welcome_email_subject: $("#merchant_loyalty_welcome_email_subject").val(),
-                    welcome_email_body: textarea.content.get()
-                },
-                success: function(result){
-                    if(result.success) {
-                        alert("saved");
-                    } else {
-                        console.log(result);
-                    }
-                },
-            });
-        } else {
-            $.ajax({
-                url: '/setup/loyalty.json',
-                type: 'POST',
-                data: {
-                    enable_loyalty: 0,
-                    offer_signup_bonus_loyalty: 0,
-                    send_welcome_email: 0
-                },
-                success: function(result){
-                    if(result.success) {
-                        alert("saved");
-                    } else {
-                        console.log(result);
-                    }
-                },
-            });
-        }
     });
 });
 </script> 

@@ -48,6 +48,7 @@ class QuickKeyController extends AppController {
     }
 
     public function add(){
+        /*
         if ($this->request->is('post')) {
             $result = array(
                 'success' => false
@@ -71,6 +72,7 @@ class QuickKeyController extends AppController {
             )
         ));
         $this->set("items",$items);
+         */
     }
 
     public function edit($id){

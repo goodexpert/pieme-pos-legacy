@@ -261,7 +261,7 @@ class HomeController extends AppController {
                 ),
                 'conditions' => array(
                     'RegisterSale.register_id' => $user['MerchantRegister']['id'],
-                    'RegisterSale.status' => array('saved','layby','onaccount')
+                    'RegisterSale.status' => array('sale_status_saved','sale_status_layby','sale_status_onaccount')
                 )
             ));
             $this->set('retrieves',$retrieves);
@@ -276,7 +276,8 @@ class HomeController extends AppController {
             
             $payments = $this->MerchantPaymentType->find('all', array(
                 'conditions' => array(
-                    'MerchantPaymentType.merchant_id' => $user['merchant_id']
+                    'MerchantPaymentType.merchant_id' => $user['merchant_id'],
+                    'MerchantPaymentType.is_active' => 1
                 ),
             ));
             $this->set('payments',$payments);
@@ -351,19 +352,19 @@ class HomeController extends AppController {
                     $this->RegisterSaleItem->deleteAll(array('RegisterSaleItem.sale_id' => $data['sale_id']), false);
                     $this->RegisterSale->id = $data['sale_id'];
                     $currentStatus = $this->RegisterSale->findById($data['sale_id'])['RegisterSale']['status'];
-                    if($currentStatus == 'layby')
-                        $data['status'] = 'layby_closed';
-                    if($currentStatus == 'onaccount')
-                        $data['status'] = 'onaccount_closed';
-                    if($currentStatus == 'saved')
-                        $data['status'] = 'closed';
+                    if($currentStatus == 'sale_status_layby')
+                        $data['status'] = 'sale_status_layby_closed';
+                    if($currentStatus == 'sale_status_onaccount')
+                        $data['status'] = 'sale_status_onaccount_closed';
+                    if($currentStatus == 'sale_status_saved')
+                        $data['status'] = 'sale_status_closed';
 
                     $this->MerchantCustomer->id = $data['customer_id'];
                     $cBalance['MerchantCustomer']['balance'] = $this->MerchantCustomer->findById($data['customer_id'])['MerchantCustomer']['balance'] + $data['total_price_incl_tax'];
                     $this->MerchantCustomer->save($cBalance);
                 } else {
                     $this->RegisterSale->create();
-                    $data['status'] = 'closed';
+                    $data['status'] = 'sale_status_closed';
                 }
                 $this->RegisterSale->save($data);
 
@@ -414,7 +415,7 @@ class HomeController extends AppController {
                         }
                     }
                     
-                    if($data['status'] == 'closed') {
+                    if($data['status'] == 'sale_status_closed') {
                         $this->MerchantProductLog->create();
                         $log['MerchantProductLog']['product_id'] = $item['product_id'];
                         $log['MerchantProductLog']['user_id'] = $user['id'];
@@ -452,6 +453,10 @@ class HomeController extends AppController {
                 $data = $this->request->data;
                 $data['register_id'] = $user['MerchantRegister']['id'];
                 $data['user_id'] = $user['id'];
+
+                if ($data['status'] !== 'sale_status_saved') {
+                    $data['sale_date'] = date('Y-m-d H:i:s');
+                }
 
                 if(isset($_POST['sale_id'])){
                     $this->RegisterSaleItem->deleteAll(array('RegisterSaleItem.sale_id' => $data['sale_id']), false);
@@ -493,7 +498,7 @@ class HomeController extends AppController {
                         }
                     }
                     
-                    if($data['status'] !== 'saved' && $data['status'] !== 'voided') {
+                    if($data['status'] !== 'sale_status_saved' && $data['status'] !== 'sale_status_voided') {
                         $this->MerchantProductLog->create();
                         $log['MerchantProductLog']['product_id'] = $item['product_id'];
                         $log['MerchantProductLog']['user_id'] = $user['id'];
@@ -501,9 +506,9 @@ class HomeController extends AppController {
                         $log['MerchantProductLog']['quantity'] = $generalQuantity - $item['quantity'];
                         $log['MerchantProductLog']['outlet_quantity'] = $outletQuantity - $item['quantity'];
                         $log['MerchantProductLog']['change'] = -$item['quantity'];
-                        if($data['status'] == 'layby')
+                        if($data['status'] == 'sale_status_layby')
                            $log['MerchantProductLog']['action_type'] = 'layby_sale';
-                        if($data['status'] == 'onaccount')
+                        if($data['status'] == 'sale_status_onaccount')
                            $log['MerchantProductLog']['action_type'] = 'account_sale';
                         $this->MerchantProductLog->save($log);
                         
@@ -528,7 +533,7 @@ class HomeController extends AppController {
                     }
                 }
                 
-                if($data['status'] !== 'saved') {
+                if($data['status'] !== 'sale_status_saved') {
                     $this->loadModel('MerchantRegisterOpen');
                     $registerOpen = $this->MerchantRegisterOpen->find('all',array(
                         'conditions' => array(
@@ -561,10 +566,10 @@ class HomeController extends AppController {
                             $open->MerchantRegisterOpen['total_new_sales'] = $data['total_price'];
                             $open->MerchantRegisterOpen['total_new_tax'] = $data['total_tax'];
                             
-                            if($data['status'] == 'onaccount') {
+                            if($data['status'] == 'sale_status_onaccount') {
                                 $open->MerchantRegisterOpen['onaccount'] = $data['total_price'] + $data['total_tax'];
                             }
-                            if($data['status'] == 'layby') {
+                            if($data['status'] == 'sale_status_layby') {
                                 $open->MerchantRegisterOpen['layby'] = $data['total_price'] + $data['total_tax'];
                             }
                         }
@@ -583,10 +588,10 @@ class HomeController extends AppController {
                         
                         $open->MerchantRegisterOpen['total_sales'] = $registerOpen[0]['MerchantRegisterOpen']['total_sales'] + $data['total_price'];
                         $open->MerchantRegisterOpen['total_tax'] = $registerOpen[0]['MerchantRegisterOpen']['total_tax'] + $data['total_tax'];
-                        if($data['status'] == 'onaccount') {
+                        if($data['status'] == 'sale_status_onaccount') {
                             $open->MerchantRegisterOpen['onaccount'] = $registerOpen[0]['MerchantRegisterOpen']['onaccount'] + $data['total_price'] + $data['total_tax'];
                         }
-                        if($data['status'] == 'layby') {
+                        if($data['status'] == 'sale_status_layby') {
                             $open->MerchantRegisterOpen['layby'] = $registerOpen[0]['MerchantRegisterOpen']['layby'] + $data['total_price'] + $data['total_tax'];
                         }
                         $this->MerchantRegisterOpen->save($open);
@@ -664,7 +669,7 @@ class HomeController extends AppController {
         $laybys = $this->RegisterSale->find('all', array(
             'conditions' => array(
                 'RegisterSale.created >=' => $opens['MerchantRegisterOpen']['register_open_time'],
-                'RegisterSale.status' => array('layby','layby_closed')
+                'RegisterSale.status' => array('sale_status_layby','sale_status_layby_closed')
             )
         ));
         $this->set('laybys',$laybys);
@@ -691,7 +696,7 @@ class HomeController extends AppController {
         $onaccounts = $this->RegisterSale->find('all', array(
             'conditions' => array(
                 'RegisterSale.created >=' => $opens['MerchantRegisterOpen']['register_open_time'],
-                'RegisterSale.status' => array('onaccount','onaccount_closed')
+                'RegisterSale.status' => array('sale_status_onaccount','sale_status_onaccount_closed')
             )
         ));
         $this->set('onaccounts',$onaccounts);

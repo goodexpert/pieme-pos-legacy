@@ -166,8 +166,8 @@
                             <dt>Country</dt>
                             <dd>
                             <?php
-                                echo $this->Form->input('physical_country_id', array(
-                                    'id' => 'outlet_physical_country_id',
+                                echo $this->Form->input('physical_country', array(
+                                    'id' => 'outlet_physical_country',
                                     'type' => 'select',
                                     'class' => 'outlet_country',
                                     'div' => false,

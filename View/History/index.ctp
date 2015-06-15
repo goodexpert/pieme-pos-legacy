@@ -1,3 +1,11 @@
+<?php
+    $user = $this->Session->read('Auth.User');
+    $xero_auth_token = null;
+
+    if (isset($user['Addons']['xero_auth_token'])) {
+        $xero_auth_token = $user['Addons']['xero_auth_token'];
+    }   
+ ?>
 <link href="/css/dataTable.css" rel="stylesheet" type="text/css">
 <div class="clearfix"></div>
 <div class="container">
@@ -64,12 +72,17 @@
                         </dd>
                         <dt>Register</dt>
                         <dd>
-                            <select name="register_id">
-                                <option value=""></option>
-                                <?php foreach($registers as $register) { ?>
-                                    <option value="<?php echo $register['MerchantRegister']['id'];?>" <?php if(isset($_GET['register_id']) && $_GET['register_id'] == $register['MerchantRegister']['id']){echo "selected";}?>><?php echo $register['MerchantRegister']['name'];?></option>
-                                <?php } ?>
-                            </select>
+                        <?php
+                            echo $this->Form->input('register_id', array(
+                                'id' => 'register_id',
+                                'name' => 'register_id',
+                                'type' => 'select',
+                                'div' => false,
+                                'label' => false,
+                                'empty' => '',
+                                'options' => $registers
+                            ));
+                         ?>
                         </dd>
                         <dt>Customer name</dt>
                         <dd><input type="text" name="customer" value="<?php if(isset($_GET['customer'])){echo $_GET['customer'];}?>"></dd>
@@ -92,21 +105,31 @@
                     <dl>
                         <dt>Show</dt>
                         <dd>
-                            <select name="status">
-                                <option value="">All Sales</option>
-                                <?php foreach($status as $stat) { ?>
-                                    <option value="<?php echo $stat['SaleStatus']['status'];?>" <?php if(isset($_GET['status']) && $_GET['status'] == $stat['SaleStatus']['status']){echo "selected";}?>><?php echo $stat['SaleStatus']['status'];?></option>
-                                <?php } ?>
-                            </select>
+                        <?php
+                            echo $this->Form->input('filter', array(
+                                'id' => 'filter',
+                                'name' => 'filter',
+                                'type' => 'select',
+                                'div' => false,
+                                'label' => false,
+                                'empty' => 'All Sales',
+                                'options' => $status
+                            ));
+                         ?>
                         </dd>
                         <dt>User</dt>
                         <dd>
-                            <select name="user_id">
-                                <option></option>
-                                <?php foreach($users as $user) { ?>
-                                    <option value="<?php echo $user['MerchantUser']['id'];?>" <?php if(isset($_GET['user_id']) && $_GET['user_id'] == $user['MerchantUser']['id']){echo "selected";}?>><?php echo $user['MerchantUser']['display_name'];?></option>
-                                <?php } ?>
-                            </select>
+                        <?php
+                            echo $this->Form->input('user_id', array(
+                                'id' => 'user_id',
+                                'name' => 'user_id',
+                                'type' => 'select',
+                                'div' => false,
+                                'label' => false,
+                                'empty' => '',
+                                'options' => $users
+                            ));
+                         ?>
                         </dd>
                     </dl>
                  </div>
@@ -136,15 +159,34 @@
                 </tr>
                 </thead>
                 <tbody>
-                
-                <?php foreach($sales as $sale){ ?>
-                
+                <?php foreach ($sales as $sale) : ?>
+                    <?php
+                        if ($sale['RegisterSale']['status'] === 'sale_status_onaccount') {
+                            $contact_id = $sale['MerchantCustomer']['xero_contact_id'];
+                            $invoice_id = $sale['RegisterSale']['xero_invoice_id'];
+
+                            if (!empty($xero_auth_token) && !empty($invoice_id)) {
+                                $xero_connect_url = '<a href="https://go.xero.com/AccountsReceivable/Edit.aspx?InvoiceID=' . $invoice_id . '" target="_blank" title="View on Xero">[Xero]</a>';
+                            } elseif (!empty($xero_auth_token) && !empty($contact_id)) {
+                                $xero_connect_url = '<a href="/xero/postInvoice?id=' . $sale['RegisterSale']['id'] . '">[Xero]</a>';
+                            }
+                        } elseif ($sale['RegisterSale']['status'] === 'sale_status_onaccount_closed') {
+                            $invoice_id = $sale['RegisterSale']['xero_invoice_id'];
+                            if (!empty($xero_auth_token) && !empty($invoice_id)) {
+                            }
+                        }
+                     ?>
                     <tr class="expandable" data-id="<?=$sale['RegisterSale']['id'];?>">
                         <td><?php echo $sale['RegisterSale']['receipt_number'];?></td>
                         <td><?php echo $sale['MerchantUser']['display_name'];?></td>
                         <td><?php echo $sale['MerchantCustomer']['name'];?></td>
                         <td><?=$sale['RegisterSale']['note'];?></td>
-                        <td class="history_status"><?=$sale['RegisterSale']['status'];?></td>
+                        <td class="history_status">
+                            <?php echo $sale['RegisterSale']['status_name']; ?>
+                            <?php if (!empty($xero_connect_url)) :?>
+                                &nbsp;<?php echo $xero_connect_url; ?>
+                            <?php endif; ?>
+                        </td>
                         <td class="tdTotal">$<?=number_format($sale['RegisterSale']['total_price_incl_tax'],2,'.',',');?></td>
                         <td><?=$sale['RegisterSale']['created'];?></td>
                     </tr>
@@ -152,30 +194,45 @@
                         <td colspan="8" class="expandable-child-td">
                             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega table-inner-btn">
                                 <div class="pull-left">
-                                    <?php if($sale['RegisterSale']['status'] !== "voided") { ?>
-                                    <a href="/history/edit?r=<?=$sale['RegisterSale']['id'];?>" class="edit_history"><button class="btn btn-default">Edit Sale</button></a>
-                                    <?php } ?>
-                                    <a href="/history/receipt?r=<?=$sale['RegisterSale']['id'];?>">
-                                    <button class="btn btn-default">View Receipt</button>
+                                    <?php if ($sale['RegisterSale']['status'] !== "sale_status_voided") : ?>
+                                    <a href="/history/edit?r=<?=$sale['RegisterSale']['id'];?>" class="edit_history">
+                                        <button class="btn btn-default">Edit Sale</button>
                                     </a>
-                                    <?php if($sale['RegisterSale']['status'] !== "voided") { ?>
+                                    <?php endif; ?>
+                                    <a href="/history/receipt?r=<?=$sale['RegisterSale']['id'];?>">
+                                        <button class="btn btn-default">View Receipt</button>
+                                    </a>
+                                    <?php if ($sale['RegisterSale']['status'] !== "sale_status_voided") : ?>
                                     <button class="btn btn-default send_receipt">Send Receipt</button>
-                                    <?php } ?>
+                                    <?php endif; ?>
                                 </div>
                                 <div class="pull-right">
-                                    <?php if($sale['RegisterSale']['status'] !== "voided") { ?>
+                                    <?php if (!empty($xero_auth_token) && !empty($contact_id)) : ?>
+                                    <div class="btn-group">
+                                        <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                            Xero <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a href="#">Check for Xero payments</a></li>
+                                            <li><a href="#">View on Xero</a></li>
+                                        </ul>
+                                    </div>
+                                    <?php endif; ?>
+                                    <?php if ($sale['RegisterSale']['status'] !== "sale_status_voided") : ?>
                                     <button class="btn btn-default void-history" data-id="<?=$sale['RegisterSale']['id'];?>">Void</button>
-                                    <?php } ?>
-                                    <?php if($sale['RegisterSale']['status'] == 'layby' or $sale['RegisterSale']['status'] == 'saved' or $sale['RegisterSale']['status'] == 'onaccount'){ ?>
+                                    <?php endif; ?>
+                                    <?php if ($sale['RegisterSale']['status'] == 'sale_status_layby' or $sale['RegisterSale']['status'] == 'sale_status_saved' or $sale['RegisterSale']['status'] == 'sale_status_onaccount') : ?>
                                     <button class="btn btn-default">Continue Sale</button>
-                                    <?php } ?>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                                 <div class="col-md-8 col-xs-8 col-sm-8 col-alpha history-detail">
                                     <ul class="row-display">
-                                        <?php $itemCount = 0;
-                                        foreach($sale['RegisterSaleItem'] as $item) { ?>
+                                    <?php
+                                        $itemCount = 0;
+                                        foreach($sale['RegisterSaleItem'] as $item) :
+                                     ?>
                                         
                                             <li class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega <?php if($itemCount > 4){echo 'hidden_product';}?>" <?php if($itemCount > 4){echo 'style="display:none;"';}?>>
                                                 <span class="col-md-4 col-xs-4 col-sm-4 col-alpha col-omega row-product">
@@ -189,8 +246,10 @@
                                                 </span>
                                             </li>
                                         
-                                        <?php $itemCount++;
-                                        } ?>
+                                    <?php
+                                            $itemCount++;
+                                        endforeach;
+                                     ?>
                                     </ul>
                                     <div class="solid-line"></div>
                                     <?php if($itemCount > 5) { ?>
@@ -258,8 +317,7 @@
                             </div>
                         </td>
                     </tr>
-                <?php } ?>
-
+                <?php endforeach; ?>
                 </tbody>
             </table>
             <div class="dataTables_wrapper">
@@ -337,11 +395,17 @@
                       Register
                   </div>
                   <div class="col-md-8">
-                      <select class="payment_action_register">
-                          <?php foreach($registers as $register) { ?>
-                          <option value="<?php echo $register['MerchantRegister']['id'];?>"><?php echo $register['MerchantRegister']['name'];?></option>
-                          <?php } ?>
-                      </select>
+                        <?php
+                            echo $this->Form->input('register_id', array(
+                                'id' => 'register_id',
+                                'type' => 'select',
+                                'class' => 'payment_action_register',
+                                'div' => false,
+                                'label' => false,
+                                'empty' => '',
+                                'options' => $registers
+                            ));
+                         ?>
                   </div>
               </div>
           </div>
@@ -582,7 +646,7 @@ $(".void-history").click(function(){
         type: 'POST',
         data: {
             id: $(this).attr("data-id"),
-            status: 'voided',
+            status: 'sale_status_voided',
         }
     });
 });

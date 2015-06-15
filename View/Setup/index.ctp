@@ -205,10 +205,10 @@
                   </dd>
                   <dt>Country</dt>
                   <dd>
-                    <select name="merchant[contact][physical_country_id]" id="merchant_contact_physical_country_id">
+                    <select name="merchant[contact][physical_country]" id="merchant_contact_physical_country">
                       <option disabled>Select a country</option>
                       <?php foreach($countries as $country) {?>
-                      <option value="<?php echo $country['Country']['country_code'];?>" <?php if($merchant['Subscriber']['Contact']['physical_country_id'] == $country['Country']['country_code']){echo "selected";}?>><?php echo $country['Country']['country_name'];?></option>
+                      <option value="<?php echo $country['Country']['country_code'];?>" <?php if($merchant['Subscriber']['Contact']['physical_country'] == $country['Country']['country_code']){echo "selected";}?>><?php echo $country['Country']['country_name'];?></option>
                       <?php } ?>
                     </select>
                   </dd>
@@ -243,10 +243,10 @@
                   </dd>
                   <dt>Country</dt>
                   <dd>
-                    <select name="merchant[contact][postal_country_id]" id="merchant_contact_postal_country_id">
+                    <select name="merchant[contact][postal_country]" id="merchant_contact_postal_country">
                       <option disabled>Select a country</option>
                       <?php foreach($countries as $country) {?>
-                      <option value="<?php echo $country['Country']['country_code'];?>" <?php if($merchant['Subscriber']['Contact']['postal_country_id'] == $country['Country']['country_code']){echo "selected";}?>><?php echo $country['Country']['country_name'];?></option>
+                      <option value="<?php echo $country['Country']['country_code'];?>" <?php if($merchant['Subscriber']['Contact']['postal_country'] == $country['Country']['country_code']){echo "selected";}?>><?php echo $country['Country']['country_name'];?></option>
                       <?php } ?>
                     </select>
                   </dd>
@@ -417,14 +417,14 @@ jQuery(document).ready(function() {
               physical_city: $("#merchant_contact_physical_city").val(),
               physical_postcode: $("#merchant_contact_physical_postcode").val(),
               physical_state: $("#merchant_contact_physical_state").val(),
-              physical_country_id: $("#merchant_contact_physical_country_id").val(),
+              physical_country: $("#merchant_contact_physical_country").val(),
               postal_address1: $("#merchant_contact_postal_address1").val(),
               postal_address2: $("#merchant_contact_postal_address2").val(),
               postal_suburb: $("#merchant_contact_postal_suburb").val(),
               postal_city: $("#merchant_contact_postal_city").val(),
               postal_postcode: $("#merchant_contact_postal_postcode").val(),
               postal_state: $("#merchant_contact_postal_state").val(),
-              postal_country_id: $("#merchant_contact_postal_country_id").val(),
+              postal_country: $("#merchant_contact_postal_country").val(),
           },
           success: function(){
               $("#notify").removeClass('hidden');
@@ -441,7 +441,7 @@ function same_as_physical() {
     var city = $('#merchant_contact_physical_city').val()
     var postcode = $('#merchant_contact_physical_postcode').val()
     var state = $('#merchant_contact_physical_state').val()
-    var country_id = $('#merchant_contact_physical_country_id').val()
+    var country = $('#merchant_contact_physical_country').val()
 
     $('#merchant_contact_postal_address1').val(address1);
     $('#merchant_contact_postal_address2').val(address2)
@@ -449,7 +449,7 @@ function same_as_physical() {
     $('#merchant_contact_postal_city').val(city)
     $('#merchant_contact_postal_postcode').val(postcode)
     $('#merchant_contact_postal_state').val(state)
-    $('#merchant_contact_postal_country_id').val(country_id)
+    $('#merchant_contact_postal_country').val(country)
 }
 </script> 
 <!-- END JAVASCRIPTS -->

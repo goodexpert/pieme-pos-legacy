@@ -240,7 +240,7 @@ class UsersController extends AppController {
                     $this->Session->write('Auth.User.MerchantOutlet', $register['MerchantOutlet']);
                     $_SESSION["Auth"]["User"]["outlet_id"] = $register['MerchantOutlet']['id'];
                 }
-                $_SESSION["Auth"]["User"]["RegisterCount"] = count($registers);
+                $_SESSION["Auth"]["User"]["register_counts"] = count($registers);
 
                 $this->MerchantUser->id = $user['id'];
                 $user['last_ip_address'] = $_SERVER['REMOTE_ADDR'];

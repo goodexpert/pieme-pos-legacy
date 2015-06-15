@@ -1127,7 +1127,7 @@ jQuery(document).ready(function() {
                 'price_include_tax': pAmount,
                 'sequence': sequence,
                 'discount': pDiscount,
-                'status': 'VALID'
+                'status': 'sale_item_status_valid'
             }
             
             line_array.push(line_order);
@@ -1199,6 +1199,7 @@ jQuery(document).ready(function() {
             });
         }
     }
+
     function park_register_sale(status,amount,pays) {
         if($("#retrieve_sale_id").val() !== ''){
             save_line_order();
@@ -1321,7 +1322,7 @@ jQuery(document).ready(function() {
 
     // Park
     $(document).on("click",".park-sale",function(){
-        park_register_sale('saved',0,0);
+        park_register_sale('sale_status_saved',0,0);
         $(".fade").hide();
         clear_sale();
     });
@@ -1331,7 +1332,7 @@ jQuery(document).ready(function() {
         if($("#customer-result-name").text() == ""){
             alert("Customer not selected");
         } else {
-            park_register_sale('layby',$("#set-pay-amount").val(),payments);
+            park_register_sale('sale_status_layby',$("#set-pay-amount").val(),payments);
             clear_sale();
         }
         $(".fade").hide();
@@ -1343,7 +1344,7 @@ jQuery(document).ready(function() {
         if($("#customer-result-name").text() == ""){
             alert("Customer not selected");
         } else {
-            park_register_sale('onaccount',$("#set-pay-amount").val(),payments);
+            park_register_sale('sale_status_onaccount',$("#set-pay-amount").val(),payments);
             clear_sale();
         }
         
@@ -1352,7 +1353,7 @@ jQuery(document).ready(function() {
 
     // Void
     $(document).on("click",".void-sale",function(){
-        park_register_sale('voided',$("#set-pay-amount").val(),payments);
+        park_register_sale('sale_status_voided',$("#set-pay-amount").val(),payments);
         $(".fade").hide();
         clear_sale();
     });
@@ -1411,16 +1412,11 @@ jQuery(document).ready(function() {
     $(".product").hide();
     $(".product[page=1]").show();
     
-    
     $(".print").click(function(){
         $(this).hide();
         $("#receipt").jqprint();
         $(this).show();
     });
-
-
-
-
 
     $(document).on("click","#button-view-c",function(){
        $(this).addClass("active");
@@ -1614,6 +1610,7 @@ function handleWindowResize() {
 $(document).on("click", function(){
     priceCalculator();
 });
+
 $(document).on("keyup", function(){
     priceCalculator();
 });
@@ -1641,7 +1638,6 @@ $(document).mouseup(function (e)
     }
 });
 
-
 function priceCalculator() {
     var setPriceS;
     var qtyS;
@@ -1664,6 +1660,7 @@ function priceCalculator() {
 
         toPay += setPrice * qty;
     });
+
     if($(".order-discount").length > 0){
         $(".order-discount").each(function(){
             toPay -= parseFloat($(this).find('.amount').text());
@@ -1679,7 +1676,6 @@ function priceCalculator() {
 /** CALCULATION END **/
 </script> 
 <script src="js/jquery.keypad.js"></script>
-
 <script>
 var listCount = 0;
 $(document).on('click', '.product', function(){
@@ -1704,7 +1700,6 @@ $(document).on('click', '.page', function(){
     $(".product").hide();
     $("div[page="+$(this).text()+"]").show();
 });
-
 
 $(document).on('click', '.prev', function(){
     var targetPage = $(".product-list-footer").children(".selected");
@@ -1733,7 +1728,6 @@ $(document).on('click', '.price-control', function() {
     return false;
 });
 
-
 $(document).on('click', '.remove', function(){
     $(this).closest("tr").remove();
     if($(".order-product").length == 0){
@@ -1741,7 +1735,6 @@ $(document).on('click', '.remove', function(){
     }
 });
 </script>
-
 
 <script>
 /** NUMBER PAD SETTINGS START **/
@@ -1775,10 +1768,12 @@ function number_write(x)
     }
   }
 }
+
 function number_clear()
 {
   document.getElementsByClassName("price_field")[0].value = '';
 }
+
 function number_c()
 {
   var text_box = document.getElementsByClassName("price_field")[0];
@@ -1788,6 +1783,7 @@ function number_c()
   num /= 10;
   text_box.value = num;
 }
+
 function number_negative()
 {
   var text_box = document.getElementsByClassName("price_field")[0];
@@ -1825,10 +1821,12 @@ function qty_write(x)
     }
   }
 }
+
 function qty_clear()
 {
   document.getElementsByClassName("qty_field")[0].value = '';
 }
+
 function qty_c()
 {
   var text_box = document.getElementsByClassName("qty_field")[0];
@@ -1838,12 +1836,14 @@ function qty_c()
   num /= 10;
   text_box.value = num;
 }
+
 function qty_negative()
 {
   var text_box = document.getElementsByClassName("qty_field")[0];
   var num = text_box.value;
   text_box.value = -num;
 }
+
 /** NUMBER PAD SETTINGS END **/
 
 $(".show_numpad").click(function(){
@@ -1873,6 +1873,7 @@ $(".show_numpad").click(function(){
     */
     return false;
 });
+
 var priceEdit = "discount";
 var priceEditAll = "discount";
 $(document).on("click","#set-discount",function(){
@@ -1884,6 +1885,7 @@ $(document).on("click","#set-discount",function(){
     $("#text-top").text("Apply discount percentage");
     priceEdit = "discount";
 });
+
 $(document).on("click","#set-discount-all",function(){
     $(this).addClass("active");
     $("#set-unit-price-all").removeClass("active");
@@ -1903,6 +1905,7 @@ $(document).on("click","#set-unit-price",function(){
     $("#text-top").text("Edit unit price");
     priceEdit = "price";
 });
+
 $(document).on("click","#set-unit-price-all",function(){
     $(this).addClass("active");
     $("#set-discount-all").removeClass("active");
@@ -1912,7 +1915,6 @@ $(document).on("click","#set-unit-price-all",function(){
     $("#text-top").text("Edit unit price");
     priceEditAll = "price";
 });
-
 
 $(document).on("click",".price-control",function(event){
     if($("#discount_auth").val() == 1) {
@@ -2091,6 +2093,7 @@ function assign_pricebook() {
         });
     });
 }
+
 $(document).on('submit',".price-form",function(){
     if(priceEdit == 'price') {
         $("a[data-id="+$(this).attr("data-id")+"]").text("@"+parseFloat($(".price_field").val()).toFixed(2));
@@ -2117,6 +2120,7 @@ $(document).on('submit',".discount-form",function(){
     priceCalculator();
     return false;
 });
+
 $(".qty-form").submit(function(){
     $("a[qty-id="+$(this).attr("data-id")+"]").text(parseFloat($(".qty_field").val()));
     $(".qty_block").hide();

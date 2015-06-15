@@ -150,6 +150,10 @@ class StockTakesController extends AppController {
         $user = $this->Auth->user();
 
         $stockTake = $this->_getStockTake($id, $user['merchant_id'], $user['retailer_id']);
+        if ($stockTake['MerchantStockTake']['order_status_id'] === 'stock_take_status_open') {
+            $this->MerchantStockTake->id = $stockTake['MerchantStockTake']['id'];
+            $this->MerchantStockTake->saveField('order_status_id', 'stock_take_status_progressed');
+        }
         $this->set('stockTake', $stockTake);
     }
 
@@ -435,6 +439,9 @@ class StockTakesController extends AppController {
 
                 $this->MerchantStockTake->create();
             }
+            if (isset($data['save-start']) && $data['save-start'] == 1) {
+                $data['MerchantStockTake']['order_status_id'] = 'stock_take_status_progressed';
+            }
             $this->MerchantStockTake->save($data);
 
             $dataSource->commit();
@@ -666,7 +673,7 @@ class StockTakesController extends AppController {
                     'MerchantProduct.stock_type' => 'STANDARD'
                 ));
 
-                if (0 == $show_inactive) {
+                if ($show_inactive == 0) {
                     $conditions = array_merge($conditions, array(
                         'MerchantProduct.is_active = 1',
                     ));

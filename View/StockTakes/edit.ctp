@@ -605,8 +605,19 @@ function autoCompleteForSearch() {
                     });
 
                     $.map(data.products, function (item) {
+                        var label = item.name;
+                        if (item.variant_option_one_name != '') {
+                            label += " / " + item.variant_option_one_value
+                        }
+                        if (item.variant_option_two_name != '') {
+                            label += " / " + item.variant_option_two_value
+                        }
+                        if (item.variant_option_three_name != '') {
+                            label += " / " + item.variant_option_three_value
+                        }
+
                         items.push({
-                            label: item.name,
+                            label: label,
                             category: "Product",
                             type: "products",
                             typeValue: item.id,

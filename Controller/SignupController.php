@@ -169,7 +169,7 @@ class SignupController extends AppController {
             'username' => 'master@onzsa.com',
             'password' => 'master',
             'physical_city' => 'Auckland',
-            'physical_country_id' => 'NZ',
+            'physical_country' => 'NZ',
             'default_currency' => 'NZD',
             'time_zone' => 'Pacific/Auckland',
         );
@@ -177,15 +177,13 @@ class SignupController extends AppController {
     }
 
 /**
- * Generate a random merchant code
+ * Generate a random code
  *
  * @return string
  */
-    protected function _generateMerchantCode($length = 6) {
-        $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_-=+;:,.?";
+    protected function _generateCode($length = 4) {
         $chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        $password = substr(str_shuffle( $chars ), 0, $length);
-        return $password;
+        return substr(str_shuffle( $chars ), 0, $length);
     }
 
 /**
@@ -198,50 +196,60 @@ class SignupController extends AppController {
         $dataSource = $this->Contact->getDataSource();
         $dataSource->begin();
 
-        $errors = array();
-
         try {
             $subscriber = $this->Subscriber->findByUsername($data['username']);
             if (!empty($subscriber) && is_array($subscriber)) {
                 $errors['subscriber'] = array(
                     'username' => 'Already subscriber'
                 );
-                return;
+                throw new Exception(json_encode($errors));
             }
 
             // create a contact
-            $contact['Contact'] = $data;
-            $contact['Contact']['first_name'] = $data['first_name'];
-            $contact['Contact']['last_name'] = $data['last_name'];
-            $contact['Contact']['email'] = $data['username'];
-            $contact['Contact']['physical_city'] = $data['physical_city'];
-            $contact['Contact']['physical_country_id'] = $data['physical_country_id'];
+            $contact = array();
+            $contact['first_name'] = $data['first_name'];
+            $contact['last_name'] = $data['last_name'];
+            $contact['email'] = $data['username'];
+            $contact['company_name'] = $data['name'];
+            $contact['physical_city'] = $data['physical_city'];
+            $contact['physical_country'] = $data['physical_country'];
+
             $this->Contact->create();
-            if (!$this->Contact->save($contact)) {
+            if (!$this->Contact->save(array('Contact' => $contact))) {
                 $errors['contact'] = $this->Subscriber->validationErrors;
                 throw new Exception(json_encode($errors));
             }
 
             // create a subscriber
             $subscriber = array();
-            $subscriber['Subscriber']['contact_id'] = $this->Contact->id;
-            $subscriber['Subscriber']['username'] = $data['username'];
-            $subscriber['Subscriber']['password'] = $data['password'];
+            $subscriber['contact_id'] = $this->Contact->id;
+            $subscriber['name'] = $data['name'];
+            $subscriber['username'] = $data['username'];
+            $subscriber['password'] = $data['password'];
+
             $this->Subscriber->create();
-            if (!$this->Subscriber->save($subscriber)) {
+            if (!$this->Subscriber->save(array('Subscriber' => $subscriber))) {
                 $errors['subscriber'] = $this->Subscriber->validationErrors;
                 throw new Exception(json_encode($errors));
             }
-            $data['subscriber_id'] = $this->Subscriber->id;
 
             // create a merchant
-            $merchant['Merchant'] = $data;
-            $merchant['Merchant']['merchant_code'] = $this->_generateMerchantCode(6);
+            $merchant['subscriber_id'] = $this->Subscriber->id;
+            $merchant['name'] = $data['name'];
+            $merchant['domain_prefix'] = $data['domain_prefix'];
+            $merchant['merchant_code'] = preg_replace('/\s+/', '', ucwords($data['domain_prefix'])) . '-' . $this->_generateCode();
+            $merchant['plan_id'] = $data['plan_id'];
             if ($data['plan_id'] == 'subscriber_plan_retailer_trial') {
-                $merchant['Merchant']['trial_ends'] = CakeTime::format('+30 days', '%Y-%m-%d');
+                $merchant['trial_ends'] = CakeTime::format('+30 days', '%Y-%m-%d');
+                $merchant['status'] = 'trialing';
+            } else {
+                $merchant['status'] = 'activate';
             }
+            $merchant['default_currency'] = $data['default_currency'];
+            $merchant['time_zone'] = $data['time_zone'];
+
             $this->Merchant->create();
-            if (!$this->Merchant->save($merchant)) {
+            if (!$this->Merchant->save(array('Merchant' => $merchant))) {
                 $errors['merchant'] = $this->Merchant->validationErrors;
                 throw new Exception(json_encode($errors));
             }
@@ -252,18 +260,23 @@ class SignupController extends AppController {
             
             // create a default customer group
             $customer_group_id = $this->_createDefaultCustomerGroup($merchant_id);
+            $merchant['default_customer_group_id'] = $customer_group_id;
 
             // create a default customer
-            $this->_createDefaultCustomer($merchant_id, $customer_group_id);
+            $customer_id = $this->_createDefaultCustomer($merchant_id, $customer_group_id);
+            $merchant['default_customer_id'] = $customer_id;
 
             // create default tax rates
-            $default_tax_id = $this->_createDefaultTaxRates($merchant_id, $data['physical_country_id']);
+            $tax_rates = $this->_createDefaultTaxRates($merchant_id, $data['physical_country']);
+            $merchant['default_no_tax_group_id'] = $tax_rates['default_no_tax_group_id'];
+            $merchant['default_tax_id'] = $tax_rates['default_tax_id'];
 
             // create default payment types
             $this->_createDefaultPaymentTypes($merchant_id);
 
             // create a quick key
             $quick_key_id = $this->_createDefaultQuickKey($merchant_id, NULL);
+            $merchant['default_quick_key_id'] = $quick_key_id;
 
             // create a receipt template
             $receipt_template_id = $this->_createDefaultReceiptTemplate($merchant_id, NULL, $data['name']);
@@ -275,10 +288,11 @@ class SignupController extends AppController {
             $supplier_id = $this->_createDefaultSupplier($merchant_id, $contact, $data['name']);
 
             // create default products
-            $this->_createDefaultProducts($merchant_id, $supplier_id, $default_tax_id, $quick_key_id);
+            $this->_createDefaultProducts($merchant_id, $supplier_id, $tax_rates['default_tax_id'], $quick_key_id);
 
             // create a default price book
-            $this->_createDefaultPriceBook($merchant_id, $customer_group_id);
+            $price_book_id = $this->_createDefaultPriceBook($merchant_id, $customer_group_id);
+            $merchant['default_price_book_id'] = $price_book_id;
 
             // create a default inventories
             $this->_createDefaultInventory($merchant_id);
@@ -286,13 +300,23 @@ class SignupController extends AppController {
             // create a merchant loyalty
             $this->_createMerchantLoyalty($merchant_id, $data['name']);
 
+            // create a merchant addon
+            $this->_createMerchantAddon($merchant_id, NULL);
+
+            // update the merchant
+            if (!$this->Merchant->save(array('Merchant' => $merchant))) {
+                $errors['merchant'] = $this->Merchant->validationErrors;
+                throw new Exception(json_encode($errors));
+            }
+
             $dataSource->commit();
             $this->redirect('/signin');
         } catch (Exception $e) {
             $dataSource->rollback();
             $this->Session->setFlash($e->getMessage());
-        } finally {
-            $this->set('errors', $errors);
+            if (json_decode($e->getMessage()) != null) {
+                $this->set('errors', json_decode($e->getMessage(), true));
+            }
         }
 
         /*
@@ -351,7 +375,7 @@ class SignupController extends AppController {
                 $this->_createDefaultCustomer($merchant_id, $customer_group_id);
     
                 // create default tax rates
-                $default_tax_id = $this->_createDefaultTaxRates($merchant_id, $data['physical_country_id']);
+                $default_tax_id = $this->_createDefaultTaxRates($merchant_id, $data['physical_country']);
     
                 // create default payment types
                 $this->_createDefaultPaymentTypes($merchant_id);
@@ -399,64 +423,81 @@ class SignupController extends AppController {
 /**
  * Create a default user function.
  *
+ * @param string merchant id
+ * @param string retailer id
+ * @param string username
+ * @param string password
+ * @param string display name
  * @return void
  */
     protected function _createDefaultUser($merchant_id, $retailer_id, $username, $password, $display_name) {
         $this->loadModel('MerchantUser');
 
-        $this->MerchantUser->create();
-
         $user = array();
-        $user['MerchantUser']['merchant_id'] = $merchant_id;
-        $user['MerchantUser']['retailer_id'] = $retailer_id;
-        $user['MerchantUser']['user_type_id'] = 'user_type_admin';
-        $user['MerchantUser']['username'] = $username;
-        $user['MerchantUser']['password'] = $password;
-        $user['MerchantUser']['display_name'] = $display_name;
-        $user['MerchantUser']['email'] = $username;
+        $user['merchant_id'] = $merchant_id;
+        $user['retailer_id'] = $retailer_id;
+        $user['user_type_id'] = 'user_type_admin';
+        $user['username'] = $username;
+        $user['password'] = $password;
+        $user['display_name'] = $display_name;
+        $user['email'] = $username;
 
-        $this->MerchantUser->save($user);
+        $this->MerchantUser->create();
+        if (!$this->MerchantUser->save(array('MerchantUser' => $user))) {
+            $errors['internal'] = $this->MerchantUser->validationErrors;
+            throw new Exception(json_encode($errors));
+        }
     }
 
 /**
  * Create a default customer group function.
  *
+ * @param string merchant id
  * @return uuid
  */
     protected function _createDefaultCustomerGroup($merchant_id) {
         $this->loadModel('MerchantCustomerGroup');
 
-        // create a default customer group
-        $this->MerchantCustomerGroup->create();
-        $group['MerchantCustomerGroup']['merchant_id'] = $merchant_id;
-        $group['MerchantCustomerGroup']['group_code'] = 'onzsa';
-        $group['MerchantCustomerGroup']['name'] = 'All Customers';
-        $this->MerchantCustomerGroup->save($group);
+        $group = array();
+        $group['merchant_id'] = $merchant_id;
+        $group['group_code'] = 'onzsa';
+        $group['name'] = 'All Customers';
 
+        $this->MerchantCustomerGroup->create();
+        if (!$this->MerchantCustomerGroup->save(array('MerchantCustomerGroup' => $group))) {
+            $errors['internal'] = $this->MerchantCustomerGroup->validationErrors;
+            throw new Exception(json_encode($errors));
+        }
         return $this->MerchantCustomerGroup->id;
     }
 
 /**
  * Create a default customer function.
  *
+ * @param string merchant id
+ * @param string customer group id
  * @return uuid
  */
     protected function _createDefaultCustomer($merchant_id, $customer_group_id) {
         $this->loadModel('MerchantCustomer');
 
-        // create a default customer
-        $this->MerchantCustomer->create();
-        $customer['MerchantCustomer']['merchant_id'] = $merchant_id;
-        $customer['MerchantCustomer']['customer_group_id'] = $customer_group_id;
-        $customer['MerchantCustomer']['customer_code'] = 'walkin';
-        $this->MerchantCustomer->save($customer);
+        $customer = array();
+        $customer['merchant_id'] = $merchant_id;
+        $customer['customer_group_id'] = $customer_group_id;
+        $customer['customer_code'] = 'walkin';
 
+        $this->MerchantCustomer->create();
+        if (!$this->MerchantCustomer->save(array('MerchantCustomer' => $customer))) {
+            $errors['internal'] = $this->MerchantCustomer->validationErrors;
+            throw new Exception(json_encode($errors));
+        }
         return $this->MerchantCustomer->id;
     }
 
 /**
  * Create default payment types function.
  *
+ * @param string merchant id
  * @return void
  */
     protected function _createDefaultPaymentTypes($merchant_id) {
@@ -465,85 +506,88 @@ class SignupController extends AppController {
 
         $payments = $this->PaymentType->find('all', array(
             'conditions' => array(
-                'PaymentType.name' => array('Cash', 'Credit Card')
+                'PaymentType.name' => array('Cash', 'Credit Card', 'Loyalty')
             )
         ));
 
         foreach ($payments as $payment) {
+            $data = array();
             $data['merchant_id'] = $merchant_id;
             $data['payment_type_id'] = $payment['PaymentType']['id'];
             $data['name'] = $payment['PaymentType']['name'];
+            $data['config'] = $payment['PaymentType']['config'];
+            $data['is_active'] = $payment['PaymentType']['is_active'];
 
             $this->MerchantPaymentType->create();
-            $this->MerchantPaymentType->save(array(
-                'MerchantPaymentType' => $data
-            ));
+            if (!$this->MerchantPaymentType->save(array('MerchantPaymentType' => $data))) {
+                $errors['internal'] = $this->MerchantPaymentType->validationErrors;
+                throw new Exception(json_encode($errors));
+            }
         }
     }
 
 /**
  * Create default tax rates function.
  *
- * @return uuid
+ * @param string merchant id
+ * @param string country id
+ * @return array
  */
-    protected function _createDefaultTaxRates($merchant_id, $country_id) {
+    protected function _createDefaultTaxRates($merchant_id, $country) {
         $this->loadModel('MerchantTaxRate');
         $this->loadModel('TaxRate');
 
         $rates = $this->TaxRate->find('all', array(
             'conditions' => array(
                 'OR' => array(
-                    'TaxRate.country_id' => $country_id,
-                    'TaxRate.country_id IS NULL'
+                    'TaxRate.country' => $country,
+                    'TaxRate.country IS NULL'
                 )
             )
         ));
 
-        $default_tax_id = null;
+        $tax_rates = array();
         foreach ($rates as $rate) {
             $data = $rate['TaxRate'];
             $data['merchant_id'] = $merchant_id;
             unset($data['id']);
 
             $this->MerchantTaxRate->create();
-            $this->MerchantTaxRate->save(array(
-                'MerchantTaxRate' => $data
-            ));
-
-/*
-            if ($rate['TaxRate']['rate'] != 0) {
-                $default_tax_id = $this->MerchantTaxRate->id;
+            if (!$this->MerchantTaxRate->save(array('MerchantTaxRate' => $data))) {
+                $errors['internal'] = $this->MerchantTaxRate->validationErrors;
+                throw new Exception(json_encode($errors));
             }
-*/
-            $default_tax_id = $this->MerchantTaxRate->id;
+
+            if ($data['is_default'] == 1) {
+                $tax_rates['default_tax_id'] = $this->MerchantTaxRate->id;
+            } elseif ($data['name'] === 'No Tax') {
+                $tax_rates['default_no_tax_group_id'] = $this->MerchantTaxRate->id;
+            }
         }
 
-        // update a default tax id
-        $this->Merchant->id = $merchant_id;
-        $this->Merchant->saveField('default_tax_id', $default_tax_id);
-
-        return $default_tax_id;
+        return $tax_rates;
     }
 
 /**
  * Create a default quick key function.
  *
+ * @param string merchant id
+ * @param string retailer id
  * @return uuid
  */
     protected function _createDefaultQuickKey($merchant_id, $retailer_id) {
         $this->loadModel('MerchantQuickKey');
 
         // create a quick key
-        $this->MerchantQuickKey->create();
+        $data = array();
         $data['merchant_id'] = $merchant_id;
         $data['retailer_id'] = $retailer_id;
         $data['name'] = 'Default Quick Keys';
-        $this->MerchantQuickKey->save(array('MerchantQuickKey' => $data));
 
-        // update a default quick key id
-        if (empty($retailer_id)) {
-            $this->Merchant->id = $merchant_id;
-            $this->Merchant->saveField('default_quick_key_id', $this->MerchantQuickKey->id);
+        $this->MerchantQuickKey->create();
+        if (!$this->MerchantQuickKey->save(array('MerchantQuickKey' => $data))) {
+            $errors['internal'] = $this->MerchantQuickKey->validationErrors;
+            throw new Exception(json_encode($errors));
         }
         return $this->MerchantQuickKey->id;
     }
@@ -551,6 +595,9 @@ class SignupController extends AppController {
 /**
  * Create a default receipt template function.
  *
+ * @param string merchant id
+ * @param string retailer id
+ * @param string store name
  * @return uuid
  */
     protected function _createDefaultReceiptTemplate($merchant_id, $retailer_id, $store_name) {
@@ -558,16 +605,17 @@ class SignupController extends AppController {
         $this->loadModel('ReceiptStyle');
 
         if (empty($retailer_id)) {
-            // create a receipt template
-            $this->MerchantReceiptTemplate->create();
+            $data = array();
             $data['merchant_id'] = $merchant_id;
             $data['name'] = 'Standard Receipt';
             $data['receipt_style_id'] = 1;
             $data['receipt_header'] = $store_name;
-            $this->MerchantReceiptTemplate->save(array(
-                'MerchantReceiptTemplate' => $data
-            ));
-    
+
+            $this->MerchantReceiptTemplate->create();
+            if (!$this->MerchantReceiptTemplate->save(array('MerchantReceiptTemplate' => $data))) {
+                $errors['internal'] = $this->MerchantReceiptTemplate->validationErrors;
+                throw new Exception(json_encode($errors));
+            }
             return $this->MerchantReceiptTemplate->id;
         } else {
             return $this->MerchantReceiptTemplate->findByMerchantId($merchant_id)['MerchantReceiptTemplate']['id'];
@@ -577,6 +625,10 @@ class SignupController extends AppController {
 /**
  * Create a main outlet and register function.
  *
+ * @param string merchant id
+ * @param string retailer id
+ * @param string quick key id
+ * @param string receipt template id
  * @return void
  */
     protected function _createDefaultOutlet($merchant_id, $retailer_id, $quick_key_id, $receipt_template_id) {
@@ -584,23 +636,36 @@ class SignupController extends AppController {
         $this->loadModel('MerchantRegister');
 
         // create a main outlet
+        $outlet = array();
+        $outlet['merchant_id'] = $merchant_id;
+        $outlet['name'] = 'Main Outlet';
+
         $this->MerchantOutlet->create();
-        $outlet['MerchantOutlet']['merchant_id'] = $merchant_id;
-        $outlet['MerchantOutlet']['name'] = 'Main Outlet';
-        $this->MerchantOutlet->save($outlet);
+        if (!$this->MerchantOutlet->save(array('MerchantOutlet' => $outlet))) {
+            $errors['internal'] = $this->MerchantOutlet->validationErrors;
+            throw new Exception(json_encode($errors));
+        }
 
         // create a main register
+        $register = array();
+        $register['outlet_id'] = $this->MerchantOutlet->id;
+        $register['name'] = 'Main Register';
+        $register['quick_key_id'] = $quick_key_id;
+        $register['receipt_template_id'] = $receipt_template_id;
+
         $this->MerchantRegister->create();
-        $register['MerchantRegister']['outlet_id'] = $this->MerchantOutlet->id;
-        $register['MerchantRegister']['name'] = 'Main Register';
-        $register['MerchantRegister']['quick_key_id'] = $quick_key_id;
-        $register['MerchantRegister']['receipt_template_id'] = $receipt_template_id;
-        $this->MerchantRegister->save($register);
+        if (!$this->MerchantRegister->save(array('MerchantRegister' => $register))) {
+            $errors['internal'] = $this->MerchantRegister->validationErrors;
+            throw new Exception(json_encode($errors));
+        }
     }
 
 /**
  * Create a default supplier function.
  *
+ * @param string merchant id
+ * @param array contact information
+ * @param string supplier name
  * @return uuid
  */
     protected function _createDefaultSupplier($merchant_id, $contact, $name) {
@@ -611,21 +676,28 @@ class SignupController extends AppController {
         $this->Contact->save($contact);
 
         // create a default supplier
-        $this->MerchantSupplier->create();
-        $supplier['MerchantSupplier']['merchant_id'] = $merchant_id;
-        $supplier['MerchantSupplier']['contact_id'] = $this->Contact->id;
-        $supplier['MerchantSupplier']['name'] = $name;
-        $this->MerchantSupplier->save($supplier);
+        $supplier['merchant_id'] = $merchant_id;
+        $supplier['contact_id'] = $this->Contact->id;
+        $supplier['name'] = $name;
 
+        $this->MerchantSupplier->create();
+        if (!$this->MerchantSupplier->save(array('MerchantSupplier' => $supplier))) {
+            $errors['internal'] = $this->MerchantSupplier->validationErrors;
+            throw new Exception(json_encode($errors));
+        }
         return $this->MerchantSupplier->id;
     }
 
 /**
  * Create default products function.
  *
+ * @param string merchant id
+ * @param string supplier id
+ * @param string tax rate id
+ * @param string quick key id
  * @return void
  */
-    protected function _createDefaultProducts($merchant_id, $supplier_id, $tax_id, $quick_key_id) {
+    protected function _createDefaultProducts($merchant_id, $supplier_id, $default_tax_id, $quick_key_id) {
         $this->loadModel('MerchantProductBrand');
         $this->loadModel('MerchantProductType');
         $this->loadModel('MerchantProductTag');
@@ -633,77 +705,111 @@ class SignupController extends AppController {
         $this->loadModel('MerchantProduct');
 
         // create a default product brand
+        $brand = array();
+        $brand['merchant_id'] = $merchant_id;
+        $brand['name'] = 'General';
+
         $this->MerchantProductBrand->create();
-        $brand['MerchantProductBrand']['merchant_id'] = $merchant_id;
-        $brand['MerchantProductBrand']['name'] = 'General';
-        $this->MerchantProductBrand->save($brand);
+        if (!$this->MerchantProductBrand->save(array('MerchantProductBrand' => $brand))) {
+            $errors['internal'] = $this->MerchantProductBrand->validationErrors;
+            throw new Exception(json_encode($errors));
+        }
 
         // create a default product type
+        $type = array();
+        $type['merchant_id'] = $merchant_id;
+        $type['name'] = 'General';
+
         $this->MerchantProductType->create();
-        $type['MerchantProductType']['merchant_id'] = $merchant_id;
-        $type['MerchantProductType']['name'] = 'General';
-        $this->MerchantProductType->save($type);
+        if (!$this->MerchantProductType->save(array('MerchantProductType' => $type))) {
+            $errors['internal'] = $this->MerchantProductType->validationErrors;
+            throw new Exception(json_encode($errors));
+        }
 
         // create a default product tag
+        $tag = array();
+        $tag['merchant_id'] = $merchant_id;
+        $tag['name'] = 'General';
+
         $this->MerchantProductTag->create();
-        $tag['MerchantProductTag']['merchant_id'] = $merchant_id;
-        $tag['MerchantProductTag']['name'] = 'General';
-        $this->MerchantProductTag->save($tag);
+        if (!$this->MerchantProductTag->save(array('MerchantProductTag' => $tag))) {
+            $errors['internal'] = $this->MerchantProductTag->validationErrors;
+            throw new Exception(json_encode($errors));
+        }
 
         // get a default tax rate
-        $rate = $this->MerchantTaxRate->findById($tax_id);
+        $rate = $this->MerchantTaxRate->findById($default_tax_id);
 
         // create a product of yoghurt flavour banana
+        $product1 = array();
+        $product1['merchant_id'] = $merchant_id;
+        $product1['name'] = 'Yoghurt Fruity Tart (Demo)';
+        $product1['handle'] = 'yoghurt-fruity-tart';
+        $product1['sku'] = 'yoghurt-fruity-tart';
+        $product1['product_brand_id'] = $this->MerchantProductBrand->id;
+        $product1['product_type_id'] = $this->MerchantProductType->id;
+        $product1['supplier_id'] = $supplier_id;
+        $product1['supply_price'] = 3.0;
+        $product1['markup'] = 0.20;
+        $product1['price'] = $product1['supply_price'] * (1.0 + $product1['markup']);
+        $product1['tax'] = $product1['price'] * $rate['MerchantTaxRate']['rate'];
+        $product1['tax_id'] = $rate['MerchantTaxRate']['id'];
+        $product1['price_include_tax'] = $product1['price'] + $product1['tax'];
+        $product1['image'] = "/img/no-image.png";
+        $product1['image_large'] = "/img/no-image.png";
+
         $this->MerchantProduct->create();
-        $product1['MerchantProduct']['merchant_id'] = $merchant_id;
-        $product1['MerchantProduct']['name'] = 'Yoghurt Fruity Tart (Demo)';
-        $product1['MerchantProduct']['handle'] = 'yoghurt-fruity-tart';
-        $product1['MerchantProduct']['sku'] = 'yoghurt-fruity-tart';
-        $product1['MerchantProduct']['product_brand_id'] = $this->MerchantProductBrand->id;
-        $product1['MerchantProduct']['product_type_id'] = $this->MerchantProductType->id;
-        $product1['MerchantProduct']['supplier_id'] = $supplier_id;
-        $product1['MerchantProduct']['supply_price'] = 3.0;
-        $product1['MerchantProduct']['markup'] = 0.20;
-        $product1['MerchantProduct']['price'] = $product1['MerchantProduct']['supply_price'] * (1.0 + $product1['MerchantProduct']['markup']);
-        $product1['MerchantProduct']['tax'] = $product1['MerchantProduct']['price'] * $rate['MerchantTaxRate']['rate'];
-        $product1['MerchantProduct']['tax_id'] = $rate['MerchantTaxRate']['id'];
-        $product1['MerchantProduct']['price_include_tax'] = $product1['MerchantProduct']['price'] + $product1['MerchantProduct']['tax'];
-        $product1['MerchantProduct']['image'] = "/img/no-image.png";
-        $product1['MerchantProduct']['image_large'] = "/img/no-image.png";
-        $this->MerchantProduct->save($product1);
-        $product1['MerchantProduct']['id'] = $this->MerchantProduct->id;
+        if (!$this->MerchantProduct->save(array('MerchantProduct' => $product1))) {
+            $errors['internal'] = $this->MerchantProduct->validationErrors;
+            throw new Exception(json_encode($errors));
+        }
+        $product1['id'] = $this->MerchantProduct->id;
 
         // Add a product category
+        $category = array();
+        $category['product_id'] = $product1['id'];
+        $category['product_tag_id'] = $this->MerchantProductTag->id;
+
         $this->MerchantProductCategory->create();
-        $category['MerchantProductCategory']['product_id'] = $product1['MerchantProduct']['id'];
-        $category['MerchantProductCategory']['product_tag_id'] = $this->MerchantProductTag->id;
-        $this->MerchantProductCategory->save($category);
+        if (!$this->MerchantProductCategory->save(array('MerchantProductCategory' => $category))) {
+            $errors['internal'] = $this->MerchantProductCategory->validationErrors;
+            throw new Exception(json_encode($errors));
+        }
 
         // create a product of yoghurt flavour banana
+        $product2['merchant_id'] = $merchant_id;
+        $product2['name'] = 'Yoghurt Creamy Delight (Demo)';
+        $product2['handle'] = 'yoghurt-creamy-delight';
+        $product2['sku'] = 'yoghurt-creamy-delight';
+        $product2['product_brand_id'] = $this->MerchantProductBrand->id;
+        $product2['product_type_id'] = $this->MerchantProductType->id;
+        $product2['supplier_id'] = $supplier_id;
+        $product2['supply_price'] = 3.2;
+        $product2['markup'] = 0.20;
+        $product2['price'] = $product2['supply_price'] * (1.0 + $product2['markup']);
+        $product2['tax'] = $product2['price'] * $rate['MerchantTaxRate']['rate'];
+        $product2['tax_id'] = $rate['MerchantTaxRate']['id'];
+        $product2['price_include_tax'] = $product2['price'] + $product2['tax'];
+        $product2['image'] = "/img/no-image.png";
+        $product2['image_large'] = "/img/no-image.png";
+
         $this->MerchantProduct->create();
-        $product2['MerchantProduct']['merchant_id'] = $merchant_id;
-        $product2['MerchantProduct']['name'] = 'Yoghurt Creamy Delight (Demo)';
-        $product2['MerchantProduct']['handle'] = 'yoghurt-creamy-delight';
-        $product2['MerchantProduct']['sku'] = 'yoghurt-creamy-delight';
-        $product2['MerchantProduct']['product_brand_id'] = $this->MerchantProductBrand->id;
-        $product2['MerchantProduct']['product_type_id'] = $this->MerchantProductType->id;
-        $product2['MerchantProduct']['supplier_id'] = $supplier_id;
-        $product2['MerchantProduct']['supply_price'] = 3.2;
-        $product2['MerchantProduct']['markup'] = 0.20;
-        $product2['MerchantProduct']['price'] = $product2['MerchantProduct']['supply_price'] * (1.0 + $product2['MerchantProduct']['markup']);
-        $product2['MerchantProduct']['tax'] = $product2['MerchantProduct']['price'] * $rate['MerchantTaxRate']['rate'];
-        $product2['MerchantProduct']['tax_id'] = $rate['MerchantTaxRate']['id'];
-        $product2['MerchantProduct']['price_include_tax'] = $product2['MerchantProduct']['price'] + $product2['MerchantProduct']['tax'];
-        $product2['MerchantProduct']['image'] = "/img/no-image.png";
-        $product2['MerchantProduct']['image_large'] = "/img/no-image.png";
-        $this->MerchantProduct->save($product2);
-        $product2['MerchantProduct']['id'] = $this->MerchantProduct->id;
+        if (!$this->MerchantProduct->save(array('MerchantProduct' => $product2))) {
+            $errors['internal'] = $this->MerchantProduct->validationErrors;
+            throw new Exception(json_encode($errors));
+        }
+        $product2['id'] = $this->MerchantProduct->id;
 
         // Add a product category
+        $category = array();
+        $category['product_id'] = $product2['id'];
+        $category['product_tag_id'] = $this->MerchantProductTag->id;
+
         $this->MerchantProductCategory->create();
-        $category['MerchantProductCategory']['product_id'] = $product2['MerchantProduct']['id'];
-        $category['MerchantProductCategory']['product_tag_id'] = $this->MerchantProductTag->id;
-        $this->MerchantProductCategory->save($category);
+        if (!$this->MerchantProductCategory->save(array('MerchantProductCategory' => $category))) {
+            $errors['internal'] = $this->MerchantProductCategory->validationErrors;
+            throw new Exception(json_encode($errors));
+        }
 
         // update a default quick key layout
         $quick_key_layout = array(
@@ -714,17 +820,17 @@ class SignupController extends AppController {
                     'keys' => array(
                         array(
                             'position' => 0,
-                            'product_id' => $product1['MerchantProduct']['id'],
-                            'sku' => $product1['MerchantProduct']['sku'],
-                            'label' => $product1['MerchantProduct']['name'],
+                            'product_id' => $product1['id'],
+                            'sku' => $product1['sku'],
+                            'label' => $product1['name'],
                             'color' => '#ffffff',
                             'image' => '/img/no-image.png'
                         ),
                         array(
                             'position' => 1,
-                            'product_id' => $product2['MerchantProduct']['id'],
-                            'sku' => $product2['MerchantProduct']['sku'],
-                            'label' => $product2['MerchantProduct']['name'],
+                            'product_id' => $product2['id'],
+                            'sku' => $product2['sku'],
+                            'label' => $product2['name'],
                             'color' => '#ffffff',
                             'image' => '/img/no-image.png'
                         )
@@ -740,6 +846,8 @@ class SignupController extends AppController {
 /**
  * Create default price book function.
  *
+ * @param string merchant id
+ * @param string customer group id
  * @return void
  */
     protected function _createDefaultPriceBook($merchant_id, $customer_group_id) {
@@ -748,12 +856,17 @@ class SignupController extends AppController {
         $this->loadModel('MerchantPriceBookEntry');
 
         // create a default price book
+        $priceBook = array();
+        $priceBook['merchant_id'] = $merchant_id;
+        $priceBook['name'] = 'General Price Book (All Products)';
+        $priceBook['customer_group_id'] = $customer_group_id;
+        $priceBook['is_default'] = 1;
+
         $this->MerchantPriceBook->create();
-        $priceBook['MerchantPriceBook']['merchant_id'] = $merchant_id;
-        $priceBook['MerchantPriceBook']['name'] = 'General Price Book (All Products)';
-        $priceBook['MerchantPriceBook']['customer_group_id'] = $customer_group_id;
-        $priceBook['MerchantPriceBook']['is_default'] = 1;
-        $this->MerchantPriceBook->save($priceBook);
+        if (!$this->MerchantPriceBook->save(array('MerchantPriceBook' => $priceBook))) {
+            $errors['internal'] = $this->MerchantPriceBook->validationErrors;
+            throw new Exception(json_encode($errors));
+        }
 
         // get product list
         $products = $this->MerchantProduct->find('all', array(
@@ -762,25 +875,30 @@ class SignupController extends AppController {
             )
         ));
 
+        // create a price book entry
         foreach ($products as $product) {
-            // create a price book entry
+            $data = array();
+            $data['price_book_id'] = $this->MerchantPriceBook->id;
+            $data['product_id'] = $product['MerchantProduct']['id'];
+            $data['markup'] = $product['MerchantProduct']['markup'];
+            $data['price'] = $product['MerchantProduct']['price'];
+            $data['price_include_tax'] = $product['MerchantProduct']['price_include_tax'];
+            $data['tax'] = $product['MerchantProduct']['tax'];
+
             $this->MerchantPriceBookEntry->create();
-            $data['MerchantPriceBookEntry']['price_book_id'] = $this->MerchantPriceBook->id;
-            $data['MerchantPriceBookEntry']['product_id'] = $product['MerchantProduct']['id'];
-            $data['MerchantPriceBookEntry']['markup'] = $product['MerchantProduct']['markup'];
-            $data['MerchantPriceBookEntry']['price'] = $product['MerchantProduct']['price'];
-            $data['MerchantPriceBookEntry']['price_include_tax'] = $product['MerchantProduct']['price_include_tax'];
-            $data['MerchantPriceBookEntry']['tax'] = $product['MerchantProduct']['tax'];
-            $this->MerchantPriceBookEntry->save($data);
+            if (!$this->MerchantPriceBookEntry->save(array('MerchantPriceBookEntry' => $data))) {
+                $errors['internal'] = $this->MerchantPriceBookEntry->validationErrors;
+                throw new Exception(json_encode($errors));
+            }
         }
 
-        $this->Merchant->id = $merchant_id;
-        $this->Merchant->saveField('default_price_book_id', $this->MerchantPriceBook->id);
+        return $this->MerchantPriceBook->id;
     }
 
 /**
  * Create default inventories function.
  *
+ * @param string merchant id
  * @return void
  */
     protected function _createDefaultInventory($merchant_id) {
@@ -802,15 +920,18 @@ class SignupController extends AppController {
             )
         ));
 
+        // create a product inventory
         foreach ($outlets as $outlet) {
             foreach ($products as $product) {
-                // create a product inventory
-                $this->MerchantProductInventory->create();
+                $data = array();
                 $data['outlet_id'] = $outlet['MerchantOutlet']['id'];
                 $data['product_id'] = $product['MerchantProduct']['id'];
-                $this->MerchantProductInventory->save(array(
-                    'MerchantProductInventory' => $data
-                ));
+
+                $this->MerchantProductInventory->create();
+                if (!$this->MerchantProductInventory->save(array('MerchantProductInventory' => $data))) {
+                    $errors['internal'] = $this->MerchantProductInventory->validationErrors;
+                    throw new Exception(json_encode($errors));
+                }
             }
         }
     }
@@ -818,28 +939,56 @@ class SignupController extends AppController {
 /**
  * Create a merchant loyalty function.
  *
+ * @param string merchant id
+ * @param string store name
  * @return void
  */
     protected function _createMerchantLoyalty($merchant_id, $store_name) {
         $this->loadModel('MerchantLoyalty');
 
         // create a merchant loyalty
-        $this->MerchantLoyalty->create();
-        $loyalty['MerchantLoyalty']['merchant_id'] = $merchant_id;
-        $loyalty['MerchantLoyalty']['loyalty_earn_amount'] = 1;
-        $loyalty['MerchantLoyalty']['loyalty_spend_amount'] = 50;
-        $loyalty['MerchantLoyalty']['offer_signup_bonus_loyalty'] = 0;
-        $loyalty['MerchantLoyalty']['signup_bonus_loyalty_amount'] = 0;
-        $loyalty['MerchantLoyalty']['send_welcome_email'] = 0;
-        $loyalty['MerchantLoyalty']['welcome_email_subject'] = 'Welcome to the ' . $store_name . ' Loyalty Program';
+        $loyalty = array();
+        $loyalty['merchant_id'] = $merchant_id;
+        $loyalty['loyalty_earn_amount'] = 1;
+        $loyalty['loyalty_spend_amount'] = 50;
+        $loyalty['offer_signup_bonus_loyalty'] = 0;
+        $loyalty['signup_bonus_loyalty_amount'] = 0;
+        $loyalty['send_welcome_email'] = 0;
+        $loyalty['welcome_email_subject'] = 'Welcome to the ' . $store_name . ' Loyalty Program';
 
         $email_body = '<h1>Welcome to ' . $store_name . ' Loyalty Program</h1>';
         $email_body .= '<p>You can earn Loyalty $ when you make purchases at onzsa and redeem your credit in store.</p>';
         $email_body .= '<p>Thanks,<br>' . $store_name . '</p>';
         $email_body .= '<p>Register your details with the ' . $store_name . ' Loyalty Program to earn an additional $ Loyalty:</p>';
-        $loyalty['MerchantLoyalty']['welcome_email_body'] = base64_encode($email_body);
+        $loyalty['welcome_email_body'] = base64_encode($email_body);
 
-        $this->MerchantLoyalty->save($loyalty);
+        $this->MerchantLoyalty->create();
+        if (!$this->MerchantLoyalty->save(array('MerchantLoyalty' => $loyalty))) {
+            $errors['internal'] = $this->MerchantLoyalty->validationErrors;
+            throw new Exception(json_encode($errors));
+        }
+    }
+
+/**
+ * Create a merchant addons function.
+ *
+ * @param string merchant id
+ * @param string retailer id
+ * @return void
+ */
+    protected function _createMerchantAddon($merchant_id, $retailer_id) {
+        $this->loadModel('MerchantAddon');
+
+        // create a merchant addons
+        $data = array();
+        $data['merchant_id'] = $merchant_id;
+        $data['retailer_id'] = $retailer_id;
+
+        $this->MerchantAddon->create();
+        if (!$this->MerchantAddon->save(array('MerchantAddon' => $data))) {
+            $errors['internal'] = $this->MerchantAddon->validationErrors;
+            throw new Exception(json_encode($errors));
+        }
     }
 
 }

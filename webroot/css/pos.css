@@ -73,7 +73,6 @@ dd.explain{
 	height:	63px;
 }
 
-
 .modal-dialog .btn-success, .modal-dialog input{
 	border: 1px solid rgb(0, 0, 0);
 }
@@ -226,11 +225,16 @@ a { cursor:pointer;}
 }
 .text-align-center {text-align:center}
 
-dt, dd{float:left; height: 40px;}
-dt{
+
+dt, dd {
+    float:left;
+	height:40px;
+}
+
+dt {
 	width:40%;
 }
-dd{
+dd {
 	width:60%;
 }
 

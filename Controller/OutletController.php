@@ -97,8 +97,8 @@ class OutletController extends AppController {
                 $data = $this->request->data;
                 $data['MerchantOutlet']['merchant_id'] = $user['merchant_id'];
 
-                if (empty($data['MerchantOutlet']['physical_country_id'])) {
-                    unset($data['MerchantOutlet']['physical_country_id']);
+                if (empty($data['MerchantOutlet']['physical_country'])) {
+                    unset($data['MerchantOutlet']['physical_country']);
                 }
                 $this->MerchantOutlet->create();
                 $this->MerchantOutlet->save($data);
@@ -137,8 +137,8 @@ class OutletController extends AppController {
             try {
                 $data = $this->request->data;
 
-                if (empty($data['MerchantOutlet']['physical_country_id'])) {
-                    unset($data['MerchantOutlet']['physical_country_id']);
+                if (empty($data['MerchantOutlet']['physical_country'])) {
+                    unset($data['MerchantOutlet']['physical_country']);
                 }
                 $this->MerchantOutlet->id = $id;
                 $this->MerchantOutlet->save($data);

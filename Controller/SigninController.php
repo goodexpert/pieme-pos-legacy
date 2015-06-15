@@ -254,87 +254,34 @@ class SigninController extends AppController {
                     $this->Auth->logout();
                     $this->Session->setFlash(__('Not allowed ip address.'));
                 } else {
-                    $plan_id = $user['Merchant']['plan_id'];
-
                     if (!empty($user['retailer_id'])) {
                         $retailer = $this->_getRetailerById($user['retailer_id']);
                         $this->Session->write('Auth.User.MerchantRetailer', $retailer);
-                        $this->Session->delete('Auth.User.MerchantRetailer.plan_id');
                         $plan_id = $retailer['plan_id'];
                     } else {
-                        $this->Session->delete('Auth.User.Merchant.plan_id');
+                        $plan_id = $user['Merchant']['plan_id'];
                     }
+                    $this->Session->write('Auth.User.Addons', $this->_getAddOns($user['merchant_id'], $user['retailer_id']));
 
                     $plan = $this->Plan->findById($plan_id);
                     $this->Session->write('Auth.User.Plan', $plan['Plan']);
+
+                    $subscriber = $this->Subscriber->findById($user['Merchant']['subscriber_id']);
+                    $this->Session->write('Auth.User.Subsriber', $subscriber['Subscriber']);
+
+                    $loyalty = $this->MerchantLoyalty->findByMerchantId($user['merchant_id']);
+                    $this->Session->write('Auth.User.Loyalty', $loyalty['MerchantLoyalty']);
 
                     $registers = $this->_getRegisterByOutletId($user['merchant_id'], $user['outlet_id']);
                     if (count($registers) == 1) {
                         $outlet = $registers[0]['MerchantOutlet'];
                         unset($registers[0]['MerchantOutlet']);
 
-                        $this->Session->write('Auth.User.current_outlet_id', $outlet['id']);
                         $this->Session->write('Auth.User.MerchantOutlet', $outlet);
                         $this->Session->write('Auth.User.MerchantRegister', $registers[0]);
+                        $this->Session->write('Auth.User.current_outlet_id', $outlet['id']);
                     }
-                    $this->Session->write('Auth.User.RegisterCount', count($registers));
-
-                    /*
-                    $conditions = array(
-                        'MerchantOutlet.id = MerchantRegister.outlet_id',
-                        'MerchantOutlet.merchant_id' => $user['merchant_id']
-                    );
-
-                    if (isset($user['outlet_id'])) {
-                        $conditions = array_merge($conditions, array(
-                            'MerchantOutlet.id' => $user['outlet_id']
-                        ));
-                    }
-
-                    $registers = $this->MerchantRegister->find('all', array(
-                        'fields' => array(
-                            'MerchantRegister.*',
-                            'MerchantOutlet.*'
-                        ),
-                        'joins' => array(
-                            array(
-                                'table' => 'merchant_outlets',
-                                'alias' => 'MerchantOutlet',
-                                'type' => 'INNER',
-                                'conditions' => $conditions
-                            )
-                        )
-                    ));
-
-                    if(!empty($user['retailer_id'])) {
-                        $_SESSION["Auth"]["User"]["MerchantRetailer"] = $this->MerchantRetailer->findById($user['retailer_id']);
-                    }
-
-                    if (count($registers) == 1) {
-                        $register = $registers[0];
-                        $this->Session->write('Auth.User.MerchantRegister', $register['MerchantRegister']);
-                        $this->Session->write('Auth.User.MerchantOutlet', $register['MerchantOutlet']);
-                        $_SESSION["Auth"]["User"]["outlet_id"] = $register['MerchantOutlet']['id'];
-                    }
-                    $_SESSION["Auth"]["User"]["RegisterCount"] = count($registers);
-
-                    $plan = $this->Plan->findById($user['Merchant']['plan_id']);
-                    $this->Session->write('Auth.User.Merchant.Plan', $plan['Plan']);
-
-                    $this->MerchantUser->id = $user['id'];
-                    $user['last_ip_address'] = $_SERVER['REMOTE_ADDR'];
-                    $user['last_logged'] = date("Y-m-d H:i:s");
-                    $this->MerchantUser->save($user);
-
-                    $_SESSION["Auth"]["User"]["Subscriber"] = $this->Subscriber->findById($user['Merchant']['subscriber_id']);
-                    $_SESSION["Auth"]["User"]["Loyalty"] = $this->MerchantLoyalty->findByMerchantId($user['merchant_id']);
-                     */
-                    
-                    $subscriber = $this->Subscriber->findById($user['Merchant']['subscriber_id']);
-                    $this->Session->write('Auth.User.Subsriber', $subscriber['Subscriber']);
-
-                    $loyalty = $this->MerchantLoyalty->findByMerchantId($user['merchant_id']);
-                    $this->Session->write('Auth.User.Loyalty', $loyalty['MerchantLoyalty']);
+                    $this->Session->write('Auth.User.register_counts', count($registers));
 
                     // Create a cookie variable
                     $this->Cookie->write('session_id', rand());
@@ -490,6 +437,28 @@ class SigninController extends AppController {
             return $newArray;
         });
         return $registers;
+    }
+
+/**
+ * Get the Add-ons.
+ *
+ * @param string merchant id.
+ * @param string retailer id.
+ * @return array
+ */
+    protected function _getAddOns($merchant_id, $retailer_id) {
+        $this->loadModel('MerchantAddon');
+
+        $addon = $this->MerchantAddon->find('first', array(
+            'conditions' => array(
+                'MerchantAddon.merchant_id' => $merchant_id,
+                'MerchantAddon.retailer_id' => $retailer_id
+            )
+        ));
+        if (empty($addon) || !is_array($addon)) {
+            return array();
+        }
+        return $addon['MerchantAddon'];
     }
 
 /**

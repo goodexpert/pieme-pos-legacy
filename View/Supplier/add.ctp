@@ -249,14 +249,14 @@ jQuery(document).ready(function() {
                 physical_city: $(".physical_city").val(),
                 physical_state: $(".physical_state").val(),
                 physical_postcode: $(".physical_postcode").val(),
-                physical_country_id: $(".physical_country").val(),
+                physical_country: $(".physical_country").val(),
                 postal_address1: $(".postal_street_1").val(),
                 postal_address2: $(".postal_street_2").val(),
                 postal_suburb: $(".postal_suburb").val(),
                 postal_city: $(".postal_city").val(),
                 postal_state: $(".postal_state").val(),
                 postal_postcode: $(".postal_postcode").val(),
-                postal_country_id: $(".postal_country").val()
+                postal_country: $(".postal_country").val()
             },
             success: function(result) {
                 if(result.success) {

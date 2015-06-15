@@ -1,3 +1,16 @@
+<?php
+    $user = $this->Session->read('Auth.User');
+    $xero_auth_token = null;
+    $shopify_auth_token = null;
+
+    if (isset($user['Addons']['xero_auth_token'])) {
+        $xero_auth_token = $user['Addons']['xero_auth_token'];
+    }
+
+    if (isset($user['Addons']['shopify_auth_token'])) {
+        $shopify_auth_token = $user['Addons']['shopify_auth_token'];
+    }
+ ?>
 <link href="/css/dataTable.css" rel="stylesheet" type="text/css">
 <div class="clearfix"></div>
 <div class="container">
@@ -73,7 +86,11 @@
                             <h3 class="no-margin">Xero</h3>
                             <p>Onzsa integrates seamlessly with the Xero accounting software to share customers, product sales, and invoices.</p>
                         </div>
-                        <a href="/xero/noxero" class="btn btn-default"><span class="glyphicon glyphicon-plus margin-right-5"></span>Add to Onzsa</a>
+                        <?php if (empty($xero_auth_token)) : ?>
+                            <a href="/xero/noxero" class="btn btn-default"><span class="glyphicon glyphicon-plus margin-right-5"></span>Add to Onzsa</a>
+                        <?php else : ?>
+                            <a href="/setup/xero" class="btn btn-default"><span class="glyphicon glyphicon-cog margin-right-5"></span>Setting</a>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -88,7 +105,11 @@
                             <h3 class="no-margin">Shopify</h3>
                             <p>Create an online store with Shopify.</p>
                         </div>
-                        <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-cog margin-right-5"></span>Setting</a>
+                        <?php if (empty($shopify_auth_token)) : ?>
+                            <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-plus margin-right-5"></span>Add to Onzsa</a>
+                        <?php else : ?>
+                            <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-cog margin-right-5"></span>Setting</a>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>

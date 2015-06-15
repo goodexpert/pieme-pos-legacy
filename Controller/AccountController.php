@@ -23,8 +23,7 @@ class AccountController extends AppController {
  *
  * @var array
  */
-    public $uses = array(
-    );
+    public $uses = array();
 
 /**
  * Callback is called before any controller action logic is executed.

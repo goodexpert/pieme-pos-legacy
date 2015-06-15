@@ -19,11 +19,13 @@ class SetupController extends AppController {
     public $layout = 'home';
 
 /**
- * This controller does not use a model
+ * This controller uses the following models.
  *
  * @var array
  */
-    public $uses = array();
+    public $uses = array(
+        'MerchantAddon'
+    );
 
 /**
  * Callback is called before any controller action logic is executed.
@@ -34,6 +36,11 @@ class SetupController extends AppController {
         parent::beforeFilter();
     }
 
+/**
+ * General setup function.
+ *
+ * @return void
+ */
     public function index() {
         $user = $this->Auth->user();
 
@@ -80,22 +87,11 @@ class SetupController extends AppController {
         }
     }
 
-    public function payments() {
-        $user = $this->Auth->user();
-
-        $this->loadModel('MerchantPaymentType');
-
-        $payments = $this->MerchantPaymentType->find('all', array(
-            'conditions' => array(
-                'MerchantPaymentType.merchant_id' => $user['merchant_id']
-            ),
-            'order' => array(
-                'MerchantPaymentType.name ASC'
-            )
-        ));
-        $this->set("payments", $payments);
-    }
-
+/**
+ * Outlet and register setup function.
+ *
+ * @return void
+ */
     public function outlets_and_registers() {
         $this->loadModel('MerchantRegister');
         $this->loadModel('MerchantQuickKey');
@@ -149,6 +145,32 @@ class SetupController extends AppController {
         $this->set("outlets", $outlets);
     }
 
+/**
+ * Payment setup function.
+ *
+ * @return void
+ */
+    public function payments() {
+        $user = $this->Auth->user();
+
+        $this->loadModel('MerchantPaymentType');
+
+        $payments = $this->MerchantPaymentType->find('all', array(
+            'conditions' => array(
+                'MerchantPaymentType.merchant_id' => $user['merchant_id']
+            ),
+            'order' => array(
+                'MerchantPaymentType.name ASC'
+            )
+        ));
+        $this->set("payments", $payments);
+    }
+
+/**
+ * Tax setup function.
+ *
+ * @return void
+ */
     public function taxes() {
         $user = $this->Auth->user();
 
@@ -165,6 +187,11 @@ class SetupController extends AppController {
         $this->set("taxes", $taxes);
     }
 
+/**
+ * QuickKey setup function.
+ *
+ * @return void
+ */
     public function quick_keys() {
         $this->loadModel('MerchantQuickKey');
         $this->loadModel('MerchantOutlet');
@@ -196,36 +223,55 @@ class SetupController extends AppController {
         $this->set('outlets',$outlets);
     }
 
+/**
+ * Loyalty setup function.
+ *
+ * @return void
+ */
     public function loyalty() {
         $user = $this->Auth->user();
-        
+
         $this->loadModel('MerchantLoyalty');
-        
-        $loyalty = $this->MerchantLoyalty->findByMerchantId($user['merchant_id']);
-        $this->set('loyalty',$loyalty);
-        
-        if($this->request->is('post')) {
-            $result = array(
-                'success' => false
-            );
+
+        if ($this->request->is('post') || $this->request->is('put')) {
+            $data = $this->request->data;
+
+            $dataSource = $this->MerchantLoyalty->getDataSource();
+            $dataSource->begin();
+
             try {
-                $data = $this->request->data;
-                $data['merchant_id'] = $user['merchant_id'];
-                if(isset($data['welcome_email_body']))
-                    $data['welcome_email_body'] = base64_encode($data['welcome_email_body']);
-                
-                $this->MerchantLoyalty->id = $loyalty['MerchantLoyalty']['id'];
+                if (isset($data['MerchantLoyalty']['welcome_email_body'])) {
+                    $data['MerchantLoyalty']['welcome_email_body'] = base64_encode($data['MerchantLoyalty']['welcome_email_body']);
+                }
+
+                $this->MerchantLoyalty->id = $data['MerchantLoyalty']['id'];
                 $this->MerchantLoyalty->save($data);
-                
-                $result['success'] = true;
+
+                $this->_updateLoyaltyPaymentType($user['merchant_id'], $data['MerchantLoyalty']['enable_loyalty']);
+
+                // update the session data.
+                $this->Session->write('Auth.User.Loyalty', $data['MerchantLoyalty']);
+
+                $dataSource->commit();
             } catch (Exception $e) {
-                $result['message'] = $e->getMessage();
+                $dataSource->rollback();
             }
-            $this->serialize($result);
         }
-    
+
+        if (empty($this->request->data)) {
+            $data = $this->MerchantLoyalty->findByMerchantId($user['merchant_id']);
+            if (isset($data['MerchantLoyalty']['welcome_email_body'])) {
+                $data['MerchantLoyalty']['welcome_email_body'] = base64_decode($data['MerchantLoyalty']['welcome_email_body']);
+            }
+            $this->request->data = $data;
+        }
     }
 
+/**
+ * User setup function.
+ *
+ * @return void
+ */
     public function user() {
         $user = $this->Auth->user();
 
@@ -252,11 +298,199 @@ class SetupController extends AppController {
         $this->set('users', $users);
     }
 
+/**
+ * Add-ons setup function.
+ *
+ * @return void
+ */
     public function add_ons() {
+        $user = $this->Auth->user();
     }
 
+/**
+ * Xero setup function.
+ *
+ * @return void
+ */
     public function xero() {
         $user = $this->Auth->user();
+
+        $this->loadModel('MerchantAddon');
+
+        if (!isset($user['Addons']['xero_auth_token']) || empty($user['Addons']['xero_auth_token'])) {
+            return $this->redirect('/setup/add_ons');
+        }
+
+        if ($this->request->is('post')) {
+            $data = $this->request->data;
+
+            $this->MerchantAddon->id = $user['Addons']['id'];
+            $this->MerchantAddon->saveField('xero_config', json_encode($data['xero_config']));
+        }
+
+        $payment_types = $this->_getPaymentTypes($user['merchant_id'], $user['Loyalty']['enable_loyalty']);
+        $this->set('payment_types', $payment_types);
+
+        $tax_rates = $this->_getTaxRates($user['merchant_id']);
+        $this->set('tax_rates', $tax_rates);
+
+        $xero_tax_rates= $this->_getXeroTaxRates($user['merchant_id'], $user['retailer_id']);
+        $this->set('xero_tax_rates', $xero_tax_rates);
+
+        $xero_accounts = $this->_getXeroAccounts($user['merchant_id'], $user['retailer_id']);
+        $this->set('xero_accounts', $xero_accounts);
+
+        $addons = $this->MerchantAddon->findById($user['Addons']['id']);
+        $this->set('addons', $addons);
+
+        if (empty($this->request->data) && isset($user['Addons']['id'])) {
+            $result = $this->MerchantAddon->findById($user['Addons']['id']);
+            $this->request->data = array(
+                'xero_config' => json_decode($result['MerchantAddon']['xero_config'], true)
+            );
+        }
+    }
+
+/**
+ * Get the merchant's payment types.
+ *
+ * @param string merchant id
+ * @param string enable loyalty flag
+ * @return array the list
+ */
+    protected function _getPaymentTypes($merchant_id, $enable_loyalty) {
+        $this->loadModel('MerchantPaymentType');
+
+        $this->MerchantPaymentType->virtualFields['payment_type_name'] = 'PaymentType.name';
+
+        $payment_types = $this->MerchantPaymentType->find('all', array(
+            'conditions' => array(
+                'MerchantPaymentType.merchant_id' => $merchant_id,
+                'MerchantPaymentType.is_active' => 1
+            )
+        ));
+        //reset virtual field so it won't mess up subsequent finds
+        unset($this->MerchantPaymentType->virtualFields['payment_type_name']);
+
+        $payment_types = Hash::map($payment_types, "{n}", function($array) {
+            return $array['MerchantPaymentType'];
+        });
+        return $payment_types;
+    }
+
+/**
+ * Get the merchant's tax rates.
+ *
+ * @param string merchant id
+ * @return array the list
+ */
+    protected function _getTaxRates($merchant_id) {
+        $this->loadModel('MerchantTaxRate');
+
+        $tax_rates = $this->MerchantTaxRate->find('all', array(
+            'conditions' => array(
+                'MerchantTaxRate.merchant_id' => $merchant_id
+            )
+        ));
+        $tax_rates = Hash::map($tax_rates, "{n}", function($array) {
+            return $array['MerchantTaxRate'];
+        });
+        return $tax_rates;
+    }
+
+/**
+ * Get the xero tax rates.
+ *
+ * @param string merchant id
+ * @param string retailer id
+ * @return array the list
+ */
+    protected function _getXeroTaxRates($merchant_id, $retailer_id) {
+        $this->loadModel('XeroTaxRate');
+
+        $tax_rates = $this->XeroTaxRate->find('list', array(
+            'fields' => array(
+                'XeroTaxRate.tax_type',
+                'XeroTaxRate.name'
+            ),
+            'conditions' => array(
+                'XeroTaxRate.merchant_id' => $merchant_id,
+                'XeroTaxRate.retailer_id' => $retailer_id
+            )
+        ));
+        return $tax_rates;
+    }
+
+/**
+ * Get the xero account codes.
+ *
+ * @param string merchant id
+ * @param string retailer id
+ * @param string class code
+ * @return array the list
+ */
+    protected function _getXeroAccounts($merchant_id, $retailer_id) {
+        $this->loadModel('XeroAccount');
+
+        $accounts = $this->XeroAccount->find('all', array(
+            'conditions' => array(
+                'XeroAccount.merchant_id' => $merchant_id,
+                'XeroAccount.retailer_id' => $retailer_id
+            ),
+            'order' => array('class', 'code')
+        ));
+
+        $list = array();
+        foreach ($accounts as $account) {
+            $type = $account['XeroAccount']['type'];
+            if (empty($list[$type])) {
+                $list[$type] = array();
+            }
+
+            $code = $account['XeroAccount']['code'];
+            $list[$type][$code] = $code . '-' . $account['XeroAccount']['name'];
+        }
+        return $list;
+    }
+
+/**
+ * Update the loyalty payment type.
+ *
+ * @param string merchant id
+ * @param string enable loyalty flag
+ * @return array the list
+ */
+    protected function _updateLoyaltyPaymentType($merchant_id, $enable_loyalty) {
+        $this->loadModel('MerchantPaymentType');
+
+        $payment_type = $this->MerchantPaymentType->find('first', array(
+            'conditions' => array(
+                'MerchantPaymentType.merchant_id' => $merchant_id,
+                'PaymentType.name' => 'Loyalty'
+            )
+        ));
+        if (empty($payment_type) || !is_array($payment_type)) {
+            $this->loadModel('PaymentType');
+
+            $payment = $this->PaymentType->find('first', array(
+                'conditions' => array(
+                    'PaymentType.name' => array('Loyalty')
+                )
+            ));
+
+            $payment_type = array();
+            $payment_type['MerchantPaymentType']['merchant_id'] = $merchant_id;
+            $payment_type['MerchantPaymentType']['payment_type_id'] = $payment['PaymentType']['id'];
+            $payment_type['MerchantPaymentType']['name'] = $payment['PaymentType']['name'];
+            $payment_type['MerchantPaymentType']['config'] = $payment['PaymentType']['config'];
+
+            $this->MerchantPaymentType->create();
+        } else {
+            $this->MerchantPaymentType->id = $payment_type['MerchantPaymentType']['id'];
+        }
+
+        $payment_type['MerchantPaymentType']['is_active'] = $enable_loyalty;
+        $this->MerchantPaymentType->save($payment_type);
     }
 
 }

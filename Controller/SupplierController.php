@@ -64,11 +64,11 @@ class SupplierController extends AppController {
                 $data = $this->request->data;
                 $data['merchant_id'] = $this->Auth->user()['merchant_id'];
                 
-                if(empty($data['physical_country_id']))
-                    unset($data['physical_country_id']);
+                if(empty($data['physical_country']))
+                    unset($data['physical_country']);
                     
-                if(empty($data['postal_country_id']))
-                    unset($data['postal_country_id']);
+                if(empty($data['postal_country']))
+                    unset($data['postal_country']);
                 
                 $this->Contact->create();
                 $this->Contact->save($data);
@@ -125,11 +125,11 @@ class SupplierController extends AppController {
                 $data = $this->request->data;
                 $data['merchant_id'] = $this->Auth->user()['merchant_id'];
                 
-                if(empty($data['physical_country_id']))
-                    unset($data['physical_country_id']);
+                if(empty($data['physical_country']))
+                    unset($data['physical_country']);
                     
-                if(empty($data['postal_country_id']))
-                    unset($data['postal_country_id']);
+                if(empty($data['postal_country']))
+                    unset($data['postal_country']);
 
                 $this->Contact->id = $data['contact_id'];
                 $this->Contact->save($data);

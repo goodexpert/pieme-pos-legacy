@@ -123,11 +123,11 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
                     <span class="username">
                     <?php echo $user['MerchantRegister']['name']; ?> </span>
-                    <?php if ($user['RegisterCount'] > 1) : ?>
+                    <?php if ($user['register_counts'] > 1) : ?>
                     <i class="fa fa-angle-down"></i>
                     <?php endif; ?>
                     </a>
-                    <ul class="dropdown-menu" style="<?php echo $user['RegisterCount'] > 1 ? '' : 'display: none;'; ?>">
+                    <ul class="dropdown-menu" style="<?php echo $user['register_counts'] > 1 ? '' : 'display: none;'; ?>">
                         <li id="change_register">
                             <a href="javascript:;">
                             <i class="icon-user"></i> Change Register </a>

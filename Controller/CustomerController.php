@@ -112,10 +112,10 @@ class CustomerController extends AppController {
             );
             try {
                 $data = $this->request->data;
-                if(empty($data['physical_country_id']))
-                    unset($data['physical_country_id']);
-                if(empty($data['postal_country_id']))
-                    unset($data['postal_country_id']);
+                if(empty($data['physical_country']))
+                    unset($data['physical_country']);
+                if(empty($data['postal_country']))
+                    unset($data['postal_country']);
                 if($data['birthday'] == '--')
                     unset($data['birthday']);
 
@@ -250,9 +250,9 @@ class CustomerController extends AppController {
         $total_paid = 0;
         
         foreach($sales_history as $sh) {
-            if($sh['RegisterSale']['status'] !== 'voided' && $sh['RegisterSale']['status'] !== 'saved')
+            if($sh['RegisterSale']['status'] !== 'sale_statue_voided' && $sh['RegisterSale']['status'] !== 'sale_statue_saved')
                 $total_cost += $sh['RegisterSale']['total_cost'];
-            if($sh['RegisterSale']['status'] == 'layby_closed' || $sh['RegisterSale']['status'] == 'onaccount_closed' || $sh['RegisterSale']['status'] == 'closed')
+            if($sh['RegisterSale']['status'] == 'sale_statue_layby_closed' || $sh['RegisterSale']['status'] == 'sale_statue_onaccount_closed' || $sh['RegisterSale']['status'] == 'sale_statue_closed')
                 $total_paid += $sh['RegisterSale']['total_cost'];
         }
         $this->set('cost',$total_cost);
@@ -268,10 +268,10 @@ class CustomerController extends AppController {
             );
             try {
                 $data = $this->request->data;
-                if(empty($data['physical_country_id']))
-                    unset($data['physical_country_id']);
-                if(empty($data['postal_country_id']))
-                    unset($data['postal_country_id']);
+                if(empty($data['physical_country']))
+                    unset($data['physical_country']);
+                if(empty($data['postal_country']))
+                    unset($data['postal_country']);
                 if($data['birthday'] == '--')
                     unset($data['birthday']);
 

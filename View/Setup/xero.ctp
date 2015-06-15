@@ -1,3 +1,13 @@
+<?php
+    $loyalty = $this->Session->read('Auth.User.Loyalty');
+    $data = $this->request->data;
+ ?>
+<style>
+dd {
+    height: auto;
+    padding: 4px;
+}
+</style>
 <div class="clearfix"></div>
 <div class="container">
     <!-- BEGIN SIDEBAR -->
@@ -45,248 +55,152 @@
                     Reload accounts</button></a> 
                 </div>
             </div>
+            <?php
+                echo $this->Form->create('xero_config', array(
+                    'id' => 'xero_addon_form'
+                ));
+             ?>
             <div class="portlet-body form"> 
                 <!-- BEGIN FORM-->
                 <div class="form-horizontal col-md-12 col-xs-12 col-sm-12">
+                    <?php if (!empty($reloaded)) : ?>
+                    <div class="success-message">Your Xero accounts have been reloaded.</div>
+                    <?php endif ?>
                     <div class="col-md-12 col-xs-12 col-sm-12 form-title margin-top-20">Accounts</div>
                     <div class="form-body line line-box line-box-content col-md-12 col-xs-12 col-sm-12"> 
                         <div class="col-md-6">
                             <dl>
                                 <dt><label for="default_sales_account">Default sales account</label></dt>
                                 <dd>
-                                    <select name="default_sales_account" id="default_sales_account">
-                                        <option value="" selected="selected"></option>
-                                        <optgroup label="Revenue">
-                                            <option value="200">200-Sales</option>
-                                            <option value="260">260-Other Revenue</option>
-                                            <option value="270">270-Interest Income</option>
-                                        </optgroup>
-                                        <optgroup label="Current">
-                                            <option value="610">610-Accounts Receivable</option>
-                                            <option value="620">620-Prepayments</option>
-                                        </optgroup>
-                                    </select>
+                                <?php
+                                    echo $this->Form->input('default_sales_account', array(
+                                        'id' => 'default_sales_account',
+                                        'type' => 'select',
+                                        'div' => false,
+                                        'label' => false,
+                                        'empty' => '',
+                                        'required' => 'required',
+                                        'options' => array(
+                                            'Revenue' => $xero_accounts['REVENUE'],
+                                            'Current' => $xero_accounts['CURRENT'],
+                                        )
+                                    ));
+                                 ?>
+                                    <div class="help-block with-errors"></div>
                                 </dd>
+                             </dl>
+                             <dl>
                                 <dt><label for="default_rounding_account">Rounding errors</label></dt>
                                 <dd>
-                                    <select name="default_rounding_account" id="default_rounding_account">
-                                        <option value="" selected="selected"></option>
-                                        <optgroup label="Current">
-                                            <option value="610">610-Accounts Receivable</option>
-                                            <option value="620">620-Prepayments</option>
-                                        </optgroup>
-                                        <optgroup label="Direct Costs">
-                                            <option value="300">300-Purchases</option>
-                                            <option value="310">310-Cost of Goods Sold</option>
-                                        </optgroup>
-                                        <optgroup label="Current Liability">
-                                            <option value="800">800-Accounts Payable</option>
-                                            <option value="801">801-Unpaid Expense Claims</option>
-                                            <option value="820">820-Sales Tax</option>
-                                            <option value="825">825-Employee Tax Payable</option>
-                                            <option value="826">826-Superannuation Payable</option>
-                                            <option value="830">830-Income Tax Payable</option>
-                                            <option value="835">835-Revenue Received in Advance</option>
-                                            <option value="840">840-Historical Adjustment</option>
-                                            <option value="850">850-Suspense</option>
-                                            <option value="855">855-Clearing Account</option>
-                                            <option value="860">860-Rounding</option>
-                                            <option value="877">877-Tracking Transfers</option>
-                                            <option value="880">880-Owner A Drawings</option>
-                                            <option value="881">881-Owner A Funds Introduced</option>
-                                        </optgroup>
-                                        <optgroup label="Expense">
-                                            <option value="400">400-Advertising</option>
-                                            <option value="404">404-Bank Fees</option>
-                                            <option value="408">408-Cleaning</option>
-                                            <option value="412">412-Consulting &amp; Accounting</option>
-                                            <option value="416">416-Depreciation</option>
-                                            <option value="420">420-Entertainment</option>
-                                            <option value="425">425-Freight &amp; Courier</option>
-                                            <option value="429">429-General Expenses</option>
-                                            <option value="433">433-Insurance</option>
-                                            <option value="437">437-Interest Expense</option>
-                                            <option value="441">441-Legal expenses</option>
-                                            <option value="445">445-Light, Power, Heating</option>
-                                            <option value="449">449-Motor Vehicle Expenses</option>
-                                            <option value="453">453-Office Expenses</option>
-                                            <option value="461">461-Printing &amp; Stationery</option>
-                                            <option value="469">469-Rent</option>
-                                            <option value="473">473-Repairs and Maintenance</option>
-                                            <option value="477">477-Wages and Salaries</option>
-                                            <option value="478">478-Superannuation</option>
-                                            <option value="485">485-Subscriptions</option>
-                                            <option value="489">489-Telephone &amp; Internet</option>
-                                            <option value="493">493-Travel - National</option>
-                                            <option value="494">494-Travel - International</option>
-                                            <option value="497">497-Bank Revaluations</option>
-                                            <option value="498">498-Unrealised Currency Gains</option>
-                                            <option value="499">499-Realised Currency Gains</option>
-                                            <option value="505">505-Income Tax Expense</option>
-                                        </optgroup>
-                                    </select>
+                                <?php
+                                    echo $this->Form->input('default_rounding_account', array(
+                                        'id' => 'default_rounding_account',
+                                        'type' => 'select',
+                                        'div' => false,
+                                        'label' => false,
+                                        'empty' => '',
+                                        'required' => 'required',
+                                        'options' => array(
+                                            'Current' => $xero_accounts['CURRENT'],
+                                            'Overheads' => $xero_accounts['OVERHEADS'],
+                                            'Direct Costs' => $xero_accounts['DIRECTCOSTS'],
+                                            'Current Liability' => $xero_accounts['CURRLIAB'],
+                                            'Expense' => $xero_accounts['EXPENSE'],
+                                        )
+                                    ));
+                                 ?>
                                     <div class="help">Rounding errors in sales tax calculations may<br>occur for small transactions.</div>
+                                    <div class="help-block with-errors"></div>
                                 </dd>
+                            </dl>
+                             <dl>
                                 <dt><label for="default_refund_account">Refund account</label></dt>
                                 <dd>
-                                    <select name="default_refund_account" id="default_refund_account">
-                                        <option value="" selected="selected"></option>
-                                        <optgroup label="Current">
-                                            <option value="610">610-Accounts Receivable</option>
-                                            <option value="620">620-Prepayments</option>
-                                        </optgroup>
-                                    </select>
-                                    <div class="help">For more information in assigning this refund<br>account 
-                                        <a target="_blank" href="http://support.vendhq.com/hc/en-us/articles/201382480-What-is-the-Xero-integration-and-how-does-it-work-#surefund">view our knowledge base</a>.</div>
+                                <?php
+                                    echo $this->Form->input('default_refund_account', array(
+                                        'id' => 'default_refund_account',
+                                        'type' => 'select',
+                                        'div' => false,
+                                        'label' => false,
+                                        'empty' => '',
+                                        'required' => 'required',
+                                        'options' => array(
+                                            'Current' => $xero_accounts['CURRENT'],
+                                        )
+                                    ));
+                                 ?>
+                                    <div class="help">For more information in assigning this refund<br>account <a target="_blank" href="#">view our knowledge base</a>.</div>
+                                    <div class="help-block with-errors"></div>
                                 </dd>
                             </dl>
                         </div>
                         <div class="col-md-6">
-                            <dl>
+                           <dl>
                                 <dt><label for="default_cost_of_goods_account">Default purchases account</label></dt>
                                 <dd>
-                                    <select name="default_cost_of_goods_account" id="default_cost_of_goods_account">
-                                        <option value="" selected="selected"></option>
-                                        <option value="" selected="selected"></option>
-                                        <optgroup label="Current">
-                                            <option value="610">610-Accounts Receivable</option>
-                                            <option value="620">620-Prepayments</option>
-                                        </optgroup>
-                                        <optgroup label="Direct Costs">
-                                            <option value="300">300-Purchases</option>
-                                            <option value="310">310-Cost of Goods Sold</option>
-                                        </optgroup>
-                                        <optgroup label="Expense">
-                                            <option value="400">400-Advertising</option>
-                                            <option value="404">404-Bank Fees</option>
-                                            <option value="408">408-Cleaning</option>
-                                            <option value="412">412-Consulting &amp; Accounting</option>
-                                            <option value="416">416-Depreciation</option>
-                                            <option value="420">420-Entertainment</option>
-                                            <option value="425">425-Freight &amp; Courier</option>
-                                            <option value="429">429-General Expenses</option>
-                                            <option value="433">433-Insurance</option>
-                                            <option value="437">437-Interest Expense</option>
-                                            <option value="441">441-Legal expenses</option>
-                                            <option value="445">445-Light, Power, Heating</option>
-                                            <option value="449">449-Motor Vehicle Expenses</option>
-                                            <option value="453">453-Office Expenses</option>
-                                            <option value="461">461-Printing &amp; Stationery</option>
-                                            <option value="469">469-Rent</option>
-                                            <option value="473">473-Repairs and Maintenance</option>
-                                            <option value="477">477-Wages and Salaries</option>
-                                            <option value="478">478-Superannuation</option>
-                                            <option value="485">485-Subscriptions</option>
-                                            <option value="489">489-Telephone &amp; Internet</option>
-                                            <option value="493">493-Travel - National</option>
-                                            <option value="494">494-Travel - International</option>
-                                            <option value="497">497-Bank Revaluations</option>
-                                            <option value="498">498-Unrealised Currency Gains</option>
-                                            <option value="499">499-Realised Currency Gains</option>
-                                            <option value="505">505-Income Tax Expense</option>
-                                        </optgroup>
-                                    </select>
+                                <?php
+                                    echo $this->Form->input('default_cost_of_goods_account', array(
+                                        'id' => 'default_cost_of_goods_account',
+                                        'type' => 'select',
+                                        'div' => false,
+                                        'label' => false,
+                                        'empty' => '',
+                                        'required' => 'required',
+                                        'options' => array(
+                                            'Current' => $xero_accounts['CURRENT'],
+                                            'Overheads' => $xero_accounts['OVERHEADS'],
+                                            'Direct Costs' => $xero_accounts['DIRECTCOSTS'],
+                                            'Current Liability' => $xero_accounts['CURRLIAB'],
+                                            'Expense' => $xero_accounts['EXPENSE'],
+                                        )
+                                    ));
+                                 ?>
+                                    <div class="help-block with-errors"></div>
                                 </dd>
+                            </dl>
+                            <dl>
                                 <dt><label for="default_baddebt_account">Till payment discrepancies</label></dt>
                                 <dd>
-                                    <select name="default_baddebt_account" id="default_baddebt_account">
-                                        <option value="" selected="selected"></option>
-                                        <optgroup label="Current">
-                                            <option value="610">610-Accounts Receivable</option>
-                                            <option value="620">620-Prepayments</option>
-                                        </optgroup>
-                                        <optgroup label="Direct Costs">
-                                            <option value="300">300-Purchases</option>
-                                            <option value="310">310-Cost of Goods Sold</option>
-                                        </optgroup>
-                                        <optgroup label="Current Liability">
-                                            <option value="800">800-Accounts Payable</option>
-                                            <option value="801">801-Unpaid Expense Claims</option>
-                                            <option value="820">820-Sales Tax</option>
-                                            <option value="825">825-Employee Tax Payable</option>
-                                            <option value="826">826-Superannuation Payable</option>
-                                            <option value="830">830-Income Tax Payable</option>
-                                            <option value="835">835-Revenue Received in Advance</option>
-                                            <option value="840">840-Historical Adjustment</option>
-                                            <option value="850">850-Suspense</option>
-                                            <option value="855">855-Clearing Account</option>
-                                            <option value="860">860-Rounding</option>
-                                            <option value="877">877-Tracking Transfers</option>
-                                            <option value="880">880-Owner A Drawings</option>
-                                            <option value="881">881-Owner A Funds Introduced</option>
-                                        </optgroup>
-                                        <optgroup label="Expense">
-                                            <option value="400">400-Advertising</option>
-                                            <option value="404">404-Bank Fees</option>
-                                            <option value="408">408-Cleaning</option>
-                                            <option value="412">412-Consulting &amp; Accounting</option>
-                                            <option value="416">416-Depreciation</option>
-                                            <option value="420">420-Entertainment</option>
-                                            <option value="425">425-Freight &amp; Courier</option>
-                                            <option value="429">429-General Expenses</option>
-                                            <option value="433">433-Insurance</option>
-                                            <option value="437">437-Interest Expense</option>
-                                            <option value="441">441-Legal expenses</option>
-                                            <option value="445">445-Light, Power, Heating</option>
-                                            <option value="449">449-Motor Vehicle Expenses</option>
-                                            <option value="453">453-Office Expenses</option>
-                                            <option value="461">461-Printing &amp; Stationery</option>
-                                            <option value="469">469-Rent</option>
-                                            <option value="473">473-Repairs and Maintenance</option>
-                                            <option value="477">477-Wages and Salaries</option>
-                                            <option value="478">478-Superannuation</option>
-                                            <option value="485">485-Subscriptions</option>
-                                            <option value="489">489-Telephone &amp; Internet</option>
-                                            <option value="493">493-Travel - National</option>
-                                            <option value="494">494-Travel - International</option>
-                                            <option value="497">497-Bank Revaluations</option>
-                                            <option value="498">498-Unrealised Currency Gains</option>
-                                            <option value="499">499-Realised Currency Gains</option>
-                                            <option value="505">505-Income Tax Expense</option>
-                                        </optgroup>
-                                    </select>
+                                <?php
+                                    echo $this->Form->input('default_baddebt_account', array(
+                                        'id' => 'default_baddebt_account',
+                                        'type' => 'select',
+                                        'div' => false,
+                                        'label' => false,
+                                        'empty' => '',
+                                        'required' => 'required',
+                                        'options' => array(
+                                            'Current' => $xero_accounts['CURRENT'],
+                                            'Overheads' => $xero_accounts['OVERHEADS'],
+                                            'Direct Costs' => $xero_accounts['DIRECTCOSTS'],
+                                            'Current Liability' => $xero_accounts['CURRLIAB'],
+                                            'Expense' => $xero_accounts['EXPENSE'],
+                                        )
+                                    ));
+                                 ?>
                                     <div class="help">If there are any discrepancies in the till close<br>payment counts, they will be posted here.</div>
+                                    <div class="help-block with-errors"></div>
                                 </dd>
+                            </dl>        
+                            <dl>
                                 <dt><label for="default_discount_account">Default discount account</label></dt>
                                 <dd>
-                                    <select name="default_discount_account" id="default_discount_account">
-                                        <option value="" selected="selected"></option>
-                                        <optgroup label="Revenue">
-                                            <option value="200">200-Sales</option>
-                                            <option value="260">260-Other Revenue</option>
-                                            <option value="270">270-Interest Income</option>
-                                        </optgroup>
-                                        <optgroup label="Expense">
-                                            <option value="400">400-Advertising</option>
-                                            <option value="404">404-Bank Fees</option>
-                                            <option value="408">408-Cleaning</option>
-                                            <option value="412">412-Consulting &amp; Accounting</option>
-                                            <option value="416">416-Depreciation</option>
-                                            <option value="420">420-Entertainment</option>
-                                            <option value="425">425-Freight &amp; Courier</option>
-                                            <option value="429">429-General Expenses</option>
-                                            <option value="433">433-Insurance</option>
-                                            <option value="437">437-Interest Expense</option>
-                                            <option value="441">441-Legal expenses</option>
-                                            <option value="445">445-Light, Power, Heating</option>
-                                            <option value="449">449-Motor Vehicle Expenses</option>
-                                            <option value="453">453-Office Expenses</option>
-                                            <option value="461">461-Printing &amp; Stationery</option>
-                                            <option value="469">469-Rent</option>
-                                            <option value="473">473-Repairs and Maintenance</option>
-                                            <option value="477">477-Wages and Salaries</option>
-                                            <option value="478">478-Superannuation</option>
-                                            <option value="485">485-Subscriptions</option>
-                                            <option value="489">489-Telephone &amp; Internet</option>
-                                            <option value="493">493-Travel - National</option>
-                                            <option value="494">494-Travel - International</option>
-                                            <option value="497">497-Bank Revaluations</option>
-                                            <option value="498">498-Unrealised Currency Gains</option>
-                                            <option value="499">499-Realised Currency Gains</option>
-                                            <option value="505">505-Income Tax Expense</option>
-                                        </optgroup>
-                                    </select>
+                                <?php
+                                    echo $this->Form->input('default_discount_account', array(
+                                        'id' => 'default_discount_account',
+                                        'type' => 'select',
+                                        'div' => false,
+                                        'label' => false,
+                                        'empty' => '',
+                                        'required' => 'required',
+                                        'options' => array(
+                                            'Revenue' => $xero_accounts['REVENUE'],
+                                            'Expense' => $xero_accounts['EXPENSE'],
+                                        )
+                                    ));
+                                 ?>
                                     <div class="help">When the system wide discount product is <br>applied, the value will be posted here.</div>
+                                    <div class="help-block with-errors"></div>
                                 </dd>
                             </dl>
                         </div>
@@ -297,202 +211,59 @@
                     <div class="form-body line line-box line-box-content col-md-12 col-xs-12 col-sm-12"> 
                         <div class="col-md-6">
                             <dl>
-                                <dt><label for="">Cash payments</label></dt>
+                            <?php foreach ($payment_types as $item) : ?>
+                                <?
+                                    $selected = '';
+                                    if (isset($data['xero_config']['setup_payments'])) {
+                                        if (isset($data['xero_config']['setup_payments'][$item['id']])) {
+                                            $selected = $data['xero_config']['setup_payments'][$item['id']];
+                                        }
+                                    }
+                                 ?>
+                                <?php if ($item['payment_type_name'] !== 'Loyalty') : ?>
+                                <dt><label for=""><?php echo $item['name']; ?></label></dt>
                                 <dd>
-                                    <select name="" id="">
-                                        <option value="" selected="selected"></option>
-                                        <optgroup label="Bank">
-                                            <option value="090">090-Business Bank Account</option>
-                                            <option value="091">091-Business Savings Account</option>
-                                        </optgroup>
-                                        <optgroup label="Current">
-                                            <option value="610">610-Accounts Receivable</option>
-                                            <option value="620">620-Prepayments</option>
-                                        </optgroup>
-                                    </select>
+                                <?php
+                                    echo $this->Form->input('xero_config_setup_payments_' . $item['id'], array(
+                                        'id' => 'xero_config_setup_payments_' . $item['id'],
+                                        'name' => 'data[xero_config][setup_payments][' . $item['id'] . ']',
+                                        'type' => 'select',
+                                        'div' => false,
+                                        'label' => false,
+                                        'empty' => '',
+                                        'required' => 'required',
+                                        'options' => array(
+                                            'Bank' => $xero_accounts['BANK'],
+                                            'Current' => $xero_accounts['CURRENT'],
+                                        ),
+                                        'selected' => $selected
+                                    ));
+                                 ?>
+                                    <div class="help-block with-errors"></div>
                                 </dd>
-                                <dt><label for="">Cash (Concealed totals) payments</label></dt>
-                                <dd>
-                                    <select name="" id="">
-                                        <option value="" selected="selected"></option>
-                                        <optgroup label="Bank">
-                                            <option value="090">090-Business Bank Account</option>
-                                            <option value="091">091-Business Savings Account</option>
-                                        </optgroup>
-                                        <optgroup label="Current">
-                                            <option value="610">610-Accounts Receivable</option>
-                                            <option value="620">620-Prepayments</option>
-                                        </optgroup>
-                                    </select>
-                                </dd>
-                                <dt><label for="">Cash2 payments (deleted)</label></dt>
-                                <dd>
-                                    <select name="" id="">
-                                        <option value="" selected="selected"></option>
-                                        <optgroup label="Bank">
-                                            <option value="090">090-Business Bank Account</option>
-                                            <option value="091">091-Business Savings Account</option>
-                                        </optgroup>
-                                        <optgroup label="Current">
-                                            <option value="610">610-Accounts Receivable</option>
-                                            <option value="620">620-Prepayments</option>
-                                        </optgroup>
-                                    </select>
-                                </dd>
-                                <dt><label for="">Cash2 payments (deleted)</label></dt>
-                                <dd>
-                                    <select name="" id="">
-                                        <option value="" selected="selected"></option>
-                                        <optgroup label="Bank">
-                                            <option value="090">090-Business Bank Account</option>
-                                            <option value="091">091-Business Savings Account</option>
-                                        </optgroup>
-                                        <optgroup label="Current">
-                                            <option value="610">610-Accounts Receivable</option>
-                                            <option value="620">620-Prepayments</option>
-                                        </optgroup>
-                                    </select>
-                                </dd>
-                                <dt><label for="">Cash2 payments (deleted)</label></dt>
-                                <dd>
-                                    <select name="" id="">
-                                        <option value="" selected="selected"></option>
-                                        <optgroup label="Bank">
-                                            <option value="090">090-Business Bank Account</option>
-                                            <option value="091">091-Business Savings Account</option>
-                                        </optgroup>
-                                        <optgroup label="Current">
-                                            <option value="610">610-Accounts Receivable</option>
-                                            <option value="620">620-Prepayments</option>
-                                        </optgroup>
-                                    </select>
-                                </dd>
-                                <dt><label for="">Cash2 payments (deleted)</label></dt>
-                                <dd>
-                                    <select name="" id="">
-                                        <option value="" selected="selected"></option>
-                                        <optgroup label="Bank">
-                                            <option value="090">090-Business Bank Account</option>
-                                            <option value="091">091-Business Savings Account</option>
-                                        </optgroup>
-                                        <optgroup label="Current">
-                                            <option value="610">610-Accounts Receivable</option>
-                                            <option value="620">620-Prepayments</option>
-                                        </optgroup>
-                                    </select>
-                                </dd>
-                                <dt><label for="">Credit Card payments</label></dt>
-                                <dd>
-                                    <select name="" id="">
-                                        <option value="" selected="selected"></option>
-                                        <optgroup label="Bank">
-                                            <option value="090">090-Business Bank Account</option>
-                                            <option value="091">091-Business Savings Account</option>
-                                        </optgroup>
-                                        <optgroup label="Current">
-                                            <option value="610">610-Accounts Receivable</option>
-                                            <option value="620">620-Prepayments</option>
-                                        </optgroup>
-                                    </select>
-                                </dd>
-                                <dt><label for="">Credit Note payments</label></dt>
-                                <dd>
-                                    <select name="" id="">
-                                        <option value="" selected="selected"></option>
-                                        <optgroup label="Bank">
-                                            <option value="090">090-Business Bank Account</option>
-                                            <option value="091">091-Business Savings Account</option>
-                                        </optgroup>
-                                        <optgroup label="Current">
-                                            <option value="610">610-Accounts Receivable</option>
-                                            <option value="620">620-Prepayments</option>
-                                        </optgroup>
-                                    </select>
-                                </dd>
-                                <dt><label for="">EFTPOS payments</label></dt>
-                                <dd>
-                                    <select name="" id="">
-                                        <option value="" selected="selected"></option>
-                                        <optgroup label="Bank">
-                                            <option value="090">090-Business Bank Account</option>
-                                            <option value="091">091-Business Savings Account</option>
-                                        </optgroup>
-                                        <optgroup label="Current">
-                                            <option value="610">610-Accounts Receivable</option>
-                                            <option value="620">620-Prepayments</option>
-                                        </optgroup>
-                                    </select>
-                                </dd>
-                                <dt><label for="">Integrated EFTPOS (DPS) payments</label></dt>
-                                <dd>
-                                    <select name="" id="">
-                                        <option value="" selected="selected"></option>
-                                        <optgroup label="Bank">
-                                            <option value="090">090-Business Bank Account</option>
-                                            <option value="091">091-Business Savings Account</option>
-                                        </optgroup>
-                                        <optgroup label="Current">
-                                            <option value="610">610-Accounts Receivable</option>
-                                            <option value="620">620-Prepayments</option>
-                                        </optgroup>
-                                    </select>
-                                </dd>
-<!--
-                                <dt><label for="">PayPal payments</label></dt>
-                                <dd>
-                                    <select name="" id="">
-                                        <option value="" selected="selected"></option>
-                                        <optgroup label="Bank">
-                                            <option value="090">090-Business Bank Account</option>
-                                            <option value="091">091-Business Savings Account</option>
-                                        </optgroup>
-                                        <optgroup label="Current">
-                                            <option value="610">610-Accounts Receivable</option>
-                                            <option value="620">620-Prepayments</option>
-                                        </optgroup>
-                                    </select>
-                                </dd>
-                                <dt><label for="">Square payments</label></dt>
-                                <dd>
-                                    <select name="" id="">
-                                        <option value="" selected="selected"></option>
-                                        <optgroup label="Bank">
-                                            <option value="090">090-Business Bank Account</option>
-                                            <option value="091">091-Business Savings Account</option>
-                                        </optgroup>
-                                        <optgroup label="Current">
-                                            <option value="610">610-Accounts Receivable</option>
-                                            <option value="620">620-Prepayments</option>
-                                        </optgroup>
-                                    </select>
-                                </dd>
--->
+                                <?php elseif ($loyalty['enable_loyalty'] == 1) : ?>
                                 <dt><label for="">Loyalty payments</label></dt>
                                 <dd>
-                                    <select name="" id="">
-                                        <option value="" selected="selected"></option>
-                                        <optgroup label="Current Liability">
-                                            <option value="800">800-Accounts Payable</option>
-                                            <option value="801">801-Unpaid Expense Claims</option>
-                                            <option value="820">820-Sales Tax</option>
-                                            <option value="825">825-Employee Tax Payable</option>
-                                            <option value="826">826-Superannuation Payable</option>
-                                            <option value="830">830-Income Tax Payable</option>
-                                            <option value="835">835-Revenue Received in Advance</option>
-                                            <option value="840">840-Historical Adjustment</option>
-                                            <option value="850">850-Suspense</option>
-                                            <option value="855">855-Clearing Account</option>
-                                            <option value="860">860-Rounding</option>
-                                            <option value="877">877-Tracking Transfers</option>
-                                            <option value="880">880-Owner A Drawings</option>
-                                            <option value="881">881-Owner A Funds Introduced</option>
-                                        </optgroup>
-                                    </select>
+                                <?php
+                                    echo $this->Form->input('xero_config_setup_payments_' . $item['id'], array(
+                                        'id' => 'xero_config_setup_payments_' . $item['id'],
+                                        'name' => 'data[xero_config][setup_payments][' . $item['id'] . ']',
+                                        'type' => 'select',
+                                        'div' => false,
+                                        'label' => false,
+                                        'empty' => '',
+                                        'required' => 'required',
+                                        'options' => array(
+                                            'Current Liability' => $xero_accounts['CURRLIAB'],
+                                        ),
+                                        'selected' => $selected
+                                    ));
+                                 ?>
+                                    <div class="help">Liability for Loyalty $ earned</div>
+                                    <div class="help-block with-errors"></div>
                                 </dd>
-                            </dl>
-                        </div>
-                        <div class="col-md-6">
-                            <dl>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
                             </dl>
                         </div>
                     </div>
@@ -502,32 +273,30 @@
                     <div class="form-body line line-box line-box-content col-md-12 col-xs-12 col-sm-12"> 
                         <div class="col-md-6">
                             <dl>
-                                <dt><label for="">GST</label></dt>
+                            <?php foreach ($tax_rates as $item) : ?>
+                                <dt><label for=""><?php echo $item['name']; ?></label></dt>
                                 <dd>
-                                    <select name="" id="">
-                                        <option value="" selected="selected"></option>
-                                        <option value="GSTONIMPORTS">Sales Tax on Imports</option>
-                                        <option value="NONE">Tax Exempt</option>
-                                        <option value="OUTPUT">Tax on Consulting</option>
-                                        <option value="TAX001">Tax on Goods</option>
-                                        <option value="INPUT">Tax on Purchases</option>
-                                    </select>
+                                <?php
+                                    $selected = '';
+                                    if (isset($data['xero_config']['setup_taxes'])) {
+                                        $selected = $data['xero_config']['setup_taxes'][$item['id']];
+                                    }
+
+                                    echo $this->Form->input('xero_config_setup_taxes_' . $item['id'], array(
+                                        'id' => 'xero_config_setup_taxes_' . $item['id'],
+                                        'name' => 'data[xero_config][setup_taxes][' . $item['id'] . ']',
+                                        'type' => 'select',
+                                        'div' => false,
+                                        'label' => false,
+                                        'empty' => '',
+                                        'required' => 'required',
+                                        'options' => $xero_tax_rates,
+                                        'selected' => $selected
+                                    ));
+                                 ?>
+                                    <div class="help-block with-errors"></div>
                                 </dd>
-                                <dt><label for="">No Tax</label></dt>
-                                <dd>
-                                    <select name="" id="">
-                                        <option value="" selected="selected"></option>
-                                        <option value="GSTONIMPORTS">Sales Tax on Imports</option>
-                                        <option value="NONE">Tax Exempt</option>
-                                        <option value="OUTPUT">Tax on Consulting</option>
-                                        <option value="TAX001">Tax on Goods</option>
-                                        <option value="INPUT">Tax on Purchases</option>
-                                    </select>
-                                </dd>
-                            </dl>
-                        </div>
-                        <div class="col-md-6">
-                            <dl>
+                            <?php endforeach; ?>
                             </dl>
                         </div>
                     </div>
@@ -537,70 +306,57 @@
                     <div class="form-body line line-box line-box-content col-md-12 col-xs-12 col-sm-12"> 
                         <div class="col-md-6">
                             <dl>
-                                <dt><label for="">Loyalty expense</label></dt>
+                            <?php if ($loyalty['enable_loyalty'] == 1) : ?>
+                                <dt><label for="loyalty_expense_account">Loyalty expense</label></dt>
                                 <dd>
-                                    <select name="" id="">
-                                        <option value="" selected="selected"></option>
-                                        <optgroup label="Expense">
-                                            <option value="400">400-Advertising</option>
-                                            <option value="404">404-Bank Fees</option>
-                                            <option value="408">408-Cleaning</option>
-                                            <option value="412">412-Consulting &amp; Accounting</option>
-                                            <option value="416">416-Depreciation</option>
-                                            <option value="420">420-Entertainment</option>
-                                            <option value="425">425-Freight &amp; Courier</option>
-                                            <option value="429">429-General Expenses</option>
-                                            <option value="433">433-Insurance</option>
-                                            <option value="437">437-Interest Expense</option>
-                                            <option value="441">441-Legal expenses</option>
-                                            <option value="445">445-Light, Power, Heating</option>
-                                            <option value="449">449-Motor Vehicle Expenses</option>
-                                            <option value="453">453-Office Expenses</option>
-                                            <option value="461">461-Printing &amp; Stationery</option>
-                                            <option value="469">469-Rent</option>
-                                            <option value="473">473-Repairs and Maintenance</option>
-                                            <option value="477">477-Wages and Salaries</option>
-                                            <option value="478">478-Superannuation</option>
-                                            <option value="485">485-Subscriptions</option>
-                                            <option value="489">489-Telephone &amp; Internet</option>
-                                            <option value="493">493-Travel - National</option>
-                                            <option value="494">494-Travel - International</option>
-                                            <option value="497">497-Bank Revaluations</option>
-                                            <option value="498">498-Unrealised Currency Gains</option>
-                                            <option value="499">499-Realised Currency Gains</option>
-                                            <option value="505">505-Income Tax Expense</option>
-                                        </optgroup>
-                                    </select>
+                                <?php
+                                    echo $this->Form->input('loyalty_expense_account', array(
+                                        'id' => 'loyalty_expense_account',
+                                        'type' => 'select',
+                                        'div' => false,
+                                        'label' => false,
+                                        'empty' => '',
+                                        'required' => 'required',
+                                        'options' => array(
+                                            'Expense' => $xero_accounts['EXPENSE'],
+                                        )
+                                    ));
+                                 ?>
+                                    <div class="help">For Loyalty $ redemptions</div>
+                                    <div class="help-block with-errors"></div>
                                 </dd>
+                            <?php endif; ?>
                                 <dt><label for="">Send invoices as</label></dt>
                                 <dd>
-                                    <select name="" id="">
+                                    <select class="form-control" name="xero_config[post_invoices_as_draft]" id="post_invoices_as_draft">
                                         <option value="0" selected="selected">Approved</option>
                                         <option value="1">Awaiting approval</option>
                                         <option value="2">Draft</option>
                                     </select>
+                                    <div class="help">Please note that register closures are always sent to Xero as approved. <a href="#" target="_blank">See more detail</a>.</div>
+                                    <div class="help-block with-errors"></div>
                                 </dd>
                                 <dt><label for="">Register closure detail</label></dt>
                                 <dd>
-                                    <select name="" id="">
+                                    <select class="form-control" name="xero_config[closure_summary_option]" id="closure_summary_option">
                                         <option value="register_sale_product_id">Detail each sale</option>
                                         <option value="product_id">Send a summary by product</option>
                                         <option value="account_code" selected="selected">Send a summary by account code</option>
                                     </select>
+                                    <div class="help-block with-errors"></div>
                                 </dd>
-                            </dl>
-                        </div>
-                        <div class="col-md-6">
-                            <dl>
                             </dl>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
-                <button class="btn btn-primary btn-wide save pull-right">Save</button>
-                <button class="btn btn-default btn-wide pull-right margin-right-10">Cancel</button>
+                <button class="btn btn-primary btn-wide submit pull-right">Save</button>
+                <button class="btn btn-default btn-wide cancel pull-right margin-right-10">Cancel</button>
             </div>
+            <?php
+                echo $this->Form->end();
+             ?>
         </div>
     </div>
     <!-- END CONTENT --> 
@@ -668,6 +424,7 @@
 <script src="/theme/onzsa/assets/global/plugins/jquery-easypiechart/jquery.easypiechart.min.js" type="text/javascript"></script> 
 <script src="/theme/onzsa/assets/global/plugins/jquery.sparkline.min.js" type="text/javascript"></script> 
 <script src="/theme/onzsa/assets/global/plugins/gritter/js/jquery.gritter.js" type="text/javascript"></script> 
+<script src="/theme/onzsa/assets/global/plugins/jquery-validation/js/jquery.validate.min.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL PLUGINS --> 
 <!-- BEGIN PAGE LEVEL SCRIPTS --> 
 <script src="/theme/onzsa/assets/global/scripts/metronic.js" type="text/javascript"></script> 
@@ -681,6 +438,30 @@ jQuery(document).ready(function() {
     Metronic.init(); // init metronic core componets
     Layout.init(); // init layout
     Index.init();
+
+    formValidation();
 });
+
+// form validation
+var formValidation = function() {
+    // for more info visit the official plugin documentation: 
+    // http://docs.jquery.com/Plugins/Validation
+    $("#xero_setup_form").validate({
+        rules: {
+        },
+        messages: {
+        },
+        highlight: function(element, errorClass) {
+            $(element).css('border-color', '#ff0000');
+        },
+        unhighlight: function(element, errorClass) {
+            $(element).css('border-color', '#e5e5e5');
+        },
+        errorPlacement: function(error, element) {
+            element.parent("dd").find(".help-block").html(error);
+        }
+    });
+    $.validator.messages.required = 'Required.';
+}
 </script> 
 <!-- END JAVASCRIPTS -->

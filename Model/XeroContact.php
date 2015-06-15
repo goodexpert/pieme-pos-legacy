@@ -3,11 +3,11 @@
 App::uses('AppModel', 'Model');
 
 /**
- * ProductStatus model for ONZSA.
+ * XeroContact model for ONZSA.
  *
  * @package       onzsa.Model
  */
-class ProductStatus extends AppModel {
+class XeroContact extends AppModel {
 
 /**
  * The name of the database connection to use bind this model class.
@@ -21,7 +21,7 @@ class ProductStatus extends AppModel {
  *
  * @var string
  */
-    public $useTable = "product_status";
+    public $useTable = "xero_contacts";
 
 /**
  * Primary key of the database table.
@@ -35,7 +35,7 @@ class ProductStatus extends AppModel {
  *
  * @var string
  */
-    public $name = "ProductStatus";
+    public $name = "XeroContact";
 
 /**
  * belongsTo property
@@ -49,7 +49,6 @@ class ProductStatus extends AppModel {
  *
  * @var array
  */
-    public $validate = array(
-    );
+    public $validate = array();
 
 }

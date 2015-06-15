@@ -25,8 +25,8 @@
                                     'type' => 'hidden'
                                 ));
 
-                                echo $this->Form->input('physical_country_id', array(
-                                    'id' => 'physical_country_id',
+                                echo $this->Form->input('physical_country', array(
+                                    'id' => 'physical_country',
                                     'type' => 'hidden'
                                 ));
 
@@ -233,7 +233,7 @@ jQuery(document).ready(function() {
 
     $(document).on("change", "#address_lookup", function(e) {
         document.getElementById('physical_city').value = null;
-        document.getElementById('physical_country_id').value = null;
+        document.getElementById('physical_country').value = null;
     });
 
 /*
@@ -289,7 +289,7 @@ function initGoogleMapsApi() {
                 }
                 if (addressType == 'country') {
                     country_code = place.address_components[i].short_name;
-                    document.getElementById('physical_country_id').value = country_code;
+                    document.getElementById('physical_country').value = country_code;
                 }
             }
         }
@@ -394,13 +394,20 @@ var formValidation = function() {
                 required: "Please enter your city and select from the list.",
                 addressLookup: "Please enter your city and select from the list."
             }
+        },
+        errorPlacement: function(error, element) {
+            if (element.attr("name") == "data[domain_prefix]") {
+                element.parent().parent("dd").find(".help-block").html(error);
+            } else {
+                element.parent("dd").find(".help-block").html(error);
+            }
         }
     });
 
     jQuery.validator.addMethod("addressLookup", function(value, element) {
         var physical_city = $("#physical_city").val();
-        var physical_country_id = $("#physica_country_id").val();
-        return physical_city != '' && physical_country_id != '';
+        var physical_country = $("#physica_country").val();
+        return physical_city != '' && physical_country != '';
     });
 }
 </script>
