@@ -293,9 +293,7 @@ class SigninController extends AppController {
                 $this->Session->setFlash(__('Invalid username or password, try again'));
             }
         } else {
-            foreach ($errors as $key => $message) {
-                $this->Session->setFlash($message, $key);
-            }
+            $this->set('errors', $errors);
         }
     }
 

@@ -364,6 +364,7 @@
                                                                 } ?>
                                                             </table>
                                                         </div>
+                                                        <input type="hidden" class="product-name" value="<?= $key_items[$product['product_id']]['MerchantProduct']['name']; ?>">
                                                         <input type="hidden" class="product-retail_price" value="<?= $key_items[$product['product_id']]['MerchantProduct']['price']; ?>">
                                                         <input type="hidden" class="product-tax" value="<?= $key_items[$product['product_id']]['MerchantProduct']['tax']; ?>">
                                                         <input type="hidden" class="product-supply_price" value="<?= $key_items[$product['product_id']]['MerchantProduct']['supply_price']; ?>">
@@ -912,8 +913,19 @@ jQuery(document).ready(function () {
                         var comp_1 = $(this).children(".retrieve-child-price").text();
                         var comp_2 = $(this).children(".retrieve-child-tax").text();
                         var price_including_tax = parseFloat(comp_1) + parseFloat(comp_2);
+                        var appendString = '';
+                        appendString += '<tr class="order-product">';
+                        appendString += '<input type="hidden" class="added-code" value="' + $(this).children(".retrieve-child-id").text() + '">';
+                        appendString += '<input type="hidden" class="added-name" value="' + $(this).children(".retrieve-child-name").text() + '">';
+                        appendString += '<td class="added-product">' + $(this).children(".retrieve-child-name").text();
+                        appendString += '<br><span class="added-price">$' + parseFloat($(this).children(".retrieve-child-price").text()).toFixed(2) + '</span></td>';
+                        appendString += '<td class="added-qty"><a qty-id="' + retCount + '" class="qty-control btn btn-white">';
+                        appendString += $(this).find(".retrieve-child-qty").text() + '</a></td>';
+                        appendString += '<td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="' + retCount + '">@';
+                        appendString += price_including_tax.toFixed(2) + '</a></td><td class="added-amount"></td>';
+                        appendString += '<td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>';
 
-                        $(".added-body").prepend('<tr class="order-product"><input type="hidden" class="added-code" value="' + $(this).children(".retrieve-child-id").text() + '"><td class="added-product">' + $(this).children(".retrieve-child-name").text() + '<br><span class="added-price">$' + parseFloat($(this).children(".retrieve-child-price").text()).toFixed(2) + '</span></td><td class="added-qty"><a qty-id="' + retCount + '" class="qty-control btn btn-white">' + $(this).find(".retrieve-child-qty").text() + '</a></td><td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="' + retCount + '">@' + price_including_tax.toFixed(2) + '</a></td><td class="added-amount"></td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');
+                        $(".added-body").prepend(appendString);
                         retCount++;
                     });
                     targetSale.find(".retrieve-child-payments").each(function () {
@@ -936,8 +948,21 @@ jQuery(document).ready(function () {
             var retCount = 0;
             $("#retrieve_sale_id").val($(this).attr("data-id"));
             $(this).find(".retrieve-child-products").each(function () {
+                var appendString = '';
+                appendString += '<tr class="order-product">';
+                appendString += '<input type="hidden" class="added-code" value="' + $(this).children(".retrieve-child-id").text() + '">';
+                appendString += '<input type="hidden" class="added-name" value="' + $(this).children(".retrieve-child-name").text() + '">';
+                appendString += '<input type="hidden" class="hidden-retail_price" value="' + $(this).find(".retrieve-child-price").text() + '">';
+                appendString += '<input type="hidden" class="hidden-tax" value="' + $(this).find(".retrieve-child-tax").text() + '">';
+                appendString += '<input type="hidden" class="hidden-supply_price" value="' + $(this).find(".retrieve-child-supply-price").text() + '">';
+                appendString += '<td class="added-product">' + $(this).children(".retrieve-child-name").text();
+                appendString += '<br><span class="added-price">$' + parseFloat($(this).children(".retrieve-child-price").text()).toFixed(2) + '</span></td>';
+                appendString += '<td class="added-qty"><a qty-id="' + retCount + '" class="qty-control btn btn-white">' + $(this).find(".retrieve-child-qty").text() + '</a></td>';
+                appendString += '<td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="' + retCount + '">@';
+                appendString += $(this).find(".retrieve-child-price-incl-tax").text() + '</a></td>';
+                appendString += '<td class="added-amount"></td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>'; /*COME HERE*/
 
-                $(".added-body").prepend('<tr class="order-product"><input type="hidden" class="added-code" value="' + $(this).children(".retrieve-child-id").text() + '"><input type="hidden" class="hidden-retail_price" value="' + $(this).find(".retrieve-child-price").text() + '"><input type="hidden" class="hidden-tax" value="' + $(this).find(".retrieve-child-tax").text() + '"><input type="hidden" class="hidden-supply_price" value="' + $(this).find(".retrieve-child-supply-price").text() + '"><td class="added-product">' + $(this).children(".retrieve-child-name").text() + '<br><span class="added-price">$' + parseFloat($(this).children(".retrieve-child-price").text()).toFixed(2) + '</span></td><td class="added-qty"><a qty-id="' + retCount + '" class="qty-control btn btn-white">' + $(this).find(".retrieve-child-qty").text() + '</a></td><td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="' + retCount + '">@' + $(this).find(".retrieve-child-price-incl-tax").text() + '</a></td><td class="added-amount"></td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>'); /*COME HERE*/
+                $(".added-body").prepend(appendString);
                 retCount++;
             });
             targetSale.find(".retrieve-child-payments").each(function () {
@@ -1128,6 +1153,7 @@ jQuery(document).ready(function () {
 
         $(".order-product").each(function () {
             var pId = $(this).children(".added-code").val();
+            var pName = $(this).children(".added-name").val();
             var pQty = $(this).children(".added-qty").children("a").text();
             var pAmount = $(this).children(".added-amount").text();
             var pSupplyPrice = $(this).children(".hidden-supply_price").val() * pQty;
@@ -1137,6 +1163,7 @@ jQuery(document).ready(function () {
 
             var line_order = {
                 'product_id': pId,
+                'name': pName,
                 'quantity': pQty,
                 'price': pPrice,
                 'supply_price': pSupplyPrice,
@@ -1701,7 +1728,22 @@ $(document).on('click', '.product', function () {
     } else {
         var symbol = "";
     }
-    $(".added-body").prepend('<tr class="order-product"><input type="hidden" class="added-code" value="' + $(this).attr("data-id") + '"><input type="hidden" class="hidden-retail_price" value="' + $(this).children().children(".product-retail_price").val() + '"><input type="hidden" class="hidden-tax" value="' + $(this).children().children(".product-tax").val() + '"><input type="hidden" class="hidden-supply_price" value="' + $(this).children().children(".product-supply_price").val() + '"><td class="added-product">' + $(this).children(".product-container").children(".product-info").children(".product-name").text() + '<br><span class="added-price">$' + $(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text() + '</span>' + symbol + '</td><td class="added-qty"><a qty-id="' + listCount + '" class="qty-control btn btn-white">1</a></td><td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="' + listCount + '">@' + $(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text() + '</a></td><td class="added-amount" style="text-align:right;">' + $(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text() + '</td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>');
+    var appendString = '';
+    appendString += '<tr class="order-product">';
+    appendString += '<input type="hidden" class="added-code" value="' + $(this).attr("data-id") + '">';
+    appendString += '<input type="hidden" class="added-name" value="' + $(this).children().children(".product-name").val() + '">';
+    appendString += '<input type="hidden" class="hidden-retail_price" value="' + $(this).children().children(".product-retail_price").val() + '">';
+    appendString += '<input type="hidden" class="hidden-tax" value="' + $(this).children().children(".product-tax").val() + '">';
+    appendString += '<input type="hidden" class="hidden-supply_price" value="' + $(this).children().children(".product-supply_price").val() + '">';
+    appendString += '<td class="added-product">' + $(this).children(".product-container").children(".product-info").children(".product-name").text();
+    appendString += '<br><span class="added-price">$' + $(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text();
+    appendString += '</span>' + symbol + '</td>';
+    appendString += '<td class="added-qty"><a qty-id="' + listCount + '" class="qty-control btn btn-white">1</a></td>';
+    appendString += '<td class="added-discount"><a href="#price-control" class="price-control btn btn-white" data-id="' + listCount + '">@';
+    appendString += $(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text();
+    appendString += '</a></td><td class="added-amount" style="text-align:right;">' + $(this).children(".product-container").children(".product-info").children(".price-wrap").children(".product-price").children("b").children(".price_including_tax").text();
+    appendString += '</td><td class="added-remove"><div class="remove clickable"><div class="glyphicon glyphicon-remove"></div></div></td></tr>';
+    $(".added-body").prepend(appendString);
     /*COME HERE*/
     listCount++;
     $(".added-null").hide();

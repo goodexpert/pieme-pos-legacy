@@ -17,6 +17,7 @@
                          ?>
                         <div class="line-box">
                             <h1>Sign in</h1>
+                            <div class="help-block"><?php echo $this->Session->flash(); ?></div>
                             <div class="dashed-line-gr"></div>
                             <dl>
                                 <dt>Store address</dt>
@@ -57,7 +58,6 @@
                                  ?>
                                 </dd>
                             </dl>
-                            <div class="help-block"><?php echo $this->Session->flash(); ?></div>
                             <dl>
                                 <dt>Email or Username</dt>
                                 <dd>
