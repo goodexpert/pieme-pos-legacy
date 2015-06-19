@@ -1,3 +1,27 @@
+<?php
+    $filters = [];
+
+    if (!empty($stocktake) && is_array($stocktake)) {
+        if (isset($stocktake['MerchantStockTake']['filters']) &&
+            !empty($stocktake['MerchantStockTake']['filters'])) {
+            $filters = json_decode($stocktake['MerchantStockTake']['filters'], true);
+        }
+    }
+?>
+<style>
+.order-product-header {
+    background: #eee;
+    margin-bottom: 20px;
+    padding: 10px 15px;
+}
+.line-box {
+    padding: 0;
+}
+.inventory-view-no-list {
+    padding: 100px 0;
+    text-align: center;
+}
+</style>
 <div class="clearfix"></div>
 <div class="container">
     <div id="notify"></div>
@@ -53,138 +77,164 @@
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                 <div class="pull-left col-md-9 col-xs-9 col-sm-9 col-alpha col-omega">
                     <h2>
-                        Perform Inventory Count
+                    <?php if ($stocktake['MerchantStockTake']['order_status_id'] === 'stock_take_status_cancelled') : ?>
+                        Inventory Count Cancelled
+                    <?php elseif ($stocktake['MerchantStockTake']['order_status_id'] === 'stock_take_status_completed') : ?>
+                        Inventory Count Completed
+                    <?php endif; ?>
                     </h2>
-                    <h4 class="col-lg-5 col-md-6 col-xs-12 col-sm-7 col-alpha"><?php echo $take['MerchantStockTake']['name']; ?></h4>
-                    <h5 class="col-lg-7 col-md-6 col-xs-12 col-sm-5 col-alpha col-omega"><?php echo $take['MerchantStockTake']['full_count'] == '1' ? 'Full Count' : 'Partial Count'; ?></h5>
+                    <h4 class="col-lg-5 col-md-6 col-xs-12 col-sm-7 col-alpha">Main Outlet 25-03-2015 3:00 PM</h4>
+                    <h5 class="col-lg-7 col-md-6 col-xs-12 col-sm-5 col-alpha col-omega">Full Count</h5>
                     <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                         <h5 class="col-lg-4 col-md-5 col-xs-12 col-sm-6 col-alpha col-omega">
                             <span class="glyphicon glyphicon-calendar"></span>&nbsp;
-                            Start: <?php echo date('d F Y, g:i A', strtotime($take['MerchantStockTake']['start_date'])); ?>
+                            Start: 25 Mar 2015, 2:37 PM
                         </h5>
                         <h5 class="col-lg-8 col-md-7 col-xs-12 col-sm-6 col-alpha col-omega">
                             <span class="glyphicon glyphicon-map-marker"></span>&nbsp;
-                            <?php echo $take['MerchantOutlet']['name']; ?>
+                            Main Outlet
                         </h5>
-                    </div>
-                    <div class="col-md-12 col-xs-12 col-sm-12 col-alpha count-input">
-                        <div class="col-md-6 col-xs-6 col-sm-6 col-alpha">
-                            <input type="text" placeholder="Search Products" id="product_search">
-                        <div class="col-md-3 col-xs-3 col-sm-3 col-alpha">
-                            <input type="text" class="btn-left"></div>
-                            <button class="btn btn-success btn-right" style="width:50%;">Count</button>
-                        </div>
-                        <div class="col-md-3 col-xs-3 col-sm-3 col-alpha">
-                            <input type="checkbox" value="1" checked="">
-                            <label>Quick-scan mode</label>
-                        </div>
-                        <div class="search_result" style="display:none;">
-                            <span class="search-tri"></span>
-                            <div class="search-default"> No Result </div>
-                            <?php foreach ($products as $product) : ?>
-                            <button type="button" class="data-found" data-stock-take-id="<?php echo $take['MerchantStockTake']['id']; ?>" data-name="<?php echo $product['MerchantProduct']['name']; ?>" data-id="<?php echo $take['MerchantProduct']['id']; ?>"><?php echo $product['MerchantProduct']['name'] . '(' . $product['MerchantProduct']['sku'] . ')'; ?></button>
-                            <?php endforeach; ?>
-                        </div>
-                    </div>
-                    <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                        <div class="inventory-content">
-                            <div class="inventory-tab">
-                                <ul>
-                                    <li class="active">All</li>
-                                    <li>Counted</li>
-                                    <li>Uncounted</li>
-                                </ul>
-                            </div>
-                            <div class="inventory-Due">
-                                <table id="productTable" class="table-bordered dataTable">
-                                    <colgroup>
-                                        <col width="70%">
-                                        <col width="15%">
-                                        <col width="15%">
-                                    </colgroup>
-                                    <thead>
-                                        <tr role="row">
-                                            <th>PRODUCT</th>
-                                            <th>EXPECTED</th>
-                                            <th>COUNTED</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!--
-                                        <tr role="row" class="odd">
-                                            <td>Coffee
-                                                <h6 class="inline-block-z margin-left-10">Black coffee</h6>
-                                            </td>
-                                            <td>-65</td>
-                                            <td>1</td>
-                                        </tr>
-                                        <tr role="row" class="even">
-                                            <td>Coffee
-                                                <h6 class="inline-block-z margin-left-10">Black coffee</h6>
-                                            </td>
-                                            <td>-65</td>
-                                            <td>1</td>
-                                        </tr>
-                                        -->
-                                        <?php
-                                            if ( count($take['MerchantStockTakeItem']) > 0 ):
-                                                foreach ($take['MerchantStockTakeItem'] as $item):
-                                        ?>
-                                        <tr>
-                                            <td><?php echo $item['MerchantProduct']['name']; ?> 
-                                                <h6 class="inline-block-z margin-left-10"><?php echo $item['MerchantProduct']['sku']; ?></h6>
-                                            </td>
-                                            <td><?php echo $item['expected']; ?></td>
-                                            <td><?php echo $item['counted']; ?></td>
-                                        </tr>
-                                        <?php
-                                                endforeach;
-                                            else:
-                                        ?>
-                                        <tr>
-                                            <td colspan="3">There is no items ...</td>
-                                        </tr>
-                                        <?php
-                                            endif;
-                                        ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-                <div class="pull-right col-md-3 col-xs-3 col-sm-3 col-omega margin-top-20">
-                    <div class="last-counted">
-                        <h4>Your last counted items</h4>
-                        <div class="last-counted-list">
-                            <!--
-                            <ul>
-                                <li class="pull-left">1 T-shirt (Demo)</li>
-                                <li class="pull-right"><span class="remove inline-block"><span class="glyphicon glyphicon-remove"></span></span></li>
-                            </ul>
-                            <ul>
-                                <li class="pull-left">1 T-shirt (Demo)</li>
-                                <li class="pull-right"><span class="remove inline-block"><span class="glyphicon glyphicon-remove"></span></span></li>
-                            </ul>
-                            -->
-                            <?php
-                                foreach ($take['MerchantStockTakeCount'] as $count):
-                            ?>
-                            <ul>
-                                <li class="pull-left"><?php echo $count['MerchantProduct']['name']; ?></li>
-                                <li class="pull-right"><span class="remove inline-block"><span class="glyphicon glyphicon-remove"></span></span></li>
-                            </ul>
-                            <?php
-                                endforeach;
-                            ?>
+<!--
+                <div class="col-md-12 col-xs-12 col-sm-12 filter-selection">
+                <?php foreach ($filters as $filter) :?>
+                    <div class="filter-tag-group">
+                        <span class="filter-tag-group-title"><?php echo $filter['category']; ?>:</span>
+                        <div class="filter-tag-items">
+                            <span class="filter-tag-item">
+                                <?php echo $filter['name']; ?>
+                            </span>
                         </div>
+                    </div>
+                <?php endforeach; ?>
+                </div>
+-->
+            </div>
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                <div class="inventory-content">
+                    <div class="inventory-tab">
+                        <ul>
+                        <?php if ($stocktake['MerchantStockTake']['order_status_id'] === 'stock_take_status_cancelled') : ?>
+                            <li id="inventory-tab-uncounted" class="active">Uncounted (<span class="inventory-tab-uncounted-label">0</span>)</li>
+                            <li id="inventory-tab-unmatched">Unmatched (<span class="inventory-tab-unmatched-label">0</span>)</li>
+                        <?php elseif ($stocktake['MerchantStockTake']['order_status_id'] === 'stock_take_status_completed') : ?>
+                            <li id="inventory-tab-unmatched" class="active">Unmatched (<span class="inventory-tab-unmatched-label">0</span>)</li>
+                        <?php endif; ?>
+                            <li id="inventory-tab-matched">Matched (<span class="inventory-tab-matched-label">0</span>)</li>
+                            <li id="inventory-tab-all">All (<span class="inventory-tab-all-label">0</span>)</li>
+                        </ul>
+                    </div>
+                    <div class="inventory-view-no-list" style="display: none;">
+                        <p class="inventory-view-no-list-label">You have no matched items</p>
+                    </div>
+                    <div class="inventory-view-list">
+                        <table id="productTable" class="table-bordered dataTable">
+                            <colgroup>
+                                <col width="2%">
+                                <col width="50%">
+                                <col width="12%">
+                                <col width="12%">
+                                <col width="12%">
+                                <col width="12%">
+                            </colgroup>
+                            <thead>
+                                <tr role="row">
+                                    <th colspan="2" class="text-center">COUNT LIST</th>
+                                    <th colspan="2" class="text-center">INVENTORY COUNT</th>
+                                    <th colspan="2" class="text-center">DIFFERENCES</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr role="row" class="odd table-color-gr table-head">
+                                    <td><input type="checkbox" class="checkbox" id="select-all" onclick="toggleSelectAll(this)"></td>
+                                    <td class="table-cell-product">
+                                        PRODUCT 
+                                    </td>
+                                    <td>EXPECTED</td>
+                                    <td>TOTAL</td>
+                                    <td>UNIT</td>
+                                    <td>COST</td>
+                                </tr>
+                                <tr role="row" class="even">
+                                    <td><input type="checkbox"></td>
+                                    <td>T-shirt (Demo)
+                                        <h6>tshirt-white</h6>
+                                    </td>
+                                    <td>8</td>
+                                    <td>6</td>
+                                    <td>5</td>
+                                    <td>$0.00</td>
+                                </tr>
+                                <tr role="row" class="even table-color">
+                                    <td></td>
+                                    <td><strong>Total</strong></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><strong>-15</strong></td>
+                                    <td><strong>$0.00</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
+            <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
+            <!--
+                <button id="Complete" class="btn btn-primary btn-wide pull-right generate-pdf">Complete</button>
+            -->
+                <button class="btn btn-default pull-right margin-right-10 generate-csv">Generate CSV Report</button>
+                <button class="btn btn-default pull-left back">Back to list</button>
+            </div>
         </div>
     </div>
+    <!-- COMPLETE POPUP BOX -->
+    <div id="Complete_popup" class="confirmation-modal modal fade in" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="confirm-close cancel" data-dismiss="modal" aria-hidden="true">
+                  <i class="glyphicon glyphicon-remove"></i>
+                  </button>
+                  <h4 class="modal-title">Complete Stocktake</h4>
+              </div>
+              <div class="modal-body">
+                  Awesome! You've finished counting. When you click submit, we'll begin updating your inventory levels.
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-primary">Cancel</button>
+                <button class="btn btn-success">Submit</button>
+            </div>
+          </div>
+      </div>
+    </div>
+    <!-- COMPLETE POPUP BOX END -->
+    <!-- Abandon count POPUP BOX -->
+    <div id="Abandon_popup" class="confirmation-modal modal fade in" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <button type="button" class="confirm-close cancel" data-dismiss="modal" aria-hidden="true">
+                  <i class="glyphicon glyphicon-remove"></i>
+                  </button>
+                  <h4 class="modal-title">Are you sure you want to abandon count?</h4>
+              </div>
+              <div class="modal-body">
+                  Your inventory levels will not be updated. A record of this inventory will be saved but you will no longer be able to edit it.
+              </div>
+              <div class="modal-footer">
+                <button class="btn btn-primary">Cancel</button>
+                <button class="btn btn-success">Abandon</button>
+            </div>
+          </div>
+      </div>
+    </div>
+    <!-- COMPLETE POPUP BOX END -->
     <!-- END CONTENT -->
+    <div class="hidden-data">
+        <input type="hidden" id="hidden-data1" value='<?php echo json_encode($stocktake['MerchantStockTakeItem']); ?>' />
+    </div>
 </div>
+<!-- END CONTAINER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
 <!--[if lt IE 9]>
@@ -231,39 +281,389 @@
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
+var stockTakeItems = JSON.parse($("#hidden-data1").val());
+<?php if ($stocktake['MerchantStockTake']['order_status_id'] === 'stock_take_status_cancelled') : ?>
+var selectedTab = 'uncounted';
+<?php elseif ($stocktake['MerchantStockTake']['order_status_id'] === 'stock_take_status_completed') : ?>
+var selectedTab = 'unmatched';
+<?php endif; ?>
+
 jQuery(document).ready(function() {    
     Metronic.init(); // init metronic core componets
     Layout.init(); // init layout
     Index.init();
 
-    /* DYNAMIC PROUCT SEARCH START */
-    
-    var $cells = $(".data-found");
-    $(".search_result").hide();
+    $("body").find(".hidden-data").remove();
+    updateTabContents();
 
-    $(document).on("keyup","#product_search",function() {
-        console.log($(this).val());
-        var val = $.trim(this.value).toUpperCase();
-        if (val === "")
-            $(".search_result").hide();
-        else {
-            $cells.hide();
-            $(".search_result").show();
-            $(".search-default").hide();
-            $cells.filter(function() {
-                return -1 != $(this).text().toUpperCase().indexOf(val);
-            }).show();
-            if($(".search_result").height() <= 20){
-                $(".search-default").show();
-            }
-            console.log($(".search_result").height());
-        }
-        $cells.click(function(){
-           $("#search").val($(this).text());
-        });
+    $("#inventory-tab-uncounted").click(function() {
+        selectTab(this, 'uncounted');
     });
 
-    /* DYNAMIC PRODUCT SEARCH END */
+    $("#inventory-tab-unmatched").click(function() {
+        selectTab(this, 'unmatched');
+    });
+
+    $("#inventory-tab-matched").click(function() {
+        selectTab(this, 'matched');
+    });
+
+    $("#inventory-tab-all").click(function() {
+        selectTab(this, 'all');
+    });
+
+    $(".back").click(function() {
+        window.location = "/stock_takes";
+    });
+
+    $(".generate-csv").click(function() {
+    });
+
+    $(".generate-pdf").click(function() {
+    });
 });
+
+var filterInt = function (value) {
+    if (/^(\-|\+)?([0-9]+|Infinity)$/.test(value))
+        return true;
+    return false;
+}
+
+var toFixed = function(x, n) {
+    return (Math.round(x * 100) / 100).toFixed(n);
+}
+
+function addExcludedDropBox(title) {
+    var appendString = '';
+    appendString += '<button type="button" class="btn btn-default btn-sm" data-toggle="dropdown" onclick="excludeItems()">';
+    appendString += title + '</button>';
+
+    $(".table-cell-product").append(appendString);
+}
+
+function addIncludedDropBox(title) {
+    var appendString = '';
+    appendString += '<button type="button" class="btn btn-default btn-sm" data-toggle="dropdown" onclick="includeItems()">';
+    appendString += title + '</button>';
+
+    $(".table-cell-product").append(appendString);
+}
+
+function removeDropBox() {
+    $(".table-cell-product").empty();
+    $(".table-cell-product").text("PRODUCT");
+}
+
+function excludeItems() {
+    $.each($(".checkbox"), function(e) {
+        if ($(this).attr("id") != "select-all") {
+            if ($(this).attr("checked") == "checked") {
+                var id = $(this).data("id");
+
+                for (var idx in stockTakeItems) {
+                    if (stockTakeItems[idx]['id'] == id) {
+                        stockTakeItems[idx]['excluded'] = 1;
+                    }
+                }
+            }
+        }
+    });
+
+    $(".checkbox").removeAttr("checked");
+    removeDropBox();
+    updateTabContents();
+
+    $.ajax({
+        url: "/stock_takes/<?php echo $stocktake['MerchantStockTake']['id']; ?>/pause.json",
+        method: "POST",
+        dataType: "json",
+        data: {
+            'StockTakeItem' : JSON.stringify(stockTakeItems)
+        },
+        success: function (data) {
+            if (!data.success) {
+                alert(data.message);
+                return;
+            }
+        }
+    });
+}
+
+function includeItems() {
+    $.each($(".checkbox"), function(e) {
+        if ($(this).attr("id") != "select-all") {
+            if ($(this).attr("checked") == "checked") {
+                var id = $(this).data("id");
+
+                for (var idx in stockTakeItems) {
+                    if (stockTakeItems[idx]['id'] == id) {
+                        stockTakeItems[idx]['excluded'] = 0;
+                    }
+                }
+            }
+        }
+    });
+
+    $(".checkbox").removeAttr("checked");
+    removeDropBox();
+    updateTabContents();
+
+    $.ajax({
+        url: "/stock_takes/<?php echo $stocktake['MerchantStockTake']['id']; ?>/pause.json",
+        method: "POST",
+        dataType: "json",
+        data: {
+            'StockTakeItem' : JSON.stringify(stockTakeItems)
+        },
+        success: function (data) {
+            if (!data.success) {
+                alert(data.message);
+                return;
+            }
+        }
+    });
+}
+
+function toggleSelectAll(e) {
+    if ($(e).attr("checked") == "checked") {
+        $(".checkbox").attr("checked", "checked");
+    } else {
+        $(".checkbox").removeAttr("checked");
+    }
+
+    toggleSelectItem();
+}
+
+function toggleSelectItem() {
+    var checked = 0;
+    var excluded = 0;
+    var matched = 0;
+    var unmatched = 0;
+    var uncounted = 0;
+    var total = 0;
+
+    $.each($(".checkbox"), function(e) {
+        if ($(this).attr("id") != "select-all") {
+            if ($(this).attr("checked") == "checked") {
+                checked++;
+            }
+        }
+    });
+
+    for (var idx in stockTakeItems) {
+        if (stockTakeItems[idx]['excluded'] == 1) {
+            excluded++;
+        } else if (!filterInt(stockTakeItems[idx]['counted'])) {
+            uncounted++;
+        } else if (stockTakeItems[idx]['expected'] == stockTakeItems[idx]['counted']) {
+            matched++;
+        } else {
+            unmatched++;
+        }
+    }
+
+    switch (selectedTab) {
+        case 'uncounted':
+            total = uncounted;
+
+            if (checked == 0) {
+                removeDropBox();
+            } else {
+                $(".table-cell-product").empty();
+                addExcludedDropBox(checked + ' selected exclude');
+            }
+            break;
+        case 'matched':
+            total = matched;
+
+            if (checked == 0) {
+                removeDropBox();
+            } else {
+                $(".table-cell-product").empty();
+                addExcludedDropBox(checked + ' selected exclude');
+            }
+            break;
+        case 'unmatched':
+            total = unmatched;
+
+            if (checked == 0) {
+                removeDropBox();
+            } else {
+                $(".table-cell-product").empty();
+                addExcludedDropBox(checked + ' selected exclude');
+            }
+            break;
+        case 'excluded':
+            total = excluded;
+
+            if (checked == 0) {
+                removeDropBox();
+            } else {
+                $(".table-cell-product").empty();
+                addIncludedDropBox(checked + ' selected include');
+            }
+            break;
+        default:
+            <?php if ($stocktake['MerchantStockTake']['order_status_id'] === 'stock_take_status_cancelled') : ?>
+            total = uncounted + matched + unmatched;
+            <?php elseif ($stocktake['MerchantStockTake']['order_status_id'] === 'stock_take_status_completed') : ?>
+            total = matched + unmatched;
+            <?php endif; ?>
+
+            if (checked == 0) {
+                removeDropBox();
+            } else {
+                $(".table-cell-product").empty();
+                if (excluded > 0) {
+                    addIncludedDropBox(excluded + ' selected include');
+                }
+                if (excluded != total) {
+                    addExcludedDropBox(total - excluded + ' selected exclude');
+                }
+            }
+            break;
+    }
+
+    if (checked == total) {
+        $("#select-all").attr("checked", "checked");
+    } else {
+        $("#select-all").removeAttr("checked");
+    }
+}
+
+function selectTab(element, selected) {
+    $(".checkbox").removeAttr("checked");
+    removeDropBox();
+
+    $(".inventory-tab").find(".active").removeClass("active");
+    $(element).addClass("active");
+
+    selectedTab = selected;
+    updateTabContents();
+}
+
+function updateTabContents() {
+    var excluded = 0;
+    var matched = 0;
+    var unmatched = 0;
+    var uncounted = 0;
+    var totalDiff = 0;
+    var totalCost = 0;
+
+    $("#productTable").find('.table-head').siblings().empty();
+
+    for (var idx in stockTakeItems) {
+        if (stockTakeItems[idx]['excluded'] == 1) {
+            excluded++;
+
+            if (selectedTab != 'all' && selectedTab != 'excluded') {
+                continue;
+            }
+        } else if (!filterInt(stockTakeItems[idx]['counted'])) {
+            uncounted++;
+
+            if (selectedTab != 'all' && selectedTab != 'uncounted') {
+                continue;
+            }
+        } else if (stockTakeItems[idx]['expected'] == stockTakeItems[idx]['counted']) {
+            matched++;
+
+            if (selectedTab != 'all' && selectedTab != 'matched') {
+                continue;
+            }
+        } else {
+            unmatched++;
+
+            if (selectedTab != 'all' && selectedTab != 'unmatched') {
+                continue;
+            }
+        }
+
+        var expected = parseInt(stockTakeItems[idx]['expected']);
+        var counted = filterInt(stockTakeItems[idx]['counted']) ? stockTakeItems[idx]['counted'] : 0;
+
+        var diff = (counted - expected);
+        var cost = diff * stockTakeItems[idx]['supply_price'];
+        totalDiff += diff;
+        totalCost += cost;
+
+        var appendString = '';
+        appendString += '<tr role="row" class="even">';
+        appendString += '<td><input type="checkbox" class="checkbox" data-id="' + stockTakeItems[idx]['id'] + '" onclick="toggleSelectItem()"></td>';
+        appendString += '<td>' + stockTakeItems[idx]['name'];
+        appendString += '<h6>' + stockTakeItems[idx]['sku'] + '</h6></td>';
+        appendString += '<td>' + stockTakeItems[idx]['expected'] + '</td>';
+        appendString += '<td>' + (filterInt(stockTakeItems[idx]['counted']) ? stockTakeItems[idx]['counted'] : "&nbsp;") + '</td>';
+        appendString += '<td>' + (diff == 0 ? "&nbsp;" : diff) + '</td>';
+        appendString += '<td>' + (cost == 0 ? "&nbsp;" : toFixed(cost, 2)) + '</td></tr>';
+        $("#productTable").find('tbody').append(appendString);
+    }
+
+    var appendString = '';
+    appendString += '<tr role="row" class="even table-color">';
+    appendString += '<td></td><td><strong>Total</strong></td>';
+    appendString += '<td></td><td></td>';
+    appendString += '<td><strong>' + totalDiff + '</strong></td>';
+    appendString += '<td><strong>$' + toFixed(totalCost, 2) + '</strong></td></tr>';
+    $("#productTable").find('tbody').append(appendString);
+
+    switch (selectedTab) {
+        case 'uncounted':
+            if (uncounted == 0) {
+                $(".inventory-view-no-list").css("display", "");
+                $(".inventory-view-list").css("display", "none");
+            } else {
+                $(".inventory-view-no-list").css("display", "none");
+                $(".inventory-view-list").css("display", "");
+            }
+
+            $(".inventory-view-no-list-label").text("You have no matched items");
+            break;
+        case 'excluded':
+            if (excluded == 0) {
+                $(".inventory-view-no-list").css("display", "");
+                $(".inventory-view-list").css("display", "none");
+            } else {
+                $(".inventory-view-no-list").css("display", "none");
+                $(".inventory-view-list").css("display", "");
+            }
+
+            $(".inventory-view-no-list-label").text("You have no excluded items");
+            break;
+        case 'matched':
+            if (matched == 0) {
+                $(".inventory-view-no-list").css("display", "");
+                $(".inventory-view-list").css("display", "none");
+            } else {
+                $(".inventory-view-no-list").css("display", "none");
+                $(".inventory-view-list").css("display", "");
+            }
+
+            $(".inventory-view-no-list-label").text("You have no matched items");
+            break;
+        case 'unmatched':
+            if (unmatched == 0) {
+                $(".inventory-view-no-list").css("display", "");
+                $(".inventory-view-list").css("display", "none");
+            } else {
+                $(".inventory-view-no-list").css("display", "none");
+                $(".inventory-view-list").css("display", "");
+            }
+
+            $(".inventory-view-no-list-label").text("You have no unmatched items");
+            break;
+        case 'all':
+            $(".inventory-view-no-list").css("display", "none");
+            $(".inventory-view-list").css("display", "");
+            break;
+    }
+
+    $(".inventory-tab-excluded-label").text(excluded);
+    $(".inventory-tab-uncounted-label").text(uncounted);
+    $(".inventory-tab-matched-label").text(matched);
+    $(".inventory-tab-unmatched-label").text(unmatched);
+    $(".inventory-tab-all-label").text(excluded + uncounted + matched + unmatched);
+}
+
 </script>
 <!-- END JAVASCRIPTS -->

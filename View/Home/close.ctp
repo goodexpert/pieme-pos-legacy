@@ -50,7 +50,11 @@
     <!-- BEGIN CONTENT -->
     <div class="page-content-wrapper">
         <div class="page-content">
-            
+            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega" style="margin-bottom: 8px;">
+	        <a href="/home"><button class="btn btn-white btn-right current_open">CURRENT SALE</button></a>
+	        <button class="btn btn-white btn-left retrieve_open" style="margin-left: 15px;">RETRIEVE SALE</button>
+	        <a href="/home/close"><button class="btn btn-white btn-left">CLOSE REGISTER</button></a>
+	    </div>
             <div id="close-register-wrapper" class="line-box">
                 <div class="col-md-12 col-sm-12 col-xs-12 col-omega col-alpha to_print">
                 <div id="close-register-header" class="col-md-12 col-sm-12 col-xs-12">

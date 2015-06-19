@@ -369,7 +369,7 @@ class SetupController extends AppController {
                 'MerchantPaymentType.is_active' => 1
             )
         ));
-        //reset virtual field so it won't mess up subsequent finds
+        // reset virtual field so it won't mess up subsequent finds
         unset($this->MerchantPaymentType->virtualFields['payment_type_name']);
 
         $payment_types = Hash::map($payment_types, "{n}", function($array) {

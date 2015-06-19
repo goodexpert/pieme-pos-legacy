@@ -107,12 +107,32 @@
         array('controller' => 'stock_takes', 'action' => 'edit'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
+    Router::connect('/stock_takes/:id/cancel',
+        array('controller' => 'stock_takes', 'action' => 'cancel'),
+        array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
+
+    Router::connect('/stock_takes/:id/complete',
+        array('controller' => 'stock_takes', 'action' => 'complete'),
+        array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
+
+    Router::connect('/stock_takes/:id/delete',
+        array('controller' => 'stock_takes', 'action' => 'delete'),
+        array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
+
     Router::connect('/stock_takes/:id/perform',
         array('controller' => 'stock_takes', 'action' => 'perform'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
+    Router::connect('/stock_takes/:id/pause',
+        array('controller' => 'stock_takes', 'action' => 'pause'),
+        array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
+
     Router::connect('/stock_takes/:id/review',
         array('controller' => 'stock_takes', 'action' => 'review'),
+        array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
+
+    Router::connect('/stock_takes/:id/addItem',
+        array('controller' => 'stock_takes', 'action' => 'addItem'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
 
     Router::connect('/outlet/:id/edit',

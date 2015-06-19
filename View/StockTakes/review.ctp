@@ -1,3 +1,13 @@
+<?php
+    $filters = [];
+
+    if (!empty($stocktake) && is_array($stocktake)) {
+        if (isset($stocktake['MerchantStockTake']['filters']) &&
+            !empty($stocktake['MerchantStockTake']['filters'])) {
+            $filters = json_decode($stocktake['MerchantStockTake']['filters'], true);
+        }
+    }
+?>
 <style>
 .order-product-header {
     background: #eee;
@@ -6,6 +16,10 @@
 }
 .line-box {
     padding: 0;
+}
+.inventory-view-no-list {
+    padding: 100px 0;
+    text-align: center;
 }
 </style>
 <div class="clearfix"></div>
@@ -77,21 +91,35 @@
                             Main Outlet
                         </h5>
                 </div>
+                <div class="col-md-12 col-xs-12 col-sm-12 filter-selection">
+                <?php foreach ($filters as $filter) :?>
+                    <div class="filter-tag-group">
+                        <span class="filter-tag-group-title"><?php echo $filter['category']; ?>:</span>
+                        <div class="filter-tag-items">
+                            <span class="filter-tag-item">
+                                <?php echo $filter['name']; ?>
+                            </span>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+                </div>
             </div>
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                 <div class="inventory-content">
                     <div class="inventory-tab">
                         <ul>
-                            <li class="active">Uncounted</li>
-                            <li>Upmatched</li>
-                            <li>Matched</li>
-                            <li>Excluded</li>
-                            <li>All</li>
+                            <li id="inventory-tab-uncounted" class="active">Uncounted (<span class="inventory-tab-uncounted-label">0</span>)</li>
+                            <li id="inventory-tab-unmatched">Unmatched (<span class="inventory-tab-unmatched-label">0</span>)</li>
+                            <li id="inventory-tab-matched">Matched (<span class="inventory-tab-matched-label">0</span>)</li>
+                            <li id="inventory-tab-excluded">Excluded (<span class="inventory-tab-excluded-label">0</span>)</li>
+                            <li id="inventory-tab-all">All (<span class="inventory-tab-all-label">0</span>)</li>
                         </ul>
                     </div>
-                    <div class="inventory-Due">
-                        <span class="glyphicon glyphicon-info-sign pull-left" style="color:#cccccc;"></span><h5>The amount you counted was more or less than expected. You might like to double-check items in this list</h5>
-                        <table id="productTable" class="table-bordered dataTable">
+                    <div class="inventory-view-no-list" style="display: none;">
+                        <p class="inventory-view-no-list-label">You have no matched items</p>
+                    </div>
+                    <div class="inventory-view-list">
+                        <table class="table-bordered dataTable" id="inventory-table">
                             <colgroup>
                                 <col width="2%">
                                 <col width="50%">
@@ -108,9 +136,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr role="row" class="odd table-color-gr">
-                                    <td><input type="checkbox"></td>
-                                    <td>
+                                <tr role="row" class="odd table-color-gr table-head">
+                                    <td><input type="checkbox" class="checkbox" id="select-all" onclick="toggleSelectAll(this)"></td>
+                                    <td class="table-cell-product">
                                         PRODUCT 
                                     </td>
                                     <td>EXPECTED</td>
@@ -129,10 +157,10 @@
                                     <td>$0.00</td>
                                 </tr>
                                 <tr role="row" class="even table-color">
-                                    <td> </td>
+                                    <td></td>
                                     <td><strong>Total</strong></td>
-                                    <td> </td>
-                                    <td> </td>
+                                    <td></td>
+                                    <td></td>
                                     <td><strong>-15</strong></td>
                                     <td><strong>$0.00</strong></td>
                                 </tr>
@@ -142,9 +170,9 @@
                 </div>
             </div>
             <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
-                <button id="Complete" class="btn btn-primary btn-wide pull-right">Complete</button>
-                <button class="btn btn-default pull-right margin-right-10 ">Resume Count</button>
-                <button id="Abandon" class="btn btn-default pull-left">Abandon Count</button>
+                <button class="btn btn-primary btn-wide pull-right complete">Complete</button>
+                <button class="btn btn-default pull-right margin-right-10 resume">Resume Count</button>
+                <button class="btn btn-default pull-left cancel">Abandon Count</button>
             </div>
         </div>
     </div>
@@ -162,8 +190,8 @@
                   Awesome! You've finished counting. When you click submit, we'll begin updating your inventory levels.
               </div>
               <div class="modal-footer">
-                <button class="btn btn-primary">Cancel</button>
-                <button class="btn btn-success">Submit</button>
+                <button class="btn btn-primary confirm-close">Cancel</button>
+                <button class="btn btn-success confirm-complete">Submit</button>
             </div>
           </div>
       </div>
@@ -183,14 +211,17 @@
                   Your inventory levels will not be updated. A record of this inventory will be saved but you will no longer be able to edit it.
               </div>
               <div class="modal-footer">
-                <button class="btn btn-primary">Cancel</button>
-                <button class="btn btn-success">Abandon</button>
+                <button class="btn btn-primary confirm-close">Cancel</button>
+                <button class="btn btn-success confirm-cancel">Abandon</button>
             </div>
           </div>
       </div>
     </div>
     <!-- COMPLETE POPUP BOX END -->
     <!-- END CONTENT -->
+    <div class="hidden-data">
+        <input type="hidden" id="hidden-data1" value='<?php echo json_encode($stocktake['MerchantStockTakeItem']); ?>' />
+    </div>
 </div>
 <!-- END CONTAINER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
@@ -239,26 +270,400 @@
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
+var stockTakeItems = JSON.parse($("#hidden-data1").val());
+var selectedTab = 'uncounted';
+
 jQuery(document).ready(function() {    
     Metronic.init(); // init metronic core componets
     Layout.init(); // init layout
     Index.init();
 
-    $("#Complete").click(function(){
-        $("#Complete_popup").show();
+    $("body").find(".hidden-data").remove();
+    updateTabContents();
+
+    $("#inventory-tab-uncounted").click(function() {
+        selectTab(this, 'uncounted');
     });
 
-    $(".confirm-close").click(function(){
-        $("#Complete_popup").hide();
+    $("#inventory-tab-unmatched").click(function() {
+        selectTab(this, 'unmatched');
     });
 
-    $("#Abandon").click(function(){
+    $("#inventory-tab-matched").click(function() {
+        selectTab(this, 'matched');
+    });
+
+    $("#inventory-tab-excluded").click(function() {
+        selectTab(this, 'excluded');
+    });
+
+    $("#inventory-tab-all").click(function() {
+        selectTab(this, 'all');
+    });
+
+    $(".cancel").click(function() {
         $("#Abandon_popup").show();
     });
 
-    $(".confirm-close").click(function(){
-        $("#Abandon_popup").hide();
+    $(".complete").click(function() {
+        $("#Complete_popup").show();
+    });
+
+    $(".confirm-close").click(function() {
+        $(".confirmation-modal").hide();
+    });
+
+    $(".confirm-cancel").click(function() {
+        window.location = "/stock_takes/<?php echo $stocktake['MerchantStockTake']['id']; ?>/cancel";
+    });
+
+    $(".confirm-complete").click(function() {
+        window.location = "/stock_takes/<?php echo $stocktake['MerchantStockTake']['id']; ?>/complete";
+    });
+
+    $(".resume").click(function() {
+        window.location = "/stock_takes/<?php echo $stocktake['MerchantStockTake']['id']; ?>/perform";
     });
 });
+
+var filterInt = function (value) {
+    if (/^(\-|\+)?([0-9]+|Infinity)$/.test(value))
+        return true;
+    return false;
+}
+
+var toFixed = function(x, n) {
+    return (Math.round(x * 100) / 100).toFixed(n);
+}
+
+function addExcludedDropBox(title) {
+    var appendString = '';
+    appendString += '<button type="button" class="btn btn-default btn-sm" data-toggle="dropdown" onclick="excludeItems()">';
+    appendString += title + '</button>';
+
+    $(".table-cell-product").append(appendString);
+}
+
+function addIncludedDropBox(title) {
+    var appendString = '';
+    appendString += '<button type="button" class="btn btn-default btn-sm" data-toggle="dropdown" onclick="includeItems()">';
+    appendString += title + '</button>';
+
+    $(".table-cell-product").append(appendString);
+}
+
+function removeDropBox() {
+    $(".table-cell-product").empty();
+    $(".table-cell-product").text("PRODUCT");
+}
+
+function excludeItems() {
+    $.each($(".checkbox"), function(e) {
+        if ($(this).attr("id") != "select-all") {
+            if ($(this).attr("checked") == "checked") {
+                var id = $(this).data("id");
+
+                for (var idx in stockTakeItems) {
+                    if (stockTakeItems[idx]['id'] == id) {
+                        stockTakeItems[idx]['excluded'] = 1;
+                    }
+                }
+            }
+        }
+    });
+
+    $(".checkbox").removeAttr("checked");
+    removeDropBox();
+    updateTabContents();
+
+    $.ajax({
+        url: "/stock_takes/<?php echo $stocktake['MerchantStockTake']['id']; ?>/pause.json",
+        method: "POST",
+        dataType: "json",
+        data: {
+            'StockTakeItem' : JSON.stringify(stockTakeItems)
+        },
+        success: function (data) {
+            if (!data.success) {
+                alert(data.message);
+                return;
+            }
+        }
+    });
+}
+
+function includeItems() {
+    $.each($(".checkbox"), function(e) {
+        if ($(this).attr("id") != "select-all") {
+            if ($(this).attr("checked") == "checked") {
+                var id = $(this).data("id");
+
+                for (var idx in stockTakeItems) {
+                    if (stockTakeItems[idx]['id'] == id) {
+                        stockTakeItems[idx]['excluded'] = 0;
+                        break;
+                    }
+                }
+            }
+        }
+    });
+
+    $(".checkbox").removeAttr("checked");
+    removeDropBox();
+    updateTabContents();
+
+    $.ajax({
+        url: "/stock_takes/<?php echo $stocktake['MerchantStockTake']['id']; ?>/pause.json",
+        method: "POST",
+        dataType: "json",
+        data: {
+            'StockTakeItem' : JSON.stringify(stockTakeItems)
+        },
+        success: function (data) {
+            if (!data.success) {
+                alert(data.message);
+                return;
+            }
+        }
+    });
+}
+
+function toggleSelectAll(element) {
+    if ($(element).attr("checked") == "checked") {
+        $(".checkbox").attr("checked", "checked");
+    } else {
+        $(".checkbox").removeAttr("checked");
+    }
+
+    toggleSelectItem();
+}
+
+function toggleSelectItem() {
+    var checked = 0;
+    var excluded = 0;
+    var matched = 0;
+    var unmatched = 0;
+    var uncounted = 0;
+    var total = 0;
+
+    $.each($(".checkbox"), function(e) {
+        if ($(this).attr("id") != "select-all") {
+            if ($(this).attr("checked") == "checked") {
+                checked++;
+            }
+        }
+    });
+
+    for (var idx in stockTakeItems) {
+        if (stockTakeItems[idx]['excluded'] == 1) {
+            excluded++;
+        } else if (!filterInt(stockTakeItems[idx]['counted'])) {
+            uncounted++;
+        } else if (stockTakeItems[idx]['expected'] == stockTakeItems[idx]['counted']) {
+            matched++;
+        } else {
+            unmatched++;
+        }
+    }
+
+    switch (selectedTab) {
+        case 'uncounted':
+            total = uncounted;
+
+            if (checked == 0) {
+                removeDropBox();
+            } else {
+                $(".table-cell-product").empty();
+                addExcludedDropBox(checked + ' selected exclude');
+            }
+            break;
+        case 'matched':
+            total = matched;
+
+            if (checked == 0) {
+                removeDropBox();
+            } else {
+                $(".table-cell-product").empty();
+                addExcludedDropBox(checked + ' selected exclude');
+            }
+            break;
+        case 'unmatched':
+            total = unmatched;
+
+            if (checked == 0) {
+                removeDropBox();
+            } else {
+                $(".table-cell-product").empty();
+                addExcludedDropBox(checked + ' selected exclude');
+            }
+            break;
+        case 'excluded':
+            total = excluded;
+
+            if (checked == 0) {
+                removeDropBox();
+            } else {
+                $(".table-cell-product").empty();
+                addIncludedDropBox(checked + ' selected include');
+            }
+            break;
+        default:
+            total = uncounted + matched + unmatched + excluded;
+
+            if (checked == 0) {
+                removeDropBox();
+            } else {
+                $(".table-cell-product").empty();
+                if (excluded > 0) {
+                    addIncludedDropBox(excluded + ' selected include');
+                }
+                if (excluded != total) {
+                    addExcludedDropBox(total - excluded + ' selected exclude');
+                }
+            }
+            break;
+    }
+
+    if (checked == total) {
+        $("#select-all").attr("checked", "checked");
+    } else {
+        $("#select-all").removeAttr("checked");
+    }
+}
+
+function selectTab(element, selected) {
+    $(".checkbox").removeAttr("checked");
+    removeDropBox();
+
+    $(".inventory-tab").find(".active").removeClass("active");
+    $(element).addClass("active");
+
+    selectedTab = selected;
+    updateTabContents();
+}
+
+function updateTabContents() {
+    var excluded = 0;
+    var matched = 0;
+    var unmatched = 0;
+    var uncounted = 0;
+    var totalDiff = 0;
+    var totalCost = 0;
+
+    $("#inventory-table").find('.table-head').siblings().empty();
+
+    for (var idx in stockTakeItems) {
+        if (stockTakeItems[idx]['excluded'] == 1) {
+            excluded++;
+
+            if (selectedTab != 'all' && selectedTab != 'excluded') {
+                continue;
+            }
+        } else if (!filterInt(stockTakeItems[idx]['counted'])) {
+            uncounted++;
+
+            if (selectedTab != 'all' && selectedTab != 'uncounted') {
+                continue;
+            }
+        } else if (stockTakeItems[idx]['expected'] == stockTakeItems[idx]['counted']) {
+            matched++;
+
+            if (selectedTab != 'all' && selectedTab != 'matched') {
+                continue;
+            }
+        } else {
+            unmatched++;
+
+            if (selectedTab != 'all' && selectedTab != 'unmatched') {
+                continue;
+            }
+        }
+
+        var expected = parseInt(stockTakeItems[idx]['expected']);
+        var counted = filterInt(stockTakeItems[idx]['counted']) ? stockTakeItems[idx]['counted'] : 0;
+
+        var diff = (counted - expected);
+        var cost = diff * stockTakeItems[idx]['supply_price'];
+        totalDiff += diff;
+        totalCost += cost;
+
+        var appendString = '';
+        appendString += '<tr role="row" class="even">';
+        appendString += '<td><input type="checkbox" class="checkbox" data-id="' + stockTakeItems[idx]['id'] + '" onclick="toggleSelectItem()"></td>';
+        appendString += '<td>' + stockTakeItems[idx]['name'];
+        appendString += '<h6>' + stockTakeItems[idx]['sku'] + '</h6></td>';
+        appendString += '<td>' + stockTakeItems[idx]['expected'] + '</td>';
+        appendString += '<td>' + (filterInt(stockTakeItems[idx]['counted']) ? stockTakeItems[idx]['counted'] : "&nbsp;") + '</td>';
+        appendString += '<td>' + (diff == 0 ? "&nbsp;" : diff) + '</td>';
+        appendString += '<td>' + (cost == 0 ? "&nbsp;" : toFixed(cost, 2)) + '</td></tr>';
+        $("#inventory-table").find('tbody').append(appendString);
+    }
+
+    var appendString = '';
+    appendString += '<tr role="row" class="even table-color">';
+    appendString += '<td></td><td><strong>Total</strong></td>';
+    appendString += '<td></td><td></td>';
+    appendString += '<td><strong>' + totalDiff + '</strong></td>';
+    appendString += '<td><strong>$' + toFixed(totalCost, 2) + '</strong></td></tr>';
+    $("#inventory-table").find('tbody').append(appendString);
+
+    switch (selectedTab) {
+        case 'uncounted':
+            if (uncounted == 0) {
+                $(".inventory-view-no-list").css("display", "");
+                $(".inventory-view-list").css("display", "none");
+            } else {
+                $(".inventory-view-no-list").css("display", "none");
+                $(".inventory-view-list").css("display", "");
+            }
+
+            $(".inventory-view-no-list-label").text("You have no matched items");
+            break;
+        case 'excluded':
+            if (excluded == 0) {
+                $(".inventory-view-no-list").css("display", "");
+                $(".inventory-view-list").css("display", "none");
+            } else {
+                $(".inventory-view-no-list").css("display", "none");
+                $(".inventory-view-list").css("display", "");
+            }
+
+            $(".inventory-view-no-list-label").text("You have no excluded items");
+            break;
+        case 'matched':
+            if (matched == 0) {
+                $(".inventory-view-no-list").css("display", "");
+                $(".inventory-view-list").css("display", "none");
+            } else {
+                $(".inventory-view-no-list").css("display", "none");
+                $(".inventory-view-list").css("display", "");
+            }
+
+            $(".inventory-view-no-list-label").text("You have no matched items");
+            break;
+        case 'unmatched':
+            if (unmatched == 0) {
+                $(".inventory-view-no-list").css("display", "");
+                $(".inventory-view-list").css("display", "none");
+            } else {
+                $(".inventory-view-no-list").css("display", "none");
+                $(".inventory-view-list").css("display", "");
+            }
+
+            $(".inventory-view-no-list-label").text("You have no unmatched items");
+            break;
+        case 'all':
+            $(".inventory-view-no-list").css("display", "none");
+            $(".inventory-view-list").css("display", "");
+            break;
+    }
+
+    $(".inventory-tab-excluded-label").text(excluded);
+    $(".inventory-tab-uncounted-label").text(uncounted);
+    $(".inventory-tab-matched-label").text(matched);
+    $(".inventory-tab-unmatched-label").text(unmatched);
+    $(".inventory-tab-all-label").text(excluded + uncounted + matched + unmatched);
+}
+
 </script>
 <!-- END JAVASCRIPTS -->

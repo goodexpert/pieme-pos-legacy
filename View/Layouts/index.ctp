@@ -90,7 +90,6 @@
             </div>    
         </div>
         <!-- END CONTENT -->
-        
         <!-- BEGIN QUICK SIDEBAR -->
         <a href="javascript:;" class="page-quick-sidebar-toggler"><i class="icon-close"></i></a>
         <div data-ng-include="'tpl/quick-sidebar.html'" data-ng-controller="QuickSidebarController" class="page-quick-sidebar-wrapper"></div>

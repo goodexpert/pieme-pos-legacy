@@ -2079,7 +2079,7 @@ width: 1024px;
     padding: 0 75px;
 }
 
-.summary-item {
+.summary-tab {
     display: inline-block;
     text-decoration: none;
     padding: 20px 8px;
@@ -2090,7 +2090,7 @@ width: 1024px;
     cursor: pointer;
 }
 
-.summary-item:hover, .summary-item.active {
+.summary-tab:hover, .summary-tab.active {
     border-bottom: 4px solid #ffc12c;
     color: #414141;
     text-decoration: none;

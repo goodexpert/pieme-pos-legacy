@@ -5,8 +5,8 @@
     $due_date = date('Y-m-d H:i:s', $current- $current % 3600 + 3600);
     $full_count = 0;
     $show_inactive = 0;
-    $filters = array();
-    $products = array();
+    $filters = [];
+    $products = [];
     $can_save = false;
 
     if (!empty($data) && is_array($data)) {
@@ -92,34 +92,39 @@
                     </h2>
                 </div>
             </div>
-            <form action="/stock_takes/create" method="post" id="stock_take_form">
             <?php
-                echo $this->Form->input('MerchantStockTake.id', array(
+                echo $this->Form->create('MerchantStockTake', [
+                    'id' => 'stock_take_form'
+                ]);
+
+                echo $this->Form->input('id', [
                     'id' => 'id',
                     'type' => 'hidden'
-                ));
+                ]);
 
-                echo $this->Form->input('MerchantStockTake.due_date', array(
+                echo $this->Form->input('due_date', [
                     'id' => 'due_date',
                     'type' => 'hidden',
                     'value' => $due_date
-                ));
+                ]);
 
-                echo $this->Form->input('MerchantStockTake.filters', array(
+                echo $this->Form->input('filters', [
                     'id' => 'filters',
                     'type' => 'hidden'
-                ));
+                ]);
 
-                echo $this->Form->input('products', array(
+                echo $this->Form->input('products', [
                     'id' => 'products',
+                    'name' => 'products',
                     'type' => 'hidden'
-                ));
+                ]);
 
-                echo $this->Form->input('save-start', array(
+                echo $this->Form->input('save-start', [
                     'id' => 'save-start',
+                    'name' => 'save-start',
                     'type' => 'hidden',
                     'value' => 0
-                ));
+                ]);
              ?>
             <div class="col-md-12 col-xs-12 col-sm-12 line-box filter-box new-inventory margin-top-20">
                 <div class="col-md-4 col-xs-4 col-sm-4">
@@ -127,14 +132,14 @@
                         <dt>Outlet</dt>
                         <dd>
                             <?php
-                                echo $this->Form->input('MerchantStockTake.outlet_id', array(
+                                echo $this->Form->input('outlet_id', [
                                     'id' => 'outlet_id',
                                     'type' => 'select',
                                     'class' => 'status outlet',
                                     'div' => false,
                                     'label' => false,
                                     'empty' => 'Which outlet?'
-                                ));
+                                ]);
                              ?>
                         </dd>
                     </dl>
@@ -145,7 +150,7 @@
                         <dd>
                             <span class="glyphicon glyphicon-calendar icon-calendar"></span>
                             <?php
-                                echo $this->Form->input('MerchantStockTake.start_date', array(
+                                echo $this->Form->input('start_date', [
                                     'id' => 'start_date',
                                     'type' => 'text',
                                     'class' => 'hasDatepicker',
@@ -153,7 +158,7 @@
                                     'label' => false,
                                     'placeholder' => 'e.g. 2000-06-02',
                                     'value' => $start_date
-                                ));
+                                ]);
                              ?>
                         </dd>
                     </dl> 
@@ -163,14 +168,14 @@
                         <dt>Start Time</dt>
                         <dd>
                             <?php
-                                echo $this->Form->input('MerchantStockTake.start_time', array(
+                                echo $this->Form->input('start_time', [
                                     'id' => 'start_time',
                                     'type' => 'text',
                                     'div' => false,
                                     'label' => false,
                                     'placeholder' => 'e.g. 6:00 PM',
                                     'value' => $start_time
-                                ));
+                                ]);
                              ?>
                         </dd>
                     </dl>
@@ -180,59 +185,59 @@
                         <dt style="width: 19%;">Count Name</dt>
                         <dd style="width: 81%;">
                             <?php
-                                echo $this->Form->input('MerchantStockTake.name', array(
+                                echo $this->Form->input('name', [
                                     'id' => 'name',
                                     'type' => 'text',
                                     'maxlength' => '255',
                                     'div' => false,
                                     'label' => false
-                                ));
+                                ]);
                              ?>
                         </dd>
                     </dl>
                  </div>
                 <div class="col-md-4 col-xs-4 col-sm-4 margin-top-20">
                     <?php
-                        echo $this->Form->checkbox('MerchantStockTake.show_inactive', array(
+                        echo $this->Form->checkbox('show_inactive', [
                             'id' => 'show_inactive',
                             'type' => 'checkbox',
                             'div' => false
-                        ));
+                        ]);
                      ?>
                     <label>Include inactive products</label>
                 </div>
                 <div class="solid-line-gr"></div>
                 <div class="col-md-12 col-xs-12 col-sm-12 stocktake-type-container">
                     <?php
-                        echo $this->Form->input('MerchantStockTake.full_count', array(
+                        echo $this->Form->input('full_count', [
                             'id' => 'full_count',
                             'type' => 'radio',
                             'class' => 'full_count',
-                            'div' => array(
+                            'div' => [
                                 'class' => 'col-md-3 col-xs-3 col-sm-3'
-                            ),
-                            'options' => array(
+                            ],
+                            'options' => [
                                 0 => 'Partial Count',
-                            ),
+                            ],
                             'checked' => true,
                             'hiddenField' => false,
                             'legend' => false
-                        ));
+                        ]);
 
-                        echo $this->Form->input('MerchantStockTake.full_count', array(
+                        echo $this->Form->input('full_count', [
                             'id' => 'full_count',
                             'type' => 'radio',
                             'class' => 'full_count',
-                            'div' => array(
+                            'div' => [
                                 'class' => 'col-md-3 col-xs-3 col-sm-3'
-                            ),
-                            'options' => array(
+                            ],
+                            'options' => [
                                 1 => 'Full Count',
-                            ),
+                            ],
                             'checked' => false,
                             'hiddenField' => false,
                             'legend' => false
-                        ));
+                        ]);
                      ?>
                 </div>
                 <div class="text-center margin-top-10 inline-block full-count" <?php echo $full_count == 1 ? '' : 'style="display:none;"'; ?>>
@@ -297,7 +302,9 @@
                     <button type="submit" class="btn btn-success btn-wide start" <?php echo $can_save ? '' : 'disabled="disabled"'; ?>>Start</button>
                 </div>
             </div>
-            </form>
+            <?php
+                echo $this->Form->end();
+            ?>
         </div>
     </div>
     <!-- END CONTENT -->
@@ -492,6 +499,10 @@ jQuery(document).ready(function() {
         $("#full_count1").attr('checked', isFullCount == 1);
     });
 
+    $(".cancel").click(function(e) {
+        window.location = "/stock_takes";
+    });
+
     $(".save").click(function(e) {
         if (!outletName) {
             alert('Please select the outlet!');
@@ -605,13 +616,13 @@ function autoCompleteForSearch() {
 
                     $.map(data.products, function (item) {
                         var label = item.name;
-                        if (item.variant_option_one_name != '') {
+                        if (item.variant_option_one_name != null) {
                             label += " / " + item.variant_option_one_value
                         }
-                        if (item.variant_option_two_name != '') {
+                        if (item.variant_option_two_name != null) {
                             label += " / " + item.variant_option_two_value
                         }
-                        if (item.variant_option_three_name != '') {
+                        if (item.variant_option_three_name != null) {
                             label += " / " + item.variant_option_three_value
                         }
 

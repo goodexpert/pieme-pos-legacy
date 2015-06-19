@@ -1,3 +1,13 @@
+<?php
+    $filters = [];
+
+    if (!empty($stocktake) && is_array($stocktake)) {
+        if (isset($stocktake['MerchantStockTake']['filters']) &&
+            !empty($stocktake['MerchantStockTake']['filters'])) {
+            $filters = json_decode($stocktake['MerchantStockTake']['filters'], true);
+        }
+    }
+?>
 <div class="clearfix"></div>
 <div class="container">
     <div id="notify"></div>
@@ -55,17 +65,33 @@
                     <h2>
                         Perform Inventory Count
                     </h2>
-                    <h4 class="col-lg-5 col-md-6 col-xs-12 col-sm-7 col-alpha"><?php echo $stockTake['MerchantStockTake']['name']; ?></h4>
-                    <h5 class="col-lg-7 col-md-6 col-xs-12 col-sm-5 col-alpha col-omega"><?php echo ($stockTake['MerchantStockTake']['full_count'] == '1') ? 'Full Count' : 'Partial Count'; ?></h5>
+                    <input type="hidden" id="id" value="<?php echo $stocktake['MerchantStockTake']['id']; ?>">
+                    <input type="hidden" id="outlet_id" value="<?php echo $stocktake['MerchantStockTake']['outlet_id']; ?>">
+                    <input type="hidden" id="show_inactive" value="<?php echo $stocktake['MerchantStockTake']['show_inactive']; ?>">
+                    <input type="hidden" id="full_count" value="<?php echo $stocktake['MerchantStockTake']['full_count']; ?>">
+                    <h4 class="col-lg-5 col-md-6 col-xs-12 col-sm-7 col-alpha"><?php echo $stocktake['MerchantStockTake']['name']; ?></h4>
+                    <h5 class="col-lg-7 col-md-6 col-xs-12 col-sm-5 col-alpha col-omega"><?php echo ($stocktake['MerchantStockTake']['full_count'] == '1') ? 'Full Count' : 'Partial Count'; ?></h5>
                     <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                         <h5 class="col-lg-4 col-md-5 col-xs-12 col-sm-6 col-alpha col-omega">
                             <span class="glyphicon glyphicon-calendar"></span>&nbsp;
-                            Start: <?php echo date('d M Y, g:m A', strtotime($stockTake['MerchantStockTake']['due_date'])); ?>
+                            Start: <?php echo date('d M Y, g:m A', strtotime($stocktake['MerchantStockTake']['due_date'])); ?>
                         </h5>
                         <h5 class="col-lg-8 col-md-7 col-xs-12 col-sm-6 col-alpha col-omega">
                             <span class="glyphicon glyphicon-map-marker"></span>&nbsp;
-                            <?php echo $stockTake['MerchantOutlet']['name']; ?>
+                            <?php echo $stocktake['MerchantStockTake']['outlet_name']; ?>
                         </h5>
+                    </div>
+                    <div class="col-md-12 col-xs-12 col-sm-12 filter-selection">
+                    <?php foreach ($filters as $filter) :?>
+                        <div class="filter-tag-group">
+                            <span class="filter-tag-group-title"><?php echo $filter['category']; ?>:</span>
+                            <div class="filter-tag-items">
+                                <span class="filter-tag-item">
+                                    <?php echo $filter['name']; ?>
+                                </span>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
                     </div>
                     <div class="col-md-12 col-xs-12 col-sm-12 col-alpha count-input">
                         <div id="search-items-wrapper" class="col-md-6 col-xs-6 col-sm-6 col-alpha">
@@ -76,7 +102,7 @@
                             <button id="count-inventory" class="btn btn-success btn-right" style="width:50%;" disabled>Count</button>
                         </div>
                         <div class="col-md-3 col-xs-3 col-sm-3 col-alpha">
-                            <input type="checkbox" value="1" id="quick-scan-mode">
+                            <input type="checkbox" id="quick-scan-mode" value="1">
                             <label for="quick-scan-mode">Quick-scan mode</label>
                         </div>
                     </div>
@@ -84,9 +110,9 @@
                         <div class="inventory-content">
                             <div class="inventory-tab">
                                 <ul>
-                                    <li id="inventory-tab-all" class="active">All</li>
-                                    <li id="inventory-tab-counted">Counted (<span class="counted-no">0</span>)</li>
-                                    <li id="inventory-tab-uncounted">Uncounted (<span class="uncounted-no">0</span>)</li>
+                                    <li id="inventory-tab-all" class="active">All (<span class="inventory-tab-all-label">0</span>)</li>
+                                    <li id="inventory-tab-counted">Counted (<span class="inventory-tab-counted-label">0</span>)</li>
+                                    <li id="inventory-tab-uncounted">Uncounted (<span class="inventory-tab-uncounted-label">0</span>)</li>
                                 </ul>
                             </div>
                             <div class="inventory-Due">
@@ -105,7 +131,7 @@
                                     </thead>
                                     <tbody>
                                         <!--
-                                        <?php foreach ($stockTake['MerchantStockTakeItem'] as $item): ?>
+                                        <?php foreach ($stocktake['MerchantStockTakeItem'] as $item): ?>
                                         <tr role="row" class="odd product-list" data-id="<?php echo $item['product_id']; ?>">
                                             <td><?php echo $item['name']; ?>
                                                 <h6 class="inline-block-z margin-left-10"><?php echo $item['sku']; ?></h6>
@@ -127,14 +153,14 @@
                         </div>
                     </div>
                     <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
-                        <button class="btn btn-primary pull-right">Review Count</button>
-                        <button class="btn btn-default pull-right margin-right-10">Pause Count</button>
+                        <button class="btn btn-primary pull-right" onclick="review()">Review Count</button>
+                        <button class="btn btn-default pull-right margin-right-10" onclick="save()">Pause Count</button>
                     </div>
                 </div>
                 <div class="pull-right col-md-3 col-xs-3 col-sm-3 col-omega margin-top-20">
                     <div class="last-counted">
                         <h4>Your last counted items</h4>
-                        <div class="last-counted-list">
+                        <div class="last-counted-list" id="counted_list">
                         </div>
                     </div>
                 </div>
@@ -142,6 +168,11 @@
         </div>
     </div>
     <!-- END CONTENT -->
+    <div class="hidden-data">
+        <input type="hidden" id="hidden-data1" value='<?php echo json_encode($stocktake['MerchantStockTakeItem']); ?>' />
+        <input type="hidden" id="hidden-data2" value='<?php echo json_encode($stocktake['MerchantStockTakeCount']); ?>' />
+        <input type="hidden" id="hidden-data3" value='<?php echo json_encode($inventory); ?>' />
+    </div>
 </div>
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
@@ -190,52 +221,32 @@
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
 var quickScanMode = false;
-var stockTakeCounts = [];
-var stockTakeItems = [];
+var stockTakeItems = JSON.parse($("#hidden-data1").val());
+var stockTakeCounts = JSON.parse($("#hidden-data2").val());
+var inventory = JSON.parse($("#hidden-data3").val());
 var selectedTab = 'all';
 
 jQuery(document).ready(function() {    
     Metronic.init(); // init metronic core componets
     Layout.init(); // init layout
     Index.init();
-    getStockTakeItems();
 
-    $("#search-items").autocomplete({
-        source: function (request, response) {
-            $.ajax({
-                url: "/stock/searchProduct.json",
-                method: "POST",
-                dataType: "json",
-                data: {
-                    q: request.term
-                },
-                success: function (data) {
-                    response($.map(data.products, function (item) {
-                        if (!item.MerchantProduct.is_active)
-                            return;
-                        return {
-                            label: item.MerchantProduct.name,
-                            value: item.MerchantProduct.id,
-                            sku: item.MerchantProduct.sku
-                        }
-                    }));
-                }
-            });
-        },
-        minLength: 2,
-        select: function( event, ui ) {
-            event.preventDefault();
+    $("body").find(".hidden-data").remove();
+    updateTabContents();
+    updateCounted();
 
-            $(this).val(ui.item.label);
-            $(this).attr('data-id', ui.item.value);
-            $('#count-inventory').removeAttr("disabled");
-            //$('#productTable tbody').append('<tr><td>'+ui.item.label+'<h6>'+ui.item.sku+'</h6></td></tr>');
+    autoCompleteForSearch();
 
-            return false;
-        },
-        focus: function( event, ui ) {
-            event.preventDefault();
-        }
+    $("#inventory-tab-all").click(function() {
+        selectTab(this, 'all');
+    });
+
+    $("#inventory-tab-counted").click(function() {
+        selectTab(this, 'counted');
+    });
+
+    $("#inventory-tab-uncounted").click(function() {
+        selectTab(this, 'uncounted');
     });
 
     $("#quick-scan-mode").change(function() {
@@ -246,102 +257,215 @@ jQuery(document).ready(function() {
         } else {
             $("#search-items-wrapper").attr('class','col-md-9 col-xs-9 col-sm-9 col-alpha');
         }
+
+        $('#count-inventory').attr("disabled", "disabled");
         $("#search-items").removeAttr("data-id");
         $("#search-items").val('');
 
         quickScanMode = $("#quick-scan-mode").attr('checked') == 'checked';
     });
 
-    $("#search-items").keypress(function(e) {
+    $(document).on("keypress", "#search-items", function(e) {
         var key = event.keyCode || event.which;
 
         if (key == 13 && quickScanMode && $(this).attr("data-id")) {
+            addStockTakeCount($(this).attr("data-id"), $(this).val(), 1);
         } else {
             $('#count-inventory').attr("disabled", "disabled");
-        }
-    });
-
-    $("#count-inventory").click(function(e) {
-    });
-
-    $("#inventory-tab-all").click(function(){
-        $(".inventory-tab").find(".active").removeClass("active");
-        $(this).addClass("active");
-
-        selectedTab = 'all';
-        updateView();
-    });
-
-    $("#inventory-tab-counted").click(function(){
-        $(".inventory-tab").find(".active").removeClass("active");
-        $(this).addClass("active");
-
-        selectedTab = 'counted';
-        updateView();
-    });
-
-    $("#inventory-tab-uncounted").click(function(){
-        $(".inventory-tab").find(".active").removeClass("active");
-        $(this).addClass("active");
-
-        selectedTab = 'uncounted';
-        updateView();
-    });
-
-    /*
-    $(document).on("keyup","#search-items",function(event){
-        var key = event.keyCode || event.which;
-        if (key === 13) {
-            if($(this).attr("data-id") && !$("#item-qty-wrapper").is(':visible')) {
-                $(".last-counted-list").prepend('<ul class="added-item" data-id="'+$("#search-items").attr("data-id")+'"><li class="pull-left"><span class="added-item-qty">'+1+'</span> '+$("#search-items").val()+'</li><li class="pull-right"><span class="remove inline-block"><span class="glyphicon glyphicon-remove"></span></span></li></ul>');
-            }
-        } else {
             $(this).removeAttr("data-id");
         }
     });
 
-    var item_qty = 1;
-    $("#count-inventory").click(function(){
-        if($("#item-qty-wrapper").is(':visible')){
-            item_qty = $("#item-qty").val();
+    $("#count-inventory").click(function(e) {
+        if (quickScanMode || !$("#search-items").attr("data-id") || !filterInt($("#item-qty").val())) {
+            return;
         }
-        $(".last-counted-list").prepend('<ul class="added-item" data-id="'+$("#search-items").attr("data-id")+'"><li class="pull-left"><span class="added-item-qty">'+item_qty+'</span> '+$("#search-items").val()+'</li><li class="pull-right"><span class="remove inline-block"><span class="glyphicon glyphicon-remove"></span></span></li></ul>');
+
+        addStockTakeCount($("#search-items").attr("data-id"), $("#search-items").val(), $("#item-qty").val());
     });
 
-    $(document).on("click", ".remove", function(){
-        $(this).parents('ul').remove();
-    });
-    */
-});
+    $(document).on("click", ".product-list", function(e) {
+        if (!quickScanMode) {
+            var id = $(this).attr("data-id");
 
-function getStockTakeItems() {
-    $.ajax({
-        url: "/inventory_count/<?php echo $stockTake['MerchantStockTake']['id']; ?>/items.json",
-        method: "POST",
-        dataType: "json",
-        success: function (data) {
-            if (data.success) {
-                stockTakeItems = data.items;
-                updateView();
-            } else {
-                alert(data.message);
-                console.log(data.message);
+            for (var idx in stockTakeItems) {
+                if (stockTakeItems[idx]['id'] == id) {
+                    $("#search-items").attr("data-id", stockTakeItems[idx]['product_id']);
+                    $("#search-items").val(stockTakeItems[idx]['name']);
+                    $('#count-inventory').removeAttr("disabled");
+                    return;
+                }
             }
         }
     });
+
+    $(document).on("click", ".remove", function(e) {
+        var id = $(this).parents('ul').attr("data-id");
+        removeInventoryCount($(this).parents('ul'), id);
+    });
+});
+
+function autoCompleteForSearch() {
+    $("#search-items").autocomplete({
+        source: function (request, response) {
+            $.ajax({
+                url: "/stock_takes/search.json",
+                method: "POST",
+                dataType: "json",
+                data: {
+                    keyword: request.term,
+                    filter: 'products',
+                    show_inactive: $("show_inactive").val()
+                },
+                success: function (data) {
+                    $(this).removeAttr('data-id');
+                    $("#count-inventory").attr("disabled","disabled");
+
+                    if (!data.success) {
+                        alert(data.message);
+                        return;
+                    }
+
+                    response($.map(data.products, function (item) {
+                        var label = item.name;
+                        if (item.variant_option_one_name != null) {
+                            label += " / " + item.variant_option_one_value
+                        }
+                        if (item.variant_option_two_name != null) {
+                            label += " / " + item.variant_option_two_value
+                        }
+                        if (item.variant_option_three_name != null) {
+                            label += " / " + item.variant_option_three_value
+                        }
+
+                        return {
+                            label: label,
+                            value: item.sku,
+                            data: item
+                        };
+                    }));
+                }
+            });
+        },
+        minLength: 2,
+        select: function( event, ui ) {
+            var data = ui.item.data;
+
+            $(this).attr('data-id', data.id);
+            $(this).val(ui.item.label);
+            $(this).select();
+
+            if (quickScanMode) {
+                addStockTakeCount(data.id, ui.item.label, 1);
+            } else {
+                $('#count-inventory').removeAttr("disabled");
+            }
+
+            return false;
+        }
+    });
 }
 
-function updateData(product) {
+var filterInt = function (value) {
+    if (/^(\-|\+)?([0-9]+|Infinity)$/.test(value))
+        return true;
+    return false;
 }
 
-function updateView() {
+function addStockTakeCount(product_id, name, count) {
+    for (var idx in stockTakeItems) {
+        if (stockTakeItems[idx].product_id == product_id) {
+            if (filterInt(stockTakeItems[idx].counted)) {
+                stockTakeItems[idx].counted += parseInt(count);
+            } else {
+                stockTakeItems[idx].counted = parseInt(count);
+            }
+
+            addInventoryCount(product_id, name, count);
+            updateTabContents();
+            return;
+        }
+    }
+
+    addStockTakeItem($("#outlet_id").val(), product_id, name, count);
+}
+
+function addInventoryCount(product_id, name, count) {
+    var counted = {};
+    counted['stock_take_id'] = $("#id").val();
+    counted['product_id'] = product_id;
+    counted['name'] = name;
+    counted['quantity'] = count;
+
+    if (stockTakeCounts == null) {
+        stockTakeCounts = {};
+    }
+    stockTakeCounts.push(counted);
+    updateCounted();
+}
+
+function removeInventoryCount(element, idx) {
+    var item = stockTakeCounts[idx];
+
+    for (var idx in stockTakeItems) {
+        if (stockTakeItems[idx].product_id == item['product_id']) {
+            stockTakeItems[idx].counted -= parseInt(item['quantity']);
+            updateTabContents();
+            break;
+        }
+    }
+
+    stockTakeCounts.splice(idx, 1);
+    $(element).remove();
+}
+
+function addStockTakeItem(outlet_id, product_id, name, count) {
+    $.ajax({
+        url: "/stock_takes/<?php echo $stocktake['MerchantStockTake']['id']; ?>/addItem.json",
+        method: "POST",
+        dataType: "json",
+        data: {
+            outlet_id: outlet_id,
+            product_id: product_id,
+            name: name,
+        },
+        success: function (data) {
+            console.log(data);
+            if (!data.success) {
+                alert(data.message);
+                return;
+            }
+
+            item = data.item;
+            item.counted = count;
+
+            if (stockTakeItems == null) {
+                stockTakeItems = {};
+            }
+            stockTakeItems.push(item);
+            updateTabContents();
+
+            addInventoryCount(product_id, name, count);
+        }
+    });
+}
+
+function selectTab(element, selected) {
+    $(".inventory-tab").find(".active").removeClass("active");
+    $(element).addClass("active");
+
+    selectedTab = selected;
+    updateTabContents();
+}
+
+function updateTabContents() {
     var counted = 0;
     var uncounted = 0;
 
     $("#productTable").find('tbody').empty();
 
-    for (var key in stockTakeItems) {
-        if (stockTakeItems[key]['counted'] > 0) {
+    for (var idx in stockTakeItems) {
+        if (filterInt(stockTakeItems[idx]['counted'])) {
             counted++;
 
             if (selectedTab == 'uncounted') {
@@ -356,75 +480,74 @@ function updateView() {
         }
 
         var appendString = '';
-        appendString = '<tr role="row" class="odd product-list" data-id="' + stockTakeItems[key]['id'] + '">';
-        appendString += '<td>' + stockTakeItems[key]['name'];
-        appendString += '<h6 class="inline-block-z margin-left-10">' + stockTakeItems[key]['sku'] + '</h6></td>';
-        appendString += '<td class="product-list-expected">' + stockTakeItems[key]['expected'] + '</td>';
-        appendString += '<td class="product-list-count">' + stockTakeItems[key]['counted'] + '</td>';
+        appendString += '<tr role="row" class="odd product-list" data-id="' + stockTakeItems[idx]['id'] + '">';
+        appendString += '<td>' + stockTakeItems[idx]['name'];
+        appendString += '<h6 class="inline-block-z margin-left-10">' + stockTakeItems[idx]['sku'] + '</h6></td>';
+        appendString += '<td class="product-list-expected">' + (filterInt(stockTakeItems[idx]['expected']) ? stockTakeItems[idx]['expected'] : '&nbsp;') + '</td>';
+        appendString += '<td class="product-list-count">' + (filterInt(stockTakeItems[idx]['counted']) ? stockTakeItems[idx]['counted'] : '&nbsp;') + '</td>';
         appendString += '</tr>';
         $("#productTable").find('tbody').append(appendString);
     }
-    $(".counted-no").text(counted);
-    $(".uncounted-no").text(uncounted);
+    $(".inventory-tab-all-label").text(counted + uncounted);
+    $(".inventory-tab-counted-label").text(counted);
+    $(".inventory-tab-uncounted-label").text(uncounted);
 }
 
-/*
-$(document).on("click", function(){
-    $(".product-list-count").text('0');
-    $(".added-item").each(function(){
-        var current_count = $("tbody").find("tr[data-id="+$(this).attr("data-id")+"]").find(".product-list-count").text();
-        var to_add = $(this).find(".added-item-qty").text();
-        $("tbody").find("tr[data-id="+$(this).attr("data-id")+"]").find(".product-list-count").text(parseInt(current_count) + parseInt(to_add));
-    });
-    update_product_status();
-    validate();
-});
+function updateCounted() {
+    $("#counted_list").empty();
 
-$(document).on("keyup", function(){
-    validate();
-    update_product_status();
-});
+    for (var idx in stockTakeCounts) {
+        var appendString = '';
+        appendString += '<ul class="added-item" data-id="' + idx + '">';
+        appendString += '<li class="pull-left"><span class="added-item-qty">' + stockTakeCounts[idx]['quantity'] + '</span>';
+        appendString += '&nbsp;&nbsp;' + stockTakeCounts[idx]['name'] + '</li><li class="pull-right">';
+        appendString += '<span class="remove inline-block"><span class="glyphicon glyphicon-remove"></span></span></li></ul>';
+        $("#counted_list").append(appendString);
+    }
+}
 
-function update_product_status() {
-    var count_counted = 0;
-    var count_uncounted = 0;
-    $(".product-list-count").each(function(){
-        if($(this).text() == 0){
-            $(this).parent().addClass("uncounted-product");
-            count_uncounted++;
-        } else {
-            $(this).parent().addClass("counted-product");
-            count_counted++;
+function review() {
+    $.ajax({
+        url: "/stock_takes/<?php echo $stocktake['MerchantStockTake']['id']; ?>/pause.json",
+        method: "POST",
+        dataType: "json",
+        data: {
+            'StockTakeItem' : JSON.stringify(stockTakeItems),
+            'StockTakeCount' : JSON.stringify(stockTakeCounts)
+        },
+        success: function (data) {
+            if (!data.success) {
+                alert(data.message);
+                return;
+            }
+
+            window.location = "/stock_takes/<?php echo $stocktake['MerchantStockTake']['id']; ?>/review";
         }
     });
-    $(".counted-no").text(count_counted);
-    $(".uncounted-no").text(count_uncounted);
-    
-    if($(".inventory-tab").find(".active").attr("id") == 'inventory-tab-counted') {
-        $(".product-list").hide();
-        $(".counted-product").show();
-    } else if ($(".inventory-tab").find(".active").attr("id") == 'inventory-tab-uncounted') {
-        $(".product-list").hide();
-        $(".uncounted-product").show();
-    } else {
-        $(".product-list").show();
-    }
 }
 
-function validate() {
-    if($("#search-items").attr("data-id") && $("#item-qty").val().length > 0 && $.isNumeric($("#item-qty").val())){
-        $("#count-inventory").removeAttr("disabled");
-    } else {
-        $("#count-inventory").attr("disabled","disabled");
-    }
-}
+function save() {
+    $.ajax({
+        url: "/stock_takes/<?php echo $stocktake['MerchantStockTake']['id']; ?>/pause.json",
+        method: "POST",
+        dataType: "json",
+        data: {
+            'StockTakeItem' : JSON.stringify(stockTakeItems),
+            'StockTakeCount' : JSON.stringify(stockTakeCounts)
+        },
+        error: function (e) {
+            console.log(e);
+        },
+        success: function (data) {
+            console.log(data);
+            if (!data.success) {
+                alert(data.message);
+                return;
+            }
 
-function merge_array() {
-    var stockTakeItems = [];
-    $(".added-item").each(function(){
-        stockTakeItems.push({'qty':$(this).find(".added-item-qty").text(),'product_id':$(this).attr("data-id")});
+            window.location = "/stock_takes";
+        }
     });
 }
-*/
 </script>
 <!-- END JAVASCRIPTS -->

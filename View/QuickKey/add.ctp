@@ -78,7 +78,7 @@
                 <div id="block-center" class="quick-key-body">
                     <ul class="nav nav-tabs">
                         <li class="active" role="presentation">
-                            <a href="#" data-toggle="popover" data-placement="bottom" data-container="body">Group 1</a>
+                            <a href="#">Group 1 <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i></a>
                         </li>
                         <button type="button" id="add-category" class="btn btn-white btn-add-category" data-toggle="popover" data-placement="bottom" data-container="body">
                         +
@@ -111,23 +111,24 @@
     </div>
 </div>
 <div id="popover-content" class="hide">
-    <form class="form-line" role="form">
+    <div class="form-line" role="form">
         <div class="form-group">
             <input type="hidden" class="form-control" name="id">
             <input type="hidden" class="form-control" name="type">
             <input type="text" class="form-control" name="name" placeholder="Name">
             <select class="color-control" name="background">
-                <option>Red</option>
-                <option>Blue</option>
-                <option>black</option>
-                <option>Yellow</option>
+                <option value="category-red">Red</option>
+                <option value="category-blue">Blue</option>
+                <option value="category-black">black</option>
+                <option value="category-yellow">Yellow</option>
+                <option value="category-white">White</option>
             </select> 
-            <div class= "popover-buttons">
-                <button class="btn btn-primary cancel-tab">Cancel</button>
-                <button type="submit" class="btn btn-success add-tab">Add</button>                                  
+            <div class="popover-buttons">
+                <button type="button" class="btn btn-primary cancel-tab">Cancel</button>
+                <button type="button" class="btn btn-success action-trigger">Add</button>
             </div>
         </div>
-    </form>
+    </div>
 </div>
 <!-- END CONTENT -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
@@ -181,14 +182,72 @@ jQuery(document).ready(function() {
     Layout.init(); // init layout
     Index.init();
 });
-
 /**toggle pop over */
-$("[data-toggle=popover]").popover({
+$(".glyphicon-cog").popover({
     html: true, 
     content: function() {
         return $('#popover-content').html();
-    }
+    },
 });
-
+$(document).on("click", ".glyphicon-cog", function() {
+	$(".target").removeClass("target");
+	$(".target-key").removeClass("target-key");
+	$(".popover-buttons:last").children(".btn-success").removeClass("add-category");
+	$(this).popover({
+		html: true, 
+	    content: function() {
+	        return $('#popover-content').html();
+	    },
+	});
+	var original_name = $(this).parents("a");
+	original_name.addClass("target");
+	$(".popover:last").find("input[name=name]").val(original_name.text().trim());
+	$(".popover-buttons").children(".btn-success").text("Edit");
+});
+/*
+Category Add Click Setting */
+$("#add-category").popover({
+	html: true, 
+    content: function() {
+        return $('#popover-content').html();
+    },
+});
+$("#add-category").click(function() {
+	$(".target").removeClass("target");
+	$(".target-key").removeClass("target-key");
+	$(".popover-buttons:last").children(".btn-success").text("Add");
+});
+/* 
+Quick Key Item Click Setting */
+$(document).on("click", ".quick-key-item", function() {
+	$(".target").removeClass("target");
+	$(".target-key").removeClass("target-key");
+	$(this).popover({
+		html: true, 
+	    content: function() {
+	        return $('#popover-content').html();
+	    },
+	});
+	$(this).addClass("target-key");
+});
+/*
+Action Trigger Event */
+$(document).on("click", ".action-trigger", function() {
+	if($(".target").length > 0) {
+		$(".target").attr("class", "target");
+		$(".target").html($(".popover:last").find("input[name=name]").val() + ' <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i>');
+		$(".target").addClass($(".popover:last").find("select[name=background]").val());
+	} else if($(".target-key").length > 0) {
+		var aria = $(".target-key").attr("aria-describedby");
+		$(".target-key").attr("class", "target-key quick-key-item");
+		$(".target-key").addClass($("#" + aria).find("select[name=background]").val());
+		$(".target-key").find("span").text($("#" + aria).find("input[name=name]").val());
+	} else {
+		$(".nav-tabs").append('<li class="active" role="presentation"><a href="#" class="' +$(".popover:last").find("select[name=background]").val()+ '">' + $(".popover:last").find("input[name=name]").val() + ' <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i></a></li>');
+	}
+	$(".popover").remove();
+	$(".target").removeClass("target");
+	$(".target-key").removeClass("target-key");
+});
 </script>
 <!-- END JAVASCRIPTS -->

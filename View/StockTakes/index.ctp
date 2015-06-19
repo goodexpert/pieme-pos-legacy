@@ -73,14 +73,14 @@
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
                 <div class="summary-container">
                     <div class="summary">
-                        <a class="summary-item active">Due</a>
-                        <a class="summary-item">Upcoming</a>
-                        <a class="summary-item">Complted</a>
-                        <a class="summary-item">Cancelled</a>
+                        <a class="summary-tab active" id="summary-tab-due">Due</a>
+                        <a class="summary-tab" id="summary-tab-upcoming">Upcoming</a>
+                        <a class="summary-tab" id="summary-tab-completed">Complted</a>
+                        <a class="summary-tab" id="summary-tab-cancelled">Cancelled</a>
                     </div>
                 </div>
                 <div class="stocktake-landing-list stocktakes-list">
-                    <table class="table-bordered dataTable">
+                    <table class="table-bordered dataTable" id="inventory-table">
                         <colgroup>
                             <col width="5%">
                             <col width="55%">
@@ -91,22 +91,23 @@
                             <tr role="row">
                                 <th>
                                 <?php
-                                    echo $this->Form->checkbox('select_all', array(
-                                        'id' => 'select_all',
+                                    echo $this->Form->checkbox('select-all', [
+                                        'id' => 'select-all',
                                         'class' => 'checkbox select-all',
                                         'div' => false,
                                         'label' => false,
                                         'hiddenField' => false,
-                                        'onclick' => 'toggleSelectAll();'
-                                    ));
+                                        'onclick' => 'toggleSelectAll(this)'
+                                    ]);
                                  ?>
                                 </th>
-                                <th>INVENTORY COUNT</th>
+                                <th class="table-cell-count">INVENTORY COUNT</th>
                                 <th>OUTLET</th>
                                 <th>COUNT</th>
                             </tr>
                         </thead>
                         <tbody>
+                        <!--
                         <?php if (count($data) > 0) : ?>
                             <?php foreach ($data as $item) : ?>
                                 <?php if ($item['order_status_id'] === 'stock_take_status_open') : ?>
@@ -116,14 +117,14 @@
                                 <?php endif; ?>
                                         <td>
                                         <?php
-                                            echo $this->Form->checkbox('select', array(
-                                                'id' => 'select',
+                                            echo $this->Form->checkbox('select', [
                                                 'class' => 'checkbox select',
                                                 'div' => false,
                                                 'label' => false,
                                                 'hiddenField' => false,
-                                                'onclick' => 'toggleSelect();'
-                                            ));
+                                                'data-id' => $item['id'],
+                                                'onclick' => 'toggleSelectItem()'
+                                            ]);
                                          ?>
                                         </td>
                                         <td>
@@ -142,13 +143,16 @@
                             </tr>
                         <?php endif; ?>
                         </tbody>
+                        -->
                     </table>
+                    <!--
                     <div class="footer">
                         If you're experiencing problems with your product data, <a onclick="resyncData();">resync data</a> to load it again.
                     </div>
+                    -->
                 </div>
-                <div class="no-list text-center" style="display:none;">
-                    <div class="margin-top-20"><img src="img/no-stock.png"></div>
+                <div class="stocktakes-no-list text-center" style="display:none;">
+                    <div class="margin-top-20"><img src="/img/no-stock.png"></div>
                     <h4 class="margin-bottom-20">You have no upcoming inventory counts</h4>
                     <a href="/stock_takes/create">
                         <button id="" class="btn btn-white" style="color:black">
@@ -212,7 +216,7 @@
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
-var inventoryCounts = JSON.parse($("#hidden-data").val());
+var stockTakes = JSON.parse($("#hidden-data").val());
 var selectedTab = 'due';
 
 jQuery(document).ready(function() {    
@@ -220,59 +224,234 @@ jQuery(document).ready(function() {
     Layout.init(); // init layout
     Index.init();
 
-/*
-    updateView();
+    $("body").find(".hidden-data").remove();
+    updateTabContents();
 
-    $("#inventory-tab-due").click(function(){
-        $(".inventory-tab").find(".active").removeClass("active");
-        $(this).addClass("active");
+    $(".summary-tab").click(function() {
+        var selected = '';
+        switch ($(this).attr("id")) {
+            case "summary-tab-due":
+                selected = 'due';
+                break;
+            case "summary-tab-upcoming":
+                selected = 'upcoming';
+                break;
+            case "summary-tab-completed":
+                selected = 'completed';
+                break;
+            case "summary-tab-cancelled":
+                selected = 'cancelled';
+                break;
+        }
 
-        selectedTab = 'due';
-        updateView();
+        if (selectedTab != selected) {
+            selectTab(this, selected);
+        }
     });
 
-    $("#inventory-tab-upcoming").click(function(){
-        $(".inventory-tab").find(".active").removeClass("active");
-        $(this).addClass("active");
-
-        selectedTab = 'upcoming';
-        updateView();
-    });
-
-    $("#inventory-tab-completed").click(function(){
-        $(".inventory-tab").find(".active").removeClass("active");
-        $(this).addClass("active");
-
-        selectedTab = 'completed';
-        updateView();
-    });
-
-    $("#inventory-tab-cancelled").click(function(){
-        $(".inventory-tab").find(".active").removeClass("active");
-        $(this).addClass("active");
-
-        selectedTab = 'cancelled';
-        updateView();
-    });
-
-    $(".checkbox").on("change", function(e) {
-    });
- */
-
-    $(".clickable").click(function() {
+    $(document).on("click", ".clickable", function(e) {
         window.document.location = $(this).data("href");
     });
 });
 
+function addDeleteDropBox(title) {
+    var appendString = '';
+    appendString += '<button type="button" class="btn btn-default btn-sm" data-toggle="dropdown" onclick="deleteItems()">';
+    appendString += title + '</button>';
+
+    $(".table-cell-count").append(appendString);
+}
+
+function removeDropBox() {
+    $(".table-cell-count").empty();
+    $(".table-cell-count").text("INVENTORY COUNT");
+}
+
+function deleteItem(id) {
+    $.ajax({
+        url: "/stock_takes/" + id + "/delete.json",
+        method: "POST",
+        dataType: "json",
+        success: function (data) {
+            if (!data.success) {
+                alert(data.message);
+                return;
+            }
+        }
+    });
+}
+
+function deleteItems() {
+    var item_ids = [];
+    $.each($(".checkbox"), function(e) {
+        if ($(this).attr("id") != "select-all") {
+            if ($(this).attr("checked") == "checked") {
+                var id = $(this).data("id");
+
+                for (var idx in stockTakes) {
+                    if (stockTakes[idx]['id'] == id) {
+                        deleteItem(id);
+                        stockTakes.splice(idx, 1);
+                        break;
+                    }
+                }
+            }
+        }
+    });
+
+    $(".checkbox").removeAttr("checked");
+    removeDropBox();
+    updateTabContents();
+}
+
 function resyncData() {
 }
 
-function toggleSelect() {
+function toggleSelectAll(element) {
+    if ($(element).attr("checked") == "checked") {
+        $(".checkbox").attr("checked", "checked");
+    } else {
+        $(".checkbox").removeAttr("checked");
+    }
+
+    toggleSelectItem();
 }
 
-function toggleSelectAll() {
+function toggleSelectItem() {
+    var checked = 0;
+    var cancelled = 0;
+    var completed = 0;
+    var due = 0;
+    var total = 0;
+
+    $.each($(".checkbox"), function(e) {
+        if ($(this).attr("id") != "select-all") {
+            if ($(this).attr("checked") == "checked") {
+                checked++;
+            }
+        }
+    });
+
+    for (var idx in stockTakes) {
+        if (stockTakes[idx]['order_status_id'] == 'stock_take_status_cancelled') {
+            cancelled++;
+            if (selectedTab != 'cancelled') {
+                continue;
+            }
+            total = cancelled;
+        } else if (stockTakes[idx]['order_status_id'] == 'stock_take_status_completed') {
+            completed++;
+            if (selectedTab != 'completed') {
+                continue;
+            }
+            total = completed;
+        } else if (stockTakes[idx]['order_status_id'] == 'stock_take_status_open') {
+            due++;
+            if (selectedTab != 'due') {
+                continue;
+            }
+            total = due;
+        }
+    }
+
+    switch (selectedTab) {
+        case 'due':
+        case 'upcoming':
+            if (checked == 0) {
+                removeDropBox();
+            } else {
+                $(".table-cell-count").empty();
+                addDeleteDropBox(checked + ' delete items');
+            }
+            break;
+    }
+
+    if (total != 0 && checked == total) {
+        $("#select-all").attr("checked", "checked");
+    } else {
+        $("#select-all").removeAttr("checked");
+    }
 }
 
+function selectTab(element, selected) {
+    if (selected == 'cancelled' || selected == 'completed') {
+        $("#select-all").attr("disabled", "disabled");
+    } else {
+        $("#select-all").removeAttr("disabled");
+    }
+
+    $(".checkbox").removeAttr("checked");
+    removeDropBox();
+
+    $(".summary-tab").removeClass("active");
+    $(element).addClass("active");
+
+    selectedTab = selected;
+    updateTabContents();
+}
+
+function updateTabContents() {
+    var cancelled = 0;
+    var completed = 0;
+    var due = 0;
+    var upcoming = 0;
+    var count = 0;
+
+    $("#inventory-table").find('tbody').empty();
+
+    for (var idx in stockTakes) {
+        var appendString = '<tr>';
+
+        if (stockTakes[idx]['order_status_id'] == 'stock_take_status_cancelled') {
+            cancelled++;
+
+            if (selectedTab != 'cancelled') {
+                continue;
+            }
+            count = cancelled;
+            appendString += '<td></td>';
+            appendString += '<td class="clickable" data-href="/stock_takes/' + stockTakes[idx]['id'] + '">' + stockTakes[idx]['name'];
+        } else if (stockTakes[idx]['order_status_id'] == 'stock_take_status_completed') {
+            completed++;
+
+            if (selectedTab != 'completed') {
+                continue;
+            }
+            count = completed;
+            appendString += '<td></td>';
+            appendString += '<td class="clickable" data-href="/stock_takes/' + stockTakes[idx]['id'] + '">' + stockTakes[idx]['name'];
+        //} else if (stockTakes[idx]['order_status_id'] == 'stock_take_status_open') {
+        } else {
+            due++;
+
+            if (selectedTab != 'due') {
+                continue;
+            }
+            count = due;
+            if (stockTakes[idx]['order_status_id'] == 'stock_take_status_progressed') {
+                appendString += '<td></td>';
+                appendString += '<td class="clickable" data-href="/stock_takes/' + stockTakes[idx]['id'] + '/perform">' + stockTakes[idx]['name'];
+                appendString += '<span class="text-bg-blue">In progress</span>';
+            } else {
+                appendString += '<td><input type="checkbox" class="checkbox select" data-id="' + stockTakes[idx]['id'] + '" onclick="toggleSelectItem()" value="1"/></td>';
+                appendString += '<td class="clickable" data-href="/stock_takes/' + stockTakes[idx]['id'] + '/edit">' + stockTakes[idx]['name'];
+            }
+        }
+        appendString += '</td><td>' + stockTakes[idx]['outlet_name'] + '</td>';
+        appendString += '<td>' + (stockTakes[idx]['full_count'] == 1 ? 'Full' : 'Partial') + '</td>';
+        appendString += '</tr>';
+
+        $("#inventory-table").find('tbody').append(appendString);
+    }
+
+    if (count == 0) {
+        $(".stocktakes-list").css("display", "none");
+        $(".stocktakes-no-list").css("display", "");
+    } else {
+        $(".stocktakes-list").css("display", "");
+        $(".stocktakes-no-list").css("display", "none");
+    }
+}
 /*
 function updateView() {
     var arrayMap = inventoryCounts[selectedTab];

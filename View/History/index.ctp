@@ -165,10 +165,14 @@
                             $contact_id = $sale['MerchantCustomer']['xero_contact_id'];
                             $invoice_id = $sale['RegisterSale']['xero_invoice_id'];
 
+                            $xero_edit_invoice_url = 'https://go.xero.com/AccountsReceivable/Edit.aspx?InvoiceID=' . $invoice_id;
+                            $xero_fetch_payment_url = '/xero/fetchPayment?id=' . $sale['RegisterSale']['id'];
+                            $xero_post_invoice_url = '/xero/postInvoice?id=' . $sale['RegisterSale']['id'];
+
                             if (!empty($xero_auth_token) && !empty($invoice_id)) {
-                                $xero_connect_url = '<a href="https://go.xero.com/AccountsReceivable/Edit.aspx?InvoiceID=' . $invoice_id . '" target="_blank" title="View on Xero">[Xero]</a>';
+                                $xero_connect_link = '<a href="' . $xero_edit_invoice_url . '" target="_blank" title="View on Xero"><img src="/img/xero_connect.png"/></a>';
                             } elseif (!empty($xero_auth_token) && !empty($contact_id)) {
-                                $xero_connect_url = '<a href="/xero/postInvoice?id=' . $sale['RegisterSale']['id'] . '">[Xero]</a>';
+                                $xero_connect_link = '<a href="' . $xero_post_invoice_url . '"><img src="/img/xero_connect.png"/></a>';
                             }
                         } elseif ($sale['RegisterSale']['status'] === 'sale_status_onaccount_closed') {
                             $invoice_id = $sale['RegisterSale']['xero_invoice_id'];
@@ -183,8 +187,8 @@
                         <td><?=$sale['RegisterSale']['note'];?></td>
                         <td class="history_status">
                             <?php echo $sale['RegisterSale']['status_name']; ?>
-                            <?php if (!empty($xero_connect_url)) :?>
-                                &nbsp;<?php echo $xero_connect_url; ?>
+                            <?php if (!empty($xero_connect_link)) :?>
+                                &nbsp;<?php echo $xero_connect_link; ?>
                             <?php endif; ?>
                         </td>
                         <td class="tdTotal">$<?=number_format($sale['RegisterSale']['total_price_incl_tax'],2,'.',',');?></td>
@@ -213,8 +217,8 @@
                                             Xero <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu" role="menu">
-                                            <li><a href="#">Check for Xero payments</a></li>
-                                            <li><a href="#">View on Xero</a></li>
+                                            <li><a href="<?php echo $xero_fetch_payment_url; ?>">Check for Xero payments</a></li>
+                                            <li><a href="<?php echo $xero_edit_invoice_url; ?>" target="_blank" title="View on Xero">View on Xero</a></li>
                                         </ul>
                                     </div>
                                     <?php endif; ?>

@@ -38,9 +38,11 @@
         <div class="page-container">
             <?php echo $this->fetch('content'); ?>
         </div>
+        <!--
         <div class="page-footer">
             <?php echo $this->element('footer'); ?>
         </div>
+        -->
     <div>
 </body>
 <!-- BEGIN SESSION TIMEOUT SCRIPTS -->
