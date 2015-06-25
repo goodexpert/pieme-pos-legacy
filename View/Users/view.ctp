@@ -108,7 +108,11 @@
             <div class="col-lg-6 col-md-12 col-xs-12 col-sm-12 user-info-box-bg margin-top-20">
                 <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title">Sales History</div>
                 <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-
+                    <?php if(!empty($sales)) { 
+                        foreach($sales as $sale) { ?>
+                            <?php echo $sale['RegisterSale']['sale_date'];?> // $<?php echo number_format($sale['RegisterSale']['total_price_incl_tax'],2,'.',',');?><br>
+                        <?php }
+                    } ?>
                 </div>
             </div>
         </div>
@@ -127,7 +131,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                
+                    <?php if(!empty($sales)) { 
+                        foreach($sales as $sale) { ?>
+                        <tr>
+                            <td><?php echo $sale['RegisterSale']['receipt_number'];?></td>
+                            <td><?php echo $sale['MerchantUser']['display_name'];?></td>
+                            <td><?php echo $sale['MerchantCustomer']['name'];?></td>
+                            <td><?php echo $sale['RegisterSale']['note'];?></td>
+                            <td><?php echo $sale['RegisterSale']['status'];?></td>
+                            <td></td>
+                            <td><?php echo number_format($sale['RegisterSale']['total_price_incl_tax'],2,'.',',');?></td>
+                            <td><?php echo $sale['RegisterSale']['sale_date'];?></td>
+                        </tr>
+                        <?php }
+                    } ?>
                 </tbody>
             </table>
         </div>

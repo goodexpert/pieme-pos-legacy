@@ -64,16 +64,22 @@ class HomeController extends AppController {
         if(!empty($user['current_outlet_id'])) {
             $key_id = $this->MerchantRegister->findById($user['MerchantRegister']['id'])['MerchantRegister']['quick_key_id'];
             $quick = $this->MerchantQuickKey->findById($key_id);
+            $this->set("quick_key", $quick['MerchantQuickKey']['key_layouts']);
             $quick = json_decode($quick['MerchantQuickKey']['key_layouts'],true);
             $products_ids = array();
-            foreach($quick['pages'] as $page) {
-                if(!empty($page['keys'])){
-                    foreach($page['keys'] as $product) {
-                        $arr = array(
-                            'product_id'=>$product['product_id'],
-                            'page'=>$page['page']
-                        );
-                        array_push($products_ids, $arr);
+            foreach($quick['quick_keys']['groups'] as $group) {
+                foreach($group['pages'] as $page) {
+                    if(!empty($page['keys'])){
+                        foreach($page['keys'] as $product) {
+                            $arr = array(
+                                'product_id'=>$product['product_id'],
+                                'page'=>$page['page'],
+				'color'=>$product['color'],
+				'label'=>$product['label'],
+				'group'=>$group['position']
+                            );
+                            array_push($products_ids, $arr);
+                        }
                     }
                 }
             }

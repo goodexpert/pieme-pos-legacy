@@ -32,7 +32,8 @@ class UsersController extends AppController {
         'MerchantRegister',
         'MerchantLoyalty',
         'Plan',
-        'Subscriber'
+        'Subscriber',
+        'RegisterSale'
     );
 
 /**
@@ -166,6 +167,26 @@ class UsersController extends AppController {
         $user = $this->Auth->user();
         $user = $this->MerchantUser->findById($id);
         $this->set('user',$user);
+        
+        $this->RegisterSale->bindModel(array(
+        	'belongsTo' => array(
+        		'MerchantUser' => array(
+                    'className' => 'MerchantUser',
+                    'foreignKey' => 'user_id'
+                ),
+                'MerchantCustomer' => array(
+                	'className' => 'MerchantCustomer',
+                	'foreignKey' => 'customer_id'
+                )
+        	)
+        ));
+        
+        $sales = $this->RegisterSale->find('all', array(
+        	'conditions' => array(
+        		'RegisterSale.user_id' => $id
+        	)
+        ));
+        $this->set('sales',$sales);
     }
 
 /**

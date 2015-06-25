@@ -119,186 +119,192 @@
         <div class="page-content" id="sell-index">
             <input type="hidden" id="discount_auth" value="<?php echo $user['Merchant']['allow_cashier_discount']; ?>">
             <div class="maximum">
-                <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-top-30">
+                <ul class="tab-menu-wrapper col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-top-30">
                     <!--
                     <button class="btn btn-white maxi pull-right"><i class="icon-size-fullscreen"></i></button>
                     <button class="btn btn-white mini pull-right" style="display:none;"><i class="icon-size-actual"></i></button>
                     -->
-                    <button class="btn btn-white btn-right current_open">CURRENT SALE</button>
-                    <button class="btn btn-white btn-left retrieve_open" style="margin-left: 15px;">RETRIEVE SALE </button>
-                    <a href="/home/close">
-                        <button class="btn btn-white btn-left">CLOSE REGISTER</button>
-                    </a>
-                </div>
+                    <li class="current_open active">CURRENT SALE</li>
+                    <li class="retrieve_open">RETRIEVE SALE</li>
+                    <li><a href="/home/close">CLOSE REGISTER</a></li>
+                </ul>
                 <input type="hidden" id="retrieve_sale_id">
-                <div id="block-left" class="col-md-6 col-xs-6">
-                    <div id="table-wrapper" class="col-md-12 col-sm-12 col-alpha col-omega">
-                        <div class="box col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                            <table class="added col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                                <thead>
-                                <tr class="added-header">
-                                    <th class="added-product" width="50%">Product</th>
-                                    <th class="added-qty-head" width="15%">Qty</th>
-                                    <th class="added-discount" width="15%">Price</th>
-                                    <th class="added-amount" width="12%">Amount</th>
-                                    <th class="added-remove" width="8%"></th>
-                                </tr>
-                                </thead>
-                            </table>
-                            <div class="portlet-body col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                                <div class="added-null">
-                                    <img src="img/no-order.png" alt="no-order">
-                                    <h3>NO ORDER FOUND</h3>
-                                </div>
-                                <div class="scroller setHeight" data-always-visible="1" data-rail-visible="0" style="height:359px;">
-                                    <ul class="feeds">
-                                        <li>
-                                            <div class="cont-col2">
-                                                <table class="added">
-                                                    <colgroup>
-                                                        <col width="50%">
-                                                        <col width="15%">
-                                                        <col width="15%">
-                                                        <col width="12%">
-                                                        <col width="8%">
-                                                    </colgroup>
-                                                    <tbody class="added-body">
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </li>
-                                    </ul>
+                <div class="tab-content-wrapper col-md-12 col-xs-12 col-alpha col-omega">
+                    <div id="block-left" class="col-md-6 col-xs-6">
+                        <div id="table-wrapper" class="col-md-12 col-sm-12 col-alpha col-omega">
+                            <div class="box col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                                <table class="added col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                                    <thead>
+                                    <tr class="added-header">
+                                        <th class="added-product" width="50%">Product</th>
+                                        <th class="added-qty-head" width="15%">Qty</th>
+                                        <th class="added-discount" width="15%">Price</th>
+                                        <th class="added-amount" width="12%">Amount</th>
+                                        <th class="added-remove" width="8%"></th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                                <div class="portlet-body col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                                    <div class="added-null">
+                                        <img src="img/no-order.png" alt="no-order">
+                                        <h3>NO ORDER FOUND</h3>
+                                    </div>
+                                    <div class="scroller setHeight" data-always-visible="1" data-rail-visible="0" style="height:359px;">
+                                        <ul class="feeds">
+                                            <li>
+                                                <div class="cont-col2">
+                                                    <table class="added">
+                                                        <colgroup>
+                                                            <col width="50%">
+                                                            <col width="15%">
+                                                            <col width="15%">
+                                                            <col width="12%">
+                                                            <col width="8%">
+                                                        </colgroup>
+                                                        <tbody class="added-body">
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="commands col-md-12">
-                        <?php if (!empty($user['current_outlet_id'])) { ?>
-                            <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 customer-search col-omega col-alpha">
-                                <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                                    <div class="col-md-9 col-xs-9 col-sm-9 col-alpha col-omega">
-                                        <input type="search" id="customer_search" class="search" placeholder="Customer Search">
-                                        <div class="search_result" style="display:none;">
-                                            <span class="search-tri"></span>
-                                            <div class="search-default"> No Result</div>
-                                            <?php foreach ($customers as $customer) : ?>
-                                                <button type="button"
-                                                        data-id="<?= $customer['MerchantCustomer']['id']; ?>"
-                                                        data-name="<?= $customer['MerchantCustomer']['name']; ?>"
-                                                        data-balance="<?= $customer['MerchantCustomer']['balance']; ?>"
-                                                        data-group-id="<?= $customer['MerchantCustomer']['customer_group_id']; ?>"
-                                                        class="data-found customer_apply">
-                                                    <?= $customer['MerchantCustomer']['name'] . ' (' .
-                                                    $customer['MerchantCustomer']['customer_code'] . ')<br>$' .
-                                                    number_format($customer['MerchantCustomer']['balance'], 2, '.', ''); ?>
-                                                </button>
-                                            <?php endforeach; ?>
+                        <div class="commands col-md-12">
+                            <?php if (!empty($user['current_outlet_id'])) { ?>
+                                <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 customer-search col-omega col-alpha">
+                                    <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                                        <div class="col-md-9 col-xs-9 col-sm-9 col-alpha col-omega">
+                                            <input type="search" id="customer_search" class="search" placeholder="Customer Search">
+                                            <div class="search_result" style="display:none;">
+                                                <span class="search-tri"></span>
+                                                <div class="search-default"> No Result</div>
+                                                <?php foreach ($customers as $customer) : ?>
+                                                    <button type="button"
+                                                            data-id="<?= $customer['MerchantCustomer']['id']; ?>"
+                                                            data-name="<?= $customer['MerchantCustomer']['name']; ?>"
+                                                            data-balance="<?= $customer['MerchantCustomer']['balance']; ?>"
+                                                            data-group-id="<?= $customer['MerchantCustomer']['customer_group_id']; ?>"
+                                                            class="data-found customer_apply">
+                                                        <?= $customer['MerchantCustomer']['name'] . ' (' .
+                                                        $customer['MerchantCustomer']['customer_code'] . ')<br>$' .
+                                                        number_format($customer['MerchantCustomer']['balance'], 2, '.', ''); ?>
+                                                    </button>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 col-xs-3 col-sm-3 col-alpha col-omega customer_quick_add">
+                                            <button class="btn btn-default pull-right">Add</button>
                                         </div>
                                     </div>
-                                    <div class="col-md-3 col-xs-3 col-sm-3 col-alpha col-omega customer_quick_add">
-                                        <button class="btn btn-default pull-right">Add</button>
+                                    <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12 col-omega col-alpha customer-search-result">
+                                        <dl style="display:none;">
+                                            <dt>Name</dt>
+                                            <dd id="customer-result-name"></dd>
+                                            <dt>Balance</dt>
+                                            <dd id="customer-result-balance"></dd>
+                                            <input type="hidden" id="customer-selected-id" value="<?php echo $customers[0]['MerchantCustomer']['id']; ?>">
+                                            <input type="hidden" id="customer-selected-group-id" value="<?php echo $customers[0]['MerchantCustomer']['customer_group_id']; ?>">
+                                        </dl>
+                                    </div>
+                                    <div class="col-md-12 col-xs-12 col-sm-12 buttons col-alpha col-omega">
+                                        <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
+                                            <button id="park" class="btn btn-primary">Park</button>
+                                        </div>
+                                        <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
+                                            <button class="btn btn-primary void">VOID</button>
+                                        </div>
+                                        <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
+                                            <button class="btn btn-primary discount" <?php if ($user['Merchant']['allow_cashier_discount'] == 0) { echo "disabled"; } ?>>Discount </button>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-12 col-md-12 col-xs-12 col-sm-12 col-omega col-alpha customer-search-result">
-                                    <dl style="display:none;">
-                                        <dt>Name</dt>
-                                        <dd id="customer-result-name"></dd>
-                                        <dt>Balance</dt>
-                                        <dd id="customer-result-balance"></dd>
-                                        <input type="hidden" id="customer-selected-id" value="<?php echo $customers[0]['MerchantCustomer']['id']; ?>">
-                                        <input type="hidden" id="customer-selected-group-id" value="<?php echo $customers[0]['MerchantCustomer']['customer_group_id']; ?>">
-                                    </dl>
-                                </div>
-                                <div class="col-md-12 col-xs-12 col-sm-12 buttons col-alpha col-omega">
-                                    <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
-                                        <button id="park" class="btn btn-primary">Park</button>
+                                <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 col-omega">
+                                    <div class="receipt"></div>
+                                    <div class="col-md-12 col-xs-12 col-sm-12 show-amount">
+                                        <ul class="receipt-text">
+                                            <li class="pull-left">Subtotal</li>
+                                            <li class="pull-right">$
+                                                <text class="subTotal">0.00</text>
+                                            </li>
+                                        </ul>
+                                        <ul class="receipt-text">
+                                            <li class="pull-left">Tax (GST)</li>
+                                            <li class="pull-right">$
+                                                <text class="gst">0.00</text>
+                                            </li>
+                                        </ul>
+                                        <ul class="receipt-text">
+                                            <li class="pull-left">TOTAL</li>
+                                            <li class="pull-right">$
+                                                <text class="total">0.00</text>
+                                            </li>
+                                        </ul>
+                                        <div class="solid-line"></div>
+                                        <ul class="receipt-text">
+                                            <li class="pull-left h4">TO PAY</li>
+                                            <li class="pull-right h4">$
+                                                <text class="toPay">0.00</text>
+                                            </li>
+                                        </ul>
+                                        <input type="button" value="PAY" id="pay" class="btn">
                                     </div>
-                                    <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
-                                        <button class="btn btn-primary void">VOID</button>
-                                    </div>
-                                    <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
-                                        <button class="btn btn-primary discount" <?php if ($user['Merchant']['allow_cashier_discount'] == 0) { echo "disabled"; } ?>>Discount </button>
-                                    </div>
+                                    <div class="receipt-bt"></div>
                                 </div>
-                            </div>
-                            <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 col-omega">
-                                <div class="receipt"></div>
-                                <div class="col-md-12 col-xs-12 col-sm-12 show-amount">
-                                    <ul class="receipt-text">
-                                        <li class="pull-left">Subtotal</li>
-                                        <li class="pull-right">$
-                                            <text class="subTotal">0.00</text>
-                                        </li>
-                                    </ul>
-                                    <ul class="receipt-text">
-                                        <li class="pull-left">Tax (GST)</li>
-                                        <li class="pull-right">$
-                                            <text class="gst">0.00</text>
-                                        </li>
-                                    </ul>
-                                    <ul class="receipt-text">
-                                        <li class="pull-left">TOTAL</li>
-                                        <li class="pull-right">$
-                                            <text class="total">0.00</text>
-                                        </li>
-                                    </ul>
-                                    <div class="solid-line"></div>
-                                    <ul class="receipt-text">
-                                        <li class="pull-left h4">TO PAY</li>
-                                        <li class="pull-right h4">$
-                                            <text class="toPay">0.00</text>
-                                        </li>
-                                    </ul>
-                                    <input type="button" value="PAY" id="pay" class="btn">
-                                </div>
-                                <div class="receipt-bt"></div>
-                            </div>
-                        <?php } ?>
-                    </div>
-                </div>
-                <div class="col-md-6 col-xs-6 col-sm-6 col-alpha col-omega pull-right">
-                    <div id="block-right-search" class="col-md-12 col-xs-12 col-sm-12">
-                        <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                            <div class="col-lg-9 col-md-9 col-xs-9 col-sm-9 col-alpha col-omega">
-                                <input type="search" id="product_search" class="search" placeholder="Product Search" autocomplete="off">
-                            </div>
-                            <div class="col-lg-3 col-md-3 col-xs-3 col-sm-3 col-omega">
-                                <button id="image-view-c" class="btn btn-white btn-right pull-right active">
-                                    <div class="glyphicon glyphicon-th-large"></div>
-                                </button>
-                                <button id="button-view-c" class="btn btn-white btn-left pull-right">
-                                    <div class="glyphicon glyphicon-th"></div>
-                                </button>
-                            </div>
+                            <?php } ?>
                         </div>
                     </div>
-                    <div id="block-right" class="col-md-12 col-xs-12 col-sm-12">
-                        <div class="col-md-12 col-xs-12 col-sm-12 product-list col-alpha col-omega">
-                            <div class="scroller" data-always-visible="1" data-rail-visible="0" style="height: 456px;">
-                                <ul class="feeds">
-                                    <li>
-                                        <?php
-                                        if (!empty($key_layout)) {
-                                            foreach ($key_layout as $product) { ?>
-                                                <div class="col-md-4 col-xs-12 col-sm-6 product clickable col-alpha col-omega" data-id="<?php echo $key_items[$product['product_id']]['MerchantProduct']['id']; ?>" page="<?php echo $product['page']; ?>" data-uom="<?php if (!empty($key_items[$product['product_id']]['ProductUom'])) { echo $key_items[$product['product_id']]['ProductUom']['ProductUomCategory']['name']; } ?>" data-symbol="<?php if (!empty($key_items[$product['product_id']]['ProductUom'])) { echo $key_items[$product['product_id']]['ProductUom']['symbol']; } ?>">
-                                                    <div class="product-container">
-                                                        <div class="product-img">
-                                                            <img src="<?php if ($key_items[$product['product_id']]['MerchantProduct']['image'] == null) { echo '/img/no-image.png'; } else { echo $key_items[$product['product_id']]['MerchantProduct']['image']; } ?>" alt="<?php echo $key_items[$product['product_id']]['MerchantProduct']['name']; ?>">
-                                                        </div>
-                                                        <div class="product-info">
-                                                            <div class="product-name">
-                                                                <p><?= $key_items[$product['product_id']]['MerchantProduct']['name']; ?></p>
-                                                            </div>
-                                                            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega price-wrap">
-                                                                <div class="product-price col-lg-5 col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                                                                    <b>$<span class="price_including_tax">
-                                                                <?php
+                    <div class="col-md-6 col-xs-6 col-sm-6 col-alpha col-omega pull-right">
+                        <div id="block-right-search" class="col-md-12 col-xs-12 col-sm-12">
+                            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                                <div class="col-lg-9 col-md-9 col-xs-9 col-sm-9 col-alpha col-omega">
+                                    <input type="search" id="product_search" class="search" placeholder="Product Search" autocomplete="off">
+                                </div>
+                                <div class="col-lg-3 col-md-3 col-xs-3 col-sm-3 col-omega">
+                                    <button id="image-view-c" class="btn btn-white btn-right pull-right active">
+                                        <div class="glyphicon glyphicon-th-large"></div>
+                                    </button>
+                                    <button id="button-view-c" class="btn btn-white btn-left pull-right">
+                                        <div class="glyphicon glyphicon-th"></div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="block-right" class="col-md-12 col-xs-12 col-sm-12 quick-key-body ">
+                            <ul class="nav nav-tabs">
+                                <?php $keyArray = json_decode($quick_key, true); 
+                                foreach($keyArray['quick_keys']['groups'] as $group) { ?>
+                                    <li position="<?php echo $group['position']; ?>" class="<?php if($group['position'] == 0){echo "active";} ?>" role="presentation">
+                                        <a href="#" class="<?php echo $group['color']; ?>"><?php echo $group['name']; ?> <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i></a>
+                                    </li>
+                                <?php } ?>
+                            </ul>
+                            <div class="quick-key-list">
+                                <ul id="sortable" class="ui-sortable">
+                                    <?php if(!empty($key_layout)) {
+                                        foreach($key_layout as $product) { ?>
+                                            <li class="quick-key-item clickable <?php echo $product['color']; ?>" 
+                                            style="<?php if($product['group'] > 0 || $product['page'] > 1){echo "display: none;"; } ?>" 
+                                            group="<?php echo $product['group']; ?>" 
+                                            data-id="<?php echo $product['product_id']; ?>"
+                                            page="<?php echo $product['page']; ?>" 
+                                            background="<?php echo $product['color']; ?>"
+                                            data-uom="<?php if(!empty($key_items[$product['product_id']]['ProductUom'])){echo $key_items[$product['product_id']]['ProductUom']['ProductUomCategory']['name'];}?>" 
+                                            data-symbol="<?php if(!empty($key_items[$product['product_id']]['ProductUom'])){echo $key_items[$product['product_id']]['ProductUom']['symbol'];}?>">
+                                                <div class="product-container">
+                                                    <div class="product-info">
+                                                        <div class="product-name"><p><?php echo $product['label']; ?></p></div>
+                                                        <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega price-wrap" style="display: none;">
+                                                            <div class="product-price col-lg-5 col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                                                                <b>$<span class="price_including_tax">
+                                                                    <?php
                                                                     $priceAvailable = false;
-                                                                    foreach ($pricebooks as $pricebook) {
-                                                                        if ($pricebook['MerchantPriceBook']['outlet_id'] == $user['current_outlet_id']) {
-                                                                            foreach ($pricebook['MerchantPriceBookEntry'] as $entry) {
-                                                                                if ($entry['product_id'] == $key_items[$product['product_id']]['MerchantProduct']['id'] && $entry['min_units'] == null && $entry['max_units'] == null) {
-                                                                                    echo number_format($entry['price_include_tax'], 2, '.', '');
+                                                                    foreach($pricebooks as $pricebook) {
+                                                                        if($pricebook['MerchantPriceBook']['outlet_id'] == $user['current_outlet_id']) {
+                                                                            foreach($pricebook['MerchantPriceBookEntry'] as $entry) {
+                                                                                if($entry['product_id'] == $key_items[$product['product_id']]['MerchantProduct']['id'] && $entry['min_units'] == null && $entry['max_units'] == null) {
+                                                                                    echo number_format($entry['price_include_tax'],2,'.','');
                                                                                     $priceAvailable = true;
                                                                                     break;
                                                                                 }
@@ -306,21 +312,21 @@
                                                                             break;
                                                                         }
                                                                     }
-                                                                    foreach ($pricebooks as $pricebook) {
-                                                                        if ($priceAvailable == false) {
-                                                                            if ($pricebook['MerchantPriceBook']['outlet_id'] == $user['current_outlet_id']) {
-                                                                                foreach ($pricebook['MerchantPriceBookEntry'] as $entry) {
-                                                                                    if ($entry['product_id'] == $key_items[$product['product_id']]['MerchantProduct']['id'] && $entry['min_units'] == null && $entry['max_units'] == null) {
-                                                                                        echo number_format($entry['price_include_tax'], 2, '.', '');
+                                                                    foreach($pricebooks as $pricebook) {
+                                                                        if($priceAvailable == false) {
+                                                                            if($pricebook['MerchantPriceBook']['outlet_id'] == $user['current_outlet_id']) {
+                                                                                foreach($pricebook['MerchantPriceBookEntry'] as $entry){
+                                                                                    if($entry['product_id'] == $key_items[$product['product_id']]['MerchantProduct']['id'] && $entry['min_units'] == null && $entry['max_units'] == null) {
+                                                                                        echo number_format($entry['price_include_tax'],2,'.','');
                                                                                         $priceAvailable = false;
                                                                                         break 2;
                                                                                     }
                                                                                 }
                                                                             }
-                                                                            if ($pricebook['MerchantPriceBook']['is_default'] == 1) {
-                                                                                foreach ($pricebook['MerchantPriceBookEntry'] as $entry) {
-                                                                                    if ($entry['product_id'] == $key_items[$product['product_id']]['MerchantProduct']['id'] && $entry['min_units'] == null && $entry['max_units'] == null) {
-                                                                                        echo number_format($entry['price_include_tax'], 2, '.', '');
+                                                                            if($pricebook['MerchantPriceBook']['is_default'] == 1) {
+                                                                                foreach($pricebook['MerchantPriceBookEntry'] as $entry){
+                                                                                    if($entry['product_id'] == $key_items[$product['product_id']]['MerchantProduct']['id'] && $entry['min_units'] == null && $entry['max_units'] == null) {
+                                                                                        echo number_format($entry['price_include_tax'],2,'.','');
                                                                                         $priceAvailable = false;
                                                                                         break;
                                                                                     }
@@ -329,70 +335,68 @@
                                                                         }
                                                                     }
                                                                     ?>
-                                                                    </span></b>
-                                                                </div>
-                                                                <?php if ($key_items[$product['product_id']]['MerchantProduct']['track_inventory'] == 1 && !empty($key_items[$product['product_id']]['MerchantProductInventory'])) { ?>
-                                                                    <div class="product-stock col-lg-7 col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                                                                        <small>In Stock: <?php echo $key_items[$product['product_id']]['MerchantProductInventory'][0]['count']; ?></small>
-                                                                    </div>
-                                                                <?php } ?>
+                                                                </span></b>
                                                             </div>
+                                                            <?php if($key_items[$product['product_id']]['MerchantProduct']['track_inventory'] == 1 && !empty($key_items[$product['product_id']]['MerchantProductInventory'])) { ?>
+                                                            <div class="product-stock col-lg-7 col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                                                                <small>In Stock: <?php echo $key_items[$product['product_id']]['MerchantProductInventory'][0]['count'];?></small>
+                                                            </div>
+                                                            <?php } ?>
                                                         </div>
-                                                        <div class="product-unit-table hidden">
-                                                            <table class="col-md-12">
-                                                                <tr>
-                                                                    <th>Min.</th>
-                                                                    <th>Max.</th>
-                                                                    <th>Price</th>
-                                                                </tr>
-                                                                <?php foreach ($pricebooks as $pricebook) {
-                                                                    foreach ($pricebook['MerchantPriceBookEntry'] as $entry) {
-                                                                        if ($entry['product_id'] == $key_items[$product['product_id']]['MerchantProduct']['id'] && isset($entry['min_units'])) { ?>
-                                                                            <tr class="price-book-row"
-                                                                                data-id="<?php echo $entry['product_id']; ?>"
-                                                                                group-id="<?php if ($pricebook['MerchantPriceBook']['customer_group_id'] == $groups[0]['MerchantCustomerGroup']['id']) {
-                                                                                    echo '';
-                                                                                } else {
-                                                                                    echo $pricebook['MerchantPriceBook']['customer_group_id'];
-                                                                                } ?>">
-                                                                                <td class="item_min"><?php echo $entry['min_units']; ?></td>
-                                                                                <td class="item_max"><?php echo $entry['max_units']; ?></td>
-                                                                                <td class="item_price"><?php echo number_format($entry['price_include_tax'], 2, '.', ''); ?></td>
-                                                                            </tr>
-                                                                        <?php }
-                                                                    }
-                                                                } ?>
-                                                            </table>
-                                                        </div>
-                                                        <input type="hidden" class="product-name" value="<?= $key_items[$product['product_id']]['MerchantProduct']['name']; ?>">
-                                                        <input type="hidden" class="product-retail_price" value="<?= $key_items[$product['product_id']]['MerchantProduct']['price']; ?>">
-                                                        <input type="hidden" class="product-tax" value="<?= $key_items[$product['product_id']]['MerchantProduct']['tax']; ?>">
-                                                        <input type="hidden" class="product-supply_price" value="<?= $key_items[$product['product_id']]['MerchantProduct']['supply_price']; ?>">
                                                     </div>
+                                                    <div class="product-unit-table hidden">
+                                                        <table class="col-md-12">
+                                                            <tr>
+                                                                <th>Min.</th>
+                                                                <th>Max.</th>
+                                                                <th>Price</th>
+                                                            </tr>
+                                                        <?php foreach($pricebooks as $pricebook) {
+                                                            foreach($pricebook['MerchantPriceBookEntry'] as $entry) {
+                                                                if($entry['product_id'] == $key_items[$product['product_id']]['MerchantProduct']['id'] && isset($entry['min_units'])) { ?>
+                                                                    <tr class="price-book-row"
+                                                                     data-id="<?php echo $entry['product_id'];?>"
+                                                                     group-id="<?php if($pricebook['MerchantPriceBook']['customer_group_id'] == $groups[0]['MerchantCustomerGroup']['id']){
+                                                                        echo '';
+                                                                    } else {
+                                                                        echo $pricebook['MerchantPriceBook']['customer_group_id'];
+                                                                    }?>">
+                                                                        <td class="item_min"><?php echo $entry['min_units'];?></td>
+                                                                        <td class="item_max"><?php echo $entry['max_units'];?></td>
+                                                                        <td class="item_price"><?php echo number_format($entry['price_include_tax'],2,'.','');?></td>
+                                                                    </tr>
+                                                                <?php }
+                                                            }
+                                                        }?>
+                                                        </table>
+                                                    </div>
+                                                    <input type="hidden" class="product-retail_price" value="<?=$key_items[$product['product_id']]['MerchantProduct']['price'];?>">
+                                                    <input type="hidden" class="product-tax" value="<?=$key_items[$product['product_id']]['MerchantProduct']['tax'];?>">
+                                                    <input type="hidden" class="product-supply_price" value="<?=$key_items[$product['product_id']]['MerchantProduct']['supply_price'];?>">
                                                 </div>
-                                            <?php }} ?>
-                                    </li>
+                                            </li>
+                                        <?php }
+                                    } ?>
                                 </ul>
                             </div>
-                        </div>
-                        <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega product-list-footer">
-                            <span class="pull-left clickable prev"><i class="glyphicon glyphicon-chevron-left"></i></span>
-                            <span class="pull-right clickable next"><i class="glyphicon glyphicon-chevron-right"></i></span>
-                            <span class="page clickable selected">1</span>
-                            <?php if (!empty($key_layout)) {
-                                $last_page = $key_layout[count($key_layout) - 1]['page'];
-                                if ($last_page > 1) {
-                                    for ($i = 2; $i <= $last_page; $i++)
-                                        echo '<span class="page clickable">' . $i . '</span>';
-                                }
-                            } ?>
-                        </div>
-                        <div class="col-md-12 col-xs-12 col-sm-12 product-found-list col-alpha col-omega" style="display: none;">
-                            <div class="scroller" data-always-visible="1" data-rail-visible="0" style="height: 456px;">
-                                <ul class="feeds">
-                                    <li>
-                                    </li>
+                            <div class="quick-key-list product-found-list" style="display: none;">
+                                <ul id="sortable" class="ui-sortable">
+                                
                                 </ul>
+                            </div>
+                            <div class="quick-key-list-footer">
+                                <span class="pull-left clickable prev"><i class="glyphicon glyphicon-chevron-left"></i></span>
+                                <span class="pull-right clickable next"><i class="glyphicon glyphicon-chevron-right"></i></span>
+                                <?php
+                                $pages = count($keyArray['quick_keys']['groups'][0]['pages']);
+                                foreach($keyArray['quick_keys']['groups'] as $group) {
+                                    if(count($group['pages']) > $pages) {
+                                        $pages = count($group['pages']);
+                                    }
+                                }
+                                for($i = 1;$i <= $pages; $i++){?>
+                                    <span rel="<?php echo $i;?>" class="page clickable <?php if($i == 1){echo "selected";}?>"><?php echo $i;?></span>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>
@@ -410,63 +414,64 @@
                 </div>
             </div>
         </div>
-        <div id="retrieve-sale" class="page-content hidden">
-            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-bottom-20">
-                <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">Select a Sale to Open</h2>
-                <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
-                    <button class="btn btn-white pull-right btn-right margin-right-5 current_open">CURRENT SALE</button>
-                    <button class="btn btn-white pull-right btn-left retrieve_open">RETRIEVE SALE</button>
-                    <a href="/home/close">
-                        <button class="btn btn-white pull-right btn-left">CLOSE REGISTER</button>
-                    </a>
-                </div>
-            </div>
-            <table id="retrieveTable" class="table-bordered">
-                <thead>
-                <tr>
-                    <th>Date/time</th>
-                    <th>Status</th>
-                    <th>User</th>
-                    <th>Customer</th>
-                    <th>Code</th>
-                    <th>Total</th>
-                    <th>Note</th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($retrieves as $sale) { ?>
-                    <tr class="clickable retrieve_sale" data-id="<?= $sale['RegisterSale']['id']; ?>" data-customer-id="<?php echo $sale['MerchantCustomer']['id']; ?>" data-customer-name="<?php echo $sale['MerchantCustomer']['name']; ?>" data-customer-balance="<?php echo $sale['MerchantCustomer']['balance']; ?>" data-count="<?= count($sale['RegisterSaleItem']); ?>">
-                        <td><?= $sale['RegisterSale']['created']; ?></td>
-                        <td><?= $sale['RegisterSale']['status']; ?></td>
-                        <td><?= $sale['MerchantUser']['username']; ?></td>
-                        <td><?= $sale['MerchantCustomer']['name']; ?></td>
-                        <td><?= $sale['MerchantCustomer']['customer_code']; ?></td>
-                        <td><?= number_format($sale['RegisterSale']['total_price_incl_tax'], 2, '.', ''); ?></td>
-                        <td><?= $sale['RegisterSale']['note']; ?></td>
-                        <td>
-                            <?php foreach ($sale['RegisterSaleItem'] as $get) { ?>
-                                <span class="hidden retrieve-child-products">
-                                <span class="retrieve-child-id"><?= $get['MerchantProduct']['id']; ?></span>
-                                <span class="retrieve-child-name"><?= $get['MerchantProduct']['name']; ?></span>
-                                <span class="retrieve-child-supply-price"><?php echo number_format($get['MerchantProduct']['supply_price'], 2, '.', ''); ?></span>
-                                <span class="retrieve-child-price"><?php echo number_format($get['MerchantProduct']['price'], 2, '.', ''); ?></span>
-                                <span class="retrieve-child-price-incl-tax"><?= number_format($get['MerchantProduct']['price_include_tax'], 2, '.', ''); ?></span>
-                                <span class="retrieve-child-tax"><?= number_format($get['MerchantProduct']['tax'], 2, '.', ''); ?></span>
-                                <span class="retrieve-child-qty"><?php echo $get['quantity']; ?></span>
-                            </span>
-                            <?php } ?>
-                            <?php foreach ($sale['RegisterSalePayment'] as $paid) { ?>
-                                <span class="hidden retrieve-child-payments">
-                                    <input type="hidden" class="payments-name" value="<?php echo $paid['MerchantPaymentType']['name']; ?>">
-                                    <input type="hidden" class="payments-amount" value="<?php echo number_format($paid['amount'], 2, '.', ''); ?>">
-                                </span>
-                            <?php } ?>
-                        </td>
+        <div id="retrieve-sale" class="hidden">
+            <ul class="tab-menu-wrapper col-md-12 col-xs-12 col-sm-12 col-alpha col-omega" style="margin-top: 5px;">
+                <!--
+                <button class="btn btn-white maxi pull-right"><i class="icon-size-fullscreen"></i></button>
+                <button class="btn btn-white mini pull-right" style="display:none;"><i class="icon-size-actual"></i></button>
+                -->
+                <li class="current_open active">CURRENT SALE</li>
+                <li class="retrieve_open">RETRIEVE SALE</li>
+                <li><a href="/home/close">CLOSE REGISTER</a></li>
+            </ul>
+            <div class="tab-content-wrapper col-md-12 col-xs-12 col-sm-12 col-alpha col-omega" style="padding-top: 8px;">
+                <table id="retrieveTable" class="table-bordered">
+                    <thead>
+                    <tr>
+                        <th>Date/time</th>
+                        <th>Status</th>
+                        <th>User</th>
+                        <th>Customer</th>
+                        <th>Code</th>
+                        <th>Total</th>
+                        <th>Note</th>
+                        <th></th>
                     </tr>
-                <?php } ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($retrieves as $sale) { ?>
+                        <tr class="clickable retrieve_sale" data-id="<?= $sale['RegisterSale']['id']; ?>" data-customer-id="<?php echo $sale['MerchantCustomer']['id']; ?>" data-customer-name="<?php echo $sale['MerchantCustomer']['name']; ?>" data-customer-balance="<?php echo $sale['MerchantCustomer']['balance']; ?>" data-count="<?= count($sale['RegisterSaleItem']); ?>">
+                            <td><?= $sale['RegisterSale']['created']; ?></td>
+                            <td><?= $sale['RegisterSale']['status']; ?></td>
+                            <td><?= $sale['MerchantUser']['username']; ?></td>
+                            <td><?= $sale['MerchantCustomer']['name']; ?></td>
+                            <td><?= $sale['MerchantCustomer']['customer_code']; ?></td>
+                            <td><?= number_format($sale['RegisterSale']['total_price_incl_tax'], 2, '.', ''); ?></td>
+                            <td><?= $sale['RegisterSale']['note']; ?></td>
+                            <td>
+                                <?php foreach ($sale['RegisterSaleItem'] as $get) { ?>
+                                    <span class="hidden retrieve-child-products">
+                                    <span class="retrieve-child-id"><?= $get['MerchantProduct']['id']; ?></span>
+                                    <span class="retrieve-child-name"><?= $get['MerchantProduct']['name']; ?></span>
+                                    <span class="retrieve-child-supply-price"><?php echo number_format($get['MerchantProduct']['supply_price'], 2, '.', ''); ?></span>
+                                    <span class="retrieve-child-price"><?php echo number_format($get['MerchantProduct']['price'], 2, '.', ''); ?></span>
+                                    <span class="retrieve-child-price-incl-tax"><?= number_format($get['MerchantProduct']['price_include_tax'], 2, '.', ''); ?></span>
+                                    <span class="retrieve-child-tax"><?= number_format($get['MerchantProduct']['tax'], 2, '.', ''); ?></span>
+                                    <span class="retrieve-child-qty"><?php echo $get['quantity']; ?></span>
+                                </span>
+                                <?php } ?>
+                                <?php foreach ($sale['RegisterSalePayment'] as $paid) { ?>
+                                    <span class="hidden retrieve-child-payments">
+                                        <input type="hidden" class="payments-name" value="<?php echo $paid['MerchantPaymentType']['name']; ?>">
+                                        <input type="hidden" class="payments-amount" value="<?php echo number_format($paid['amount'], 2, '.', ''); ?>">
+                                    </span>
+                                <?php } ?>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     <!-- PAY POPUP BOX -->
@@ -877,11 +882,14 @@ jQuery(document).ready(function () {
     $("#retrieveTable_length").hide();
 
     $(document).on("click", ".current_open", function () {
+        $(".active").removeClass("active");
+        $(".current_open").addClass("active");
         $("#retrieve-sale").addClass("hidden");
         $("#sell-index").removeClass("hidden");
     });
     $(document).on("click", ".retrieve_open", function () {
-        //$("#retrieve-sale").load(location.pathname +'#retrieve-sale');
+        $(".active").removeClass("active");
+        $(".retrieve_open").addClass("active");
         $("#retrieve-sale").removeClass("hidden");
         $("#sell-index").addClass("hidden");
     });
@@ -1056,28 +1064,28 @@ jQuery(document).ready(function () {
         found_page = 1;
         var val = $.trim(this.value).toUpperCase();
         if (val == "") {
-            $(".product").hide();
-            $("div[page=" + $(".selected").text() + "]").show();
-            $(".product-list").show();
+            $(".quick-key-item").hide();
+            $("li[page="+$(".selected").text()+"][group="+$(".nav-tabs").find(".active").attr("position")+"]").show();
+            $(".quick-key-list").show();
             $(".product-found-list").hide();
         } else {
-            $(".product").removeClass('search_target');
+            $(".quick-key-item").removeClass('search_target');
             $(".product-name").filter(function () {
                 return -1 != $(this).text().toUpperCase().indexOf(val);
-            }).parent().parent().parent().addClass('search_target');
+            }).parent().parent().parent().addClass('search_target').show();
 
-            $(".product-found-list").find('li').html('');
+            $(".product-found-list").find('ul').html('');
             $(".search_target").each(function () {
                 found_count++;
                 if (found_count == 10) {
                     found_page++;
                     found_count = 0;
-                    $(".product-found-list").find('li').append($(this).clone().attr("page", found_page));
+                    $(".product-found-list").find('ul').append($(this).clone().attr("page", found_page));
                 } else {
-                    $(".product-found-list").find('li').append($(this).clone().attr("page", found_page));
+                    $(".product-found-list").find('ul').append($(this).clone().attr("page", found_page));
                 }
             });
-            $(".product-list").hide();
+            $(".quick-key-list").hide();
             $(".product-found-list").show();
         }
     });
@@ -1455,9 +1463,6 @@ jQuery(document).ready(function () {
         assign_pricebook();
     });
 
-    $(".product").hide();
-    $(".product[page=1]").show();
-
     $(".print").click(function () {
         $(this).hide();
         $("#receipt").jqprint();
@@ -1467,7 +1472,7 @@ jQuery(document).ready(function () {
     $(document).on("click", "#button-view-c", function () {
         $(this).addClass("active");
         $("#image-view-c").removeClass("active");
-        $(".product").attr("class", "col-md-3 col-md-4 col-sm-4 col-xs-6 product clickable col-alpha col-omega button-view");
+        $(".quick-key-item").attr("class", "col-md-3 col-md-4 col-sm-4 col-xs-6 product clickable col-alpha col-omega button-view");
         $(".product-container").addClass("no-border");
         $(".product-container").addClass("no-margin");
         $(".product-container").addClass("full-width");
@@ -1482,7 +1487,7 @@ jQuery(document).ready(function () {
         var productList = 1;
         var productTotal = 1;
         var pageNav = 1;
-        $(".product").each(function () {
+        $(".quick-key-item").each(function () {
             if (productList <= 32) {
                 $(this).attr("page", pageNav);
             }
@@ -1493,7 +1498,7 @@ jQuery(document).ready(function () {
             productList++;
             productTotal++;
         });
-        $(".product").hide();
+        $(".quick-key-item").hide();
         $("div[page=1]").show();
         $(".page").removeClass("selected");
         var productPage = 1;
@@ -1523,7 +1528,7 @@ jQuery(document).ready(function () {
     $(document).on("click", "#image-view-c", function () {
         $(this).addClass("active");
         $("#button-view-c").removeClass("active");
-        $(".product").attr("class", "col-md-4 col-sm-4 col-xs-4 product clickable col-alpha col-omega");
+        $(".quick-key-item").attr("class", "col-md-4 col-sm-4 col-xs-4 product clickable col-alpha col-omega");
         $(".product-container").removeClass("no-border");
         $(".product-container").removeClass("no-margin");
         $(".product-container").removeClass("full-width");
@@ -1535,7 +1540,7 @@ jQuery(document).ready(function () {
         $(".product-name").removeClass("vertical-padding-8");
         $(".price-wrap").removeClass("hidden");
 
-        for (var j = 1; j <= Math.ceil($(".product").length / 6); j++) {
+        for (var j = 1; j <= Math.ceil($(".quick-key-item").length / 6); j++) {
             var i = 1;
             $("div[page=" + j + "]").each(function () {
                 if (i >= 7) {
@@ -1722,7 +1727,7 @@ function priceCalculator() {
 <script src="js/jquery.keypad.js"></script>
 <script>
 var listCount = 0;
-$(document).on('click', '.product', function () {
+$(document).on('click', '.quick-key-item', function () {
     if ($(this).attr("data-symbol") !== '') {
         var symbol = '/' + $(this).attr("data-symbol");
     } else {
@@ -1757,17 +1762,17 @@ $(document).on('click', '.page', function () {
     $(".page").removeClass("selected");
     $(this).removeClass("clickable");
     $(this).addClass("selected");
-    $(".product").hide();
-    $("div[page=" + $(this).text() + "]").show();
+    $(".quick-key-item").hide();
+    $("li[page="+$(this).text()+"][group="+$(".nav-tabs").find(".active").attr("position")+"]").show();
 });
 
 $(document).on('click', '.prev', function () {
-    var targetPage = $(".product-list-footer").children(".selected");
+    var targetPage = $(".quick-key-list-footer").children(".selected");
     if (targetPage.text() > 1) {
         targetPage.removeClass("selected");
         var destination = targetPage.prev();
-        $(".product").hide();
-        $("div[page=" + destination.text() + "]").show();
+        $(".quick-key-item").hide();
+        $("li[page="+destination.text()+"]").show();
         destination.addClass("selected");
     }
 });
@@ -1781,6 +1786,13 @@ $(document).on('click', '.next', function () {
         $("div[page=" + destination.text() + "]").show();
         destination.addClass("selected");
     }
+});
+
+$(document).on("click", "li[role=presentation]", function() {
+    $(".nav-tabs").find(".active").removeClass("active");
+    $(this).addClass("active");
+    $(".quick-key-item").hide();
+    $(".quick-key-item[group="+$(this).attr("position")+"][page="+$(".quick-key-list-footer").find(".selected").attr("rel")+"]").show();
 });
 
 $(document).on('click', '.price-control', function () {

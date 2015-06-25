@@ -48,18 +48,24 @@ class QuickKeyController extends AppController {
     }
 
     public function add(){
-        /*
         if ($this->request->is('post')) {
             $result = array(
                 'success' => false
             );
+            $dataSource = $this->MerchantQuickKey->getDataSource();
+            $dataSource->begin();
+
             try {
                 $data = $this->request->data;
                 $data['merchant_id'] = $this->Auth->user()['merchant_id'];
                 
                 $this->MerchantQuickKey->create();
                 $this->MerchantQuickKey->save($data);
+                
+                $result['success'] = true;
+                $dataSource->commit();
             } catch (Exception $e) {
+                $dataSource->rollback();
                 $result['message'] = $e->getMessage();
             }
             $this->serialize($result);
@@ -72,7 +78,6 @@ class QuickKeyController extends AppController {
             )
         ));
         $this->set("items",$items);
-         */
     }
 
     public function edit($id){
