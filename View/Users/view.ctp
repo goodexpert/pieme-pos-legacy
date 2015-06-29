@@ -101,9 +101,34 @@
         <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
             <div class="col-lg-6 col-md-12 col-xs-12 col-sm-12 user-info-box-bg margin-top-20">
                 <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title">Sales Targets</div>
-                <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-
+                <div id="colchart_diff" class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                    <span id='colchart_before' style='display: inline-block'></span>
+                    <span id='colchart_after' style='display: inline-block'></span>
+                    <span id='colchart_diff' style='display: inline-block'></span>
+                    <span id='barchart_diff' style='display: inline-block'></span>
                 </div>
+                <input type="hidden" id="daily_target" value="<?php if($user['daily_target'] == 0){echo 0;} else {echo $user['daily_target'];} ?>">
+                <input type="hidden" id="weekly_target" value="<?php if($user['weekly_target'] == 0){echo 0;} else {echo $user['weekly_target'];} ?>">
+                <input type="hidden" id="monthly_target" value="<?php if($user['monthly_target'] == 0){echo 0;} else {echo $user['monthly_target'];} ?>">
+                <?php 
+                    $daily = 0;
+                    $weekly = 0;
+                    $monthly = 0;
+                    foreach($sales as $sale) {
+                        if( $sale['RegisterSale']['sale_date'] > date("Y-m-d 00:00:00") && $sale['RegisterSale']['sale_date'] <= date("Y-m-d 23:59:59") ) {
+                            $daily += $sale['RegisterSale']['total_price_incl_tax'];
+                        }
+                        if( $sale['RegisterSale']['sale_date'] > date("Y-m-d",strtotime('sunday last week')) && $sale['RegisterSale']['sale_date'] <= date("Y-m-d 23:59:59") ) {
+                            $weekly += $sale['RegisterSale']['total_price_incl_tax'];
+                        }
+                        if( $sale['RegisterSale']['sale_date'] > date("Y-m-d",strtotime('first day of this month')) && $sale['RegisterSale']['sale_date'] <= date("Y-m-d 23:59:59") ) {
+                            $monthly += $sale['RegisterSale']['total_price_incl_tax'];
+                        }
+                    }
+                ?>
+                <input type="hidden" id="daily_sales" value="<?php echo $daily; ?>">
+                <input type="hidden" id="weekly_sales" value="<?php echo $weekly; ?>">
+                <input type="hidden" id="monthly_sales" value="<?php echo $monthly; ?>">
             </div>
             <div class="col-lg-6 col-md-12 col-xs-12 col-sm-12 user-info-box-bg margin-top-20">
                 <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title">Sales History</div>
@@ -198,6 +223,7 @@
 <script src="/theme/onzsa/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <script type="text/javascript" src="/js/jquery.confirm.js"></script>
 <script src="/js/jquery.popupoverlay.js" type="text/javascript"></script>
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
 jQuery(document).ready(function() {    
@@ -208,5 +234,40 @@ jQuery(document).ready(function() {
     $("#Date_from").datepicker();
     $("#Date_to").datepicker();
 });
+
+google.load('visualization', '1.1', {packages: ['corechart', 'bar']});
+google.setOnLoadCallback(drawStacked);
+
+function drawStacked() {
+    var oldData = google.visualization.arrayToDataTable([
+      ['Name', 'Sales'],
+      ['Daily', parseFloat($("#daily_target").val())],
+      ['Weekly', parseFloat($("#weekly_target").val())],
+      ['Monthly', parseFloat($("#monthly_target").val())]
+    ]);
+
+    var newData = google.visualization.arrayToDataTable([
+      ['Name', 'Sales'],
+      ['Daily', parseFloat($("#daily_sales").val())],
+      ['Weekly', parseFloat($("#weekly_sales").val())],
+      ['Monthly', parseFloat($("#monthly_sales").val())]
+    ]);
+    
+    var colChartBefore = new google.visualization.ColumnChart(document.getElementById('colchart_before'));
+    var colChartAfter = new google.visualization.ColumnChart(document.getElementById('colchart_after'));
+    var colChartDiff = new google.visualization.ColumnChart(document.getElementById('colchart_diff'));
+    var barChartDiff = new google.visualization.BarChart(document.getElementById('barchart_diff'));
+    
+    var options = { diff: { newData: { widthFactor: 0.1 } } };
+
+    colChartBefore.draw(oldData, options);
+    colChartAfter.draw(newData, options);
+
+    var diffData = colChartDiff.computeDiff(oldData, newData);
+    colChartDiff.draw(diffData, options);
+    barChartDiff.draw(diffData, options);
+}
+
+$("div[dir=ltr]").attr("style","");
 </script>
 <!-- END JAVASCRIPT -->

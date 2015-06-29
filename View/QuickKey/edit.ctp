@@ -53,7 +53,7 @@
             <div class="quick-key">
                 <div class="new-layout">
                     <span class="quick-key-new-layout" >
-                        <strong>New Quick Key Layout</strong>
+                        <strong>Edit Quick Key Layout</strong>
                     </span>
                     <div class="quick-key-btn" >
                         <button class="btn btn-primary cancel">Cancel</button>
@@ -64,12 +64,12 @@
                 <div class="quick-key-top" >
                     <div class="quick-key-search">
                         <input type="search" id="search" placeholder="Search Products">
-                        <div class="search_result">
+                        <div class="search_result" style="display: none;">
                             <span class="search-tri"></span>
                             <div class="search-default"> No Result </div>
-                            <?php foreach($items as $item){ ?>
-                            <button type="button" data-id="<?php echo $item['MerchantProduct']['id'];?>" data-sku="<?php echo $item['MerchantProduct']['sku'];?>" class="data-found"><?=$item['MerchantProduct']['name'];?></button>
-                            <?php } ?>
+                            <?php foreach($items as $item) : ?>
+                                <button type="button" data-id="<?php echo $item['MerchantProduct']['id'];?>" data-sku="<?php echo $item['MerchantProduct']['sku'];?>" class="data-found"><?=$item['MerchantProduct']['name'];?></button>
+                            <?php endforeach; ?>
                         </div>
                     </div>
                     <div class="quick-key-name" >
@@ -84,50 +84,62 @@
                 </div>
                 <div id="block-center" class="quick-key-body">
                     <ul class="nav nav-tabs">
-                        <?php $keyArray = json_decode($keys['MerchantQuickKey']['key_layouts'], true); 
-                        foreach($keyArray['quick_keys']['groups'] as $group) { ?>
-                            <li position="<?php echo $group['position']; ?>" class="<?php if($group['position'] == 0){echo "active";} ?>" role="presentation">
-                                <a href="#" class="<?php echo $group['color']; ?>"><?php echo $group['name']; ?> <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i></a>
-                            </li>
-                        <?php } ?>
+                    <?php
+                        $quickKeys= json_decode($keys['MerchantQuickKey']['key_layouts'], true);  
+                        foreach ($quickKeys['quick_keys']['groups'] as $group) :
+                    ?>
+                        <li position="<?php echo $group['position']; ?>" class="<?php if($group['position'] == 0){echo "active";} ?>" role="presentation">
+                            <a href="#" class="<?php echo $group['color']; ?>"><?php echo $group['name']; ?> <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i></a>
+                        </li>
+                    <?php
+                        endforeach;
+                    ?>
                         <button type="button" id="add-category" class="btn btn-white btn-add-category" data-toggle="popover" data-placement="bottom" data-container="body">
                         +
                         </button>
                     </ul>
                     <div class="quick-key-list">
                         <ul id="sortable" class="ui-sortable">
-                            <?php foreach($keyArray['quick_keys']['groups'] as $group) { 
-                                foreach($group['pages'] as $page) {
-                                    if(!empty($page['keys'])){
-                                        foreach($page['keys'] as $key) { ?>
-                                            <li class="quick-key-item <?php echo $key['color']; ?>" 
-                                            style="<?php if($group['position'] > 0 || $page['page'] > 1){echo "display: none;"; } ?>" 
-                                            group="<?php echo $group['position']; ?>" 
-                                            data-id="<?php echo $key['product_id']; ?>" 
-                                            data-sku="<?php echo $key['sku']; ?>" 
-                                            page="<?php echo $page['page']; ?>" 
-                                            background="<?php echo $key['color']; ?>">
-                                                <p><?php echo $key['label']; ?></p>
-                                            </li>
-                                        <? }
-                                    }
-                                }
-                            } ?>
+                        <?php
+                            foreach ($quickKeys['quick_keys']['groups'] as $group) :
+                                foreach ($group['pages'] as $page) :
+                                    if (!empty($page['keys'])) :
+                                        foreach ($page['keys'] as $key) :
+                        ?>
+                            <li class="quick-key-item <?php echo $key['color']; ?>" 
+                                style="<?php if($group['position'] > 0 || $page['page'] > 1){echo "display: none;"; } ?>" 
+                                group="<?php echo $group['position']; ?>" 
+                                data-id="<?php echo $key['product_id']; ?>" 
+                                data-sku="<?php echo $key['sku']; ?>" 
+                                page="<?php echo $page['page']; ?>" 
+                                background="<?php echo $key['color']; ?>">
+                                <p><?php echo $key['label']; ?></p></li>
+                        <?php
+                                        endforeach;
+                                    endif;
+                                endforeach;
+                            endforeach;
+                        ?>
                         </ul>
                     </div>
                     <div class="quick-key-list-footer">
                         <span class="pull-left clickable prev"><i class="glyphicon glyphicon-chevron-left"></i></span>
                         <span class="pull-right clickable next"><i class="glyphicon glyphicon-chevron-right"></i></span>
                         <?php
-                        $pages = count($keyArray['quick_keys']['groups'][0]['pages']);
-                        foreach($keyArray['quick_keys']['groups'] as $group) {
-                            if(count($group['pages']) > $pages) {
-                                $pages = count($group['pages']);
+                            $pages = count($quickKeys['quick_keys']['groups'][0]['pages']);
+                            /*
+                            foreach($quickKeys['quick_keys']['groups'] as $group) {
+                                if(count($group['pages']) > $pages) {
+                                    $pages = count($group['pages']);
+                                }
                             }
-                        }
-                        for($i = 1;$i <= $pages; $i++){?>
+                             */
+                            for ($i = 1; $i <= $pages; $i++) :
+                        ?>
                             <span rel="<?php echo $i;?>" class="page clickable <?php if($i == 1){echo "selected";}?>"><?php echo $i;?></span>
-                        <?php } ?>
+                        <?php
+                            endfor;
+                        ?>
                     </div>
                 </div>
             </div>
@@ -213,7 +225,6 @@ jQuery(document).ready(function() {
     /* DYNAMIC PROUCT SEARCH START */
     
     var $cells = $(".data-found");
-    $(".search_result").hide();
 
     $(document).on("keyup","#search",function() {
         var val = $.trim(this.value).toUpperCase();
@@ -239,8 +250,11 @@ jQuery(document).ready(function() {
 
     /* DATA FOUNDED CLICK EVENT */
 
-    $(".data-found").click(function(){
+    $(document).on("click", ".data-found", function(){
         $("#sortable").append('<li class="quick-key-item white" group="'+$(".nav-tabs").find(".active").attr("position")+'" data-id="'+$(this).attr("data-id")+'" data-sku="'+$(this).attr("data-sku")+'" page="'+$(".quick-key-list-footer").find(".selected").text()+'" background="white"><p>'+$(this).text()+'</p></li>');
+
+        $("#search").val("");
+        $(".search_result").hide();
     });
 
     /* DATA FOUNDED CLICK EVENT END */
@@ -373,7 +387,7 @@ jQuery(document).ready(function() {
     $(document).on("click", ".cancel-tab", function() {
         $(".popover").remove();
     });
-    
+
     $(document).on("click", "li[role=presentation]", function() {
         $(".nav-tabs").find(".active").removeClass("active");
         $(this).addClass("active");

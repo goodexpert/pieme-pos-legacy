@@ -64,12 +64,12 @@
                 <div class="quick-key-top" >
                     <div class="quick-key-search">
                         <input type="search" id="search" placeholder="Search Products">
-                        <div class="search_result">
+                        <div class="search_result" style="display: none;">
                             <span class="search-tri"></span>
                             <div class="search-default"> No Result </div>
-                            <?php foreach($items as $item){ ?>
-                            <button type="button" data-id="<?php echo $item['MerchantProduct']['id'];?>" data-sku="<?php echo $item['MerchantProduct']['sku'];?>" class="data-found"><?=$item['MerchantProduct']['name'];?></button>
-                            <?php } ?>
+                            <?php foreach($items as $item) : ?>
+                                <button type="button" data-id="<?php echo $item['MerchantProduct']['id'];?>" data-sku="<?php echo $item['MerchantProduct']['sku'];?>" class="data-found"><?=$item['MerchantProduct']['name'];?></button>
+                            <?php endforeach; ?>
                         </div>
                     </div>
                     <div class="quick-key-name" >
@@ -184,7 +184,6 @@ jQuery(document).ready(function() {
     /* DYNAMIC PROUCT SEARCH START */
     
     var $cells = $(".data-found");
-    $(".search_result").hide();
 
     $(document).on("keyup","#search",function() {
         var val = $.trim(this.value).toUpperCase();
@@ -210,8 +209,11 @@ jQuery(document).ready(function() {
 
     /* DATA FOUNDED CLICK EVENT */
 
-    $(".data-found").click(function(){
+    $(document).on("click", ".data-found", function(){
         $("#sortable").append('<li class="quick-key-item white" group="'+$(".nav-tabs").find(".active").attr("position")+'" data-id="'+$(this).attr("data-id")+'" data-sku="'+$(this).attr("data-sku")+'" page="'+$(".quick-key-list-footer").find(".selected").text()+'" background="white"><p>'+$(this).text()+'</p></li>');
+
+        $("#search").val("");
+        $(".search_result").hide();
     });
 
     /* DATA FOUNDED CLICK EVENT END */
@@ -341,6 +343,10 @@ jQuery(document).ready(function() {
         window.history.back();
     });
     
+    $(document).on("click", ".cancel-tab", function() {
+        $(".popover").remove();
+    });
+
     $(document).on("click", "li[role=presentation]", function() {
         $(".nav-tabs").find(".active").removeClass("active");
         $(this).addClass("active");
