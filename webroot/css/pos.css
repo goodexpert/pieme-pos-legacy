@@ -2305,3 +2305,30 @@ and (-webkit-min-device-pixel-ratio: 1) { /* STYLES GO HERE */ }
 	border: 1px solid #eee;
 	border-top: 0;
 }
+
+.nav-tabs li a:hover {
+	height: 47px;
+	text-align: center;
+	border-bottom-color: transparent;
+}
+
+.nav-tabs li a {
+	border: 1px solid #ddd;
+	border-bottom-color: transparent;
+}
+
+.nav-tabs li:hover {
+	margin-top: -5px;
+}
+
+.nav-tabs .active {
+	margin-top: -5px;
+}
+
+.nav-tabs .active a {
+	height: 47px;
+}
+
+.nav-tabs li {
+	margin-right: -10px;
+}

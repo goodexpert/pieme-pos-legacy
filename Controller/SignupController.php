@@ -812,6 +812,7 @@ class SignupController extends AppController {
         }
 
         // update a default quick key layout
+        /*
         $quick_key_layout = array(
             'name' => 'Default',
             'pages' => array(
@@ -833,6 +834,39 @@ class SignupController extends AppController {
                             'label' => $product2['name'],
                             'color' => '#ffffff',
                             'image' => '/img/no-image.png'
+                        )
+                    )
+                )
+            )
+        );
+         */
+        $quick_key_layout = array(
+            'quick_keys' => array(
+                array(
+                    'position' => 0,
+                    'name' => 'Group 1',
+                    'color' => 'white',
+                    'pages' => array(
+                        array(
+                            'page' => 1,
+                            'keys' => array(
+                                array(
+                                    'position' => 0,
+                                    'label' => $product1['name'],
+                                    'sku' => $product1['sku'],
+                                    'product_id' => $product1['id'],
+                                    'color' => 'white',
+                                    'image' => '/img/no-image.png'
+                                ),
+                                array(
+                                    'position' => 1,
+                                    'product_id' => $product2['id'],
+                                    'sku' => $product2['sku'],
+                                    'label' => $product2['name'],
+                                    'color' => '#ffffff',
+                                    'image' => '/img/no-image.png'
+                                )
+                            )
                         )
                     )
                 )
