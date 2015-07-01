@@ -89,7 +89,7 @@
                         foreach ($quickKeys['quick_keys']['groups'] as $group) :
                     ?>
                         <li position="<?php echo $group['position']; ?>" class="<?php if($group['position'] == 0){echo "active";} ?>" role="presentation">
-                            <a href="#" class="<?php echo $group['color']; ?>"><?php echo $group['name']; ?> <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i></a>
+                            <a href="javascript:;" class="<?php echo $group['color']; ?>"><?php echo $group['name']; ?> <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i></a>
                         </li>
                     <?php
                         endforeach;
@@ -461,7 +461,7 @@ $(document).on("click", ".action-trigger", function() {
         $(".target-key").find("p").text($("#" + aria).find("input[name=name]").val());
     } else {
         $(".nav-tabs").find(".active").removeClass("active");
-        $(".nav-tabs").append('<li position="'+ $(".nav-tabs").find("li").length +'" class="active" role="presentation"><a href="#" class="' +$(".popover:last").find("select[name=background]").val()+ '">' + $(".popover:last").find("input[name=name]").val() + ' <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i></a></li>');
+        $(".nav-tabs").append('<li position="'+ $(".nav-tabs").find("li").length +'" class="active" role="presentation"><a href="javascript:;" class="' +$(".popover:last").find("select[name=background]").val()+ '">' + $(".popover:last").find("input[name=name]").val() + ' <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i></a></li>');
     }
     $(".popover").remove();
     $(".target").removeClass("target");

@@ -85,7 +85,7 @@
                 <div id="block-center" class="quick-key-body">
                     <ul class="nav nav-tabs">
                         <li position="0" class="active" role="presentation">
-                            <a href="#">Group 1 <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i></a>
+                            <a href="javascript:;">Group 1 <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i></a>
                         </li>
                         <button type="button" id="add-category" class="btn btn-white btn-add-category" data-toggle="popover" data-placement="bottom" data-container="body">
                         +
