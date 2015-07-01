@@ -403,69 +403,69 @@ $(".glyphicon-cog").popover({
     },
 });
 $(document).on("click", ".glyphicon-cog", function() {
-	$(".target").removeClass("target");
-	$(".target-key").removeClass("target-key");
-	$(".popover-buttons:last").children(".btn-success").removeClass("add-category");
-	$(this).popover({
-		html: true, 
-	    content: function() {
-	        return $('#popover-content').html();
-	    },
-	});
-	var original_name = $(this).parents("a");
-	original_name.addClass("target");
-	$(".popover:last").find("input[name=name]").val(original_name.text().trim());
-	$(".popover-buttons").children(".btn-success").text("Edit");
+    $(".target").removeClass("target");
+    $(".target-key").removeClass("target-key");
+    $(".popover-buttons:last").children(".btn-success").removeClass("add-category");
+    $(this).popover({
+        html: true, 
+        content: function() {
+            return $('#popover-content').html();
+        },
+    });
+    var original_name = $(this).parents("a");
+    original_name.addClass("target");
+    $(".popover:last").find("input[name=name]").val(original_name.text().trim());
+    $(".popover-buttons").children(".btn-success").text("Edit");
 });
 /*
 Category Add Click Setting */
 $("#add-category").popover({
-	html: true, 
+    html: true, 
     content: function() {
         return $('#popover-content').html();
     },
 });
 $("#add-category").click(function() {
-	$(".target").removeClass("target");
-	$(".target-key").removeClass("target-key");
-	$(".popover-buttons:last").children(".btn-success").text("Add");
+    $(".target").removeClass("target");
+    $(".target-key").removeClass("target-key");
+    $(".popover-buttons:last").children(".btn-success").text("Add");
 });
 /* 
 Quick Key Item Click Setting */
 $(document).on("click", ".quick-key-item", function() {
-	$(".target").removeClass("target");
-	$(".target-key").removeClass("target-key");
-	$(this).popover({
-		html: true, 
-	    content: function() {
-	        return $('#popover-content').html();
-	    },
-	});
-	var original_name = $(this).find("p");
-	$(".popover:last").find("input[name=name]").val(original_name.text().trim());
-	$(".popover-buttons").children(".btn-success").text("Edit");
-	$(this).addClass("target-key");
+    $(".target").removeClass("target");
+    $(".target-key").removeClass("target-key");
+    $(this).popover({
+        html: true, 
+        content: function() {
+            return $('#popover-content').html();
+        },
+    });
+    var original_name = $(this).find("p");
+    $(".popover:last").find("input[name=name]").val(original_name.text().trim());
+    $(".popover-buttons").children(".btn-success").text("Edit");
+    $(this).addClass("target-key");
 });
 /*
 Action Trigger Event */
 $(document).on("click", ".action-trigger", function() {
-	if($(".target").length > 0) {
-		$(".target").attr("class", "target");
-		$(".target").html($(".popover:last").find("input[name=name]").val() + ' <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i>');
-		$(".target").addClass($(".popover:last").find("select[name=background]").val());
-	} else if($(".target-key").length > 0) {
-		var aria = $(".target-key").attr("aria-describedby");
-		$(".target-key").attr("class", "target-key quick-key-item");
-		$(".target-key").addClass($("#" + aria).find("select[name=background]").val());
-		$(".target-key").attr("background",$("#" + aria).find("select[name=background]").val());
-		$(".target-key").find("p").text($("#" + aria).find("input[name=name]").val());
-	} else {
-    	$(".nav-tabs").find(".active").removeClass("active");
-		$(".nav-tabs").append('<li position="'+ $(".nav-tabs").find("li").length +'" class="active" role="presentation"><a href="#" class="' +$(".popover:last").find("select[name=background]").val()+ '">' + $(".popover:last").find("input[name=name]").val() + ' <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i></a></li>');
-	}
-	$(".popover").remove();
-	$(".target").removeClass("target");
-	$(".target-key").removeClass("target-key");
+    if($(".target").length > 0) {
+        $(".target").attr("class", "target");
+        $(".target").html($(".popover:last").find("input[name=name]").val() + ' <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i>');
+        $(".target").addClass($(".popover:last").find("select[name=background]").val());
+    } else if($(".target-key").length > 0) {
+        var aria = $(".target-key").attr("aria-describedby");
+        $(".target-key").attr("class", "target-key quick-key-item");
+        $(".target-key").addClass($("#" + aria).find("select[name=background]").val());
+        $(".target-key").attr("background",$("#" + aria).find("select[name=background]").val());
+        $(".target-key").find("p").text($("#" + aria).find("input[name=name]").val());
+    } else {
+        $(".nav-tabs").find(".active").removeClass("active");
+        $(".nav-tabs").append('<li position="'+ $(".nav-tabs").find("li").length +'" class="active" role="presentation"><a href="#" class="' +$(".popover:last").find("select[name=background]").val()+ '">' + $(".popover:last").find("input[name=name]").val() + ' <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i></a></li>');
+    }
+    $(".popover").remove();
+    $(".target").removeClass("target");
+    $(".target-key").removeClass("target-key");
 });
 </script>
 <!-- END JAVASCRIPTS -->
