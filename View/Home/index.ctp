@@ -276,7 +276,7 @@
                                 <?php $keyArray = json_decode($quick_key, true); 
                                 foreach($keyArray['quick_keys']['groups'] as $group) { ?>
                                     <li position="<?php echo $group['position']; ?>" class="<?php if($group['position'] == 0){echo "active";} ?>" role="presentation">
-                                        <a href="#" class="<?php echo $group['color']; ?>"><?php echo $group['name']; ?></a>
+                                        <a href="javascript:;" class="<?php echo $group['color']; ?>"><?php echo $group['name']; ?></a>
                                     </li>
                                 <?php } ?>
                             </ul>

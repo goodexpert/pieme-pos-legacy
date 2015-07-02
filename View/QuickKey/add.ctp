@@ -64,7 +64,7 @@
                 <div class="quick-key-top" >
                     <div class="quick-key-search">
                         <input type="search" id="search" placeholder="Search Products">
-                        <div class="search_result" style="display: none;">
+                        <div class="quick_search_result" style="display: none;">
                             <span class="search-tri"></span>
                             <div class="search-default"> No Result </div>
                             <?php foreach($items as $item) : ?>
@@ -188,15 +188,15 @@ jQuery(document).ready(function() {
     $(document).on("keyup","#search",function() {
         var val = $.trim(this.value).toUpperCase();
         if (val === "")
-            $(".search_result").hide();
+            $(".quick_search_result").hide();
         else {
             $cells.hide();
-            $(".search_result").show();
+            $(".quick_search_result").show();
             $(".search-default").hide();
             $cells.filter(function() {
                 return -1 != $(this).text().toUpperCase().indexOf(val);
             }).show();
-            if($(".search_result").height() == 0){
+            if($(".quick_search_result").height() == 0){
                 $(".search-default").show();
             }
         }
@@ -213,7 +213,7 @@ jQuery(document).ready(function() {
         $("#sortable").append('<li class="quick-key-item white" group="'+$(".nav-tabs").find(".active").attr("position")+'" data-id="'+$(this).attr("data-id")+'" data-sku="'+$(this).attr("data-sku")+'" page="'+$(".quick-key-list-footer").find(".selected").text()+'" background="white"><p>'+$(this).text()+'</p></li>');
 
         $("#search").val("");
-        $(".search_result").hide();
+        $(".quick_search_result").hide();
     });
 
     /* DATA FOUNDED CLICK EVENT END */
