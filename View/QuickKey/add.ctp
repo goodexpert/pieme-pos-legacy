@@ -112,11 +112,11 @@
             <input type="hidden" class="form-control" name="type">
             <input type="text" class="form-control" name="name" placeholder="Name">
             <select class="color-control" name="background">
-                <option value="red">Red</option>
-                <option value="blue">Blue</option>
-                <option value="black">black</option>
-                <option value="yellow">Yellow</option>
-                <option value="white">White</option>
+                <option value="#FF0000">Red</option>
+                <option value="#0100FF">Blue</option>
+                <option value="#000">Black</option>
+                <option value="#FFE400">Yellow</option>
+                <option value="#FFF">White</option>
             </select> 
             <div class="popover-buttons">
                 <button type="button" class="btn btn-primary cancel-tab">Cancel</button>
@@ -210,7 +210,7 @@ jQuery(document).ready(function() {
     /* DATA FOUNDED CLICK EVENT */
 
     $(document).on("click", ".data-found", function(){
-        $("#sortable").append('<li class="quick-key-item white" group="'+$(".nav-tabs").find(".active").attr("position")+'" data-id="'+$(this).attr("data-id")+'" data-sku="'+$(this).attr("data-sku")+'" page="'+$(".quick-key-list-footer").find(".selected").text()+'" background="white"><p>'+$(this).text()+'</p></li>');
+        $("#sortable").append('<li class="quick-key-item White" group="'+$(".nav-tabs").find(".active").attr("position")+'" data-id="'+$(this).attr("data-id")+'" data-sku="'+$(this).attr("data-sku")+'" page="'+$(".quick-key-list-footer").find(".selected").text()+'" background="white"><p>'+$(this).text()+'</p></li>');
 
         $("#search").val("");
         $(".quick_search_result").hide();
@@ -268,7 +268,7 @@ jQuery(document).ready(function() {
 
             layouts.name = $(this).find("a").text().trim();
             layouts.position = group_id;
-            layouts.color = $(this).find("a").attr("class");
+            layouts.color = $(this).find("a").attr("background");
             
             var last_page = 0;
             
@@ -411,16 +411,17 @@ $(document).on("click", ".action-trigger", function() {
     if($(".target").length > 0) {
         $(".target").attr("class", "target");
         $(".target").html($(".popover:last").find("input[name=name]").val() + ' <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i>');
-        $(".target").addClass($(".popover:last").find("select[name=background]").val());
+        $(".target").addClass($(".popover:last").find("select[name=background] option:selected").text());
+        $(".target").attr("background", $(".popover:last").find("select[name=background]").val());
     } else if($(".target-key").length > 0) {
         var aria = $(".target-key").attr("aria-describedby");
         $(".target-key").attr("class", "target-key quick-key-item");
-        $(".target-key").addClass($("#" + aria).find("select[name=background]").val());
+        $(".target-key").addClass($("#" + aria).find("select[name=background] option:selected").text());
         $(".target-key").attr("background",$("#" + aria).find("select[name=background]").val());
         $(".target-key").find("p").text($("#" + aria).find("input[name=name]").val());
     } else {
         $(".nav-tabs").find(".active").removeClass("active");
-        $(".nav-tabs").append('<li position="'+ $(".nav-tabs").find("li").length +'" class="active" role="presentation"><a href="javascript:;" class="' +$(".popover:last").find("select[name=background]").val()+ '">' + $(".popover:last").find("input[name=name]").val() + ' <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i></a></li>');
+        $(".nav-tabs").append('<li position="'+ $(".nav-tabs").find("li").length +'" class="active" role="presentation"><a href="javascript:;" class="' +$(".popover:last").find("select[name=background] option:selected").text()+ '" background="'+ $(".popover:last").find("select[name=background]").val() +'">' + $(".popover:last").find("input[name=name]").val() + ' <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i></a></li>');
     }
     $(".popover").remove();
     $(".target").removeClass("target");

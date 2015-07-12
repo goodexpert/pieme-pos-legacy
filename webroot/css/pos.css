@@ -685,19 +685,37 @@ margin-bottom: -1px;
     padding: 5px;
 }
 */
-.product img{
-    width: auto;
-    height: 100%;
-    max-height: 120px;
-    max-width: 120px;
+
+.product-info {
+    float: left;
+    width: 100%;
 }
 
 .product-img {
-    text-align: center;
     float: left;
+    display: none;
     width: 100%;
-    height: 140px;
-    padding: 10px;
+    height: 112px;
+    text-align: center;
+    position: relative;
+}
+
+.product-img span {
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    width: 100%;
+}
+
+.middle-view {
+    width: 126px !important;
+    height: 112px !important;
+}
+.middle-view .product-img {
+    display: block;
+}
+.product-name {
+    text-align: center;
 }
 /*
 .product-info {
@@ -1875,9 +1893,6 @@ position: absolute;
 .page-header.navbar .top-menu .navbar-nav > li.dropdown > .dropdown-toggle:last-child{
     padding: 10px 3px 4px 3px;
 }
-.product-img{
-    height:130px;
-}
 
 .product img{
     width: 100%;
@@ -1976,9 +1991,6 @@ and (-webkit-min-device-pixel-ratio: 1){
 }
 .page-header.navbar .top-menu .navbar-nav > li.dropdown > .dropdown-toggle:last-child{
     padding: 10px 3px 4px 3px;
-}
-.product-img{
-    height:142px;
 }
 
 .product img{
@@ -2247,24 +2259,24 @@ div.quick-key-search{
     position: absolute;
     width: 25%;
 }
-.quick-key-body .red {
-    background: red !important;
-    color: white !important;
+.quick-key-body .Red {
+    background: #FF0000 !important;
+    color: #fff !important;
 }
-.quick-key-body .blue {
-    background: blue !important;
-    color: white !important;
+.quick-key-body .Blue {
+    background: #0100FF !important;
+    color: #fff !important;
 }
-.quick-key-body .black {
-    background: black !important;
-    color: white !important;
+.quick-key-body .Black {
+    background: #000 !important;
+    color: #fff !important;
 }
-.quick-key-body .yellow {
-    background: yellow !important;
-    color: black !important;
+.quick-key-body .Yellow {
+    background: #FFE400 !important;
+    color: #000 !important;
 }
-.quick-key-body .white {
-    background: white !important;
+.quick-key-body .White {
+    background: #fff !important;
     color: #555 !important;
 }
 

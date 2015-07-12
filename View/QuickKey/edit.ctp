@@ -89,7 +89,7 @@
                         foreach ($quickKeys['quick_keys']['groups'] as $group) :
                     ?>
                         <li position="<?php echo $group['position']; ?>" class="<?php if($group['position'] == 0){echo "active";} ?>" role="presentation">
-                            <a href="javascript:;" class="<?php echo $group['color']; ?>"><?php echo $group['name']; ?> <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i></a>
+                            <a href="javascript:;" class="<?php if($group['color'] == '#000'){echo 'Black';}elseif($group['color'] == '#FF0000'){echo 'Red';}elseif($group['color'] == '#0100FF'){echo 'Blue';}elseif($group['color'] == '#FFE400'){echo 'Yellow';}else{echo 'White';}; ?>"><?php echo $group['name']; ?> <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i></a>
                         </li>
                     <?php
                         endforeach;
@@ -106,7 +106,7 @@
                                     if (!empty($page['keys'])) :
                                         foreach ($page['keys'] as $key) :
                         ?>
-                            <li class="quick-key-item <?php echo $key['color']; ?>" 
+                            <li class="quick-key-item <?php if($key['color'] == '#000'){echo 'Black';}elseif($key['color'] == '#FF0000'){echo 'Red';}elseif($key['color'] == '#0100FF'){echo 'Blue';}elseif($key['color'] == '#FFE400'){echo 'Yellow';}else{echo 'White';}; ?>" 
                                 style="<?php if($group['position'] > 0 || $page['page'] > 1){echo "display: none;"; } ?>" 
                                 group="<?php echo $group['position']; ?>" 
                                 data-id="<?php echo $key['product_id']; ?>" 
@@ -153,11 +153,11 @@
             <input type="hidden" class="form-control" name="type">
             <input type="text" class="form-control" name="name" placeholder="Name">
             <select class="color-control" name="background">
-                <option value="red">Red</option>
-                <option value="blue">Blue</option>
-                <option value="black">black</option>
-                <option value="yellow">Yellow</option>
-                <option value="white">White</option>
+                <option value="#FF0000">Red</option>
+                <option value="#0100FF">Blue</option>
+                <option value="#000">Black</option>
+                <option value="#FFE400">Yellow</option>
+                <option value="#FFF">White</option>
             </select> 
             <div class="popover-buttons">
                 <button type="button" class="btn btn-primary cancel-tab">Cancel</button>
@@ -251,7 +251,7 @@ jQuery(document).ready(function() {
     /* DATA FOUNDED CLICK EVENT */
 
     $(document).on("click", ".data-found", function(){
-        $("#sortable").append('<li class="quick-key-item white" group="'+$(".nav-tabs").find(".active").attr("position")+'" data-id="'+$(this).attr("data-id")+'" data-sku="'+$(this).attr("data-sku")+'" page="'+$(".quick-key-list-footer").find(".selected").text()+'" background="white"><p>'+$(this).text()+'</p></li>');
+        $("#sortable").append('<li class="quick-key-item White" group="'+$(".nav-tabs").find(".active").attr("position")+'" data-id="'+$(this).attr("data-id")+'" data-sku="'+$(this).attr("data-sku")+'" page="'+$(".quick-key-list-footer").find(".selected").text()+'" background="white"><p>'+$(this).text()+'</p></li>');
 
         $("#search").val("");
         $(".quick_search_result").hide();
@@ -378,6 +378,24 @@ jQuery(document).ready(function() {
         
     });
 
+    $(".delete").click(function() {
+        var quick_key_id = location.pathname.split("/")[2];
+        $.ajax({
+            url: "/QuickKey/delete.json",
+            type: "POST",
+            data: {
+                id: quick_key_id
+            },
+            success: function(result) {
+                if(result.success) {
+                    window.location.href = "/setup/quick_keys";
+                } else {
+                    console.log(result);
+                }
+            }
+        });
+    });
+
     /* SAVE TRIGGER END */
 
     $(".cancel").click(function(){
@@ -452,16 +470,16 @@ $(document).on("click", ".action-trigger", function() {
     if($(".target").length > 0) {
         $(".target").attr("class", "target");
         $(".target").html($(".popover:last").find("input[name=name]").val() + ' <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i>');
-        $(".target").addClass($(".popover:last").find("select[name=background]").val());
+        $(".target").addClass($(".popover:last").find("select[name=background] option:selected").text());
     } else if($(".target-key").length > 0) {
         var aria = $(".target-key").attr("aria-describedby");
         $(".target-key").attr("class", "target-key quick-key-item");
-        $(".target-key").addClass($("#" + aria).find("select[name=background]").val());
+        $(".target-key").addClass($("#" + aria).find("select[name=background] option:selected").text());
         $(".target-key").attr("background",$("#" + aria).find("select[name=background]").val());
         $(".target-key").find("p").text($("#" + aria).find("input[name=name]").val());
     } else {
         $(".nav-tabs").find(".active").removeClass("active");
-        $(".nav-tabs").append('<li position="'+ $(".nav-tabs").find("li").length +'" class="active" role="presentation"><a href="javascript:;" class="' +$(".popover:last").find("select[name=background]").val()+ '">' + $(".popover:last").find("input[name=name]").val() + ' <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i></a></li>');
+        $(".nav-tabs").append('<li position="'+ $(".nav-tabs").find("li").length +'" class="active" role="presentation"><a href="javascript:;" class="' +$(".popover:last").find("select[name=background] option:selected").text()+ '">' + $(".popover:last").find("input[name=name]").val() + ' <i class="glyphicon glyphicon-cog" data-toggle="popover" data-placement="bottom" data-container="body"></i></a></li>');
     }
     $(".popover").remove();
     $(".target").removeClass("target");
