@@ -149,6 +149,14 @@
                                         <option value="KRW" disabled>South Korean Won</option>
                                     </select>
                                 </dd>
+								<dt> Terms</dt>
+								<dd>
+									<p><a href ="http://www.onzsa.com/terms.html" target="_blank"> Terms and conditions </a><p>
+									<input type="checkbox" title="Please agree to our policy!" name="data[agree]" id="terms" class="form-control"/>
+                                    <label class="error" for="data[agree]" style="display: none;">Please agree to our policy!</label>									</input>
+									<div class="help-block with-errors"></div>
+									</dd>
+								
                             </dl>
                             <!--
                             <div class="dashed-line-gr"></div>
@@ -180,6 +188,8 @@
                                 </dd>
                             </dl>
                             -->
+
+
                             <div class="dashed-line-gr"></div>
                             <button type="submit" id="signup" class="btn btn-success" >Start</button>
                             </form>
@@ -221,6 +231,7 @@
 <script src="https://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places&language=kr" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
+
 jQuery(document).ready(function() {
     Metronic.init(); // init metronic core components
     Layout.init(); // init current layout
@@ -268,6 +279,7 @@ jQuery(document).ready(function() {
 */
 });
 
+
 function initGoogleMapsApi() {
     var input = document.getElementById('address_lookup');
     var options = {
@@ -312,6 +324,9 @@ var formValidation = function() {
     // http://docs.jquery.com/Plugins/Validation
     $("#signup_form").validate({
         rules: {
+			'data[agree]':{
+				required:true
+			},
             'data[name]': {
                 required: true,
                 minlength: 4
@@ -393,7 +408,10 @@ var formValidation = function() {
             'data[address_lookup]': {
                 required: "Please enter your city and select from the list.",
                 addressLookup: "Please enter your city and select from the list."
-            }
+            },
+			'data[agree]':{
+                required: "Please check the policy."
+			},
         },
         errorPlacement: function(error, element) {
             if (element.attr("name") == "data[domain_prefix]") {
