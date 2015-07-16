@@ -963,6 +963,11 @@ background:rgba(223,173,53,1.00);
     border: 0;
     float: right;
 }
+.booking_confirm-close {
+    background: transparent;
+    border: 0;
+    float: right;
+}
 .modal-body, .modal-footer {
     display:inline-block;
     width:100%;
@@ -1160,13 +1165,13 @@ background:rgba(223,173,53,1.00);
     background-size: 100px;
 }
 .customer-search-result{
-    height:108px;
+    min-height: 70px;
 }
 .customer-search-result dd, .customer-search-result dt{
     height:inherit;
 }
 .customer-search-result dl{
-    padding: 10px;
+    padding: 5px;
     background: #EDEDED;
     display: inline-block;
     border-radius: 5px;
@@ -2344,4 +2349,32 @@ and (-webkit-min-device-pixel-ratio: 1) { /* STYLES GO HERE */ }
 
 .nav-tabs li {
     margin-right: -10px;
+}
+
+#booking-wrapper {
+    width: 800px;
+}
+
+#booking-wrapper .modal-header ul li {
+    list-style: square;
+    margin-left: 25px;
+}
+.booking-attr {
+    width: 150px;
+    height: 50px;
+    margin-top: 3px;
+}
+
+.booking-unavailable {
+    background: #FF0000;
+    color: white;
+}
+
+.booking-selected {
+    box-shadow: 0 2px 2px #888888 inset;
+    background: #C6C6C6;
+}
+
+.booking-attr:focus, .booking-attr:focus {
+    outline: none;
 }

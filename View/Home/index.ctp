@@ -218,6 +218,9 @@
                                         <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
                                             <button class="btn btn-primary discount" <?php if ($user['Merchant']['allow_cashier_discount'] == 0) { echo "disabled"; } ?>>Discount </button>
                                         </div>
+                                        <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 col-omega col-alpha">
+                                            <button class="btn btn-primary booking">Booking</button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 col-omega">
@@ -859,6 +862,87 @@
         </div>
     </div>
     <!-- STATUS POPUP BOX END -->
+
+    <!-- BOOKING POPUP BOX -->
+    <div id="booking_box" class="confirmation-modal modal fade in" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;">
+        <div id="booking-wrapper" class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="confirm-close cancel" data-dismiss="modal" aria-hidden="true">
+                        <i class="glyphicon glyphicon-remove"></i>
+                    </button>
+                    <select id="booking-availability" style="width: auto;">
+                        <option value="all">All</option>
+                        <option value="available">Available</option>
+                        <option value="unavailable">Unavailable</option>
+                    </select>
+                    <span class="glyphicon glyphicon-calendar icon-calendar"></span>
+                    <input type="text" id="booking-date" style="width: auto;">
+                    <input type="text" id="booking-start" placeholder="00:00" style="width: 120px;"> ~ <input type="text" id="booking-end" placeholder="00:00" style="width: 120px;">
+                    <ul style="width: 120px;">
+                        <li style="width: auto;">
+                            available
+                        </li>
+                        <li style="color: #FF0000; width:auto;">
+                            unavailable
+                        </li>
+                    </ul>
+                </div>
+                <div class="modal-body">
+                    <div class="portlet-body col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+                        <div class="scroller setHeight" data-always-visible="1" data-rail-visible="0" style="height:359px; border: 0;">
+                            <ul class="feeds">
+                                <li>
+                                <?php if(!empty($res)) {
+                                    foreach($res as $resource) { ?>
+                                        <button class="btn btn-default booking-attr <?php if(!empty($bookings[$resource['MerchantResource']['id']])) {echo "booking-unavailable";} ?>" resource-id="<?php echo $resource['MerchantResource']['id']; ?>"><?php echo $resource['MerchantResource']['name']; ?></button>
+                                <?php }
+                                } ?>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- BOOKING POPUP BOX END -->
+
+    <!-- BOOKING CONFIRM POPUP BOX -->
+    <div id="booking_confirm_box" class="confirmation-modal modal fade in" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;">
+        <div class="modal-dialog" style="margin-top: 130px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="booking_confirm-close close_booking_popup" data-dismiss="modal" aria-hidden="true">
+                        <i class="glyphicon glyphicon-remove"></i>
+                    </button>
+                    <h4 class="modal-title">Confirm booking</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="booking_datetime" style="border: 1px solid red; padding: 5px;">
+                        <h4 class="modal-title" style="width: auto;">Booking date & time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input id="booking_asap" type="checkbox">ASAP</h4>
+                        <span class="glyphicon glyphicon-calendar icon-calendar"></span>
+                        <input type="text" id="booking-date-confirm" style="width: auto;">
+                        <input type="text" id="booking-start-confirm" placeholder="00:00" style="width: 120px;"> ~ <input type="text" id="booking-end-confirm" placeholder="00:00" style="width: 120px;">
+                    </div>
+                    <div class="booking_customer" style="border: 1px solid red; padding: 5px; margin-top: 10px;">
+                        <h4 class="modal-title">Select customer</h4>
+                        <select id="booking-customer">
+                        <?php foreach($customers as $customer) { ?>
+                            <option value="<?php echo $customer['MerchantCustomer']['id']; ?>" <?php if($customer['MerchantCustomer']['customer_code'] == "walkin"){echo "selected";} ; ?>><?php if($customer['MerchantCustomer']['customer_code'] == "walkin") {echo "Search customer (No Customer)";} else {echo $customer['MerchantCustomer']['name'].'('.$customer['MerchantCustomer']['customer_code'].')';} ?></option>
+                        <?php } ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="booking-proceed" class="btn btn-success" type="button" data-dismiss="modal">Booking</button>
+                    <button class="btn btn-primary close_booking_popup" type="button" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- BOOKING CONFIRM POPUP BOX END -->
+
 <!-- END CONTENT -->
 </div>
 <div class="qty_block">
@@ -1119,20 +1203,20 @@ jQuery(document).ready(function () {
         }
     });
 
-
     /**
-     *    Popup Control From Here
+     * Popup Control From Here
      **/
-
     $(".customer_quick_add").click(function () {
         $(".customer_add").show();
         $(".modal-backdrop").show();
     });
+
     $(".close-popup").click(function () {
         $(".receipt-parent").hide();
         $(".fade").hide();
         $(".split_receipt_attr").remove();
     });
+
     var to_pay;
     $("#pay").click(function () {
         if ($(".added-null").is(':visible')) {
@@ -1156,6 +1240,7 @@ jQuery(document).ready(function () {
             payments = [];
         }
     });
+
     $("#park").click(function () {
         if ($(".added-null").is(':visible')) {
 
@@ -1164,6 +1249,7 @@ jQuery(document).ready(function () {
             $(".modal-backdrop").show();
         }
     });
+
     $(".void").click(function () {
         if ($(".added-null").is(':visible')) {
 
@@ -1172,12 +1258,20 @@ jQuery(document).ready(function () {
             $(".modal-backdrop").show();
         }
     })
+
+    $(".booking").click(function () {
+        $("#booking_box").show();
+        $(".modal-backdrop").show();
+    });
+
     $(".confirm-close").click(function () {
         $(".fade").hide();
     });
+
     $(document).on('click', '.cancel', function () {
         $('.fade').hide();
     });
+
     $(".register-cancel").click(function () {
         window.location.href = "/dashboard";
     });
@@ -1615,15 +1709,90 @@ jQuery(document).ready(function () {
     $("#image-view-c").click(function() {
         $("#block-right").find(".quick-key-item").addClass("middle-view");
         $("#button-view-c").removeClass("active");
-	$("#block-right").find(".product-info").hide();
+        $("#block-right").find(".product-info").hide();
         $(this).addClass("active");
     });
 
     $("#button-view-c").click(function() {
         $("#block-right").find(".quick-key-item").removeClass("middle-view");
         $("#image-view-c").removeClass("active");
-	$("#block-right").find(".product-info").hide();
+        $("#block-right").find(".product-info").hide();
         $(this).addClass("active");
+    });
+
+    $(document).on("click", ".booking-attr", function() {
+        $(".booking-selected").removeClass("booking-selected");
+        $(this).addClass("booking-selected");
+        $("#booking_confirm_box").show();
+    });
+
+    $(document).on("click", ".booking-selected", function() {
+        $(this).removeClass("booking-selected");
+    });
+
+    $(document).on("change", "#booking-availability", function() {
+        if($(this).val() == "available") {
+            $(".booking-attr").show();
+            $(".booking-unavailable").hide();
+        } else if($(this).val() == "unavailable") {
+            $(".booking-attr").hide();
+            $(".booking-unavailable").show();
+        } else {
+            $(".booking-attr").show();
+        }
+    });
+
+    $("#booking-proceed").click(function (){
+        var start_date = $("#booking-date-confirm").val() + ' ' + $("#booking-start-confirm").val();
+        var end_date = $("#booking-date-confirm").val() + ' ' + $("#booking-end-confirm").val();
+        $.ajax({
+            url: '/home/booking.json',
+            type: 'POST',
+            data: {
+                resource_id: $(".booking-selected").attr("resource-id"),
+                start_date: start_date,
+                end_date: end_date,
+                customer_id: $("#booking-customer").val()
+            },
+            success: function(result) {
+                if(result.success) {
+                    alert("booked!");
+                    $("#booking_confirm_box").hide();
+                    $(".booking-attr[resource-id="+$(".booking-selected").attr("resource-id")+"]").addClass("booking-unavailable");
+                    $(".booking-selected").removeClass("booking-selected");
+                } else {
+                    console.log(result);
+                    console.log($("#booking-customer").val());
+                }
+            }
+        });
+    });
+
+    $("#booking-date").change(function() {
+        $("#booking-date-confirm").val($(this).val());
+    });
+
+    $("#booking-start").change(function() {
+        $("#booking-start-confirm").val($(this).val());
+    });
+
+    $("#booking-end").change(function() {
+        $("#booking-end-confirm").val($(this).val());
+    });
+
+    $("#booking_asap").change(function() {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1;
+        var yyyy = today.getFullYear();
+        var time = today.getHours() + ':' + today.getMinutes();
+        console.log(time);
+        if($("#booking_asap").is(':checked')) {
+            $("#booking-date-confirm").val(yyyy+'-'+mm+'-'+dd);
+            $("#booking-start-confirm").val(time);
+        } else {
+            console.log("u");
+        }
     });
 
 /*
@@ -1717,6 +1886,13 @@ jQuery(document).ready(function () {
 <script src="/js/jquery.calculator.js"></script>
 <script>
 $(document).ready(function () {
+
+    $("#booking-date").datepicker({ dateFormat: 'yy-mm-dd' });
+    $("#booking-date-confirm").datepicker({ dateFormat: 'yy-mm-dd' });
+
+    $(".close_booking_popup").click(function () {
+        $("#booking_confirm_box").hide();
+    });
 
     $("#change_register").click(function () {
         $("#register_box").show();

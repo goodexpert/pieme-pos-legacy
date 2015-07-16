@@ -35,6 +35,7 @@ class HomeController extends AppController {
         'MerchantRegisterOpen',
         'MerchantRegister',
         'MerchantUser',
+        'MerchantBooking',
         'TaxRate',
         'RegisterSale',
         'RegisterSaleItem',
@@ -60,6 +61,7 @@ class HomeController extends AppController {
         
         $this->loadModel('MerchantQuickKey');
         $this->loadModel('MerchantPriceBook');
+        $this->loadModel('MerchantResource');
         
         if(!empty($user['current_outlet_id'])) {
             $key_id = $this->MerchantRegister->findById($user['MerchantRegister']['id'])['MerchantRegister']['quick_key_id'];
@@ -67,6 +69,13 @@ class HomeController extends AppController {
             $this->set("quick_key", $quick['MerchantQuickKey']['key_layouts']);
             $quick = json_decode($quick['MerchantQuickKey']['key_layouts'],true);
             $products_ids = array();
+            
+            $res = $this->MerchantResource->find('all', array(
+                'conditions' => array(
+                    'MerchantResource.merchant_id' => $user['merchant_id']
+                )
+            ));
+            $this->set("res",$res);
             foreach($quick['quick_keys']['groups'] as $group) {
                 foreach($group['pages'] as $page) {
                     if(!empty($page['keys'])){
@@ -129,6 +138,15 @@ class HomeController extends AppController {
             
             $this->set("key_layout",$products_ids);
             $this->set("key_items",$key_items);
+            
+            $booking_unav = $this->MerchantBooking->find('all', array(
+                'conditions' => array(
+                    'MerchantBooking.booking_status_id' => "CONFIRMED"
+                )
+            ));
+            
+            $booking_items = Hash::combine($booking_unav, "{n}.MerchantBooking.resource_id", "{n}");
+            $this->set("bookings",$booking_items);
 
             $this->MerchantPriceBook->bindModel(array(
                 'hasMany' => array(
@@ -768,6 +786,26 @@ class HomeController extends AppController {
             $this->serialize($result);
         } elseif ($this->request->is('post')) {
             return $this->redirect('/home', 301, false);
+        }
+    }
+    
+    public function booking() {
+        if ($this->request->is('post') || $this->request->is('ajax')) {
+            $result = array(
+                'success' => false
+            );
+            try {
+                $data = $this->request->data;
+                $data['user_id'] = $this->Auth->user()['id'];
+                $data['booking_status_id'] = "CONFIRMED";
+                $this->MerchantBooking->save($data);
+                
+                $result['success'] = true;
+            } catch (Exception $e) {
+                $result['message'] = $e->getMessage();
+            }
+            $this->serialize($result);
+            return;
         }
     }
 
