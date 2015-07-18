@@ -125,7 +125,7 @@
                     <button class="btn btn-white mini pull-right" style="display:none;"><i class="icon-size-actual"></i></button>
                     -->
                     <li class="current_open active">CURRENT SALE</li>
-                    <li class="retrieve_open">RETRIEVE SALE</li>
+                    <li class="retrieve_open">RECALL SALE</li>
                     <li><a href="/home/close">CLOSE REGISTER</a></li>
                 </ul>
                 <input type="hidden" id="retrieve_sale_id">
@@ -210,16 +210,16 @@
                                     </div>
                                     <div class="col-md-12 col-xs-12 col-sm-12 buttons col-alpha col-omega">
                                         <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
-                                            <button id="park" class="btn btn-primary">Park</button>
+                                            <button id="park" class="btn btn-primary">SAVE</button>
                                         </div>
                                         <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
-                                            <button class="btn btn-primary void">VOID</button>
+                                            <button class="btn btn-primary void">CANCEL</button>
                                         </div>
                                         <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
                                             <button class="btn btn-primary discount" <?php if ($user['Merchant']['allow_cashier_discount'] == 0) { echo "disabled"; } ?>>Discount </button>
                                         </div>
                                         <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 col-omega col-alpha">
-                                            <button class="btn btn-primary booking">Booking</button>
+                                            <button class="btn btn-primary booking">BOOKING</button>
                                         </div>
                                     </div>
                                 </div>
@@ -251,7 +251,7 @@
                                                 <text class="toPay">0.00</text>
                                             </li>
                                         </ul>
-                                        <input type="button" value="PAY" id="pay" class="btn">
+                                        <input type="button" value="PAYMENT" id="pay" class="btn">
                                     </div>
                                     <div class="receipt-bt"></div>
                                 </div>
@@ -428,7 +428,7 @@
                 <button class="btn btn-white mini pull-right" style="display:none;"><i class="icon-size-actual"></i></button>
                 -->
                 <li class="current_open active">CURRENT SALE</li>
-                <li class="retrieve_open">RETRIEVE SALE</li>
+                <li class="retrieve_open">RECALL SALE</li>
                 <li><a href="/home/close">CLOSE REGISTER</a></li>
             </ul>
             <div class="tab-content-wrapper col-md-12 col-xs-12 col-sm-12 col-alpha col-omega" style="padding-top: 8px;">

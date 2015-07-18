@@ -18,43 +18,43 @@
                 <!-- DOC: Remove data-hover="dropdown" and data-close-others="true" attributes below to disable the horizontal opening on mouse hover -->
                 <li>
                     <a href="/dashboard">
-                        Dashboard
+                        DASHBOARD
                     </a>
                 </li>
                 <li>
-                    <a href="/home">Sell</a>
+                    <a href="/home">SALES SCREEN</a>
                 </li>
                 <li>
                     <a href="/history">
-                    History </a>
+                    HISTORY </a>
                 </li>
                 <?php if ($user['user_type_id'] !== "user_type_cashier") : ?>
                 <li>
                     <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
-                    Product <i class="fa fa-angle-down"></i></a>
+                    STOCK <i class="fa fa-angle-down"></i></a>
                     <ul class="dropdown-menu pull-left">
                     <?php if ($user['user_type_id'] === "user_type_admin") : ?>
                         <li>
-                            <a href="/product">Product</a>
+                            <a href="/product">STOCK</a>
                         </li>
                         <li>
-                            <a href="/product/brand">Brand</a>
+                            <a href="/product/brand">BRAND</a>
                         </li>
                         <li>
-                            <a href="/product/type">Types</a>
+                            <a href="/product/type">STOCK TYPE</a>
                         </li>
                         <li>
-                            <a href="/pricebook">Price Books</a>
+                            <a href="/pricebook">PRICE BOOKS</a>
                         </li>
                         <li>
-                            <a href="/supplier">Suppliers</a>
+                            <a href="/supplier">SUPPLIERS</a>
                         </li>
                         <li>
-                            <a href="/product/tag">Tags</a>
+                            <a href="/product/tag">CATEGORIES</a>
                         </li>
                     <?php endif; ?>
                         <li>
-                            <a href="/stock_orders">Stock Control</a>
+                            <a href="/stock_orders">STOCK CONTROL</a>
                         </li>
                     </ul>
                 </li>
@@ -62,10 +62,10 @@
                 <?php if ($user['user_type_id'] === "user_type_admin") : ?>
                 <li>
                     <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
-                    Customer <i class="fa fa-angle-down"></i></a>
+                    CUSTOMER <i class="fa fa-angle-down"></i></a>
                     <ul class="dropdown-menu pull-left">
                         <li>
-                            <a href="/customer">Customer</a>
+                            <a href="/customer">CUSTOMER</a>
                         </li>
                         <li>
                             <a href="/customer/group">Group</a>
@@ -76,34 +76,34 @@
                 <?php if ($user['user_type_id'] !== "user_type_cashier") : ?>
                 <li>
                     <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
-                    Setup <i class="fa fa-angle-down"></i></a>
+                    SETTINGS <i class="fa fa-angle-down"></i></a>
                     <ul class="dropdown-menu pull-left">
                         <li>
-                            <a href="/setup">General</a>
+                            <a href="/setup">GENERAL</a>
                         </li>
                         <li>
-                            <a href="/account">Account</a>
+                            <a href="/account">PLAN</a>
                         </li>
                         <li>
-                            <a href="/setup/outlets_and_registers">Outlets and Registers</a>
+                            <a href="/setup/outlets_and_registers">OULTES & REGISTERS</a>
                         </li>
                         <li>
-                            <a href="/setup/quick_keys">Quick Keys</a>
+                            <a href="/setup/quick_keys">STOCK LIST</a>
                         </li>
                         <li>
-                            <a href="/setup/payments">Payment Types</a>
+                            <a href="/setup/payments">PAYMENT TYPE</a>
                         </li>
                         <li>
-                            <a href="/setup/taxes">Sales Taxes</a>
+                            <a href="/setup/taxes">SALES TAXES</a>
                         </li>
                         <li>
-                            <a href="/setup/loyalty">Loyalty</a>
+                            <a href="/setup/loyalty">LOYALTY</a>
                         </li>
                         <li>
-                            <a href="/setup/user">Users</a>
+                            <a href="/setup/user">USERS</a>
                         </li>
                         <li>
-                            <a href="/setup/add_ons">Add-ons</a>
+                            <a href="/setup/add_ons">ADD-ONS</a>
                         </li>
                     </ul>
                 </li>

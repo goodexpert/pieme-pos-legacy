@@ -53,7 +53,7 @@
     <!-- BEGIN CONTENT -->
     <div class="page-content-wrapper">
         <div class="page-content">
-            <h2>Account</h2>
+            <h2>PLAN SELECTION</h2>
             <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega line-box">
                 <h4>You're currently on the 'Free' Plan</h4>
                 <h5>Payment Frequency <span>Monthly</span></h5>
