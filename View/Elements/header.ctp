@@ -91,6 +91,9 @@
                             <a href="/setup/quick_keys">STOCK LIST</a>
                         </li>
                         <li>
+                            <a href="/resources">RESOURCES</a>
+                        </li>
+                        <li>
                             <a href="/setup/payments">PAYMENT TYPE</a>
                         </li>
                         <li>
