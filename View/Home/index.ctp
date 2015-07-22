@@ -209,17 +209,17 @@
                                         </dl>
                                     </div>
                                     <div class="col-md-12 col-xs-12 col-sm-12 buttons col-alpha col-omega">
-                                        <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
-                                            <button id="park" class="btn btn-primary">SAVE</button>
+                                        <div class="col-lg-3 col-md-3 col-xs-6 col-sm-6 col-omega col-alpha">
+                                            <button id="park" class="btn btn-primary park">Save</button>
                                         </div>
-                                        <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
-                                            <button class="btn btn-primary void">CANCEL</button>
+                                        <div class="col-lg-3 col-md-3 col-xs-6 col-sm-6 col-omega col-alpha">
+                                            <button class="btn btn-primary void">Cancel</button>
                                         </div>
-                                        <div class="col-lg-4 col-md-4 col-xs-4 col-sm-4 col-omega col-alpha">
+                                        <div class="col-lg-3 col-md-3 col-xs-6 col-sm-6 col-omega col-alpha">
                                             <button class="btn btn-primary discount" <?php if ($user['Merchant']['allow_cashier_discount'] == 0) { echo "disabled"; } ?>>Discount </button>
                                         </div>
-                                        <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6 col-omega col-alpha">
-                                            <button class="btn btn-primary booking">BOOKING</button>
+                                        <div class="col-lg-3 col-md-3 col-xs-6 col-sm-6 col-omega col-alpha">
+                                            <button class="btn btn-primary booking">Booking</button>
                                         </div>
                                     </div>
                                 </div>
@@ -1716,7 +1716,7 @@ jQuery(document).ready(function () {
     $("#button-view-c").click(function() {
         $("#block-right").find(".quick-key-item").removeClass("middle-view");
         $("#image-view-c").removeClass("active");
-        $("#block-right").find(".product-info").hide();
+        $("#block-right").find(".product-info").show();
         $(this).addClass("active");
     });
 

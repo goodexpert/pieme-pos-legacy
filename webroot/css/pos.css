@@ -481,8 +481,8 @@ margin: 0 auto;
 }
 
 
-.discount {
-    font-size: 12px;
+.park, .discount, .void, .booking {
+    font-size: 11px;
     line-height: 20px;
     padding: 6px 2px;
 }
@@ -1165,13 +1165,13 @@ background:rgba(223,173,53,1.00);
     background-size: 100px;
 }
 .customer-search-result{
-    min-height: 70px;
+    height:108px;
 }
 .customer-search-result dd, .customer-search-result dt{
     height:inherit;
 }
 .customer-search-result dl{
-    padding: 5px;
+    padding: 10px;
     background: #EDEDED;
     display: inline-block;
     border-radius: 5px;
