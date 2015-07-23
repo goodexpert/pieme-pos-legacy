@@ -124,13 +124,17 @@
                       <option value="2" <?php if($merchant['Merchant']['switching_security'] == 2){echo "selected";}?>>Always require a password when switching between users</option>
                     </select>
                   </dd>
+                  <dt>Use pincode</dt>
+                  <dd>
+                    <input type="checkbox" name="merchant[allow_use_pincode]" id="merchant_allow_use_pincode"></dd>
+                </dl>
                   <dt>Cashier discounts and returns</dt>
                   <dd>
                     <input type="checkbox" name="merchant[allow_cashier_discount]" id="merchant_allow_cashier_discount" <?php if($merchant['Merchant']['allow_cashier_discount'] == 1){echo "checked";}?>>
                     Allow Cashires to apply discounts and perform returns on sales</dd>
                   <dt>Use scale</dt>
                   <dd>
-                    <input type="checkbox" name="merchant[use_scale]" id="merchant_use_scale"></dd>
+                    <input type="checkbox" name="merchant[allow_use_scale]" id="merchant_allow_use_scale"></dd>
                 </dl>
               </div>
           </div>
@@ -385,10 +389,25 @@ jQuery(document).ready(function() {
    
    $(".save").click(function(){
        var allow_cashier_discount;
-       if($("#merchant_allow_cashier_discount").is(':checked')) {
+       var allow_use_pincode;
+       var allow_use_scale;
+
+       if ($("#merchant_allow_cashier_discount").is(':checked')) {
            allow_cashier_discount = 1;
        } else {
            allow_cashier_discount = 0;
+       }
+
+       if ($("#merchant_allow_use_pincode").is(':checked')) {
+           allow_use_pincode = 1;
+       } else {
+           allow_use_pincode = 0;
+       }
+
+       if ($("#merchant_allow_use_scale").is(':checked')) {
+           allow_use_scale = 1;
+       } else {
+           allow_use_scale = 0;
        }
    
        $.ajax({
@@ -406,6 +425,8 @@ jQuery(document).ready(function() {
               sku_sequence: $("#merchant_sku_sequence").val(),
               switching_security: $("#merchant_switching_security").val(),
               allow_cashier_discount: allow_cashier_discount,
+              allow_use_pincode: allow_use_pincode,
+              allow_use_scale: allow_use_scale,
               first_name: $("#merchant_contact_first_name").val(),
               last_name: $("#merchant_contact_last_name").val(),
               email: $("#merchant_contact_email").val(),

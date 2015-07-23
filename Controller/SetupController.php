@@ -52,17 +52,18 @@ class SetupController extends AppController {
 
         if ($this->request->is('ajax') || $this->request->is('post')) {
             $data = $this->request->data;
-            
             $result = array();
+
             try {
                 $this->Merchant->id = $user['merchant_id'];
                 $this->Merchant->save($data);
-                
+
                 $this->Contact->id = $user['Subscriber']['Subscriber']['contact_id'];
                 $this->Contact->save($data);
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();
             }
+
             $this->serialize($result);
         } else if ($this->request->is('get')){
             

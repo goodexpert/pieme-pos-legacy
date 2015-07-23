@@ -5,7 +5,7 @@ var DpsClient = function DpsClient(config) {
         accountNumber: 1,
 
         // hostname or ip address.
-        hostname: '127.0.0.1',
+        hostname: 'localhost',
 
         // port number.
         portNumber: 8443,
