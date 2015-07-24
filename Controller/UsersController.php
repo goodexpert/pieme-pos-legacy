@@ -58,19 +58,22 @@ class UsersController extends AppController {
             $result = array(
                 'success' => false
             );
+
             $dataSource = $this->MerchantUser->getDataSource();
             $dataSource->begin();
-            
+
             try {
                 $data = $this->request->data;
                 $data['merchant_id'] = $user['merchant_id'];
-                
+
                 $this->MerchantUser->create();
                 $this->MerchantUser->save($data);
-                
+
                 $dataSource->commit();
-                
-                $result['success'] = true;
+
+                if ($this->MerchantUser->id) {
+                    $result['success'] = true;
+                }
                 $result['user_id'] = $this->MerchantUser->id;
             } catch (Exception $e) {
                 $dataSource->rollback();

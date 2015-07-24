@@ -61,6 +61,7 @@ class MerchantUser extends AppModel {
  * @var array
  */
     public $validate = array(
+        /*
         'username' => array(
             'notEmpty' => array(
                 'rule' => 'notEmpty',
@@ -97,6 +98,7 @@ class MerchantUser extends AppModel {
                 'message' => 'Please enter a valid email address.'
             ),
         ),
+         */
     );
 
 }

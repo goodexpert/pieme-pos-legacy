@@ -53,7 +53,7 @@
             <div class="quick-key">
                 <div class="new-layout">
                     <span class="quick-key-new-layout" >
-                        <strong>New Quick Key Layout</strong>
+                        <strong>New Stock List Layout</strong>
                     </span>
                     <div class="quick-key-btn" >
                         <button class="btn btn-primary cancel">Cancel</button>
@@ -73,7 +73,7 @@
                         </div>
                     </div>
                     <div class="quick-key-name" >
-                       <input type="text" id="layout_name" value="New Quick Key Layout" >
+                       <input type="text" id="layout_name" value="New Stock List Layout" >
                        <span class="layout-name">Layout Name: </span>
                     </div>
                     <div class="quick-key-add-page">

@@ -206,7 +206,7 @@ jQuery(document).ready(function() {
     Metronic.init(); // init metronic core componets
     Layout.init(); // init layout
     Index.init();
-    
+
     $("#submit").click(function(){
         $.ajax({
             url: '/users/add.json',
@@ -220,7 +220,7 @@ jQuery(document).ready(function() {
                 outlet_id: $("#merchant_user_outlet_id").val()
             },
             success: function(result) {
-                if(result.success) {
+                if (result.success) {
                     window.location.href = "/users/"+result.user_id;
                 } else {
                     console.log(result);

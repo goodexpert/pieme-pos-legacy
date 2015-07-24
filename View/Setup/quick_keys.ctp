@@ -53,18 +53,18 @@
         <div class="page-content">
             <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega margin-bottom-20">
                 <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
-                    Quick Key
+                    Stock List
                 </h2>
                 <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
                     <a href="/quick_keys/new"><button class="btn btn-white pull-right">
                         <div class="glyphicon glyphicon-plus"></div>&nbsp;
-                    Add Quick Key</button></a> 
+                    Add Stock List</button></a> 
                 </div>
             </div>
         <table id="historyTable" class="table table-striped table-bordered dataTable margin-bottom-20">
             <thead>
             <tr>
-                <th>Quick Key Layout</th>
+                <th>Stock List Layout</th>
                 <th>Date Created</th>
                 <th></th>
             </tr>
@@ -85,7 +85,7 @@
                 <tr>
                     <th>Register</th>
                     <th>Outlet</th>
-                    <th>Quick Key Layout</th>
+                    <th>Stock List Layout</th>
                     <th> </th>
                 </tr>
             </thead>

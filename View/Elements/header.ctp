@@ -17,16 +17,13 @@
             <ul class="nav navbar-nav">
                 <!-- DOC: Remove data-hover="dropdown" and data-close-others="true" attributes below to disable the horizontal opening on mouse hover -->
                 <li>
-                    <a href="/dashboard">
-                        DASHBOARD
-                    </a>
+                    <a href="/dashboard" data-hover="dropdown" data-close-others="true">DASHBOARD</a>
                 </li>
                 <li>
-                    <a href="/home">SALES SCREEN</a>
+                    <a href="/home" data-hover="dropdown" data-close-others="true">SALES SCREEN</a>
                 </li>
                 <li>
-                    <a href="/history">
-                    HISTORY </a>
+                    <a href="/history" data-hover="dropdown" data-close-others="true">HISTORY</a>
                 </li>
                 <?php if ($user['user_type_id'] !== "user_type_cashier") : ?>
                 <li>

@@ -267,7 +267,7 @@ class SigninController extends AppController {
                     $this->Session->write('Auth.User.Plan', $plan['Plan']);
 
                     $subscriber = $this->Subscriber->findById($user['Merchant']['subscriber_id']);
-                    $this->Session->write('Auth.User.Subsriber', $subscriber['Subscriber']);
+                    $this->Session->write('Auth.User.Subscriber', $subscriber['Subscriber']);
 
                     $loyalty = $this->MerchantLoyalty->findByMerchantId($user['merchant_id']);
                     $this->Session->write('Auth.User.Loyalty', $loyalty['MerchantLoyalty']);

@@ -58,7 +58,7 @@ class SetupController extends AppController {
                 $this->Merchant->id = $user['merchant_id'];
                 $this->Merchant->save($data);
 
-                $this->Contact->id = $user['Subscriber']['Subscriber']['contact_id'];
+                $this->Contact->id = $user['Subscriber']['contact_id'];
                 $this->Contact->save($data);
             } catch (Exception $e) {
                 $result['message'] = $e->getMessage();

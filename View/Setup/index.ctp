@@ -260,7 +260,7 @@
         </div>
         <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
             <button class="btn btn-primary btn-wide save pull-right">Save</button>
-            <button class="btn btn-default btn-wide pull-right margin-right-10">Cancel</button>
+            <button class="btn btn-default btn-wide cancel pull-right margin-right-10">Cancel</button>
         </div>
         </div>
     </div>
@@ -383,11 +383,16 @@ jQuery(document).ready(function() {
             $("#merchant_sku_sequence").parent().show();
         }
     });
-   $('.same_as_physical').on('click', function(e) {
-       same_as_physical();
-   });
-   
-   $(".save").click(function(){
+
+    $('.same_as_physical').on('click', function(e) {
+        same_as_physical();
+    });
+
+    $(".cancel").click(function() {
+        location.reload();
+    });
+
+    $(".save").click(function(){
        var allow_cashier_discount;
        var allow_use_pincode;
        var allow_use_scale;

@@ -53,7 +53,7 @@
             <div class="quick-key">
                 <div class="new-layout">
                     <span class="quick-key-new-layout" >
-                        <strong>Edit Quick Key Layout</strong>
+                        <strong>Edit Stock List Layout</strong>
                     </span>
                     <div class="quick-key-btn" >
                         <button class="btn btn-primary cancel">Cancel</button>

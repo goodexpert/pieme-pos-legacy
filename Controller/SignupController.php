@@ -582,7 +582,7 @@ class SignupController extends AppController {
         $data = array();
         $data['merchant_id'] = $merchant_id;
         $data['retailer_id'] = $retailer_id;
-        $data['name'] = 'Default Quick Keys';
+        $data['name'] = 'Default Stock List';
 
         $this->MerchantQuickKey->create();
         if (!$this->MerchantQuickKey->save(array('MerchantQuickKey' => $data))) {
