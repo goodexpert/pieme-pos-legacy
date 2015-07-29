@@ -145,7 +145,7 @@
 
                     echo $this->Form->input('save-send', array(
                         'id' => 'save-send',
-                        'type' => 'hidden'
+                        'type' => 'hidden',
                         'value' => 0
                     ));
 
@@ -415,8 +415,7 @@ function addProduct(product_id, quantity, name, product_uom, supply_price, stock
     var sequence = 0;
 
     for (var idx in orderItems) {
-        if (orderItems[idx]['product_id'] == product_id ||
-            orderItems[idx]['supply_price'] == supply_price) {
+        if (orderItems[idx]['product_id'] == product_id && orderItems[idx]['supply_price'] == supply_price) {
             orderItems[idx]['quantity'] = parseFloat(orderItems[idx]['quantity']) + quantity;
             stockOrderItem = orderItems[idx];
             break;

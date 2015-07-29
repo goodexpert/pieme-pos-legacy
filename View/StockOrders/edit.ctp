@@ -336,7 +336,7 @@ jQuery(document).ready(function() {
 
                     response($.map(data.products, function (item) {
                         return ({
-                            label: item.name,
+                            label: item.name + ' (' + item.sku + ')',
                             handle: item.handle,
                             sku: item.sku,
                             data: item
@@ -360,7 +360,6 @@ jQuery(document).ready(function() {
         if (product == null) {
             return;
         }
-
         addProduct(product['id'], parseFloat($("#quantity").val()), product['name'], product['product_uom'],
             product['supply_price'], product['stock_type'], product['subitems'], product['in_stock']);
 
@@ -416,8 +415,7 @@ function addProduct(product_id, quantity, name, product_uom, supply_price, stock
     var sequence = 0;
 
     for (var idx in orderItems) {
-        if (orderItems[idx]['product_id'] == product_id ||
-            orderItems[idx]['supply_price'] == supply_price) {
+        if (orderItems[idx]['product_id'] == product_id && orderItems[idx]['supply_price'] == supply_price) {
             orderItems[idx]['quantity'] = parseFloat(orderItems[idx]['quantity']) + quantity;
             stockOrderItem = orderItems[idx];
             break;

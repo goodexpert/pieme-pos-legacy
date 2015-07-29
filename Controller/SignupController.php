@@ -743,7 +743,7 @@ class SignupController extends AppController {
         // create a product of yoghurt flavour banana
         $product1 = array();
         $product1['merchant_id'] = $merchant_id;
-        $product1['name'] = 'Yoghurt Fruity Tart (Demo)';
+        $product1['name'] = 'Yoghurt Fruity Tart';
         $product1['handle'] = 'yoghurt-fruity-tart';
         $product1['sku'] = 'yoghurt-fruity-tart';
         $product1['product_brand_id'] = $this->MerchantProductBrand->id;
@@ -778,7 +778,7 @@ class SignupController extends AppController {
 
         // create a product of yoghurt flavour banana
         $product2['merchant_id'] = $merchant_id;
-        $product2['name'] = 'Yoghurt Creamy Delight (Demo)';
+        $product2['name'] = 'Yoghurt Creamy Delight';
         $product2['handle'] = 'yoghurt-creamy-delight';
         $product2['sku'] = 'yoghurt-creamy-delight';
         $product2['product_brand_id'] = $this->MerchantProductBrand->id;
