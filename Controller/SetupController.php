@@ -276,27 +276,49 @@ class SetupController extends AppController {
     public function user() {
         $user = $this->Auth->user();
 
-        $this->loadModel('MerchantUser');
+        /*
+        if ($this->request->is('ajax') || $this->request->is('post')) {
+            $result = array(
+                'success' => false
+            );
+            $dataSource = $this->MerchantUser->getDataSource();
+            $dataSource->begin();
 
-        $this->MerchantUser->bindModel(array(
-            'belongsTo' => array(
-                'MerchantOutlet' => array(
-                    'className' => 'MerchantOutlet',
-                    'foreignKey' => 'outlet_id'
-                ),
-                'MerchantUserType' => array(
-                    'className' => 'MerchantUserType',
-                    'foreignKey' => 'user_type_id'
-                )
-            )
-        ));
+            try {
+                $data = $this->request->data;
+                $data['merchant_id'] = $user['merchant_id'];
 
-        $users = $this->MerchantUser->find('all', array(
-            'conditions' => array(
-                'MerchantUser.merchant_id' => $user['merchant_id']
-            )
-        ));
+                $this->MerchantUser->create();
+                $this->MerchantUser->save($data);
+
+                $dataSource->commit();
+
+                $result['success'] = true;
+                $result['user_id'] = $this->MerchantUser->id;
+            } catch (Exception $e) {
+                $dataSource->rollback();
+                $result['message'] = $e->getMessage();
+            }
+
+            $this->serialize($result);
+            return;
+        }
+        */
+
+        $users = $this->_getUsers($user['merchant_id']);
         $this->set('users', $users);
+
+        $user_types = $this->_getUserTypes($user['merchant_id']);
+        $this->set('user_types', $user_types);
+
+        if (empty($user['retailer_id'])) {
+            // get the list of merchant's outlets
+            $outlets = $this->_getOutletByMerchantId($user['merchant_id']);
+        } else {
+            // get the list of retail's outlets
+            $outlets = $this->_getOutletByRetailerId($user['retailer_id']);
+        }
+        $this->set('outlets', $outlets);
     }
 
 /**
@@ -492,6 +514,105 @@ class SetupController extends AppController {
 
         $payment_type['MerchantPaymentType']['is_active'] = $enable_loyalty;
         $this->MerchantPaymentType->save($payment_type);
+    }
+
+/**
+ * Get the merchant's outlets.
+ *
+ * @param string merchant id
+ * @return array the list
+ */
+    protected function _getOutletByMerchantId($merchant_id) {
+        $this->loadModel('MerchantOutlet');
+
+        $outlets = $this->MerchantOutlet->find('list', array(
+            'conditions' => array(
+                'MerchantOutlet.merchant_id' => $merchant_id
+            )
+        ));
+        return $outlets;
+    }
+
+/**
+ * Get the retailer's outlets.
+ *
+ * @param string retailer id
+ * @return array the list
+ */
+    protected function _getOutletByRetailerId($retailer_id) {
+        $this->loadModel('MerchantOutlet');
+
+        $outlets = $this->MerchantOutlet->find('list', array(
+            'conditions' => array(
+                'MerchantOutlet.retailer_id' => $retailer_id
+            )
+        ));
+        return $outlets;
+    }
+
+/**
+ * Get the user types.
+ *
+ * @param string merchant id
+ * @return array the list
+ */
+    protected function _getUserTypes($merchant_id) {
+        $this->loadModel('MerchantUserType');
+
+        $user_types = $this->MerchantUserType->find('list', array(
+            'conditions' => array(
+                'MerchantUserType.is_active' => 1
+            )
+        ));
+        return $user_types;
+    }
+
+/**
+ * Get the user list.
+ *
+ * @param string merchant id
+ * @return array the list
+ */
+    protected function _getUsers($merchant_id) {
+        $this->loadModel('MerchantUser');
+        $conditions = [];
+
+        $conditions[] = [
+            'MerchantUser.merchant_id' => $merchant_id
+        ];
+
+        $this->MerchantUser->bindModel([
+            'belongsTo' => [
+                'MerchantOutlet' => [
+                    'className' => 'MerchantOutlet',
+                    'foreignKey' => 'outlet_id'
+                ],
+                'MerchantUserType' => [
+                    'className' => 'MerchantUserType',
+                    'foreignKey' => 'user_type_id'
+                ]
+            ],
+        ]);
+
+        $users = $this->MerchantUser->find('all', [
+            'fields' => [
+                'MerchantUser.id',
+                'MerchantUser.username',
+                'MerchantUser.display_name',
+                'MerchantUser.email',
+                'MerchantUser.image',
+                'MerchantUser.last_ip_address',
+                'MerchantUser.last_logged',
+                'MerchantUserType.name',
+                'MerchantOutlet.name',
+            ],
+            'conditions' => $conditions
+        ]);
+
+        $this->MerchantUser->unbindModel([
+            'belongsTo' => ['MerchantUserType', 'MerchantOutlet']
+        ]);
+        return $users;
     }
 
 }

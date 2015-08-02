@@ -79,34 +79,6 @@ dd.explain{
 .modal-dialog .btn-success, .modal-dialog input{
     border: 1px solid rgb(0, 0, 0);
 }
-/* Modal layout / center View  END */
-.vertical-alignment-helper {
-    display:table;
-    height: 100%;
-    width: 100%;
-}
-.vertical-align-center {
-    /* To center vertically */
-    display: table-cell;
-    vertical-align: middle;
-    width:900px;
-}
-.modal-content {
-    /* Bootstrap sets the size of the modal in the modal-dialog class, we need to inherit it */
-    width:inherit;
-    height:inherit;
-    /* To center horizontally */
-    margin: 0 auto;
-}
-.add-user-container dt, .add-user-container dd {
-    height: inherit;
-    margin-bottom: 10px;
-}
-.add-user-container .error{
-    color:red;
-
-}
-/* Modal layout / center View  END */
 
 /* BUTTON VIEW / IMAGE VIEW */
 
@@ -153,14 +125,14 @@ dd.explain{
 }
 
 .sorting_asc span.up {
-    background: url("../img/arrow-up-down.png") no-repeat left -18px;
+    background: url(/img/arrow-up-down.png) no-repeat left -18px;
     display: inline-block;
     width: 9px;
     height: 11px;
     margin-left: 5px;
 }
 .sorting_asc span.down {
-    background: url("../img/arrow-up-down.png") no-repeat left -2px;
+    background: url(/img/arrow-up-down.png) no-repeat left -2px;
     display: inline-block;
     width: 9px;
     height: 11px;
@@ -176,6 +148,7 @@ dd.explain{
 .container
 {
     max-width:100%;
+    min-width:1024px !important;
 }
 
 @media (min-width: 992px){
@@ -332,7 +305,9 @@ div.radio, div.checker {
     box-shadow: inset 0 3px 3px rgba(0,0,0,0.2); 
 }
 */
-.maximum {
+
+/** SALES SCREEN BEGIN **/
+.sales-screen-tabs {
     float: left;
     padding: 0 !important;
     margin: 0 !important;
@@ -590,7 +565,7 @@ height: 54px;
     padding: 0 10px !important;
 }
 .receipt {
-    background: url("../img/receipt.png") repeat-x;
+    background: url("/img/receipt.png") repeat-x;
     display: inline-block;
     width: 100%;
     height: 4px;
@@ -656,9 +631,7 @@ height: 54px;
     -webkit-box-shadow: 0 0 2px rgba(85, 168, 236, 0.9);
     box-shadow: 0 0 2px rgba(85, 168, 236, 0.9);
 }
-.buttons {
-    bottom: -23px;
-}
+
 @media (max-width : 1200px){
 .park, .void {
     margin-bottom:5px;
@@ -981,13 +954,6 @@ background:rgba(223,173,53,1.00);
     width: 500px;
     margin: 0 auto;
     margin-top: 10%;
-}
-
-@media (min-width: 992px){
-    .modal-dialog {
-        width: 800px;
-        margin: 30px auto;
-    }
 }
 
 .confirm-close {
@@ -1874,13 +1840,13 @@ table.dataTable-sm td {
         height:35px;
         min-height:35px;
     }
-    .maximum .margin-top-30{
+    .sales-screen-tabs .margin-top-30{
         margin-top:5px;
     }
     #block-left, #block-right {
         margin-top:5px;
         margin-bottom:5px;
-        height:550px; !important
+        height:100%; !important
     }
 
     .setHeight {
@@ -1893,15 +1859,6 @@ table.dataTable-sm td {
 
     .buttons {
         bottom: 9px;
-    }
-    .commands{
-        padding:0px 10px;
-    }
-    .show-amount{
-        padding: 3px 8px;
-    }
-    .receipt-text {
-        padding: 9px 0;
     }
 
     .page-header.navbar .page-logo {
@@ -1967,7 +1924,7 @@ and (-webkit-min-device-pixel-ratio: 1){
         height:35px;
         min-height:35px;
     }
-    .maximum .margin-top-30{
+    .sales-screen-tabs .margin-top-30{
         margin-top:5px;
     }
     #block-left, #block-right {
@@ -2247,7 +2204,7 @@ div.quick-key-search{
 }
 
 .quick-key-list {
-    height: 432px;
+    height: 440px;
     overflow: overlay;
 }
 
@@ -2319,6 +2276,32 @@ and (max-device-width : 1024px)
 and (orientation : portrait)
 and (-webkit-min-device-pixel-ratio: 1) { /* STYLES GO HERE */ }
 
+@media only screen
+and (min-width : 1024px)
+{
+.quick-key-list{
+
+    height:504px;
+}
+    .buttons {
+        bottom: -23px;
+    }
+}
+@media only screen
+and (max-width : 1024px) {
+    .commands {
+        padding: 0px 10px;
+    }
+
+    .show-amount {
+        padding: 3px 8px;
+    }
+
+    .receipt-text {
+        padding: 9px 0;
+    }
+
+}
 .tab-menu-wrapper li {
     float: left;
     display: block;
@@ -2338,9 +2321,7 @@ and (-webkit-min-device-pixel-ratio: 1) { /* STYLES GO HERE */ }
 
 .tab-content-wrapper {
     background: #ffffff;
-    padding: 0 8px;
-    border: 1px solid #eee;
-    border-top: 0;
+    float:left;
 }
 
 .nav-tabs li a:hover {
@@ -2405,20 +2386,51 @@ and (-webkit-min-device-pixel-ratio: 1) { /* STYLES GO HERE */ }
     outline: none;
 }
 
-/* DROP ZONE CSS */
-
-.dropzone-background{
-    background: url(../img/no-image.png) no-repeat white !important;
-    background-size:200px !important;
-    width: 200px;
-    height:200px;
+/*jquery-ui-tabs-customize begin*/
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br,.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr{
+    border-radius: 0px !important;
 }
-.dz-message{
-    color:black;
-    font-size:13px;
-    font-family: "Open Sans", sans-serif;
-    margin:4em 0 !important;
-
+.ui-tabs .ui-tabs-nav {
+    margin-top:30px ;
+    padding: 0;
 }
-/*END DROP ZONE*/
+.ui-tabs .ui-tabs-nav .ui-tabs-anchor {
+    float: left;
+    padding: .5em 1em;
+    text-decoration: none;
+}
 
+.ui-tabs .ui-tabs-nav li {
+    float: left;
+    display: block;
+    padding: 8px 10px;
+    margin-right: 4px;
+    background: #ccc;
+}
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-active {
+    background: #ffffff;
+    border: 1px solid #ffffff;
+    border-bottom: 0;
+    margin-bottom: 0px;
+    padding-bottom: 10px;
+}
+
+.ui-tabs .ui-tabs-nav .ui-tabs-anchor{
+    float: left;
+    padding: 0px;
+    text-decoration: none;
+}
+
+#tabs-current-sale{
+    background-color: white;
+}
+
+.ui-tabs .ui-tabs-panel {
+    display: block;
+    border-width: 0;
+    padding: 0px 8px;
+    background: none;
+    float: left;
+}
+/*End jquery-ui-tabs-customize */

@@ -58,6 +58,7 @@
             </div>
             <div class="col-md-12 col-xs-12 col-sm-12 form-title">Detail</div>
             <form action="/payments/create" method="post">
+            <input type="hidden" name="is_active" value="1">
             <div class="line-box line-box-content col-md-12 col-sm-12 col-xs-12">
                 <div class="col-md-6">
                        <dl>

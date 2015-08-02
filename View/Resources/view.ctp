@@ -310,7 +310,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach($logs as $log) { ?>
+                    <?php foreach($logs as $log) : ?>
                         <tr>
                             <td><?php echo $log['MerchantProductLog']['created'];?></td>
                             <td><?php echo $log['MerchantUser']['display_name'];?></td>
@@ -320,7 +320,7 @@
                             <td><?php echo $log['MerchantProductLog']['change'];?></td>
                             <td><?php echo $log['MerchantProductLog']['action_type'];?></td>
                         </tr>
-                    <?php } ?>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         
@@ -372,7 +372,6 @@
 <script src="/theme/onzsa/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
 <script src="/theme/onzsa/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
-
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <script>
 jQuery(document).ready(function() {    

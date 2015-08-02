@@ -1,6 +1,5 @@
 <link href="/css/dataTable.css" rel="stylesheet" type="text/css">
 <div class="clearfix"></div>
-
 <div class="container">
     <!-- BEGIN SIDEBAR -->
     <div class="page-sidebar-wrapper">
@@ -71,22 +70,18 @@
                         <th></th>
                     </tr>
                     </thead>
-
-                    <?php foreach($resources as $resource) { ?>
-
+                    <?php foreach($resources as $resource) : ?>
                         <tr>
-													<td class="resource_type_id" style="display: none;"><?=$resource['MerchantResource']['resource_type_id'];?></td>
-													<td class="resource_type_name"><?=$resource['MerchantResource']['resource_name'];?></td>
-													<td class="name"><?=$resource['MerchantResource']['name'];?></td>
-													<td class="user_field_1"><?=$resource['MerchantResource']['user_field_1'];?></td>
-													<td>
-														<a href="javascript:;" class="edit-resource" data-id="<?=$resource['MerchantResource']['id'];?>">Edit</a> |
-														<a href="javascript:;" class="delete-resource" data-id="<?=$resource['MerchantResource']['id'];?>">Delete</a>
-													</td>
+                            <td class="resource_type_id" style="display: none;"><?=$resource['MerchantResource']['resource_type_id'];?></td>
+                            <td class="resource_type_name"><?=$resource['MerchantResource']['resource_name'];?></td>
+                            <td class="name"><?=$resource['MerchantResource']['name'];?></td>
+                            <td class="user_field_1"><?=$resource['MerchantResource']['user_field_1'];?></td>
+                            <td>
+                                <a href="javascript:;" class="edit-resource" data-id="<?=$resource['MerchantResource']['id'];?>">Edit</a> |
+                                <a href="javascript:;" class="delete-resource" data-id="<?=$resource['MerchantResource']['id'];?>">Delete</a>
+                            </td>
                         </tr>
-
-                    <?php } ?>
-
+                    <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
@@ -189,7 +184,7 @@ $(document).ready(function(){
     
     $(".edit-resource").click(function(){
         var id = $(this).parent().parent().children(".resource_type_id").text();
-				var idd = $(this).attr("data-id");
+                var idd = $(this).attr("data-id");
 
         $.confirm({
             title:'Edit resource',
@@ -203,7 +198,7 @@ $(document).ready(function(){
                         resource_type_id: $("#resourceType").val(),
                         name: $("#resourceName").val(),
                         user_field_1: $("#resourcePeople").val(),
-												to_edit: idd
+                                                to_edit: idd
                     }
                 }).done(function(){
                     location.reload();
@@ -224,22 +219,22 @@ $(document).ready(function(){
             text:'Are you sure to delete this resource?',
             confirmButton: "Delete",
             confirm: function(){
-							$.ajax({
-								url: "/resources/delete.json",
-								type: "POST",
-								data: {
-										to_delete: id
-								},
+                            $.ajax({
+                                url: "/resources/delete.json",
+                                type: "POST",
+                                data: {
+                                        to_delete: id
+                                },
                 success: function(result){
-									if(result.success) {
-										location.reload();
-									} else {
-										console.log(result);
-									}
+                                    if(result.success) {
+                                        location.reload();
+                                    } else {
+                                        console.log(result);
+                                    }
                 }
-							});
+                            });
 
-							return(false);
+                            return(false);
             },
             confirmButtonClass: "pull-right btn-success margin-left-10",
             cancelButton: "Cancel",

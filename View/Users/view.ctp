@@ -1,6 +1,7 @@
 <?php
-    $user = $this->Session->read('Auth.User');
- ?>
+    $EmptyHistory = 'Sales history does not exist.';
+    $AuthUser = $this->Session->read('Auth.User');
+?>
 <link href="/css/dataTable.css" rel="stylesheet" type="text/css">
 <div class="clearfix"></div>
 <div class="container">
@@ -79,7 +80,7 @@
                             <dt>Email</dt>
                             <dd><?php echo $user['email'];?></dd>
                             <dt>Limit to outlet</dt>
-                            <dd>-</dd>
+                            <dd><?php echo (empty($user['MerchantOutlet']) ? '-' : $user['MerchantOutlet']['name']); ?></dd>
                             <dt>Created at</dt>
                             <dd><?php echo $user['created'];?></dd>
                         </dl>
@@ -137,6 +138,8 @@
                         foreach($sales as $sale) { ?>
                             <?php echo $sale['RegisterSale']['sale_date'];?> // $<?php echo number_format($sale['RegisterSale']['total_price_incl_tax'],2,'.',',');?><br>
                         <?php }
+                    } else{
+                        echo $EmptyHistory;
                     } ?>
                 </div>
             </div>
@@ -160,7 +163,7 @@
                         foreach($sales as $sale) { ?>
                         <tr>
                             <td><?php echo $sale['RegisterSale']['receipt_number'];?></td>
-                            <td><?php echo $sale['MerchantUser']['display_name'];?></td>
+                            <td><?php echo $user['display_name'];?></td>
                             <td><?php echo $sale['MerchantCustomer']['name'];?></td>
                             <td><?php echo $sale['RegisterSale']['note'];?></td>
                             <td><?php echo $sale['RegisterSale']['status'];?></td>
@@ -224,6 +227,8 @@
 <script type="text/javascript" src="/js/jquery.confirm.js"></script>
 <script src="/js/jquery.popupoverlay.js" type="text/javascript"></script>
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script src="/js/dataTable.js" type="text/javascript"></script>
+
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
 jQuery(document).ready(function() {    

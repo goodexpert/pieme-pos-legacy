@@ -167,27 +167,62 @@ class UsersController extends AppController {
  * @return void
  */
     public function view($id) {
+        $this->request->allowMethod(['get']);
+
+        $user = $this->MerchantUser->find('first',  array(
+            'fields' => array(
+                'MerchantUser.*',
+                'MerchantOutlet.name'
+            ),
+            'joins' => array(
+                array(
+                    'table' => 'merchant_outlets',
+                    'alias' => 'MerchantOutlet',
+                    'type' => 'INNER',
+                   )
+            )
+        ));
+
+        $user = array_merge($user, $user['MerchantUser']);
+        unset($user['MerchantUser']);
+
+        $this->set('user', $user);
+
+        /*
         $user = $this->Auth->user();
         $user = $this->MerchantUser->findById($id);
         $this->set('user',$user);
         
         $this->RegisterSale->bindModel(array(
-        	'belongsTo' => array(
-        		'MerchantUser' => array(
+            'belongsTo' => array(
+                'MerchantUser' => array(
                     'className' => 'MerchantUser',
                     'foreignKey' => 'user_id'
                 ),
                 'MerchantCustomer' => array(
-                	'className' => 'MerchantCustomer',
-                	'foreignKey' => 'customer_id'
+                    'className' => 'MerchantCustomer',
+                    'foreignKey' => 'customer_id'
                 )
-        	)
+            )
         ));
-        
+         */
+
+        $conditions = array(
+            'MerchantCustomer.id = Register.customer_id',
+        );
         $sales = $this->RegisterSale->find('all', array(
-        	'conditions' => array(
-        		'RegisterSale.user_id' => $id
-        	)
+            'fields' => array(
+                'RegisterSale.*',
+                'MerchantCustomer.name'
+            ),
+                'joins' => array(
+                array(
+                    'table' => 'merchant_customers',
+                    'alias' => 'MerchantCustomer',
+                    'type' => 'INNER',
+                    'condition' => $conditions
+                )
+            )
         ));
         $this->set('sales',$sales);
     }

@@ -149,14 +149,14 @@
                                         <option value="KRW" disabled>South Korean Won</option>
                                     </select>
                                 </dd>
-								<dt> Terms</dt>
-								<dd>
-									<p><a href ="http://www.onzsa.com/terms.html" target="_blank"> Terms and conditions </a><p>
-									<input type="checkbox" title="Please agree to our policy!" name="data[agree]" id="terms" class="form-control"/>
-                                    <label class="error" for="data[agree]" style="display: none;">Please agree to our policy!</label>									</input>
-									<div class="help-block with-errors"></div>
-									</dd>
-								
+                                <dt> Terms</dt>
+                                <dd>
+                                    <p><a href ="http://www.onzsa.com/terms.html" target="_blank"> Terms and conditions </a><p>
+                                    <input type="checkbox" title="Please agree to our policy!" name="data[agree]" id="terms" class="form-control"/>
+                                    <label class="error" for="data[agree]" style="display: none;">Please agree to our policy!</label>                                    </input>
+                                    <div class="help-block with-errors"></div>
+                                    </dd>
+                                
                             </dl>
                             <!--
                             <div class="dashed-line-gr"></div>
@@ -324,9 +324,9 @@ var formValidation = function() {
     // http://docs.jquery.com/Plugins/Validation
     $("#signup_form").validate({
         rules: {
-			'data[agree]':{
-				required:true
-			},
+            'data[agree]':{
+                required:true
+            },
             'data[name]': {
                 required: true,
                 minlength: 4
@@ -409,9 +409,9 @@ var formValidation = function() {
                 required: "Please enter your city and select from the list.",
                 addressLookup: "Please enter your city and select from the list."
             },
-			'data[agree]':{
+            'data[agree]':{
                 required: "Please check the policy."
-			},
+            }
         },
         errorPlacement: function(error, element) {
             if (element.attr("name") == "data[domain_prefix]") {

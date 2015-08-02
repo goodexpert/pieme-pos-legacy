@@ -83,9 +83,9 @@ class HomeController extends AppController {
                             $arr = array(
                                 'product_id'=>$product['product_id'],
                                 'page'=>$page['page'],
-				'color'=>$product['color'],
-				'label'=>$product['label'],
-				'group'=>$group['position']
+                                'color'=>$product['color'],
+                                'label'=>$product['label'],
+                                'group'=>$group['position']
                             );
                             array_push($products_ids, $arr);
                         }

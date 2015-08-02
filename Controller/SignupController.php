@@ -310,7 +310,13 @@ class SignupController extends AppController {
             }
 
             $dataSource->commit();
-            $this->redirect('/signin');
+
+            if (empty($this->Auth->subdomain) || $this->Auth->subdomain === $data['domain_prefix']) {
+                $redirect_url = '/signin';
+            } else {
+                $redirect_url = 'https://' . $data['domain_prefix'] . '.onzsa.com/signin';
+            }
+            $this->redirect(redirect_url);
         } catch (Exception $e) {
             $dataSource->rollback();
             $this->Session->setFlash($e->getMessage());

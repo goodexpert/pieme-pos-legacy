@@ -1,6 +1,5 @@
 <link href="/css/dataTable.css" rel="stylesheet" type="text/css">
 <div class="clearfix"></div>
-
 <div class="container">
     <!-- BEGIN SIDEBAR -->
     <div class="page-sidebar-wrapper">
@@ -75,14 +74,14 @@
                     <?php foreach($resources as $resource) { ?>
 
                         <tr>
-													<td class="id" style="display: none;"><?=$resource['MerchantResource']['id'];?></td>
-													<td class="resource_type_id"><?=$resource['MerchantResource']['resource_type_id'];?></td>
-													<td class="name"><?=$resource['MerchantResource']['name'];?></td>
-													<td class="user_field_1"><?=$resource['MerchantResource']['user_field_1'];?></td>
-													<td>
-														<a href="javascript:;" class="edit-resource">Edit</a> |
-														<a href="javascript:;" class="delete-resource" data-id="<?=$resource['MerchantResource']['id'];?>">Delete</a>
-													</td>
+                                                    <td class="id" style="display: none;"><?=$resource['MerchantResource']['id'];?></td>
+                                                    <td class="resource_type_id"><?=$resource['MerchantResource']['resource_type_id'];?></td>
+                                                    <td class="name"><?=$resource['MerchantResource']['name'];?></td>
+                                                    <td class="user_field_1"><?=$resource['MerchantResource']['user_field_1'];?></td>
+                                                    <td>
+                                                        <a href="javascript:;" class="edit-resource">Edit</a> |
+                                                        <a href="javascript:;" class="delete-resource" data-id="<?=$resource['MerchantResource']['id'];?>">Delete</a>
+                                                    </td>
                         </tr>
 
                     <?php } ?>
@@ -137,8 +136,8 @@
 <script src="/theme/onzsa/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
 <script src="/theme/onzsa/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <script src="/js/dataTable.js" type="text/javascript"></script>
-<script type="text/javascript" src="/js/jquery.confirm.js"></script>
-<script type="text/javascript" src="/js/jquery.popupoverlay.js"></script>
+<script src="/js/jquery.confirm.js" type="text/javascript"></script>
+<script src="/js/jquery.popupoverlay.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
 jQuery(document).ready(function() {    
@@ -151,12 +150,7 @@ jQuery(document).ready(function() {
     });
 
     $("#typeTable_length").hide();
-});
-</script>
-<!-- END JAVASCRIPTS -->
 
-<script>
-$(document).ready(function(){
     $(".add-resource").confirm({
         title:'Input New Resource',
         text:'<select name="resource_type_table" id="resourceType" placeholder="Type of resource"><option value="resource_type_car_park">Car Park</option><option value="resource_type_room">Room</option><option value="resource_type_table">Table</option><option value="resource_type_vehicle">Vehicle</option><input type="text" name="name" id="resourceName" placeholder="Resource Name"><input type="text" name="people" id="resourcePeople" placeholder="Number of People">',
@@ -189,7 +183,7 @@ $(document).ready(function(){
     
     $(".edit-resource").click(function(){
         var id = $(this).parent().parent().children(".resource_type_id").text();
-				var idd = $(this).parent().parent().children("id").text();
+                var idd = $(this).parent().parent().children("id").text();
 
         $.confirm({
             title:'Edit resource',
@@ -203,7 +197,7 @@ $(document).ready(function(){
                         resource_type_id: $("#resourceType").val(),
                         name: $("#resourceName").val(),
                         user_field_1: $("#resourcePeople").val(),
-												id: idd
+                                                id: idd
                     }
                 }).done(function(){
                     location.reload();
@@ -224,22 +218,22 @@ $(document).ready(function(){
             text:'Are you sure to delete this resource?',
             confirmButton: "Delete",
             confirm: function(button){
-							$.ajax({
-								url: "/resources/delete.json",
-								type: "POST",
-								data: {
-										to_delete: id
-								},
+                            $.ajax({
+                                url: "/resources/delete.json",
+                                type: "POST",
+                                data: {
+                                        to_delete: id
+                                },
                 success: function(result){
-									if(result.success) {
-										location.reload();
-									} else {
-										console.log(result);
-									}
+                                    if(result.success) {
+                                        location.reload();
+                                    } else {
+                                        console.log(result);
+                                    }
                 }
-							});
+                            });
 
-							return(false);
+                            return(false);
             },
             confirmButtonClass: "pull-right btn-success margin-left-10",
             cancelButton: "Cancel",
@@ -251,4 +245,4 @@ $(document).ready(function(){
     });
 });
 </script>
-<script type="text/javascript" src="/js/jquery.confirm.js"></script>
+<!-- END JAVASCRIPTS -->
