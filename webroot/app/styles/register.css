@@ -1,0 +1,316 @@
+@charset "UTF-8";
+
+/* ----------- Sell-Screen CSS BEGIN ----------- */
+
+.btn-function {
+  display: inline-block;
+  color: #333333;
+  background-color: #ffffff;
+  border-color: #cccccc;
+  white-space:normal !important;
+  word-wrap: normal; 
+  width: 87px;
+  height: 48px;
+  margin: 2px;
+}
+.btn-function:focus,
+.btn-function.focus {
+  color: #333333;
+  background-color: #e6e6e6;
+  border-color: #8c8c8c;
+}
+.btn-function:hover {
+  color: #333333;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+}
+.btn-function:active,
+.btn-function.active,
+.open > .dropdown-toggle.btn-function {
+  color: #333333;
+  background-color: #e6e6e6;
+  border-color: #adadad;
+}
+.btn-function:active:hover,
+.btn-function.active:hover,
+.open > .dropdown-toggle.btn-function:hover,
+.btn-function:active:focus,
+.btn-function.active:focus,
+.open > .dropdown-toggle.btn-function:focus,
+.btn-function:active.focus,
+.btn-function.active.focus,
+.open > .dropdown-toggle.btn-function.focus {
+  color: #333333;
+  background-color: #d4d4d4;
+  border-color: #8c8c8c;
+}
+.btn-function:active,
+.btn-function.active,
+.open > .dropdown-toggle.btn-function {
+  background-image: none;
+}
+.btn-function.disabled,
+.btn-function[disabled],
+fieldset[disabled] .btn-function,
+.btn-function.disabled:hover,
+.btn-function[disabled]:hover,
+fieldset[disabled] .btn-function:hover,
+.btn-function.disabled:focus,
+.btn-function[disabled]:focus,
+fieldset[disabled] .btn-function:focus,
+.btn-function.disabled.focus,
+.btn-function[disabled].focus,
+fieldset[disabled] .btn-function.focus,
+.btn-function.disabled:active,
+.btn-function[disabled]:active,
+fieldset[disabled] .btn-function:active,
+.btn-function.disabled.active,
+.btn-function[disabled].active,
+fieldset[disabled] .btn-function.active {
+  background-color: #ffffff;
+  border-color: #cccccc;
+}
+.btn-function .badge {
+  color: #ffffff;
+  background-color: #333333;
+}
+
+.thumbnail.small {
+  display: inline-block;
+  max-width: 106px;
+  min-width: 106px;
+  max-height: 50px;
+  min-height: 50px;
+  margin: 1px 2px;
+  padding: 0px;
+  border: 2px solid #eee;
+}
+
+.thumbnail.middle {
+  display: inline-block;
+  max-width: 106px;
+  min-width: 106px;
+  max-height: 106px;
+  min-height: 106px;
+  margin: 1px 2px;
+  border: 0px;
+  padding: 0px;
+}
+
+.thumbnail.large {
+  display: inline-block;
+  max-width: 106px;
+  min-width: 106px;
+  max-height: 106px;
+  min-height: 106px;
+  margin: 1px 2px;
+  padding: 0px;
+  border: 2px solid #eee;
+}
+
+.thumbnail > div > img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 102px;
+  max-height: 60px;
+}
+
+.thumbnail.small > div > img {
+  display: none;
+}
+
+.thumbnail.middle > div > img {
+  border-radius: 8px;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+}
+
+.thumbnail.large > div > img {
+  max-width: 102px;
+  max-height: 102px;
+  object-fit: cover;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+}
+
+.thumbnail.middle > div.image {
+  margin: 0;
+  padding: 0;
+  background: #cfc;
+  border: 2px solid #eee;
+  border-radius: 8px;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+}
+
+.thumbnail.large > div.image {
+  position: absolute;
+  width: 102px;
+  height: 102px;
+}
+
+.thumbnail.small > div.caption {
+  width: 102px;
+  height: 50px;
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  /*font-size: 85%;*/
+}
+
+.thumbnail.middle > div.caption {
+  width: 102px;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  font-size: 85%;
+}
+
+.thumbnail.large > div.caption {
+  position: relative;
+  width: 102px;
+  top: 68px;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  font-size: 100%;
+  background-color:rgba(244,195,0,0.5);
+}
+
+/* Sell Screen Column */
+#sell-screen-column-1,
+#sell-screen-column-2 {
+  height: 100%;
+  padding: 0 5px;
+  /*
+  */
+}
+
+/* Quick Keys */
+#sale-quick-keys-box {
+  /*
+  height: 100%;
+  margin: 0 0 8px 0;
+  padding: 10px 18px ;
+  */
+}
+#sale-quick-keys-list {
+  height: 580px;
+  overflow: auto;
+  padding: 5px;
+}
+
+/* Sale Items */
+#sale-items-box {
+  /*
+  height: 414px;
+  margin: 0 0 8px 0;
+  */
+}
+
+/* Cumstomer Box */
+#sale-customer-box {
+  height:102px;
+  /*
+  margin:0 0 8px 0 ;
+  */
+}
+/* Function Keys */
+#sale-function-keys-box {
+  height: 186px;
+  /*
+  margin: 0 0 8px 0;
+  */
+}
+
+.status-bar {
+  margin: 0;
+  padding: 2px 5px;
+  box-shadow: 0px 1px 10px 0px rgba(50, 50, 50, 0.2);
+  width: 100%;
+
+}
+.status-item {
+  margin: 2px 10px;
+}
+/* ----------- Sell-Screen CSS END ----------- */
+
+
+/* ----------- iPad 1 and 2 ----------- */
+/* Portrait and Landscape */
+@media only screen 
+  and (min-device-width: 768px) 
+  and (max-device-width: 1024px) 
+  and (-webkit-min-device-pixel-ratio: 1) {
+
+}
+
+/* Portrait */
+@media only screen 
+  and (min-device-width: 768px) 
+  and (max-device-width: 1024px) 
+  and (orientation: portrait) 
+  and (-webkit-min-device-pixel-ratio: 1) {
+
+}
+
+/* Landscape */
+@media only screen 
+  and (min-device-width: 768px) 
+  and (max-device-width: 1024px) 
+  and (orientation: landscape) 
+  and (-webkit-min-device-pixel-ratio: 1) {
+
+}
+
+/* ----------- iPad 3 and 4 ----------- */
+/* Portrait and Landscape */
+@media only screen 
+  and (min-device-width: 768px) 
+  and (max-device-width: 1024px) 
+  and (-webkit-min-device-pixel-ratio: 2) {
+
+}
+
+/* Portrait */
+@media only screen 
+  and (min-device-width: 768px) 
+  and (max-device-width: 1024px) 
+  and (orientation: portrait) 
+  and (-webkit-min-device-pixel-ratio: 2) {
+
+}
+
+/* Landscape */
+@media only screen 
+  and (min-device-width: 768px) 
+  and (max-device-width: 1024px) 
+  and (orientation: landscape) 
+  and (-webkit-min-device-pixel-ratio: 2) {
+
+}
+
+/* ----------- Other Screens ----------- */
+/* Portrait */
+@media screen 
+  and (min-device-width: 1200px) 
+  and (max-device-width: 1600px) 
+  and (-webkit-min-device-pixel-ratio: 1) { 
+
+}
+
+/* Landscape */
+@media screen 
+  and (min-device-width: 1024px) 
+  and (-webkit-min-device-pixel-ratio: 1) { 
+
+}
+

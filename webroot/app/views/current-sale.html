@@ -1,0 +1,107 @@
+<div data-ng-controller="SellController" class="page-content" id="sell-screen">
+  <div class="row">
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+      <div class="portlet light bordered" id="sell-items">
+        <div class="portlet-title">
+          <div class="caption font-dark">
+            <span class="caption-subject bold uppercase">Sales Items</span>
+            <span class="caption-helper"></span>
+          </div>
+        </div>
+        <div class="portlet-body">
+          <div class="table-scrollable table-scrollable-borderless">
+            <table class="table table-hover table-light">
+              <thead>
+                <tr class="uppercase">
+                  <th>Product</th>
+                  <th>Qty</th>
+                  <th>Discount</th>
+                  <th>Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-ng-repeat="saleItem in saleItems">
+                  <td>{{saleItem.name}}</td>
+                  <td>{{saleItem.qty}}</td>
+                  <td>${{saleItem.discount}}</td>
+                  <td>
+                    ${{saleItem.price_include_tax}}
+                    <button class="btn btn-xs btn-danger" data-ng-click="removeSellItem(saleItem)">
+                      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td>TOTAL</td>
+                  <td>&nbsp;</td>
+                  <td>&nbsp;</td>
+                  <td>${{registerSale.total_price_incl_tax}}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="portlet light bordered" id="customer">
+        <div class="portlet-title">
+          <div class="portlet-input input-small input-inline">
+            <div class="input-icon right">
+              <i class="icon-magnifier"></i>
+              <input type="text" class="form-control form-control-solid" placeholder="search customer">
+            </div>
+          </div>
+        </div>
+        <div class="portlet-body">
+        </div>
+      </div>
+      <div class="portlet light bordered" id="function-keys">
+        <div class="portlet-title">
+        </div>
+        <div class="portlet-body">
+          <button class="btn btn-function" data-ng-click="voidSale()">Void</button>
+          <button class="btn btn-function" data-ng-click="doPayment()">Payment</button>
+          <button class="btn btn-function" data-ng-click="viewRecall()">Recall</button>
+          <button class="btn btn-function" data-ng-click="viewHistory()">History</button>
+          <button class="btn btn-function" data-ng-click="viewDailyReport()">Daily Snapshot</button>
+          <button class="btn btn-function" data-ng-click="closeRegister()">End of Day</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+      <div class="portlet light bordered" id="quick-keys">
+        <div class="portlet-title">
+            <div class="btn-group" data-ng-click="onChangeViewMode($event)">
+              <label class="btn btn-primary" ng-model="viewMode" btn-radio="'small'">
+                <div class="glyphicon glyphicon-th"></div>
+              </label>
+              <label class="btn btn-primary" ng-model="viewMode" btn-radio="'large'">
+                <div class="glyphicon glyphicon-th-large"></div>
+              </label>
+            </div>
+        </div>
+        <div class="portlet-body">
+          <div class="thumbnail {{viewMode}}"
+              data-ng-click="addSellItem(quickKey)"
+              data-ng-repeat="quickKey in quickKeys">
+            <div class="image">
+              <img data-ng-src="{{quickKey.image}}" alt="">
+            </div>
+            <div class="caption">
+              <span>{{quickKey.name}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!--
+  <button popover-template="templateUrl" popover-placement="right" popover-trigger="focus" class="btn btn-default">Right</button>
+  <button popover-template="templateUrl" popover-placement="right" popover-trigger="focus" class="btn btn-default">Right</button>
+  <button popover-template="templateUrl" popover-placement="right" popover-trigger="focus" class="btn btn-default">Right</button>
+  <button popover-template="templateUrl" popover-placement="right" popover-trigger="focus" class="btn btn-default">Right</button>
+  <button popover-template="templateUrl" popover-placement="right" popover-trigger="focus" class="btn btn-default">Right</button>
+  <button popover-template="templateUrl" popover-placement="right" popover-trigger="focus" class="btn btn-default">Right</button>
+-->
+</div>

@@ -1,0 +1,197 @@
+<div data-ng-controller="SellController">
+
+  <!--CONTENTS-ROW BEGIN-->
+  <div class="row">
+
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" id="sell-screen-column-1">
+
+      <!--Sale Items List BEGIN-->
+      <div class="portlet light bordered sale-screen" id="sale-items-box">
+
+        <!--
+        <div class="portlet-title" id="sale-items-title">
+          <div class="caption font-dark">
+            <span class="caption-subject bold uppercase">Sales Items</span>
+            <span class="caption-helper"></span>
+          </div>
+        </div>
+        -->
+
+        <div class="portlet-body">
+          <table class="table table-striped table-hover" id="sale-items">
+
+            <thead>
+              <tr>
+                <th class="text-left">Product</th>
+                <th class="text-center">Qty</th>
+                <th class="text-center">Discount</th>
+                <th class="text-center">Price</th>
+                <th class="text-center">&nbsp;</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr data-ng-repeat="saleItem in saleItems">
+                <td class="text-left">{{saleItem.name}}</td>
+                <td class="text-right">{{saleItem.qty}}</td>
+                <td class="text-right">
+                  ${{saleItem.discount}}
+                </td>
+                <td class="text-right">${{saleItem.price_include_tax}}</td>
+                <td class="text-center">
+                  <button class="btn btn-xs btn-circle btn-danger" data-ng-click="removeSellItem(saleItem)">
+                    <i class="glyphicon glyphicon-remove" aria-hidden="true"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+
+            <tfoot>
+              <tr>
+                <td class="text-left">TOTAL</td>
+                <td class="text-left">&nbsp;</td>
+                <td class="text-left">&nbsp;</td>
+                <td class="text-right">${{registerSale.total_price_incl_tax}}</td>
+                <td class="text-left">&nbsp;</td>
+              </tr>
+            </tfoot>
+
+          </table>
+        </div>
+      </div>
+      <!--Sale Items List END-->
+
+      <!--Sale Customer Search BEGIN-->
+      <div class="portlet light bordered sale-screen" id="sale-customer-box">
+
+        <div class="portlet-body">
+          <div class="row">
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" id="sell-customer-search">
+              <div class="input-icon left">
+                <i class="icon-magnifier"></i>
+                <input type="text"  class="form-control form-control-solid" placeholder="Customer Search">
+              </div>
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" id="sell-customer-result">
+              <div class="row">
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                  <div class="">Name</div>
+                  <div class="">Balance</div>
+                  <div class="">Loyalty</div>
+                </div>
+                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                  <div class="">Tester Tester (123456789)</div>
+                  <div class="">$100.00</div>
+                  <div class="">$300.00</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--Sale Customer Search END-->
+
+      <!--Sale function keys box BEGIN-->
+      <div class="portlet light bordered sale-screen" id="sale-function-keys-box">
+        <div class="portlet-body">
+          <button class="btn btn-function" data-ng-repeat="function in functions" data-ng-click="function.callback()">
+            {{function.name}}
+          </button>
+        </div>
+      </div>
+      <!-- Sale function keys box END-->
+
+    </div>
+
+    <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6" id="sell-screen-column-2">
+
+      <!--Quick keys BEGIN-->
+      <div class="portlet light bordered sale-screen" id="sale-quick-keys-box">
+
+        <div class="portlet-title">
+          <div class="caption">
+            <div class="input-icon left">
+              <i class="icon-magnifier"></i>
+              <input type="text" class="form-control form-control-solid" placeholder="Product Search">
+            </div>
+          </div>
+          <div class="tools">
+            <div class="btn-group btn-group-solid">
+              <label class="btn {{settings.theme.btn_default}} active" ng-model="viewMode" btn-radio="'small'">
+                <div class="glyphicon glyphicon-th"></div>
+              </label>
+              <label class="btn {{settings.theme.btn_default}}" ng-model="viewMode" btn-radio="'middle'">
+                <div class="glyphicon glyphicon-th-large"></div>
+              </label>
+              <label class="btn {{settings.theme.btn_default}}" ng-model="viewMode" btn-radio="'large'">
+                <div class="glyphicon glyphicon-picture"></div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="portlet-body" id="sale-quick-keys-list">
+          <div class="thumbnail {{viewMode}}"
+               data-ng-repeat="quickKey in quickKeys"
+               data-ng-click="addSellItem(quickKey)"
+               id="sale-quick-key">
+            <div class="image">
+              <img data-ng-src="{{quickKey.image}}" alt="{{quickKey.name}}">
+            </div>
+            <div class="caption">
+              <span>{{quickKey.name}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--Quick keys END-->
+
+    </div>
+
+  </div>
+  <!--CONTENTS-ROW END-->
+  <button data-ng-click="popOver($event, 'right')">test</button>
+<!--
+  <button popover="test" popover-placement="right" popover-trigger="focus" class="btn btn-default">Right</button>
+  <button popover-template="templateUrl" popover-placement="right" class="btn btn-default">Right</button>
+  <button popover-template="templateUrl" popover-placement="right" popover-trigger="focus" class="btn btn-default">Right</button>
+  <button popover-template="templateUrl" popover-placement="right" popover-trigger="focus" class="btn btn-default">Right</button>
+  <button popover-template="templateUrl" popover-placement="right" popover-trigger="focus" class="btn btn-default">Right</button>
+-->
+
+</div>
+<div id="popup_sample" style="display: none; padding: 16px; position: absolute; top: 0; left: 0; background: #ccc; width: 200px; height: 200px;">
+  TEST POPUP
+</div>
+<script type="text/ng-template" id="myPopoverTemplate.html">
+  <form novalidate class="qty-form">
+    <div data-ng-keypad="numeric"  class=" numpad main_panel col-md-12 col-sm-12 col-xs-12 nopadding">
+      <p class="col-md-12 nopadding">Quantity</p>
+      <div class="col-md-12 col-sm-12 col-xs-12 nopadding">
+        <input id="item-qty" class="qty_field numpad_text col-md-10 input" type="text" name="num" value="{{saleItem.qty}}">
+        <button data-ng-key type="button" class="btn btn-primary col-md-2 show_numpad"><i class="glyphicon glyphicon-th"></i></button>
+      </div>
+      <div class="col-md-12 col-sm-12 col-xs-12 nopadding numpad">
+        <div id="numpad-main" class="col-md-9 col-sm-9 col-xs-9">
+          <button class="btn btn-numpad" data-ng-key="1">1</button>
+          <button class="btn btn-numpad" data-ng-key="2">2</button>
+          <button class="btn btn-numpad" data-ng-key="3">3</button>
+          <button class="btn btn-numpad" data-ng-key="4">4</button>
+          <button class="btn btn-numpad" data-ng-key="5">5</button>
+          <button class="btn btn-numpad" data-ng-key="6">6</button>
+          <button class="btn btn-numpad" data-ng-key="7">7</button>
+          <button class="btn btn-numpad" data-ng-key="8">8</button>
+          <button class="btn btn-numpad" data-ng-key="9">9</button>
+          <button class="btn btn-numpad" data-ng-key="0">0</button>
+          <button class="btn btn-numpad" data-ng-key="00">00</button>
+          <button class="btn btn-numpad" data-ng-key=".">.</button>
+        </div>
+        <div id="numpad-sub" class="col-md-3 col-sm-3 col-xs-3">
+          <button class="btn btn-sub" data-ng-key="[CLEAR]">C</button>
+          <button class="btn btn-sub" onclick="number_negative();">+/-</button>
+          <input  type="submit" class="btn btn-sub num_submit" value="return">
+        </div>
+      </div>
+    </div>
+  </form>
+</script>

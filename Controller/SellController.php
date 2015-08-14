@@ -33,6 +33,7 @@ class SellController extends AppController {
  */
     public function beforeFilter() {
         parent::beforeFilter();
+        $this->Auth->allow('get_current_register_sale');
     }
 
 /**
@@ -43,4 +44,10 @@ class SellController extends AppController {
     public function index() {
     }
 
+    public function get_current_register_sale() {
+      $response = [
+        'success' => false
+      ];
+      $this->serialize($response);
+    }
 }

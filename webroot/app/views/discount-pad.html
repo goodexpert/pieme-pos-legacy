@@ -1,0 +1,33 @@
+<form novalidate class="discount-form">
+  <div class="main_panel col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
+     <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega numpad">
+        <div id="numpad-main" class="col-md-9 col-sm-9 col-xs-9">
+          <button class="btn btn-numpad" data-ng-key="1">1</button>
+          <button class="btn btn-numpad" data-ng-key="2">2</button>
+          <button class="btn btn-numpad" data-ng-key="3">3</button>
+          <button class="btn btn-numpad" data-ng-key="4">4</button>
+          <button class="btn btn-numpad" data-ng-key="5">5</button>
+          <button class="btn btn-numpad" data-ng-key="6">6</button>
+          <button class="btn btn-numpad" data-ng-key="7">7</button>
+          <button class="btn btn-numpad" data-ng-key="8">8</button>
+          <button class="btn btn-numpad" data-ng-key="9">9</button>
+          <button class="btn btn-numpad" data-ng-key="0">0</button>
+          <button class="btn btn-numpad" data-ng-key="00">00</button>
+          <button class="btn btn-numpad" data-ng-key=".">.</button>
+        </div>
+        <div id="numpad-sub" class="col-md-3 col-sm-3 col-xs-3">
+          <button class="btn btn-sub" data-ng-key="[CLEAR]">C</button>
+          <button class="btn btn-sub" onclick="number_negative();">+/-</button>
+          <input  type="submit" class="btn btn-sub num_submit" value="return">
+        </div>
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega margin-bottom-10">
+      <input type="button" id="set-discount-all" class="col-md-6 btn btn-primary btn-left active" value="Percentage">
+      <input type="button" id="set-unit-price-all" class="col-md-6 btn btn-primary btn-right" value="Amount">
+    </div>
+    <div class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
+      <input id="item-discount" class="discount_field numpad_text col-md-10" type="text" name="num" placeholder="E.g. 20% or 20">
+      <button type="button" class="btn btn-primary col-md-2 show_numpad" disabled><i class="glyphicon glyphicon-th"></i></button>
+    </div>
+  </div>
+</form>

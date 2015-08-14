@@ -1,0 +1,37 @@
+<div id="recall-sale">
+  <div class="subheading">
+    <h1 class="strong">Select a Sale to Open</h1>
+  </div>
+  <div class="sales_list_container">
+    <div class="table-wrapper">
+      <table class="table-bordered">
+        <thead>
+          <tr>
+            <th>Date/time</th>
+            <th>Status</th>
+            <th>User</th>
+            <th>Customer</th>
+            <th>Code</th>
+            <th>Total</th>
+            <th>Note</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-ng-repeat="sale in register_sales">
+            <td>{{sale.sale_date}}</td>
+            <td>{{sale.sale_status}}</td>
+            <td>{{sale.user.name}}</td>
+            <td>{{sale.customer.name}}</td>
+            <td>{{sale.customer.customer_code}}</td>
+            <td>{{sale.amount}}</td>
+            <td>{{sale.note}}</td>
+            <td>
+              <a href="#sale/{{sale.id}}">Open</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
