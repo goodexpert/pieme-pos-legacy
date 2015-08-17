@@ -5,18 +5,25 @@ Rounded Portlets
 ***/
 /*
 .portlet {
-	border-radius: 4px !important;
+  border-radius: 4px !important;
 }
 
 .portlet .portlet-title {
-	border-radius: 4px 4px 0px 0px !important;
+  border-radius: 4px 4px 0px 0px !important;
 }
 
 .portlet .portlet-body,
 .portlet .portlet-body .form-actions  {
-	border-radius: 0px 0px 4px 4px !important;
+  border-radius: 0px 0px 4px 4px !important;
 }
 */
+
+.page-sidebar-wrapper{
+  height: 100% !important;
+  background-color: #839595;
+  position: absolute;
+  z-index: 4;
+}
 
 .btn-function + .btn-function {
   margin-left: 2px !important;

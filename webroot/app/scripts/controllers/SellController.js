@@ -684,6 +684,7 @@ angular.module('OnzsaApp')
     };
 
     $scope.addSellItem = function(quickKey) {
+      /*
       var saleItem = {};
       saleItem.product_id = quickKey.product_id;
       saleItem.name = quickKey.name;
@@ -701,6 +702,7 @@ angular.module('OnzsaApp')
       $scope.registerSale.total_price_incl_tax += saleItem.price * saleItem.qty;
       $scope.registerSale.total_discount += saleItem.discount * saleItem.qty;
       $scope.registerSale.total_tax += saleItem.tax * saleItem.qty;
+      */
     };
 
     $scope.removeSellItem = function(saleItem) {

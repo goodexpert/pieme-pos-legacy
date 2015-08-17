@@ -141,18 +141,37 @@
           </div>
         </div>
 
-        <div class="portlet-body" id="register_quick_keys">
-          <a class="icon-btn {{viewMode}}"
-              data-ng-repeat="quickKey in keyLayout.groups[0].pages[0].keys">
-            <img class="img-responsive"
-              data-ng-src="{{quickKey.image || '/img/no-image.png'}}" alt="{{quickKey.label}}">
-            <div class="caption">
-              <span>{{quickKey.label}}</span>
+        <div class="portlet-body">
+          <div class="tabbable-custom tabs-below" id="register_quick_keys" style="height: 560px;">
+          <div class="tab-content" style="height: 530px; padding: 0px; argin-bottom: 0px;">
+            <div data-ng-repeat="group in keyLayout.groups"
+                class="tab-pane"
+                id="tab_pane_{{group.position}}">
+              <a class="btn icon-btn {{viewMode}}"
+                  data-ng-repeat="quickKey in group.pages[0].keys"
+                  data-ng-click="addSellItem(quickKey)">
+                <img class="img-responsive"
+                  data-ng-src="{{quickKey.image || '/img/no-image.png'}}" alt="{{quickKey.label}}">
+                <div class="caption">
+                  <span>{{quickKey.label}}</span>
+                </div>
+                <span class="badge badge-danger">
+                  sale
+                </span>
+              </a>
             </div>
-            <span class="badge badge-danger">
-              sale
-            </span>
-          </a>
+            <div class="tab-pane" id="#tab_pane_9">
+            </div>
+          </div>
+          <ul class="nav nav-tabs">
+            <li class="" data-ng-repeat="group in keyLayout.groups">
+              <a href="#tab_pane_{{group.position}}" data-toggle="tab" aria-expanded="true">{{group.name}}</a>
+            </li>
+            <li class="active">
+              <a href="#tab_pane_9" data-toggle="tab" aria-expanded="true">test</a>
+            </li>
+          </ul>
+          </div>
           <!--
           <a class="icon-btn {{viewMode}}"
               data-ng-repeat="quickKey in quickKeys"
@@ -175,8 +194,11 @@
   </div>
   <!-- REGISTER END -->
 
-</div>
+  <input type="button" value="PAYMENT" id="pay" class="btn">
+  <div data-ng-include="'tpl/payment.html'" data-ng-controller="PaymentController" class="page-sidebar-wrapper">
+  </div>
 
+</div>
 <!--
   <button data-ng-click="popOver($event, 'right')">test</button>
   <button popover="test" popover-placement="right" popover-trigger="focus" class="btn btn-default">Right</button>
@@ -195,4 +217,4 @@
   <div id="popup_sample3" data-ng-keypad="numeric" ng-controller="SellController">
   <div ng-include="" src="'views/discount-pad.html'"></div>
 </div>
-->
+-->

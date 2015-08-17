@@ -1,0 +1,64 @@
+<!-- PAY POPUP BOX -->
+<div class="confirmation-modal modal fade in pay" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;margin-left:33%;">
+  <div class="modal-dialog col-md-12 col-sm-12 col-xs-12">
+    <div class="modal-content col-md-12 col-sm-12 col-xs-12">
+      <div class="modal-header col-md-12 col-sm-12 col-xs-12">
+        <button type="button" class="confirm-close cancel" data-dismiss="modal" aria-hidden="true">
+          <i class="glyphicon glyphicon-remove"></i>
+        </button>
+        <h4 class="modal-title">Select a payment method</h4>
+      </div>
+      <div class="modal-body col-md-12 col-sm-12 col-xs-12">
+        <div class="col-lg-12 col-omega col-alpha">
+          <ul class="payment-display">
+            <li>
+              <ul class="total_cost">
+                <li>TO PAY</li>
+                <li class="pull-right">$123.45</li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+        <div class="col-lg-12 col-omega col-alpha">
+          <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 col-omega col-alpha">
+            <input type="text" id="set-pay-amount">
+          </div>
+          <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 col-omega">
+            <button class="btn btn-primary pull-right"><span class="glyphicon glyphicon-th"></span> </button>
+          </div>
+        </div>
+        <ul class="margin-top-20 col-lg-12 col-md-12 col-sm-12 col-omega col-alpha payment-btn">
+          <?php foreach ($payments as $payment) { ?>
+          <li class="col-lg-6 col-md-6 col-sm-6 col-xs-6 col-omega col-alpha btn-left payment_method" payment-id="<?= $payment['MerchantPaymentType']['id']; ?>" payment-type-id="<?php echo $payment['PaymentType']['id']; ?>" payment-type="<?php echo $payment['PaymentType']['name']; ?>">
+            <button class="btn btn-primary col-lg-12 col-md-12 col-sm-12 col-xs-12 col-omega col-alpha">
+              <span class="co-md-12"><img src="/img/<?php if ($payment['PaymentType']['name'] == 'Credit Card') { echo 'card'; } else if ($payment['PaymentType']['name'] == 'Cheque') { echo 'cheque'; } else { echo 'cash'; } ?>.png" alt="cash"></span>
+              <p class="co-md-12"><?= $payment['MerchantPaymentType']['name']; ?></p>
+            </button>
+          </li>
+          <?php } ?>
+        </ul>
+      </div>
+      <div class="modal-footer col-md-12 col-sm-12 col-xs-12">
+        <button class="confirm-close cancel pull-left btn btn-primary" type="button" data-dismiss="modal">Back to Sale </button>
+        <button class="btn btn-success onaccount-sale" type="button" data-dismiss="modal">On account </button>
+        <button class="btn btn-success layby-sale" type="button" data-dismiss="modal">Layby</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- PAY POPUP BOX END -->
+<!-- EFTPOS TRANSACTION BOX -->
+<div class="confirmation-modal modal fade in eftpos_status" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body display-msg" style="text-align:center;">
+      </div>
+    </div>
+  </div>
+</div>
+<!-- EFTPOS TRANSACTION BOX END -->
+
+<script src="scripts/dpsclient.js" type="text/javascript"></script>
+<script src="scripts/TransactionControl.js" type="text/javascript"></script>
+<script src="scripts/payment.js" type="text/javascript"></script>
+<script src="/js/jxon.js" type="text/javascript"></script>

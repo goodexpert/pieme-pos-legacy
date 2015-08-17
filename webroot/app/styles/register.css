@@ -157,6 +157,10 @@ fieldset[disabled] .btn-function.active {
   font-weight: 800;
 }
 
+#register_quick_keys .icon-btn:hover {
+  background-color: #e6e6e6;
+}
+
 @media (max-width: 1260px) {
 
   #register_quick_keys .icon-btn {
@@ -190,6 +194,7 @@ fieldset[disabled] .btn-function.active {
     overflow: hidden;
     text-overflow: ellipsis;
     -ms-text-overflow: ellipsis;
+    white-space: normal;
   }
 
   .icon-btn.small {
@@ -302,6 +307,7 @@ fieldset[disabled] .btn-function.active {
     overflow: hidden;
     text-overflow: ellipsis;
     -ms-text-overflow: ellipsis;
+    white-space: normal;
   }
 
   .icon-btn.small {

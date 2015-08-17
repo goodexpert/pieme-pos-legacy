@@ -139,6 +139,7 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
               '/theme/metronic/assets/admin/pages/scripts/tasks.js',
 
               '/app/scripts/table-advanced.js',
+              '/app/scripts/controllers/PaymentController.js',
               '/app/scripts/controllers/SellController.js'
             ]
           }]);
