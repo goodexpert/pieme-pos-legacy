@@ -862,7 +862,7 @@ class SignupController extends AppController {
                                         'label' => $product1['name'],
                                         'sku' => $product1['sku'],
                                         'product_id' => $product1['id'],
-                                        'color' => 'white',
+                                        'color' => '#fff',
                                         'image' => '/img/no-image.png'
                                     ),
                                     array(
@@ -870,7 +870,7 @@ class SignupController extends AppController {
                                         'product_id' => $product2['id'],
                                         'sku' => $product2['sku'],
                                         'label' => $product2['name'],
-                                        'color' => '#ffffff',
+                                        'color' => '#fff',
                                         'image' => '/img/no-image.png'
                                     )
                                 )

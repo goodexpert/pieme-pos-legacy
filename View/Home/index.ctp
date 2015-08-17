@@ -279,7 +279,7 @@
                             <?php $keyArray = json_decode($quick_key, true); 
                                 foreach($keyArray['quick_keys']['groups'] as $group) { ?>
                                     <li position="<?php echo $group['position']; ?>" class="<?php if($group['position'] == 0){echo "active";} ?>" role="presentation">
-                                        <a href="#" class="<?php if($group['color'] == '#000'){echo 'Black';}elseif($group['color'] == '#FF0000'){echo 'Red';}elseif($group['color'] == '#0100FF'){echo 'Blue';}elseif($group['color'] == '#FFE400'){echo 'Yellow';}else{echo 'White';}; ?>"><?php echo $group['name']; ?></a>
+                                        <a href="#" class="" style="background-color: <?php echo $group['color']; ?>;"><?php echo $group['name']; ?></a>
                                     </li>
                             <?php } ?>
                             </ul>

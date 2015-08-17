@@ -8,11 +8,13 @@
  * Controller of the OnzsaApp
  */
 angular.module('OnzsaApp')
-  .controller('SellController', function($rootScope, $scope, $ocLazyLoad) {
+  .controller('SellController', function($rootScope, $scope, $ocLazyLoad, $http) {
     $scope.$on('$viewContentLoaded', function() {   
       // initialize core components
       Metronic.initAjax();
       TableAdvanced.init();
+
+      getQuickKeys();
     });
 
     // set sidebar closed and body solid layout mode
@@ -22,29 +24,148 @@ angular.module('OnzsaApp')
       name: 'Goodexpert'
     };
 
-    var functions = [
-      { name: 'Void', callback: $scope.voidSale },
-      { name: 'Payment', callback: $scope.doPayment },
-      { name: 'No Sale', callback: $scope.openCashDrawer },
-      { name: 'Print Receipt', callback: $scope.printReceipt },
-      { name: 'Refund', callback: $scope.doRefund },
-      { name: 'Discount', callback: $scope.doDiscount },
-      { name: 'Setup', callback: $scope.doSetup },
-      { name: 'Logout', callback: $scope.doLogout },
-      { name: 'Sales History', callback: $scope.viewHistory },
-      { name: 'Daily Snapshot', callback: $scope.viewDailyReport },
-      { name: 'End of Day', callback: $scope.closeRegister },
-      { name: 'Line Price', callback: $scope.doLinePrice },
-      { name: 'Recall Sales', callback: $scope.doRecall},
-      { name: 'Payment', callback: $scope.doPayment },
-      { name: 'Payment', callback: $scope.doPayment },
-      /*
-      { name: 'Payment', callback: $scope.doPayment },
-      { name: 'Payment', callback: $scope.doPayment },
-      { name: 'Payment', callback: $scope.doPayment },
-      */
+    $scope.doLogout = function() {
+      console.log('doLogout');
+    };
+
+    $scope.doSetup = function() {
+      console.log('doSetup');
+    };
+
+    $scope.voidSale = function() {
+      console.log('voidSale');
+    };
+
+    $scope.doPayment = function() {
+      console.log('doPayment');
+    };
+
+    $scope.openCashDrawer = function() {
+      console.log('openCashDrawer');
+    };
+
+    $scope.printReceipt = function() {
+      console.log('printReceipt');
+    };
+
+    $scope.doRefund = function() {
+      console.log('doRefund');
+    };
+
+    $scope.doDiscount = function() {
+      console.log('doDiscount');
+    };
+
+    $scope.doLinePrice = function() {
+      console.log('doLinePrice');
+    };
+
+    $scope.viewRecall = function() {
+      console.log('viewRecall');
+    };
+
+    $scope.viewHistory = function() {
+      console.log('viewHistory');
+    };
+
+    $scope.viewDailyReport = function() {
+      console.log('viewDailyReport');
+    };
+
+    $scope.closeRegister = function() {
+      console.log('closeRegister');
+    };
+
+    $scope.functions = {
+      'fn_void_sale' : {
+        id      : 'fn_void_sale',
+        name    : 'Void',
+        callback: $scope.voidSale
+      },
+      'fn_do_discount' : {
+        id      : 'fn_do_discount',
+        name    : 'Discount',
+        callback: $scope.doDiscount
+      },
+      'fn_do_line_price' : {
+        id      : 'fn_do_line_price',
+        name    : 'Line Price',
+        callback: $scope.doLinePrice
+      },
+      'fn_do_payment' : {
+        id      : 'fn_do_payment',
+        name    : 'Payment',
+        callback: $scope.doPayment
+      },
+      'fn_do_refund' : {
+        id      : 'fn_do_refund',
+        name    : 'Refund',
+        callback: $scope.doRefund
+      },
+      'fn_do_recall' : {
+        id      : 'fn_do_recall',
+        name    : 'Recall Sales',
+        callback: $scope.doRecall
+      },
+      'fn_view_history' : {
+        id      : 'fn_view_history',
+        name    : 'Sales History',
+        callback: $scope.viewHistory
+      },
+      'fn_view_daily_report' : {
+        id      : 'fn_view_daily_report',
+        name    : 'Daily Snapshot',
+        callback: $scope.viewDailyReport
+      },
+      'fn_close_register' : {
+        id      : 'fn_close_register',
+        name    : 'End of Day',
+        callback: $scope.closeRegister
+      },
+      'fn_print_receipt' : {
+        id      : 'fn_print_receipt',
+        name    : 'Print Receipt',
+        callback: $scope.printReceipt
+      },
+      'fn_open_cash_drawer' : {
+        id      : 'fn_open_cash_drawer',
+        name    : 'No Sale',
+        callback: $scope.openCashDrawer
+      },
+      'fn_do_setup' : {
+        id      : 'fn_do_setup',
+        name    : 'Setup',
+        callback: $scope.doSetup
+      },
+      'fn_do_logout' : {
+        id      : 'fn_do_logout',
+        name    : 'No Sale',
+        callback: $scope.doLogout
+      },
+      'fn_do_nothing' : {
+        id      : 'fn_do_nothing',
+        name    : '',
+        callback: function() {}
+      },
+    };
+
+    $scope.function_keys = [
+      angular.extend({position: 0}, $scope.functions['fn_void_sale']),
+      angular.extend({position: 1}, $scope.functions['fn_do_discount']),
+      angular.extend({position: 2}, $scope.functions['fn_do_line_price']),
+      angular.extend({position: 3}, $scope.functions['fn_do_payment']),
+      angular.extend({position: 4}, $scope.functions['fn_do_refund']),
+      angular.extend({position: 5}, $scope.functions['fn_do_recall']),
+      angular.extend({position: 6}, $scope.functions['fn_view_history']),
+      angular.extend({position: 7}, $scope.functions['fn_view_daily_report']),
+      angular.extend({position: 8}, $scope.functions['fn_close_register']),
+      angular.extend({position: 9}, $scope.functions['fn_print_receipt']),
+      angular.extend({position: 10}, $scope.functions['fn_open_cash_drawer']),
+      angular.extend({position: 11}, $scope.functions['fn_do_setup']),
+      angular.extend({position: 12}, $scope.functions['fn_do_logout']),
+      angular.extend({position: 13}, $scope.functions['fn_do_nothing']),
+      angular.extend({position: 14}, $scope.functions['fn_do_nothing']),
     ];
-    $scope.functions = functions;
 
     $scope.priceBooks = [];
     $scope.quickKeys = [];
@@ -117,8 +238,426 @@ angular.module('OnzsaApp')
     $scope.quickKeys.push(quickKey);
 
     quickKey = {};
-    quickKey.product_id = '5f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
-    quickKey.name = 'Item Long title item';
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
+    quickKey.image = '/img/sample_5.jpg';
+    quickKey.supply_price = 0.8;
+    quickKey.price = 2.0;
+    quickKey.price_include_tax = 2.0;
+    quickKey.tax = 0.0;
+    quickKey.background = 'red';
+    $scope.quickKeys.push(quickKey);
+
+    quickKey = {};
+    quickKey.product_id = '4f0f16c2-ea26-11e4-a12b-6e9bc1f483b5';
+    quickKey.name = 'Item #5';
     quickKey.image = '/img/sample_5.jpg';
     quickKey.supply_price = 0.8;
     quickKey.price = 2.0;
@@ -180,56 +719,10 @@ angular.module('OnzsaApp')
       $scope.registerSale.total_tax -= saleItem.tax * saleItem.qty;
     };
 
-    $scope.voidSale = function() {
-      console.log('voidSale');
-    };
-
-    $scope.doPayment = function() {
-      console.log('doPayment');
-    };
-
-    $scope.openCashDrawer = function() {
-      console.log('openCashDrawer');
-    };
-
-    $scope.printReceipt = function() {
-      console.log('printReceipt');
-    };
-
-    $scope.doSetup = function() {
-      console.log('doSetup');
-    };
-
-    $scope.doLogout = function() {
-      console.log('doLogout');
-    };
-
-    $scope.doRefund = function() {
-      console.log('doRefund');
-    };
-
-    $scope.doDiscount = function() {
-      console.log('doDiscount');
-    };
-
-    $scope.doLinePrice = function() {
-      console.log('doLinePrice');
-    };
-
-    $scope.viewRecall = function() {
-      console.log('viewRecall');
-    };
-
-    $scope.viewHistory = function() {
-      console.log('viewHistory');
-    };
-
-    $scope.viewDailyReport = function() {
-      console.log('viewDailyReport');
-    };
-
-    $scope.closeRegister = function() {
-      console.log('closeRegister');
+    $scope.customer = {
+      'name': 'Tester (1234567890)',
+      'balance': '100.00',
+      'loyalty': '200.00',
     };
 
     $scope.popOver = function($event, placement) {
@@ -282,5 +775,25 @@ angular.module('OnzsaApp')
       for (var idx in $scope.saleItems) {
         var saleItem = $scope.saleItems[idx];
       }
+    }
+
+    var getPriceBooks = function() {
+      $http.get('/api/get_price_books.json')
+        .then(function(response) {
+          console.log(response.data);
+        }, function (response) {
+          console.log(response);
+        });
+    }
+
+    var getQuickKeys = function() {
+      $http.get('/api/get_quick_keys.json')
+        .then(function(response) {
+          $scope.keyLayout = response.data.quick_keys;
+          $scope.image = '/img/sample_1.png';
+          console.log($scope.keyLayout);
+        }, function (response) {
+          console.log(response);
+        });
     }
   });

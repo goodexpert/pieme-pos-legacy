@@ -210,6 +210,7 @@
 /**
  * map controller resources
  */
+	Router::mapResources('api');
 	Router::parseExtensions();
 
 /**

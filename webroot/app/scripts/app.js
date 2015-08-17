@@ -10,20 +10,21 @@
  */
 
 /* Onzsa App */
-var OnzsaApp = angular.module("OnzsaApp", [
+var OnzsaApp = angular.module('OnzsaApp', [
 /*
-  "ngAnimate",
-  "ngAria",
-  "ngCookies",
-  "ngMessages",
-  "ngResource",
-  "ngRoute",
+  'ngAnimate',
+  'ngAria',
+  'ngCookies',
+  'ngMessages',
+  'ngResource',
+  'ngRoute',
 */
-  "ngSanitize",
-  "ngTouch",
-  "ui.router",
-  "ui.bootstrap",
-  "oc.lazyLoad"
+  'cfp.hotkeys',
+  'ngSanitize',
+  'ngTouch',
+  'ui.router',
+  'ui.bootstrap',
+  'oc.lazyLoad'
 ]);
 
 /* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
@@ -71,18 +72,33 @@ OnzsaApp.factory('settings', ['$rootScope', function($rootScope) {
 }]);
 
 /* Setup App Main Controller */
-OnzsaApp.controller('AppController', ['$scope', '$rootScope', function($scope, $rootScope) {
+OnzsaApp.controller('AppController', ['$scope', '$rootScope', 'hotkeys', function($scope, $rootScope, hotkeys) {
   $scope.$on('$viewContentLoaded', function() {
     Metronic.initComponents(); // init core components
     //Layout.init(); //  Init entire layout(header, footer, sidebar, etc) on page load if the partials included in server side instead of loading with ng-include directive 
+  });
+
+  hotkeys.add({
+    combo: 'ctrl+h',
+    description: 'Display the highscores',
+    callback: function() {
+      alert('ok');
+    }
   });
 }]);
 
 /* Setup Layout Part - Header */
 OnzsaApp.controller('HeaderController', ['$scope', function($scope) {
-    $scope.$on('$includeContentLoaded', function() {
-        Layout.initHeader(); // init header
-    });
+  $scope.$on('$includeContentLoaded', function() {
+    Layout.initHeader(); // init header
+  });
+}]);
+
+/* Setup Layout Part - Sidebar */
+OnzsaApp.controller('SidebarController', ['$scope', function($scope) {
+  $scope.$on('$includeContentLoaded', function() {
+    Layout.initSidebar(); // init sidebar
+  });
 }]);
 
 /* Setup Rounting For All Pages */
@@ -97,7 +113,7 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
       views: {
         "lazyLoadView": {
           controller: 'SellController', // This view will use SellController loaded below in the resolve
-          templateUrl: 'views/sell-screen.html'
+          templateUrl: '/app/views/sell-screen.html'
         }
       },
       resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
@@ -112,8 +128,7 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
               '/theme/metronic/assets/global/plugins/datatables/extensions/Scroller/css/dataTables.scroller.min.css',
               '/theme/metronic/assets/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css',
               '/theme/metronic/assets/admin/pages/css/tasks.css',
-              'styles/register.css',
-              'styles/keypad-numeric.css',
+              '/app/styles/register.css',
 
               '/theme/metronic/assets/global/plugins/morris/morris.min.js',
               '/theme/metronic/assets/global/plugins/morris/raphael-min.js',
@@ -123,10 +138,9 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
               '/theme/metronic/assets/global/plugins/datatables/all.min.js',
               '/theme/metronic/assets/admin/pages/scripts/tasks.js',
 
-              'scripts/table-advanced.js',
-              'scripts/keypad.js',
-              'scripts/controllers/SellController.js'
-            ] 
+              '/app/scripts/table-advanced.js',
+              '/app/scripts/controllers/SellController.js'
+            ]
           }]);
         }]
       }
@@ -134,6 +148,6 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
 });
 
 /* Init global settings and run the app */
-OnzsaApp.run(["$rootScope", "$state", "register", "settings", function($rootScope, settings, $state) {
+OnzsaApp.run(["$rootScope", "$state", "settings", "register", function($rootScope, $state, settings, register) {
   $rootScope.$state = $state; // state to be accessed from view
 }]);

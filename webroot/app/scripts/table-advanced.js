@@ -4,18 +4,22 @@ var TableAdvanced = function () {
 
     var initSaleItemsTable = function () {
 
-        var table = $('#sale-items');
+        var table = $('#table_sales_items');
 
         /* Fixed header extension: http://datatables.net/extensions/scroller/ */
 
         var oTable = table.dataTable({
             "dom": "<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>", // datatable layout without  horizobtal scroll
-            "scrollY": "234",
+            "scrollY": "234px",
             "deferRender": true,
             "paging": false,
             "searching": false,
             "ordering": false,
             "info": false,
+            "language" : {
+              "emptyTable": "&nbsp;",
+              "zeroRecords": "&nbsp;"
+            }
             /*
             "order": [
                 [0, 'asc']

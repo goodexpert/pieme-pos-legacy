@@ -34,30 +34,61 @@ Rounded Portlets
 }
 
 /* Light Portlet */
-.portlet.light {
+.portlet.light.sell-screen {
   margin: 0 0 8px 0 !important;
   padding: 10px 12px !important;
 }
 
-@media (max-width: 1023px) {
-
-  .page-content-wrapper .page-content {
-    margin: 0;
-    min-height: 680px;
-    padding: 10px 20px 10px 20px !important;
-  }
+.page-content-wrapper .page-content {
+  padding: 10px 20px 10px 20px !important;
 }
 
-@media (min-width: 1024px) and (max-width: 1920px) {
+@media (min-width: 1219px) {
 
   .container {
-    width: 100%;
+    width: 1270px !important;
+  }
+
+}
+
+@media (min-width: 992px) and (max-width: 1219px) {
+
+  .container {
+    width: 1024px !important;
   }
 
   .page-content-wrapper .page-content {
-    margin: 0;
+    margin: 0 !important;
     min-height: 680px;
-    padding: 10px 20px 10px 20px !important;
   }
+
+  /* Sidebar Closed */
+  .page-sidebar {
+    z-index: 1;
+  }
+
+  .page-sidebar-closed .page-sidebar {
+    display: none !important;
+  }
+
+  .page-sidebar-closed .page-content-wrapper .page-content {
+    margin: 0 !important;
+  }
+
 }
+
+/*
+@media (max-width: 1260px) {
+
+  .page-content-wrapper .page-content {
+    margin: 0 !important;
+    min-height: 680px;
+  }
+
+}
+
+@media (min-width: 1260px) {
+
+}
+*/
 
