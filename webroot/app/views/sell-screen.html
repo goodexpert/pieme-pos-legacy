@@ -35,9 +35,9 @@
                 <td class="sale-item-name text-left">{{saleItem.name}}</td>
                 <td class="sale-item-qty text-right">{{saleItem.qty}}</td>
                 <td class="sale-item-discount text-right">
-                  ${{saleItem.discount}}
+                  ${{(saleItem.discount * saleItem.qty) | number:2}}
                 </td>
-                <td class="sale-item-price text-right">${{saleItem.price_include_tax}}</td>
+                <td class="sale-item-price text-right">${{(saleItem.price_include_tax * saleItem.qty) | number:2}}</td>
                 <td class="sale-item-remove text-center">
                   <button class="btn btn-xs btn-circle btn-danger" data-ng-click="removeSellItem(saleItem)">
                     <i class="glyphicon glyphicon-remove" aria-hidden="true"></i>
@@ -51,7 +51,7 @@
                 <td class="sale-item-name text-left">TOTAL</td>
                 <td class="sale-item-qty  text-left">&nbsp;</td>
                 <td class="sale-item-discount text-left">&nbsp;</td>
-                <td class="sale-item-price text-right">${{registerSale.total_price_incl_tax}}</td>
+                <td class="sale-item-price text-right">${{(registerSale.total_price_incl_tax) | number:2}}</td>
                 <td class="text-left">&nbsp;</td>
               </tr>
             </tfoot>
