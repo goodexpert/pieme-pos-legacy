@@ -3,8 +3,9 @@
 
 Datastore_sqlite = function() {
   var e, t = function() {};
-  var db = openDatabase('onzsadb', '1.0', 'onzsa database', 2 * 1024 * 1024);
 
+  // Web SQL Database
+  var db = openDatabase('onzsadb', '1.0', 'onzsa database', 2 * 1024 * 1024);
   return {
     _logDBError: function(e) {
       var errorInfo = JSON.stringify(arguments);
@@ -48,7 +49,7 @@ Datastore_sqlite = function() {
       var a, n = this;
       a = function() {
         n._doDSTransaction(function(t) {
-          console.log("INIT: initLocalDataStore"), n.initPriceBook(), n.initSaleProducts()
+          console.log("INIT: initLocalDataStore"), n.initPriceBook(), n.initProducts(), n.initRegisterSaleItems(), n.initRegisterSales()
         })
       }, a()
     },
@@ -59,11 +60,11 @@ Datastore_sqlite = function() {
         e._executeDSSql(t, "CREATE TABLE IF NOT EXISTS PriceBookEntry ( id TEXT PRIMARY KEY ON CONFLICT REPLACE, product_id TEXT, customer_group_id TEXT, outlet_id TEXT, markup REAL, discount REAL, price REAL, tax REAL, price_include_tax REAL, loyalty_value REAL, min_units REAL, max_units REAL, is_default INT, valid_from TEXT, valid_to TEXT)");
       })
     },
-    initSaleProducts: function(){
+    initProducts: function(){
       var e = this;
       e._doDSTransaction(function(t) {
-        e._executeDSSql(t, "DROP TABLE IF EXISTS SaleProducts", []);
-        e._executeDSSql(t, "CREATE TABLE IF NOT EXISTS SaleProducts ( " +
+        e._executeDSSql(t, "DROP TABLE IF EXISTS Products", []);
+        e._executeDSSql(t, "CREATE TABLE IF NOT EXISTS Products ( " +
             "id TEXT PRIMARY KEY ON CONFLICT REPLACE" +
             ", name TEXT" +
             ", handle TEXT" +
@@ -82,7 +83,7 @@ Datastore_sqlite = function() {
             " )");
         // Save Sample Data
         //e._executeDSSql(t,
-        //  "INSERT INTO SaleProducts (" +
+        //  "INSERT INTO Products (" +
         //  "id, name, handle, description, brand_name, supplier_name, sku" +
         //  ", supplier_price, price, tax, tax_name, tax_rate, retail_price" +
         //  ", thumbnail, image" +
@@ -97,7 +98,7 @@ Datastore_sqlite = function() {
         //  ]
         //);
         //e._executeDSSql(t,
-        //  "INSERT INTO SaleProducts (" +
+        //  "INSERT INTO Products (" +
         //  "id, name, handle, description, brand_name, supplier_name, sku" +
         //  ", supplier_price, price, tax, tax_name, tax_rate, retail_price" +
         //  ", thumbnail, image" +
@@ -163,8 +164,9 @@ Datastore_sqlite = function() {
       var t, a, n = this, searchValue = [], queryString = '';
 
       if(statusCode == null){
-        console.log('3');
         queryString = "SELECT * FROM RegisterSales";
+      }else if(statusCode == 'all'){
+        queryString = "select * from register_sales where status in ('sale_status_layby', 'sale_status_saved', 'sale_status_onaccount');";
       }else{
         queryString = "SELECT * FROM RegisterSales where status = ? ";
         searchValue.push(statusCode);
@@ -261,10 +263,16 @@ Datastore_sqlite = function() {
       }
     },
 
-    getSaleProduct: function(successCallback, searchData) {
+    getProduct: function(successCallback, searchData) {
       var excuteCallback, t = this;
-      var sqlQuery = "SELECT * FROM SaleProducts WHERE id = ?";
-      var pid = searchData.id;
+      var sqlQuery = "SELECT * FROM Products WHERE id = ? or name like ? or sku like ? or name like ? ";
+      var searchValues = [null, null, null, null];
+
+			if(searchData != null && searchData.id != null){searchValues[0] = searchData.id;}
+			else if(searchData != null && searchData.handle != null){searchValues[1] = "%" + searchData.handle + "%";}
+			else if(searchData != null && searchData.sku != null){searchValues[2] = "%" + searchData.sku + "%";}
+			else if(searchData != null && searchData.name != null){searchValues[3] = "%" + searchData.name + "%";}
+
       excuteCallback = function(e, a) {
         var resultset = a.rows, i=0;
         var outputData = [];
@@ -275,15 +283,14 @@ Datastore_sqlite = function() {
       },
           t._doDSTransaction(
               function(e) {
-                t._executeDSSql(e, sqlQuery, [pid], excuteCallback, t._logDBError)
+                t._executeDSSql(e, sqlQuery, searchValues, excuteCallback, t._logDBError)
               }
           )
     },
 
-
-    setSaleProducts: function(successCallback, setData) {
+    setProducts: function(successCallback, setData) {
       var t = this;
-      var sqlQuery = "INSERT  INTO SaleProducts (" +
+      var sqlQuery = "INSERT  INTO Products (" +
           "  id, name, handle, description, brand_name, supplier_name, sku" +
           ", supplier_price, price, tax, tax_name, tax_rate, retail_price" +
           ", thumbnail, image" +
@@ -441,4 +448,35 @@ Datastore_sqlite = function() {
           "undefined" == typeof t ? n._doDSTransaction(i) : i(t)
       } **/
   }
-}();
+};
+
+// -----------------    BEGIN Local Storage   ---------------
+var Database_localstorage = function() {
+  return {
+    setLSKey: function(key) {
+      localStorage.setItem(key, '');
+    },
+    removeLSKey: function(key) {
+      localStorage.removeItem(key);
+    },
+    changeLSKey: function(fromKey, toKey) {
+      var data = localStorage.getItem(fromKey);
+      localStorage.removeItem(fromKey);
+      localStorage.setItem(toKey, data);
+    },
+    setLSData: function(key, data) {
+      localStorage.setItem(key, data);
+    },
+    getLSData: function(key) {
+      return localStorage.getItem(key);
+    },
+    removeLSData: function(key) {
+      localStorage.setItem(key, '');
+    },
+    clearLSData: function() {
+      localStorage.clear();
+    }
+  }
+};
+// -----------------     END Local Storage   ---------------
+
