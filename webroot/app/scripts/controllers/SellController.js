@@ -24,8 +24,10 @@ angular.module('OnzsaApp')
     // set sidebar closed and body solid layout mode
     $rootScope.settings.layout.pageSidebarClosed = false;
 
+    $rootScope.register.id = '55cfd1ed-4594-4e0f-8f76-14d84cf3b98e'; //TODO:
     $rootScope.register.user = {
-      name: 'Goodexpert'
+      name: 'Goodexpert',
+      id: '55b99423-ab28-4a16-b477-25e04cf3b98e', //TODO:
     };
 
     $scope.doLogout = function() {
@@ -42,6 +44,7 @@ angular.module('OnzsaApp')
 
     $scope.doPayment = function() {
       console.log('doPayment');
+      paySaleItems();
     };
 
     $scope.openCashDrawer = function() {
@@ -170,6 +173,7 @@ angular.module('OnzsaApp')
       angular.extend({position: 13}, $scope.functions['fn_do_nothing']),
       angular.extend({position: 14}, $scope.functions['fn_do_nothing']),
     ];
+    $scope.customer_id = '55b99423-300c-4dff-90a4-25e04cf3b98e';  //TODO:
 
     $scope.priceBooks = [];
     $scope.modified = false;
@@ -243,6 +247,10 @@ angular.module('OnzsaApp')
               }
               // Update View
               $scope.$apply();
+
+              // Save to RegisterSaleItems : status_open
+              saveSaleItems([saleItem]);
+
             } else {
               console.log("Not found PriceBook : " + quickKey.product_id);
             }
@@ -251,26 +259,6 @@ angular.module('OnzsaApp')
           console.log("Not found Product : " + quickKey.product_id);
         }
       }, quickKey.product_id); //Get Product
-      
-      /*
-      var saleItem = {};
-      saleItem.product_id = quickKey.product_id;
-      saleItem.name = quickKey.name;
-      saleItem.supply_price = quickKey.supply_price;
-      saleItem.price = quickKey.price;
-      saleItem.price_include_tax = quickKey.price_include_tax;
-      saleItem.tax = quickKey.tax;
-      saleItem.discount = 0;
-      saleItem.qty = 1;
-      saleItem.sequence = $scope.registerSale.sequence++;
-      $scope.saleItems.push(saleItem);
-
-      $scope.registerSale.total_cost += saleItem.supply_price * saleItem.qty;
-      $scope.registerSale.total_price += saleItem.price * saleItem.qty;
-      $scope.registerSale.total_price_incl_tax += saleItem.price * saleItem.qty;
-      $scope.registerSale.total_discount += saleItem.discount * saleItem.qty;
-      $scope.registerSale.total_tax += saleItem.tax * saleItem.qty;
-      */
     };
 
     $scope.removeSellItem = function(saleItem) {
@@ -489,7 +477,7 @@ angular.module('OnzsaApp')
         "discount": saleItem.discount,
         "loyalty_value": saleItem.loyalty_value,
         "sequence": saleItem.sequence,
-        "status": "sale_item_status_open"
+        "status": "item_status_valid"
     }]
 
       var i=0;
@@ -511,7 +499,104 @@ angular.module('OnzsaApp')
     //TODO: Get User Group ID
 
     //TODO: Get UUID for RegisterSaleItem
+    function getUUID() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+        return v.toString(16);
+      });
+    }
 
+    function getTimeString() {
+      var now = new Date();
+      return $filter('date')(now, 'yyyy-MM-dd HH:mm:ss', '+1200'); //TODO: timezone
+    }
+
+    function getUnixTimestamp() {
+      return Math.floor(new Date().getTime() / 1000);
+    }
+
+    // --------------------------
+    // Logic for Payment
+    // --------------------------
+    var paySaleItems = function() {
+      var inputRegisterSalesItems = [];
+      var saleUUID = getUUID();
+      var now = getUnixTimestamp();
+
+      for(var item in $scope.saleItems) {
+        var uuid = getUUID();
+        var input = {
+          'id': uuid,
+          'sale_id': saleUUID,
+          'product_id': item.product_id,
+          'name': item.name,
+          'quantity': item.qty,
+          'supply_price': item.supply_price,
+          'price': item.price,
+          'price_include_tax': item.price_include_tax,
+          'tax': item.tax,
+          'tax_rate': item.tax_rate,
+          'discount': item.discount,
+          'loyalty_value': item.loyalty_value,
+          'sequence': item.sequence,
+          'status': "sale_items_status_closed",
+        };
+        inputRegisterSalesItems.push(input);
+      }
+
+      var inputRegisterSales = {
+        'id': saleUUID,
+        'register_id': $rootScope.register.id,
+        'user_id': $rootScope.register.user.id,
+        'customer_id': $scope.customer_id,
+        'xero_invoice_id': null,
+        'receipt_number': $scope.registerSale.receipt_number,
+        'status': "sale_items_status_closed",
+        'total_cost': $scope.registerSale.total_cost,
+        'total_price': $scope.registerSale.total_price,
+        'total_price_incl_tax': $scope.registerSale.total_price_incl_tax,
+        'total_discount': $scope.registerSale.total_discount,
+        'total_tax': $scope.registerSale.total_tax,
+        'note': null,
+        'sale_date': now,
+      }
+
+      ds.saveRegisterAll(function(rs) {
+        console.log(rs);
+      }, inputRegisterSales, inputRegisterSalesItems);
+
+    }
+
+    // --------------------------
+    // Save SaleItem to RegisterSaleItems
+    // --------------------------
+    var saveSaleItems = function(saleItems) {
+      var inputValue = [];
+      for(var idx in saleItems) {
+        var item = saleItems[idx];
+        var uuid = getUUID();
+        var input = {
+          'id': uuid,
+          'sale_id': null,
+          'product_id': item.product_id,
+          'name': item.name,
+          'quantity': item.qty,
+          'supply_price': item.supply_price,
+          'price': item.price,
+          'price_include_tax': item.price_include_tax,
+          'tax': item.tax,
+          'tax_rate': item.tax_rate,
+          'discount': item.discount,
+          'loyalty_value': item.loyalty_value,
+          'sequence': item.sequence,
+          'status': "sale_items_status_open",
+        };
+        inputValue.push(input);
+      }
+      ds.saveRegisterSalesItems(function(rs) {
+        callback(rs);
+      }, inputValue);
+    }
 
     var getPriceBooks = function() {
       $http.get('/api/get_price_books.json')  //TODO: need to parameter setting with register_id

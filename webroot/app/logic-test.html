@@ -1,0 +1,207 @@
+<!-- BEGIN CORE ANGULARJS PLUGINS -->
+<script src="/lib/jquery/dist/jquery.js"></script>
+<script src="/lib/angular/angular.js"></script>
+<script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
+<script src="/lib/angular-animate/angular-animate.js"></script>
+<script src="/lib/angular-aria/angular-aria.js"></script>
+<script src="/lib/angular-cookies/angular-cookies.js"></script>
+<script src="/lib/angular-messages/angular-messages.js"></script>
+<script src="/lib/angular-resource/angular-resource.js"></script>
+<script src="/lib/angular-route/angular-route.js"></script>
+<script src="/lib/angular-sanitize/angular-sanitize.js"></script>
+<script src="/lib/angular-touch/angular-touch.js"></script>
+<script src="/lib/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+<script src="/lib/angular-ui-router/release/angular-ui-router.min.js"></script>
+<script src="/lib/bootstrap/dist/js/bootstrap.js"></script>
+<script src="/lib/oclazyload/dist/ocLazyLoad.min.js" type="text/javascript"></script>
+<script src="scripts/onzsa_ds.js"></script>
+<!-- END CORE ANGULARJS PLUGINS -->
+
+<script>
+  function getUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+      return v.toString(16);
+    });
+  }
+  function getDateString() {
+    var now = new Date();
+    var strToday = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
+    return strToday;
+  }
+
+  $(document).ready(function(){
+    var ds = Datastore_sqlite;
+    var ls = Database_localstorage();
+
+    var registerId = "55cfd1ed-4594-4e0f-8f76-14d84cf3b98e";
+    var userId = "55b99423-ab28-4a16-b477-25e04cf3b98e";
+    var customerId = "55b99423-300c-4dff-90a4-25e04cf3b98e";
+
+    var sOpen = "sale_status_open",
+        sVoid = "sale_status_voied", sPark = "sale_status_park", sLayby = "sale_status_layby",
+        sClosed = "sale_status_closed", sOnaccount = "sale_status_onaccount", sLaybyClosed = "sale_status_layby_closed",
+        sOnaccountClose = "sale_status_onaccount_closed";
+
+    var body = $('body');
+
+    // 1. Step Ready
+    {
+      body.append("Step 1. Ready");
+      body.append("<p/>");
+
+      // Make Register Sale ID
+      registerSaleId = ls.getLSData("TEST-RSID");
+      if (registerSaleId == null)  registerSaleId = getUUID();
+      body.append("RegisterSaleID : " + registerSaleId);
+      body.append("<br/>");
+
+      // Save Register Sale ID to ONZSA-APP-CONFIG
+      ls.setLSData("TEST-RSID", registerSaleId);
+      rs = ls.getLSData("TEST-RSID");
+      body.append("Saved RegisterSaleID in LocalStorage : " + rs);
+      body.append("<br/>");
+
+      var registerSaleId, rs, saveData, id, typeId, today = getDateString(),
+           pId1 = "55d0fdef-d5f0-416e-a0e3-0c884cf3b98e",
+           pId2 = "55d0fb14-7fec-416c-9cff-0c884cf3b98e";
+
+      // Save Register Sale - open
+      id = getUUID();
+      var regSale = {
+        "id":registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id":null,
+        "receipt_number":2,
+        "status": "sale_status_open",
+        "total_cost":9,
+        "total_price":10.8,
+        "total_price_incl_tax":12.42,
+        "total_discount":0,
+        "total_tax":1.62,
+        "note":null,
+        "sale_date":today
+      };
+      body.append("Add RegisterSales<span id='addRegisterSales'></span>");
+      body.append("<br/>");
+      ds.saveRegisterSales(regSale, function(){ document.getElementById("addRegisterSales").innerHTML = "..... OK"}, function(){ document.getElementById("addRegisterSales").innerHTML = "... NG"});
+
+      body.append("<p/>");
+    }
+
+    // 2. Step Add Item
+    {
+      var saleItem1 = {
+            "id":"55d15778-a8c0-4086-a120-10304cf3b98e",
+            "sale_id":registerSaleId,
+            "product_id":"55d0fdef-d5f0-416e-a0e3-0c884cf3b98e",
+            "name":"undefined",
+            "quantity":1,
+            "supply_price":3,
+            "price":3.6,
+            "price_include_tax":4.14,
+            "tax":0.54,
+            "tax_rate":0,
+            "discount":0,
+            "loyalty_value":0,
+            "sequence":1,
+            "status":"sale_item_status_open"
+          },
+          saleItem2 = {
+            "id":"55d15778-b978-4ca5-bc69-10304cf3b98e",
+            "sale_id":registerSaleId,
+            "product_id":"55d0fb14-7fec-416c-9cff-0c884cf3b98e",
+            "name":"undefined",
+            "quantity":1,
+            "supply_price":3,
+            "price":3.6,
+            "price_include_tax":4.14,
+            "tax":0.54,
+            "tax_rate":0,
+            "discount":0,
+            "loyalty_value":0,
+            "sequence":0,
+            "status":"sale_item_status_open"
+          };
+      body.append("Step 2. Add Items");
+      body.append("<p/>");
+
+      // Save Register Sale Item
+      body.append("Add RegisterSalesItems 1 <span id='addSaleItem1'></span>");
+      body.append("<br/>");
+      body.append("Add RegisterSalesItems 2 <span id='addSaleItem2'></span>");
+      ds.saveRegisterSalesItem(saleItem1, function(){ document.getElementById("addSaleItem1").innerHTML = "..... OK"}, function(){ document.getElementById("addSaleItem1").innerHTML = "... NG"});
+      ds.saveRegisterSalesItem(saleItem2, function(){ document.getElementById("addSaleItem2").innerHTML = "..... OK"}, function(){ document.getElementById("addSaleItem2").innerHTML = "... NG"});
+      body.append("<p/>");
+    }
+
+    // 3. Step Payment
+    {
+      body.append("Step 3. Payment");
+      body.append("<p/>");
+
+      // Save Register Sale Payment - div 2 (4.14 x 2)
+      id = getUUID();
+      typeId = getUUID();
+      var pay1 = {
+        "id" : id,
+        "sale_id" : registerSaleId,
+        "register_id" : registerId,
+        "payment_type_id" : 1,
+        "merchant_payment_type_id" : typeId,
+        "amount" : 4.14,
+        "payment_date" : today
+      };
+      id = getUUID();
+      typeId = getUUID();
+      var pay2 = {
+        "id" : id,
+        "sale_id" : registerSaleId,
+        "register_id" : registerId,
+        "payment_type_id" : 1,
+        "merchant_payment_type_id" : typeId,
+        "amount" : 4.14,
+        "payment_date" : today
+      };
+      ds.initRegisterSalePayment();
+      body.append("Add RegisterSalePayments 1 <span id='addPayment1'></span>");
+      body.append("<br/>");
+      body.append("Add RegisterSalePayments 2 <span id='addPayment2'></span>");
+      ds.saveRegisterSalePayments(pay1, function(){ document.getElementById("addPayment1").innerHTML = "..... OK"}, function(){ document.getElementById("addPayment1").innerHTML = "... NG"});
+      ds.saveRegisterSalePayments(pay2, function(){ document.getElementById("addPayment2").innerHTML = "..... OK"}, function(){ document.getElementById("addPayment2").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // Check total payment value with total price - if done.
+      body.append("Delete RegisterSalePayments by RegisterSaleID <span id='delPayment'></span>");
+      ds.deleteRegisterSalePayments({"sale_id":registerSaleId}, function(){ document.getElementById("delPayment").innerHTML = "..... OK"}, function(){ document.getElementById("delPayment").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // change status to close with Save Register Sale and Register Sale Items
+      var chgStatus = {
+        "id" : registerSaleId,
+        "status" : "sale_status_closed",
+      };
+      body.append("Change RegisterSales's status from open to closed by RegisterSaleID <span id='chgStatusRegisterSales'></span>");
+      ds.changeStatusRegisterSales(chgStatus, function(){ document.getElementById("chgStatusRegisterSales").innerHTML = "..... OK"}, function(){ document.getElementById("chgStatusRegisterSales").innerHTML = "... NG"});
+      body.append("<p/>");
+    }
+
+    // 4. Step Void Sale
+    {
+      body.append("Step 4. Step Void Sale");
+      body.append("<p/>");
+
+      // same logic Step 2
+
+      // change status to void with Save Register Sale and Register Sale Items
+    }
+    //
+
+  });
+
+
+
+</script>
+

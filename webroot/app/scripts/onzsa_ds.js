@@ -7,56 +7,131 @@ Datastore_sqlite = function() {
   // Web SQL Database
   var db = openDatabase('onzsadb', '1.0', 'onzsa database', 2 * 1024 * 1024);
   return {
-    _logDBError: function(e) {
-      var errorInfo = JSON.stringify(arguments);
-      console.log("WebSQL Error: " + errorInfo + " " + arguments.error);
-    },
-    _doDSTransaction: function(e, t, a) {
-      //console.log("In _doDSTransaction: START" );
+    _doDSTransaction: function(exec, suc, err) {
+      //console.log("[TRANS] START: "),
+      //exec ? console.log(exec) : console.log("[TRANS] START: exec: null"),
+      //suc ? console.log(suc) : console.log("[TRANS] START: suc: null"),
+      //err ? console.log(err) : console.log("[TRANS] START: err: null")
 
-      var n, i, r = this;
-
+      var success, error;
+      success = function() {
+        "function" == typeof suc && suc()
+      },
+      error = function() {
+        "function" == typeof err && err()
+      };
       try {
-        db.transaction(e)
-      } catch (ex) {
-        r._logDBError(ex + "hoho")
+        //console.log("[TRANS] BEFORE TRANSACTION: ")
+        db.transaction(exec, error, success)
+      } catch (o) {
+        //console.log("[TRANS] TRANSACTION: Exception")
+        err(o)
       }
     },
-    _executeDSSql: function(e, t, a, n, i) {
-      //console.log("In _executeDSSql: START" );
-
-      var r, o = this;
+    _executeDSSql: function(tr, sql, param, suc, err) {
       try {
-        r = function(e) {
-          var r, s;
-          r = function(e, t) {
-            "function" == typeof n && n(e, t)
-          }, s = function() {
-            var e = {
-              sql: t,
-              params: a,
-              error: arguments
+        //console.log("[EXEC] START: "),
+        //tr ? console.log(tr) : console.log("[EXEC] START: tr: null"),
+        //sql ? console.log(sql) : console.log("[EXEC] START: sql: null"),
+        //param ? console.log(param) : console.log("[EXEC] START: param: null"),
+        //suc ? console.log(suc) : console.log("[EXEC] START: suc: null")
+        //err ? console.log(err) : console.log("[EXEC] START: err: null")
+
+        //console.log("[EXEC] BEFORE MAKE CONTINUECALL: "),
+        continueCall = function(tr2) {
+          //console.log("[EXEC] CONTINUECALL START: "),tr2 ? console.log(tr2) : console.log("[EXEC] CONTINUECALL START: tr2: null"),
+
+          success = function(tr3, rs) {
+            //console.log("[EXEC] CONTINUECALL TR2 SUCCESS START: "),tr3 ? console.log(tr3) : console.log("[EXEC] START: tr3: null"),
+            "function" == typeof suc && suc(tr3, rs)
+          },
+
+          error = function(e) {
+            var errInfo = {
+              sql: sql,
+              params: param
             };
-            console.log(e), o._logDBError(e), "function" == typeof i && i !== o._logDBError && i(e)
-          }, e.executeSql(t, a, r, s)
-        }, e ? r(e) : this.db.transaction(r)
+            //console.log("[EXEC] CONTINUECALL TR2 ERR START: "),console.log(e),
+            "function" == typeof err && err(errInfo)
+          },
+
+          //console.log("[EXEC] CONTINUECALL BEFORE TR2 EXECUTE : "),
+          tr2.executeSql(sql, param, success, error)
+        },
+        //console.log("[EXEC] BEFORE CONTINUECALL : "),
+        tr ? continueCall(tr) : db.transaction(continueCall, err, suc)
+        //console.log("[EXEC] END: ")
       } catch (s) {
-        console.log("TRANSACTION ERROR " + s.message)
+        console.log("[EXEC] EXECUTE ERROR " + s.message)
       }
     },
 
-    initLocalDataStore: function(e, t) {
-      var a, n = this;
-      a = function() {
-        n._doDSTransaction(function(t) {
-          console.log("INIT: initLocalDataStore"), n.initPriceBook(), n.initProducts(), n.initRegisterSaleItems(), n.initRegisterSales()
-        })
-      }, a()
+    // 콜벡 처리 필요없는 여러개의 쿼리를 트랜젝션 처리 하는 예제
+    // 중간에 쿼리가 실패하면 트랜젝션 처리 되어서 저장 않되고 실패한 쿼리의 에러가 호출된 후
+    // 트랜젝션의 성공처리가 실행됨.
+    testCall: function(e) {
+      console.log("[TEST] START: "),
+      e ? console.log(e) : console.log("[TEST] START: e: null");
+      var t = this;
+      console.log("[TEST] BEFORE TRANSACTION: "),
+      t._doDSTransaction(
+        function(tr) {
+          console.log("[TEST] BEFORE EXECUTE: "), tr ? console.log(tr) : console.log("[TEST] BEFORE EXECUTE: tr: null")
+          t._executeDSSql(tr, "DROP TABLE IF EXISTS TEST1", []),
+          t._executeDSSql(tr, "DROP TABLE IF EXISTS TEST2", []),
+          t._executeDSSql(tr, "DROP TABLE IF EXISTS TEST3", []),
+          t._executeDSSql(tr, "DROP TABLE IF EXISTS TEST4", []),
+          t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS TEST1 (id TEXT PRIMARY KEY ON CONFLICT REPLACE, name TEXT)", [], function() {console.log("[TEST] TRANS EXEC TEST1: SUCCESS")}, function() {console.log("[TEST] TRANS EXEC TEST1: ERROR")}),
+          t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS TEST2 (id TEXT PRIMARY KEY ON CONFLICT REPLACE, name TEXT)", [], function() {console.log("[TEST] TRANS EXEC TEST2: SUCCESS")}, function() {console.log("[TEST] TRANS EXEC TEST2: ERROR")}),
+          t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS TEST3 (id TEXT PRIMARY KEY ON CONFLICT REPLACE, name TEXT)", [], function() {console.log("[TEST] TRANS EXEC TEST3: SUCCESS")}, function() {console.log("[TEST] TRANS EXEC TEST3: ERROR")}),
+          t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS TEST4 (id TEXT PRIMARY KEY ON CONFLICT REPLACE, name TEXT)", [], function() {console.log("[TEST] TRANS EXEC TEST4: SUCCESS")}, function() {console.log("[TEST] TRANS EXEC TEST4: ERROR")})
+        },
+        function() {console.log("[TEST] TRANS: SUCCESS")},
+        function() {console.log("[TEST] TRANS: ERROR")}
+      )
     },
-    initPriceBook: function(){
+    // 콜벡을 받아와서 각 쿼리에 세팅하면 각 쿼리의 성공여부에 따라서 콜러에게 전달 할 수 있다.
+    // 각 쿼리의 성공/실패 함수에 변수 셋팅하도록 하면 전체 결과에 대해 판단 가능하다.
+    // 트랜젝션은 성공 처리됨.
+    testCall2: function(callback) {
+      console.log("[TEST] START: "),
+      callback ? console.log(callback) : console.log("[TEST] START: callback: null");
+      var t = this, f1 = false, f2 = false, f3 = false, f4 = false;
+      console.log("[TEST] BEFORE TRANSACTION: "),
+      t._doDSTransaction(
+        function(tr) {
+          console.log("[TEST] BEFORE EXECUTE: "), tr ? console.log(tr) : console.log("[TEST] BEFORE EXECUTE: tr: null")
+          t._executeDSSql(tr, "CREATE1 TABLE IF NOT EXISTS TEST1 (id TEXT PRIMARY KEY ON CONFLICT REPLACE, name TEXT)", [], function() { callback("[TEST] CALL-BACK1 OK"), f1 = true }, function() { callback("[TEST] CALL-BACK1 NG")} )
+          t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS TEST2 (id TEXT PRIMARY KEY ON CONFLICT REPLACE, name TEXT)", [], function() { callback("[TEST] CALL-BACK2 OK"), f2 = true }, function() { callback("[TEST] CALL-BACK2 NG")} )
+          t._executeDSSql(tr, "CREATE1 TABLE IF NOT EXISTS TEST3 (id TEXT PRIMARY KEY ON CONFLICT REPLACE, name TEXT)", [], function() { callback("[TEST] CALL-BACK3 OK"), f3 = true }, function() { callback("[TEST] CALL-BACK3 NG")} )
+          t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS TEST4 (id TEXT PRIMARY KEY ON CONFLICT REPLACE, name TEXT)", [], function() { callback("[TEST] CALL-BACK4 OK"), f4 = true }, function() { callback("[TEST] CALL-BACK4 NG")} )
+        },
+        function() {console.log("[TEST] TRANS: SUCCESS"),
+            console.log("Sub Query F1 success: " + f1),
+            console.log("Sub Query F2 success: " + f2),
+            console.log("Sub Query F3 success: " + f3),
+            console.log("Sub Query F4 success: " + f4)
+        },
+        function() {console.log("[TEST] TRANS: ERROR")}
+      )
+    },
+    _log: function(funcName, logText, logData) {
+      console.log("[ONZSA-DS] " + funcName + ": " + logText)
+      if(logData != null)console.log(logData)
+    },
+
+    initLocalDataStore: function() {
+      var t = this;
+      t._log("initLocalDataStore", "Start");
+      t._doDSTransaction(function(tr) {
+        t.initPriceBook(tr), t.initProducts(tr), t.initRegisterSaleItems(tr), t.initRegisterSales(tr), t.initRegisterSalePayment(tr)
+      })
+    },
+    initPriceBook: function(tr){
       var e = this;
+      t._log("initPriceBook", "Start");
       e._doDSTransaction(function(t) {
-        e._executeDSSql(t, "DROP TABLE IF EXISTS PriceBookEntry", []);
+        e._executeDSSql(t, "DROP TABLE IF EXISTS PriceBookEntry", [], null, function(){ } );
         e._executeDSSql(t, "CREATE TABLE IF NOT EXISTS PriceBookEntry ( id TEXT PRIMARY KEY ON CONFLICT REPLACE, product_id TEXT, customer_group_id TEXT, outlet_id TEXT, markup REAL, discount REAL, price REAL, tax REAL, price_include_tax REAL, loyalty_value REAL, min_units REAL, max_units REAL, is_default INT, valid_from TEXT, valid_to TEXT)");
       })
     },
@@ -81,37 +156,6 @@ Datastore_sqlite = function() {
             ", thumbnail TEXT" +
             ", image TEXT" +
             " )");
-        // Save Sample Data
-        //e._executeDSSql(t,
-        //  "INSERT INTO Products (" +
-        //  "id, name, handle, description, brand_name, supplier_name, sku" +
-        //  ", supplier_price, price, tax, tax_name, tax_rate, retail_price" +
-        //  ", thumbnail, image" +
-        //  ") values (" +
-        //  "  ?, ?, ?, ?, ?, ?, ?" +
-        //  ", ?, ?, ?, ?, ?, ?" +
-        //  ", ?, ?" +
-        //  ")", [
-        //    "55b99424-0a70-404c-8788-25e04cf3b98e", "Yoghurt Fruity Tart", "yoghurt", "yoghurt description", "yoghurt story", "2nd supplier", "skuskusku",
-        //    '2.0', '2.6', '0.39', "GST", '15', '2.99',
-        //    "\/img\/ONZSA_eye.png", "\/img\/sample_1.png"
-        //  ]
-        //);
-        //e._executeDSSql(t,
-        //  "INSERT INTO Products (" +
-        //  "id, name, handle, description, brand_name, supplier_name, sku" +
-        //  ", supplier_price, price, tax, tax_name, tax_rate, retail_price" +
-        //  ", thumbnail, image" +
-        //  ") values (" +
-        //  "  ?, ?, ?, ?, ?, ?, ?" +
-        //  ", ?, ?, ?, ?, ?, ?" +
-        //  ", ?, ?" +
-        //  ")", [
-        //    "55b99424-0a70-404c-8788-25e14cf3b37e", "yoghurt-creamy-delight", "yoghurt", "yoghurt description 2222", "yoghurt story", "2nd supplier", "skuskusku222",
-        //    '4.0', '5.2', '0.78', "GST", '15', '5.98',
-        //    "\/img\/user.png", "\/img\/sample_5.png"
-        //  ]
-        //);
       })
     },
     initRegisterSales: function(){
@@ -130,32 +174,125 @@ Datastore_sqlite = function() {
       })
     },
 
-    saveRegisterSales: function(e, saveArray){
+    initRegisterSalePayment: function(tr){
+      var t = this;
+      t._doDSTransaction(function(tr) {
+        t._executeDSSql(tr, "DROP TABLE IF EXISTS RegisterSalePayments", []);
+        t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS RegisterSalePayments (" +
+            "id TEXT PRIMARY KEY ON CONFLICT REPLACE, sale_id TEXT, register_id TEXT, " +
+            "payment_type_id INTEGER, merchant_payment_type_id TEXT, amount REAL, payment_date TEXT)")
+      })
+    },
+
+    saveRegisterSalePayments: function(data, suc, err) {
+      var t = this;
+      var input = [data.id, data.sale_id, data.register_id, data.payment_type_id, data.merchant_payment_type_id, data.amount, data.payment_date];
+      t._doDSTransaction(function(tr) {
+        t._executeDSSql(tr, "INSERT or replace INTO RegisterSalePayments " +
+            "(id, sale_id, register_id, payment_type_id, merchant_payment_type_id, amount, payment_date) " +
+            "VALUES (?, ?, ?, ?, ?, ?, ?)", input, suc, err);
+      });
+    },
+
+    deleteRegisterSalePayments: function(data, suc, err) {
+      var t = this;
+      var condition = [data.sale_id];
+      //console.log(condition),
+      t._doDSTransaction(function(tr) {
+        t._executeDSSql(tr, "DELETE FROM RegisterSalePayments WHERE sale_id = ?", condition, suc, err);
+      });
+    },
+
+    saveRegisterSales: function(saveArray, suc, err){
       var i = saveArray;
       var n = this;
       var inputValues = [i.id, i.register_id, i.user_id, i.customer_id, i.xero_invoice_id, i.receipt_number, i.status, i.total_cost, i.total_price, i.total_price_incl_tax, i.total_discount, i.total_tax, i.note, i.sale_date];
       try{
         n._doDSTransaction(function(e) {
-          console.log(saveArray);
-          n._executeDSSql(e, "INSERT or replace INTO RegisterSales (id, register_id, user_id, customer_id, xero_invoice_id, receipt_number, status, total_cost, total_price, total_price_incl_tax, total_discount, total_tax, note, sale_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputValues);
+          //console.log(saveArray);
+          n._executeDSSql(e, "INSERT or replace INTO RegisterSales (id, register_id, user_id, customer_id, xero_invoice_id, receipt_number, status, total_cost, total_price, total_price_incl_tax, total_discount, total_tax, note, sale_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputValues, suc, err);
         });
       }catch(ex){
         n._logDBError(ex.message);
       }
     },
 
-    saveRegisterSalesItems: function(e, saveArray){
+    changeStatusRegisterSales: function(data, suc, err) {
+      var t = this;
+      console.log(data);
+
+      var condition = [data.status, data.id];
+      console.log(condition),
+          t._doDSTransaction(function(tr) {
+            t._executeDSSql(tr, "UPDATE RegisterSales SET status = ? WHERE id = ?", condition, suc, err);
+          });
+    },
+
+    // 1 item
+    saveRegisterSalesItem: function(saveArray, suc, err){
       var i = saveArray;
       var n = this;
-      console.log(saveArray);
       var inputValues = [i.id, i.sale_id, i.product_id, i.name, i.quantity, i.supply_price, i.price, i.price_include_tax, i.tax, i.tax_rate, i.discount, i.loyalty_value, i.sequence, i.status];
       try{
         n._doDSTransaction(function(e) {
-          console.log(saveArray);
-          n._executeDSSql(e, "INSERT or replace INTO RegisterSaleItems (id, sale_id, product_id, name, quantity, supply_price, price, price_include_tax, tax, tax_rate, discount, loyalty_value, sequence, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputValues);
+          n._executeDSSql(e, "INSERT or replace INTO RegisterSaleItems (id, sale_id, product_id, name, quantity, supply_price, price, price_include_tax, tax, tax_rate, discount, loyalty_value, sequence, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputValues, suc, err);
         });
       }catch(ex){
         n._logDBError(ex.message);
+      }
+    },
+
+    // lots items
+    saveRegisterSalesItems: function(e, saveArray){
+      var i = [];
+      var n = this;
+      var inputValues = [];
+
+      for(var k=0; k < saveArray.length; k++)	{
+        i = saveArray[k];
+        inputValues.push([i.id, i.sale_id, i.product_id, i.name, i.quantity, i.supply_price, i.price, i.price_include_tax, i.tax, i.tax_rate, i.discount, i.loyalty_value, i.sequence, i.status]);
+      }
+
+      try{
+        n._doDSTransaction(function(e) {
+          for(var j=0; j < inputValues.length; j++){
+            var inputValue = inputValues[j];
+            n._executeDSSql(e, "INSERT or replace INTO RegisterSaleItems (id, sale_id, product_id, name, quantity, supply_price, price, price_include_tax, tax, tax_rate, discount, loyalty_value, sequence, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputValue);
+          }
+        });
+      }catch(ex){
+        n._logDBError(ex.message);
+      }
+    },
+
+    saveRegisterAll: function(callBack, salesArray, salesItems){
+      var self = this;
+      var inputSale = [salesArray.id, salesArray.register_id, salesArray.user_id, salesArray.customer_id, salesArray.xero_invoice_id, salesArray.receipt_number, salesArray.status, salesArray.total_cost, salesArray.total_price, salesArray.total_price_incl_tax, salesArray.total_discount, salesArray.total_tax, salesArray.note, salesArray.sale_date];
+      var i = [];
+      var inputItems = [];
+
+      for(var k=0; k < salesItems.length; k++)	{
+        i = salesItems[k];
+        inputItems.push([i.id, i.sale_id, i.product_id, i.name, i.quantity, i.supply_price, i.price, i.price_include_tax, i.tax, i.tax_rate, i.discount, i.loyalty_value, i.sequence, i.status]);
+      }
+
+      try{
+        self._doDSTransaction(function(e) {
+          self._executeDSSql(e, "INSERT or replace INTO RegisterSales (id, register_id, user_id, customer_id, xero_invoice_id, receipt_number, status, total_cost, total_price, total_price_incl_tax, total_discount, total_tax, note, sale_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputSale,
+              function(e) {
+                console.log("CallBack");
+              });
+          //for(var j=0; j < inputItems.length; j++){
+          //  var inputValue = inputItems[j];
+          //  self._executeDSSql(e, "INSERT or replace INTO RegisterSaleItems (id, sale_id, product_id, name, quantity, supply_price, price, price_include_tax, tax, tax_rate, discount, loyalty_value, sequence, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputValue);
+          //}
+        }, function(e) {
+          console.log("Transaction Error: " + e.message);
+        }, function(rs) {
+          console.log("Transaction Success: ");
+        });
+      }catch(ex){
+        self._logDBError(ex.message);
       }
     },
 
@@ -325,130 +462,8 @@ Datastore_sqlite = function() {
       }
     },
 
-
-    /**
-     getPriceBookEntryForRegisterSale: function(e) {
-          var t, a, n, i = this,
-              r = Renegade.util.number,
-              o = r.multiply,
-              s = (r.divide, r.subtract),
-              l = r.add,
-              c = e.register_sale_product,
-              u = e.customer,
-              d = e.default_customer_group_id,
-              g = e.outlet_id,
-              p = e.callback,
-              f = c.display_retail_price_tax_inclusive,
-              _ = 0,
-              h = 0;
-          h = parseFloat(c.quantity) < 0 ? -1 * parseFloat(c.quantity) : parseFloat(c.quantity), debug("INFO: Look for price for " + h + " of " + c.id + " customer=" + u.customer_group_id + " default_customer_group_id=" + d + " outlet_id=" + g), t = function(e, t) {
-              var a, n = VendPOS.Store.getAll("Tax", "id"),
-                  i = c.tax_id,
-                  r = n[i].rate,
-                  u = e.price,
-                  d = t.price;
-              return f ? (a = o(u, r), pricebookTax = o(d, r), _ = s(l(u, a), l(d, pricebookTax))) : _ = u - d, _
-          }, a = function(e) {
-              var t, a = e[0],
-                  n = e.length;
-              for (debug("There were " + n + " GENERAL pricebook entries found, will search for lowest", e), t = 1; n > t; t += 1) e[t] < a && (a = e[t]);
-              return a
-          }, n = function(e) {
-              var n;
-              e.discount = 0, n = function(n) {
-                  var r;
-                  n ? (debug("Multiple pricebook entries found (base and general custom group)"), n = n.length > 1 ? a(n) : n[0], debug("Base and Chosen General (custom group) pricebooks are:", e, n), n.discount = t(e, n), p(n)) : (r = function(n) {
-                      n ? (debug("Multiple default group pricebook entries found (base and general)"), n = n.length > 1 ? a(n) : n[0], debug("Base & Chosen General (default group) pricebooks are:", e, n), n.discount = t(e, n), p(n)) : (debug("BASE pricebook entry", e), p(e))
-                  }, i.getPriceBookEntriesByCustomerGroup(c.product_id, d.toString(), h.toString(), g, "GENERAL", r))
-              }, i.getPriceBookEntriesByCustomerGroup(c.product_id, u.customer_group_id.toString(), h.toString(), g, "GENERAL", n)
-          }, i.getPriceBookEntriesByCustomerGroup(c.product_id, d.toString(), h.toString(), g, "BASE", n)
-      },
-
-
-     /**,
-     dropAccount: function() {
-          var e = this;
-          e._doDSTransaction(function(t) {
-              e._executeDSSql(t, "DROP TABLE IF EXISTS Account", [])
-          })
-      },
-     initStorePriceBookEntry: function(e, t) {
-          var a, n = this;
-          a = ["CREATE TABLE IF NOT EXISTS PriceBookEntry (", "id TEXT PRIMARY KEY ON CONFLICT REPLACE, ", "product_id TEXT, ", "customer_group_id TEXT, ", "type TEXT, ", "price REAL, ", "loyalty_value REAL, ", "tax REAL, ", "tax_rate REAL, ", "tax_id TEXT, ", "tax_name TEXT, ", "min_units REAL, ", "max_units REAL, ", "valid_from REAL, ", "valid_to REAL, ", "display_retail_price_tax_inclusive REAL, ", "outlet_id TEXT", ")"].join(""), n._executeDSSql(e, a, [], t), n._executeDSSql(e, "CREATE INDEX IF NOT EXISTS idx_price_book_entry_product_id ON PriceBookEntry(product_id)")
-      },
-     deleteAllOfflineData: function(e, a) {
-          var n = this,
-              i = function(a) {
-                  e.delete_customers && n._executeDSSql(a, "DELETE FROM Customer", [], t, n._logDBError), e.delete_registers && n._executeDSSql(a, "DELETE FROM Register", [], t, n._logDBError), e.delete_products && (n._executeDSSql(a, "DELETE FROM Product", [], t, n._logDBError), n._executeDSSql(a, "DELETE FROM PriceBookEntry", [], t, n._logDBError))
-              };
-          n._doDSTransaction(i), "function" == typeof a && a()
-      },
-     deleteRegisters: function(e) {
-          var t = this;
-          t._doDSTransaction(function(a) {
-              t._executeDSSql(a, "DELETE FROM Register", [], e, t._logDBError)
-          })
-      },
-     savePriceBookEntries: function(e) {
-          var t, a, n, i = this,
-              r = e.priceBookEntries,
-              o = e.productId,
-              s = e.transaction,
-              l = e.completeHandler,
-              c = "DELETE from PriceBookEntry WHERE product_id = ?";
-          n = function() {
-              r && r.length ? (t = clone(r), a()) : l(s)
-          }, a = function() {
-              var e, n = t.pop();
-              e = function() {
-                  t.length ? a() : l(s)
-              }, i.savePriceBookEntry({
-                  priceBookEntry: n,
-                  transaction: s,
-                  completeHandler: e
-              })
-          }, i._executeDSSql(s, c, [o], n, i._logDBError)
-      }
-     ,
-     savePriceBookEntry: function(e) {
-          var t, a, n = this,
-              i = e.priceBookEntry,
-              r = e.transaction,
-              o = e.completeHandler;
-          t = ["INSERT or replace INTO PriceBookEntry (", "id, ", "product_id, ", "customer_group_id, ", "type, ", "price, ", "loyalty_value, ", "tax, ", "tax_id, ", "display_retail_price_tax_inclusive, ", "tax_name, ", "tax_rate, ", "min_units, ", "max_units, ", "valid_from, ", "valid_to, ", "outlet_id", ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"].join(""), a = [i.id, i.product_id, i.customer_group_id, i.type, i.price, i.loyalty_value, i.tax, i.tax_id, i.display_retail_price_tax_inclusive, i.tax_name, i.tax_rate, i.min_units, i.max_units, i.valid_from, i.valid_to, i.outlet_id], n._executeDSSql(r, t, a, o, n._logDBError)
-      },
-     deleteOutletProductTax: function(e) {
-          var t = this,
-              a = e.outletProductTax,
-              n = a ? a.product_id : e.product_id,
-              i = a ? a.outlet_id : e.outlet_id,
-              r = e.transaction,
-              o = e.completeHandler;
-          _deleteOutletProductTaxCompleteHandler = function() {
-              "function" == typeof o && o()
-          }, _deleteOutletProductTax = function(e) {
-              var a, r = "";
-              n && (r = 'WHERE product_id = "' + n + '"'), i && (r += r ? " AND " : "WHERE ", r += 'outlet_id = "' + i + '"'), a = ["DELETE FROM OutletProductTax ", r].join(""), t._executeDSSql(e, a, [], _deleteOutletProductTaxCompleteHandler, t._logDBError)
-          }, r ? _deleteOutletProductTax(r) : t._doDSTransaction(_deleteOutletProductTax)
-      },
-     deleteAllOutletProductTaxes: function(e) {
-          var t, a, n = this,
-              i = e.completeHandler,
-              r = e.ignoreId,
-              o = e.transaction || null;
-          t = function() {
-              "function" == typeof i && i()
-          }, a = ["DELETE FROM OutletProductTax ", r ? 'WHERE outlet_id != "' + r + '"' : ""].join(""), n._executeDSSql(o, a, [], t, n._logDBError)
-      },
-     saveCustomer: function(e, t, a) {
-          var n = this,
-              i = function(t) {
-                  n._executeDSSql(t, "INSERT or replace INTO Customer (id, name, company_name, customer_code, balance, loyalty_balance, year_to_date, phone, email, website, postal_address1, postal_address2, postal_suburb, postal_city, postal_postcode, postal_state, postal_country_id, physical_address1, physical_address2, physical_suburb, physical_city, physical_postcode, physical_state, physical_country_id, customer_group_id, customer_group_name, retailer_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", [e.id, e.name, e.company_name, e.customer_code, e.balance, e.loyalty_balance, e.year_to_date, e.phone, e.email, e.website, e.postal_address1, e.postal_address2, e.postal_suburb, e.postal_city, e.postal_postcode, e.postal_state, e.postal_country_id, e.physical_address1, e.physical_address2, e.physical_suburb, e.physical_city, e.physical_postcode, e.physical_state, e.physical_country_id, e.customer_group_id, e.customer_group_name, e.retailer_id], a, a)
-              };
-          "undefined" == typeof t ? n._doDSTransaction(i) : i(t)
-      } **/
   }
-};
+}();
 
 // -----------------    BEGIN Local Storage   ---------------
 var Database_localstorage = function() {
