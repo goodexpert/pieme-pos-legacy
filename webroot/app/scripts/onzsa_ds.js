@@ -2,7 +2,7 @@
 
 
 Datastore_sqlite = function() {
-  var e, t = function() {};
+  //var e, t = function() {};
 
   // Web SQL Database
   var db = openDatabase('onzsadb', '1.0', 'onzsa database', 2 * 1024 * 1024);
@@ -29,6 +29,7 @@ Datastore_sqlite = function() {
       }
     },
     _executeDSSql: function(tr, sql, param, suc, err) {
+      var continueCall, success, error;
       try {
         //console.log("[EXEC] START: "),
         //tr ? console.log(tr) : console.log("[EXEC] START: tr: null"),
@@ -42,7 +43,7 @@ Datastore_sqlite = function() {
           //console.log("[EXEC] CONTINUECALL START: "),tr2 ? console.log(tr2) : console.log("[EXEC] CONTINUECALL START: tr2: null"),
 
           success = function(tr3, rs) {
-            //console.log("[EXEC] CONTINUECALL TR2 SUCCESS START: "),tr3 ? console.log(tr3) : console.log("[EXEC] START: tr3: null"),
+            //console.log("[EXEC] CONTINUECALL TR2 SUCCESS START: "),tr3 ? console.log(tr3) : console.log("[EXEC] CONTINUECALL TR2 SUCCESS: tr3: null"),
             "function" == typeof suc && suc(tr3, rs)
           },
 
@@ -185,8 +186,7 @@ Datastore_sqlite = function() {
     },
 
     saveRegisterSalePayments: function(data, suc, err) {
-      var t = this;
-      var input = [data.id, data.sale_id, data.register_id, data.payment_type_id, data.merchant_payment_type_id, data.amount, data.payment_date];
+      var t = this, input = [data.id, data.sale_id, data.register_id, data.payment_type_id, data.merchant_payment_type_id, data.amount, data.payment_date];
       t._doDSTransaction(function(tr) {
         t._executeDSSql(tr, "INSERT or replace INTO RegisterSalePayments " +
             "(id, sale_id, register_id, payment_type_id, merchant_payment_type_id, amount, payment_date) " +
@@ -195,11 +195,24 @@ Datastore_sqlite = function() {
     },
 
     deleteRegisterSalePayments: function(data, suc, err) {
-      var t = this;
-      var condition = [data.sale_id];
+      var t = this, condition = [data.sale_id];
       //console.log(condition),
       t._doDSTransaction(function(tr) {
         t._executeDSSql(tr, "DELETE FROM RegisterSalePayments WHERE sale_id = ?", condition, suc, err);
+      });
+    },
+
+    getRegisterSalePayments: function(data, suc, err) {
+      var t = this, input = [data.sale_id],success;
+      success = function(tr, rt) {
+        var rs = rt.rows, i=0, resultSet = [];
+        for(i = 0; i < rs.length; i++){
+          resultSet.push(rs.item(i));
+        }
+        suc(resultSet);
+      };
+      t._doDSTransaction(function(tr) {
+        t._executeDSSql(tr, "SELECT * FROM RegisterSalePayments WHERE sale_id = ?" , input, success, err);
       });
     },
 
@@ -209,7 +222,6 @@ Datastore_sqlite = function() {
       var inputValues = [i.id, i.register_id, i.user_id, i.customer_id, i.xero_invoice_id, i.receipt_number, i.status, i.total_cost, i.total_price, i.total_price_incl_tax, i.total_discount, i.total_tax, i.note, i.sale_date];
       try{
         n._doDSTransaction(function(e) {
-          //console.log(saveArray);
           n._executeDSSql(e, "INSERT or replace INTO RegisterSales (id, register_id, user_id, customer_id, xero_invoice_id, receipt_number, status, total_cost, total_price, total_price_incl_tax, total_discount, total_tax, note, sale_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputValues, suc, err);
         });
       }catch(ex){
@@ -218,11 +230,7 @@ Datastore_sqlite = function() {
     },
 
     changeStatusRegisterSales: function(data, suc, err) {
-      var t = this;
-      console.log(data);
-
-      var condition = [data.status, data.id];
-      console.log(condition),
+      var t = this, condition = [data.status, data.id];
           t._doDSTransaction(function(tr) {
             t._executeDSSql(tr, "UPDATE RegisterSales SET status = ? WHERE id = ?", condition, suc, err);
           });
@@ -296,18 +304,17 @@ Datastore_sqlite = function() {
       }
     },
 
-    getRegisterSales: function(e, statusCode) {
+    getRegisterSales: function(statusCode, suc, err) {
 
       var t, a, n = this, searchValue = [], queryString = '';
 
       if(statusCode == null){
         queryString = "SELECT * FROM RegisterSales";
       }else if(statusCode == 'all'){
-        queryString = "select * from register_sales where status in ('sale_status_layby', 'sale_status_saved', 'sale_status_onaccount');";
+        queryString = "SELECT * FROM RegisterSales where status in ('sale_status_open', 'sale_status_layby', 'sale_status_saved', 'sale_status_onaccount')";
       }else{
         queryString = "SELECT * FROM RegisterSales where status = ? ";
         searchValue.push(statusCode);
-        console.log(searchValue);
       }
 
       t = function(t, a) {
@@ -316,34 +323,35 @@ Datastore_sqlite = function() {
         for(i = 0; i < rs.length; i++){
           resultSet.push(rs.item(i));
         }
-        e(resultSet);
+        typeof(suc) == 'function' && suc(resultSet);
+
       }, n._doDSTransaction(function(e) {
-        n._executeDSSql(e, queryString, searchValue, t)
+        n._executeDSSql(e, queryString, searchValue, t, err)
       })
     },
 
-    getRegisterSaleItems: function(e, saleId) {
+    getRegisterSaleItems: function(saleId, suc, err) {
 
-      var t, a, n = this, searchValue = [], queryString = '';
+      var t = this, searchValue = [], queryString = '', success;
 
       if(saleId == null){
         console.log('1');
         queryString = "SELECT * FROM RegisterSaleItems where status = 'sale_item_status_open'";
       }else{
         queryString = "SELECT * FROM RegisterSaleItems where sale_id = ? ";
-        searchValue.push(saleId);
-        console.log(searchValue);
+        searchValue = [saleId];
       }
-
-      t = function(t, a) {
-        var rs = a.rows, i=0;
+      success = function(tr, rt) {
+        var rs = rt.rows, i=0;
         var resultSet = [];
+
         for(i = 0; i < rs.length; i++){
           resultSet.push(rs.item(i));
         }
-        e(resultSet);
-      }, n._doDSTransaction(function(e) {
-        n._executeDSSql(e, queryString, searchValue, t)
+
+        typeof(suc) == 'function' && suc(resultSet);
+      }, t._doDSTransaction(function(tr) {
+            t._executeDSSql(tr, queryString, searchValue, success, err)
       })
     },
 
@@ -494,4 +502,3 @@ var Database_localstorage = function() {
   }
 };
 // -----------------     END Local Storage   ---------------
-

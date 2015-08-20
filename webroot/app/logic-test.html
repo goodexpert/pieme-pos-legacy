@@ -29,7 +29,14 @@
     var strToday = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
     return strToday;
   }
-
+  function convArrayToHtml(array) {
+    var html = "<table width=100% border=1 border-color=#aaa margin=0 padding=0><tr width=100%>";
+    for(var i=0; i<array.length; i++) {
+      html = "<td>" + array[i] + "</td>";
+    }
+    html += "</tr></table>";
+    return html;
+  }
   $(document).ready(function(){
     var ds = Datastore_sqlite;
     var ls = Database_localstorage();
@@ -37,6 +44,7 @@
     var registerId = "55cfd1ed-4594-4e0f-8f76-14d84cf3b98e";
     var userId = "55b99423-ab28-4a16-b477-25e04cf3b98e";
     var customerId = "55b99423-300c-4dff-90a4-25e04cf3b98e";
+    var registerSaleId = '';
 
     var sOpen = "sale_status_open",
         sVoid = "sale_status_voied", sPark = "sale_status_park", sLayby = "sale_status_layby",
@@ -45,14 +53,31 @@
 
     var body = $('body');
 
+    // Control Unit test
+    var doTest01 = true;   // 1. Step Ready
+    var doTest02 = true;   // 2. Step Add Item
+    var doTest03 = true;   // 3. Step Payment
+    var doTest04 = true;   // 4. Step Void Sale
+    var doTest05 = true;   // 5. Step Park Sale
+    var doTest06 = true;   // 6. Step Layby Sale
+    var doTest07 = true;   // 7. Step On Account Sale
+    var doTest08 = true;   // 8. Step Open Sale Load
+    var doTest09 = true;   // 9. Step Park(Saved) Sale Load
+    var doTest10 = true;   // 10. Step Layby Sale Load
+    var doTest11 = true;   // 11. Step On Account Sale Load
+    var doTest12 = true;   // 12. Step ReCall(retrieve) Sale - each
+    var doTest13 = true;   // 13. Step ReCall(retrieve) Sale - all
+    var doTest14 = true;   // 14. Step Sale History
+
+    //============================================================================================================
     // 1. Step Ready
-    {
+    if(doTest01) {
       body.append("Step 1. Ready");
       body.append("<p/>");
 
       // Make Register Sale ID
       registerSaleId = ls.getLSData("TEST-RSID");
-      if (registerSaleId == null)  registerSaleId = getUUID();
+      if (registerSaleId == '')  registerSaleId = getUUID();
       body.append("RegisterSaleID : " + registerSaleId);
       body.append("<br/>");
 
@@ -61,13 +86,15 @@
       rs = ls.getLSData("TEST-RSID");
       body.append("Saved RegisterSaleID in LocalStorage : " + rs);
       body.append("<br/>");
+      if(registerSaleId == rs) { body.append("Same RegisterSaleID ..... OK") }
+      else   { body.append("Same RegisterSaleID ..... NG") }
+      body.append("<p/>");
 
       var registerSaleId, rs, saveData, id, typeId, today = getDateString(),
            pId1 = "55d0fdef-d5f0-416e-a0e3-0c884cf3b98e",
            pId2 = "55d0fb14-7fec-416c-9cff-0c884cf3b98e";
 
       // Save Register Sale - open
-      id = getUUID();
       var regSale = {
         "id":registerSaleId,
         "register_id": registerId,
@@ -84,17 +111,18 @@
         "note":null,
         "sale_date":today
       };
-      body.append("Add RegisterSales<span id='addRegisterSales'></span>");
+      body.append("Add RegisterSales<span id='addRegisterSales1'> ..... checking</span>");
       body.append("<br/>");
-      ds.saveRegisterSales(regSale, function(){ document.getElementById("addRegisterSales").innerHTML = "..... OK"}, function(){ document.getElementById("addRegisterSales").innerHTML = "... NG"});
+      ds.saveRegisterSales(regSale, function(){ document.getElementById("addRegisterSales1").innerHTML = "..... OK"}, function(){ document.getElementById("addRegisterSales1").innerHTML = "... NG"});
 
       body.append("<p/>");
     }
-
+    //============================================================================================================
     // 2. Step Add Item
-    {
+    if(doTest02) {
+      var id1 = getUUID(), id2 = getUUID();
       var saleItem1 = {
-            "id":"55d15778-a8c0-4086-a120-10304cf3b98e",
+            "id": id1,
             "sale_id":registerSaleId,
             "product_id":"55d0fdef-d5f0-416e-a0e3-0c884cf3b98e",
             "name":"undefined",
@@ -107,10 +135,10 @@
             "discount":0,
             "loyalty_value":0,
             "sequence":1,
-            "status":"sale_item_status_open"
+            "status":"sale_item_status_valid"
           },
           saleItem2 = {
-            "id":"55d15778-b978-4ca5-bc69-10304cf3b98e",
+            "id": id2,
             "sale_id":registerSaleId,
             "product_id":"55d0fb14-7fec-416c-9cff-0c884cf3b98e",
             "name":"undefined",
@@ -123,28 +151,31 @@
             "discount":0,
             "loyalty_value":0,
             "sequence":0,
-            "status":"sale_item_status_open"
+            "status":"sale_item_status_valid"
           };
+      body.append("<hr height='1px' width='100%'>");
       body.append("Step 2. Add Items");
       body.append("<p/>");
 
       // Save Register Sale Item
-      body.append("Add RegisterSalesItems 1 <span id='addSaleItem1'></span>");
+      body.append("Add RegisterSalesItems 1 <span id='addSaleItem1'> ..... checking</span>");
       body.append("<br/>");
-      body.append("Add RegisterSalesItems 2 <span id='addSaleItem2'></span>");
+      body.append("Add RegisterSalesItems 2 <span id='addSaleItem2'> ..... checking</span>");
       ds.saveRegisterSalesItem(saleItem1, function(){ document.getElementById("addSaleItem1").innerHTML = "..... OK"}, function(){ document.getElementById("addSaleItem1").innerHTML = "... NG"});
       ds.saveRegisterSalesItem(saleItem2, function(){ document.getElementById("addSaleItem2").innerHTML = "..... OK"}, function(){ document.getElementById("addSaleItem2").innerHTML = "... NG"});
       body.append("<p/>");
     }
-
+    //============================================================================================================
     // 3. Step Payment
-    {
+    if(doTest03) {
+      body.append("<hr height='1px' width='100%'>");
       body.append("Step 3. Payment");
       body.append("<p/>");
 
       // Save Register Sale Payment - div 2 (4.14 x 2)
       id = getUUID();
       typeId = getUUID();
+      var today = getDateString();
       var pay1 = {
         "id" : id,
         "sale_id" : registerSaleId,
@@ -165,16 +196,15 @@
         "amount" : 4.14,
         "payment_date" : today
       };
-      ds.initRegisterSalePayment();
-      body.append("Add RegisterSalePayments 1 <span id='addPayment1'></span>");
+      body.append("Add RegisterSalePayments 1 <span id='addPayment1'> ..... checking</span>");
       body.append("<br/>");
-      body.append("Add RegisterSalePayments 2 <span id='addPayment2'></span>");
+      body.append("Add RegisterSalePayments 2 <span id='addPayment2'> ..... checking</span>");
       ds.saveRegisterSalePayments(pay1, function(){ document.getElementById("addPayment1").innerHTML = "..... OK"}, function(){ document.getElementById("addPayment1").innerHTML = "... NG"});
       ds.saveRegisterSalePayments(pay2, function(){ document.getElementById("addPayment2").innerHTML = "..... OK"}, function(){ document.getElementById("addPayment2").innerHTML = "... NG"});
-      body.append("<br/>");
+      body.append("<p/>");
 
       // Check total payment value with total price - if done.
-      body.append("Delete RegisterSalePayments by RegisterSaleID <span id='delPayment'></span>");
+      body.append("Delete RegisterSalePayments by RegisterSaleID <span id='delPayment'> ..... checking</span>");
       ds.deleteRegisterSalePayments({"sale_id":registerSaleId}, function(){ document.getElementById("delPayment").innerHTML = "..... OK"}, function(){ document.getElementById("delPayment").innerHTML = "... NG"});
       body.append("<br/>");
 
@@ -183,21 +213,1536 @@
         "id" : registerSaleId,
         "status" : "sale_status_closed",
       };
-      body.append("Change RegisterSales's status from open to closed by RegisterSaleID <span id='chgStatusRegisterSales'></span>");
+      body.append("Change RegisterSales's status from open to closed by RegisterSaleID <span id='chgStatusRegisterSales'> ..... checking</span>");
       ds.changeStatusRegisterSales(chgStatus, function(){ document.getElementById("chgStatusRegisterSales").innerHTML = "..... OK"}, function(){ document.getElementById("chgStatusRegisterSales").innerHTML = "... NG"});
       body.append("<p/>");
-    }
 
+      // delete
+      body.append("");
+      ls.removeLSData("TEST-RSID");
+      rs = ls.getLSData("TEST-RSID");
+      if(rs) { body.append("Delete RegisterSaleID from LocalStorage ..... NG : " + rs) }
+      else   { body.append("Delete RegisterSaleID from LocalStorage ..... OK : null" ) }
+      body.append("<p/>");
+    }
+    //============================================================================================================
     // 4. Step Void Sale
-    {
+    if(doTest04) {
+      body.append("<hr height='1px' width='100%'>");
       body.append("Step 4. Step Void Sale");
       body.append("<p/>");
 
-      // same logic Step 2
+      // Make new Register Sale ID
+      registerSaleId = getUUID();
+      body.append("New RegisterSaleID : " + registerSaleId);
+      body.append("<br/>");
 
-      // change status to void with Save Register Sale and Register Sale Items
+      // Save Register Sale ID to ONZSA-APP-CONFIG
+      ls.setLSData("TEST-RSID", registerSaleId);
+      rs = ls.getLSData("TEST-RSID");
+      body.append("Saved New RegisterSaleID in LocalStorage : " + rs);
+      body.append("<p/>");
+
+      // Save Register Sale - open
+      var today = getDateString();
+      var regSale = {
+        "id":registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id":null,
+        "receipt_number":2,
+        "status": "sale_status_open",
+        "total_cost":9,
+        "total_price":10.8,
+        "total_price_incl_tax":12.42,
+        "total_discount":0,
+        "total_tax":1.62,
+        "note":null,
+        "sale_date":today
+      };
+      body.append("Add RegisterSales<span id='addRegisterSales4'> ..... checking</span>");
+      body.append("<br/>");
+      ds.saveRegisterSales(regSale, function(){ document.getElementById("addRegisterSales4").innerHTML = "..... OK"}, function(){ document.getElementById("addRegisterSales4").innerHTML = "... NG"});
+      body.append("<p/>");
+
+
+      // same logic Step 2
+      var id1=getUUID(), id2=getUUID();
+      var saleItem1 = {
+        "id": id1,
+        "sale_id":registerSaleId,
+        "product_id":"55d0fdef-d5f0-416e-a0e3-0c884cf3b98e",
+        "name":"undefined",
+        "quantity":1,
+        "supply_price":3,
+        "price":3.6,
+        "price_include_tax":4.14,
+        "tax":0.54,
+        "tax_rate":0,
+        "discount":0,
+        "loyalty_value":0,
+        "sequence":1,
+        "status":"sale_item_status_valid"
+      },
+      saleItem2 = {
+        "id": id2,
+        "sale_id":registerSaleId,
+        "product_id":"55d0fb14-7fec-416c-9cff-0c884cf3b98e",
+        "name":"undefined",
+        "quantity":1,
+        "supply_price":3,
+        "price":3.6,
+        "price_include_tax":4.14,
+        "tax":0.54,
+        "tax_rate":0,
+        "discount":0,
+        "loyalty_value":0,
+        "sequence":0,
+        "status":"sale_item_status_valid"
+      };
+      body.append("Add RegisterSalesItems 1 <span id='addSaleItem4-1'> ..... checking</span>");
+      body.append("<br/>");
+      body.append("Add RegisterSalesItems 2 <span id='addSaleItem4-2'> ..... checking</span>");
+      ds.saveRegisterSalesItem(saleItem1, function(){ document.getElementById("addSaleItem4-1").innerHTML = "..... OK"}, function(){ document.getElementById("addSaleItem4-1").innerHTML = "... NG"});
+      ds.saveRegisterSalesItem(saleItem2, function(){ document.getElementById("addSaleItem4-2").innerHTML = "..... OK"}, function(){ document.getElementById("addSaleItem4-2").innerHTML = "... NG"});
+      body.append("<p/>");
+
+      // change status to void with Save Register Sale
+      var chgStatus = {
+        "id" : registerSaleId,
+        "status" : "sale_status_voided",
+      };
+      body.append("Change RegisterSales's status by RegisterSaleID [open -> void] <span id='chgStatusVoid'> ..... checking</span>");
+      ds.changeStatusRegisterSales(chgStatus, function(){ document.getElementById("chgStatusVoid").innerHTML = "..... OK"}, function(){ document.getElementById("chgStatusVoid").innerHTML = "... NG"});
+      body.append("<p/>");
+
+      // delete
+      body.append("");
+      ls.removeLSData("TEST-RSID");
+      rs = ls.getLSData("TEST-RSID");
+      if(rs) { body.append("Delete RegisterSaleID from LocalStorage ..... NG : " + rs) }
+      else   { body.append("Delete RegisterSaleID from LocalStorage ..... OK : null" ) }
+      body.append("<p/>");
     }
-    //
+    //============================================================================================================
+    // 5. Step Park Sale
+    if(doTest05) {
+      body.append("<hr height='1px' width='100%'>");
+      body.append("Step 5. Step Park Sale");
+      body.append("<p/>");
+
+      // Make new Register Sale ID
+      registerSaleId = getUUID();
+      body.append("New RegisterSaleID : " + registerSaleId);
+      body.append("<br/>");
+
+      // Save Register Sale ID to ONZSA-APP-CONFIG
+      ls.setLSData("TEST-RSID", registerSaleId);
+      rs = ls.getLSData("TEST-RSID");
+      body.append("Saved New RegisterSaleID in LocalStorage : " + rs);
+      body.append("<p/>");
+
+      // Save Register Sale - open
+      var today = getDateString();
+      var regSale = {
+        "id":registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id":null,
+        "receipt_number":2,
+        "status": "sale_status_open",
+        "total_cost":9,
+        "total_price":10.8,
+        "total_price_incl_tax":12.42,
+        "total_discount":0,
+        "total_tax":1.62,
+        "note":null,
+        "sale_date":today
+      };
+      body.append("Add RegisterSales<span id='addRegisterSales5'> ..... checking</span>");
+      body.append("<br/>");
+      ds.saveRegisterSales(regSale, function(){ document.getElementById("addRegisterSales5").innerHTML = "..... OK"}, function(){ document.getElementById("addRegisterSales5").innerHTML = "... NG"});
+      body.append("<p/>");
+
+
+      // same logic Step 2
+      var id1=getUUID(), id2=getUUID();
+      var saleItem1 = {
+            "id": id1,
+            "sale_id":registerSaleId,
+            "product_id":"55d0fdef-d5f0-416e-a0e3-0c884cf3b98e",
+            "name":"undefined",
+            "quantity":1,
+            "supply_price":3,
+            "price":3.6,
+            "price_include_tax":4.14,
+            "tax":0.54,
+            "tax_rate":0,
+            "discount":0,
+            "loyalty_value":0,
+            "sequence":1,
+            "status":"sale_item_status_valid"
+          },
+          saleItem2 = {
+            "id": id2,
+            "sale_id":registerSaleId,
+            "product_id":"55d0fb14-7fec-416c-9cff-0c884cf3b98e",
+            "name":"undefined",
+            "quantity":1,
+            "supply_price":3,
+            "price":3.6,
+            "price_include_tax":4.14,
+            "tax":0.54,
+            "tax_rate":0,
+            "discount":0,
+            "loyalty_value":0,
+            "sequence":0,
+            "status":"sale_item_status_valid"
+          };
+      body.append("Add RegisterSalesItems 1 <span id='addSaleItem5-1'> ..... checking</span>");
+      body.append("<br/>");
+      body.append("Add RegisterSalesItems 2 <span id='addSaleItem5-2'> ..... checking</span>");
+      ds.saveRegisterSalesItem(saleItem1, function(){ document.getElementById("addSaleItem5-1").innerHTML = "..... OK"}, function(){ document.getElementById("addSaleItem5-1").innerHTML = "... NG"});
+      ds.saveRegisterSalesItem(saleItem2, function(){ document.getElementById("addSaleItem5-2").innerHTML = "..... OK"}, function(){ document.getElementById("addSaleItem5-2").innerHTML = "... NG"});
+      body.append("<p/>");
+
+      // change status to park(saved) with Save Register Sale
+      var chgStatus = {
+        "id" : registerSaleId,
+        "status" : "sale_status_saved",
+      };
+      body.append("Change RegisterSales's status by RegisterSaleID [open -> park(saved)] <span id='chgStatusPark'> ..... checking</span>");
+      ds.changeStatusRegisterSales(chgStatus, function(){ document.getElementById("chgStatusPark").innerHTML = "..... OK"}, function(){ document.getElementById("chgStatusPark").innerHTML = "... NG"});
+      body.append("<p/>");
+
+
+      // delete
+      body.append("");
+      ls.removeLSData("TEST-RSID");
+      rs = ls.getLSData("TEST-RSID");
+      if(rs) { body.append("Delete RegisterSaleID from LocalStorage ..... NG : " + rs) }
+      else   { body.append("Delete RegisterSaleID from LocalStorage ..... OK : null" ) }
+      body.append("<p/>");
+    }
+    //============================================================================================================
+    // 6. Step Layby Sale
+    if(doTest06) {
+      body.append("<hr height='1px' width='100%'>");
+      body.append("Step 6. Step Layby Sale");
+      body.append("<p/>");
+
+      // Make new Register Sale ID
+      registerSaleId = getUUID();
+      body.append("New RegisterSaleID : " + registerSaleId);
+      body.append("<br/>");
+
+      // Save Register Sale ID to ONZSA-APP-CONFIG
+      ls.setLSData("TEST-RSID", registerSaleId);
+      rs = ls.getLSData("TEST-RSID");
+      body.append("Saved New RegisterSaleID in LocalStorage : " + rs);
+      body.append("<p/>");
+
+      // Save Register Sale - open
+      var today = getDateString();
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_open",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("Add RegisterSales<span id='addRegisterSales6'> ..... checking</span>");
+      body.append("<br/>");
+      ds.saveRegisterSales(regSale, function () {
+        document.getElementById("addRegisterSales6").innerHTML = "..... OK"
+      }, function () {
+        document.getElementById("addRegisterSales6").innerHTML = "... NG"
+      });
+      body.append("<p/>");
+
+
+      // same logic Step 2
+      var id1 = getUUID(), id2 = getUUID();
+      var saleItem1 = {
+            "id": id1,
+            "sale_id": registerSaleId,
+            "product_id": "55d0fdef-d5f0-416e-a0e3-0c884cf3b98e",
+            "name": "undefined",
+            "quantity": 1,
+            "supply_price": 3,
+            "price": 3.6,
+            "price_include_tax": 4.14,
+            "tax": 0.54,
+            "tax_rate": 0,
+            "discount": 0,
+            "loyalty_value": 0,
+            "sequence": 1,
+            "status": "sale_item_status_valid"
+          },
+          saleItem2 = {
+            "id": id2,
+            "sale_id": registerSaleId,
+            "product_id": "55d0fb14-7fec-416c-9cff-0c884cf3b98e",
+            "name": "undefined",
+            "quantity": 1,
+            "supply_price": 3,
+            "price": 3.6,
+            "price_include_tax": 4.14,
+            "tax": 0.54,
+            "tax_rate": 0,
+            "discount": 0,
+            "loyalty_value": 0,
+            "sequence": 0,
+            "status": "sale_item_status_valid"
+          };
+      body.append("Add RegisterSalesItems 1 <span id='addSaleItem6-1'> ..... checking</span>");
+      body.append("<br/>");
+      body.append("Add RegisterSalesItems 2 <span id='addSaleItem6-2'> ..... checking</span>");
+      ds.saveRegisterSalesItem(saleItem1, function () {
+        document.getElementById("addSaleItem6-1").innerHTML = "..... OK"
+      }, function () {
+        document.getElementById("addSaleItem6-1").innerHTML = "... NG"
+      });
+      ds.saveRegisterSalesItem(saleItem2, function () {
+        document.getElementById("addSaleItem6-2").innerHTML = "..... OK"
+      }, function () {
+        document.getElementById("addSaleItem6-2").innerHTML = "... NG"
+      });
+      body.append("<p/>");
+
+      // do change status to layby, but don't have payment information --> NG case
+      body.append("Get payment information from RegisterSalePayments by RegisterID (must not found)<span id='chkPayment6-1'> ..... checking</span>");
+      body.append("<br/>");
+      var chkData = {
+        "id": registerSaleId
+      };
+      var suc = function (rs) {
+        var cnt = rs.length;
+        if (cnt == 0) {document.getElementById("chkPayment6-1").innerHTML = "..... OK : " + cnt}
+        else {document.getElementById("chkPayment6-1").innerHTML = "..... NG : " + cnt}
+      };
+      ds.getRegisterSalePayments(chkData, suc, function () {document.getElementById("chkPayment6-1").innerHTML = "..... ERROR"});
+
+      // add 1 payment
+      id = getUUID();
+      typeId = getUUID();
+      var pay1 = {
+        "id" : id,
+        "sale_id" : registerSaleId,
+        "register_id" : registerId,
+        "payment_type_id" : 1,
+        "merchant_payment_type_id" : typeId,
+        "amount" : 4.14,
+        "payment_date" : today
+      };
+      body.append("Add RegisterSalePayments 1 <span id='addPayment6-1'> ..... checking</span>");
+      body.append("<br/>");
+      ds.saveRegisterSalePayments(pay1, function(){ document.getElementById("addPayment6-1").innerHTML = "..... OK"}, function(){ document.getElementById("addPayment6-1").innerHTML = "... NG"});
+
+      // Get Payment infomation again
+      body.append("Get payment information from RegisterSalePayments by RegisterID <span id='chkPayment6-2'> ..... checking</span>");
+      body.append("<br/>");
+      var chkData = {
+        "sale_id": registerSaleId
+      };
+      var suc = function (rs) {
+        var cnt = rs.length;
+        if (cnt == 0) {document.getElementById("chkPayment6-2").innerHTML = "..... NG : " + cnt}
+        else {document.getElementById("chkPayment6-2").innerHTML = "..... OK : " + cnt}
+      };
+      ds.getRegisterSalePayments(chkData, suc, function () {document.getElementById("chkPayment6-2").innerHTML = "..... ERROR"});
+
+      // change status to layby with Save Register Sale
+      var chgStatus = {
+        "id" : registerSaleId,
+        "status" : "sale_status_layby",
+      };
+      body.append("Change RegisterSales's status by RegisterSaleID [open -> layby] <span id='chgStatusLayby'> ..... checking</span>");
+      ds.changeStatusRegisterSales(chgStatus, function(){ document.getElementById("chgStatusLayby").innerHTML = "..... OK"}, function(){ document.getElementById("chgStatusLayby").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // add 1 more payment(done)
+      id = getUUID();
+      typeId = getUUID();
+      var pay2 = {
+        "id" : id,
+        "sale_id" : registerSaleId,
+        "register_id" : registerId,
+        "payment_type_id" : 1,
+        "merchant_payment_type_id" : typeId,
+        "amount" : 4.14,
+        "payment_date" : today
+      };
+      body.append("Add RegisterSalePayments 2 <span id='addPayment6-2'> ..... checking</span>");
+      ds.saveRegisterSalePayments(pay2, function(){ document.getElementById("addPayment6-2").innerHTML = "..... OK"}, function(){ document.getElementById("addPayment6-2").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // change status to layby closed (layby -> layby_closed)
+      var chgStatus = {
+        "id" : registerSaleId,
+        "status" : "sale_status_layby_closed",
+      };
+      body.append("Change RegisterSales's status by RegisterSaleID [open -> layby_closed] <span id='chgStatusLaybyClosed'> ..... checking</span>");
+      ds.changeStatusRegisterSales(chgStatus, function(){ document.getElementById("chgStatusLaybyClosed").innerHTML = "..... OK"}, function(){ document.getElementById("chgStatusLaybyClosed").innerHTML = "... NG"});
+      body.append("<p/>");
+
+      // delete
+      body.append("");
+      ls.removeLSData("TEST-RSID");
+      rs = ls.getLSData("TEST-RSID");
+      if(rs) { body.append("Delete RegisterSaleID from LocalStorage ..... NG : " + rs) }
+      else   { body.append("Delete RegisterSaleID from LocalStorage ..... OK : null" ) }
+      body.append("<p/>");
+    }
+    //============================================================================================================
+    // 7. Step On Account Sale
+    if(doTest07) {
+      body.append("<hr height='1px' width='100%'>");
+      body.append("Step 7. Step On Account Sale");
+      body.append("<p/>");
+
+      // Make new Register Sale ID
+      registerSaleId = getUUID();
+      body.append("New RegisterSaleID : " + registerSaleId);
+      body.append("<br/>");
+
+      // Save Register Sale ID to ONZSA-APP-CONFIG
+      ls.setLSData("TEST-RSID", registerSaleId);
+      rs = ls.getLSData("TEST-RSID");
+      body.append("Saved New RegisterSaleID in LocalStorage : " + rs);
+      body.append("<p/>");
+
+      // Save Register Sale - open
+      var today = getDateString();
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_open",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("Add RegisterSales<span id='addRegisterSales7'> ..... checking</span>");
+      body.append("<br/>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales7").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales7").innerHTML = "... NG"});
+      body.append("<p/>");
+
+
+      // same logic Step 2
+      var id1 = getUUID(), id2 = getUUID();
+      var saleItem1 = {
+            "id": id1,
+            "sale_id": registerSaleId,
+            "product_id": "55d0fdef-d5f0-416e-a0e3-0c884cf3b98e",
+            "name": "undefined",
+            "quantity": 1,
+            "supply_price": 3,
+            "price": 3.6,
+            "price_include_tax": 4.14,
+            "tax": 0.54,
+            "tax_rate": 0,
+            "discount": 0,
+            "loyalty_value": 0,
+            "sequence": 1,
+            "status": "sale_item_status_valid"
+          },
+          saleItem2 = {
+            "id": id2,
+            "sale_id": registerSaleId,
+            "product_id": "55d0fb14-7fec-416c-9cff-0c884cf3b98e",
+            "name": "undefined",
+            "quantity": 1,
+            "supply_price": 3,
+            "price": 3.6,
+            "price_include_tax": 4.14,
+            "tax": 0.54,
+            "tax_rate": 0,
+            "discount": 0,
+            "loyalty_value": 0,
+            "sequence": 0,
+            "status": "sale_item_status_valid"
+          };
+      body.append("Add RegisterSalesItems 1 <span id='addSaleItem7-1'> ..... checking</span>");
+      body.append("<br/>");
+      body.append("Add RegisterSalesItems 2 <span id='addSaleItem7-2'> ..... checking</span>");
+      ds.saveRegisterSalesItem(saleItem1, function () {document.getElementById("addSaleItem7-1").innerHTML = "..... OK"}, function () {document.getElementById("addSaleItem7-1").innerHTML = "... NG"});
+      ds.saveRegisterSalesItem(saleItem2, function () {document.getElementById("addSaleItem7-2").innerHTML = "..... OK"}, function () {document.getElementById("addSaleItem7-2").innerHTML = "... NG"});
+      body.append("<p/>");
+
+
+      // do change status to onaccount, but don't have payment information --> NG case
+      body.append("Get payment information from RegisterSalePayments by RegisterID (must not found)<span id='chkPayment7-1'> ..... checking</span>");
+      body.append("<br/>");
+      var chkData = {
+        "id": registerSaleId
+      };
+      var suc = function (rs) {
+        var cnt = rs.length;
+        if (cnt == 0) {document.getElementById("chkPayment7-1").innerHTML = "..... OK : " + cnt}
+        else {document.getElementById("chkPayment7-1").innerHTML = "..... NG : " + cnt}
+      };
+      ds.getRegisterSalePayments(chkData, suc, function () {document.getElementById("chkPayment7-1").innerHTML = "..... ERROR"});
+
+      // add 1 payment
+      id = getUUID();
+      typeId = getUUID();
+      var pay1 = {
+        "id" : id,
+        "sale_id" : registerSaleId,
+        "register_id" : registerId,
+        "payment_type_id" : 1,
+        "merchant_payment_type_id" : typeId,
+        "amount" : 4.14,
+        "payment_date" : today
+      };
+      body.append("Add RegisterSalePayments 1 <span id='addPayment7-1'> ..... checking</span>");
+      body.append("<br/>");
+      ds.saveRegisterSalePayments(pay1, function(){ document.getElementById("addPayment7-1").innerHTML = "..... OK"}, function(){ document.getElementById("addPayment7-1").innerHTML = "... NG"});
+
+      // Get Payment infomation again
+      body.append("Get payment information from RegisterSalePayments by RegisterID <span id='chkPayment7-2'> ..... checking</span>");
+      body.append("<br/>");
+      var chkData = {
+        "sale_id": registerSaleId
+      };
+      var suc = function (rs) {
+        var cnt = rs.length;
+        if (cnt == 0) {document.getElementById("chkPayment7-2").innerHTML = "..... NG : " + cnt}
+        else {document.getElementById("chkPayment7-2").innerHTML = "..... OK : " + cnt}
+      };
+      ds.getRegisterSalePayments(chkData, suc, function () {document.getElementById("chkPayment7-2").innerHTML = "..... ERROR"});
+
+      // change status to onaccount with Save Register Sale
+      var chgStatus = {
+        "id" : registerSaleId,
+        "status" : "sale_status_onaccount",
+      };
+      body.append("Change RegisterSales's status by RegisterSaleID [open -> onaccount] <span id='chgStatusOnAccount'> ..... checking</span>");
+      ds.changeStatusRegisterSales(chgStatus, function(){ document.getElementById("chgStatusOnAccount").innerHTML = "..... OK"}, function(){ document.getElementById("chgStatusOnAccount").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // add 1 more payment(done)
+      id = getUUID();
+      typeId = getUUID();
+      var pay2 = {
+        "id" : id,
+        "sale_id" : registerSaleId,
+        "register_id" : registerId,
+        "payment_type_id" : 1,
+        "merchant_payment_type_id" : typeId,
+        "amount" : 4.14,
+        "payment_date" : today
+      };
+      body.append("Add RegisterSalePayments 2 <span id='addPayment7-2'> ..... checking</span>");
+      ds.saveRegisterSalePayments(pay2, function(){ document.getElementById("addPayment7-2").innerHTML = "..... OK"}, function(){ document.getElementById("addPayment7-2").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // change status to layby closed (layby -> onaccount_closed)
+      var chgStatus = {
+        "id" : registerSaleId,
+        "status" : "sale_status_onaccount_closed",
+      };
+      body.append("Change RegisterSales's status by RegisterSaleID [open -> onaccount_closed] <span id='chgStatusOnAccountClosed'> ..... checking</span>");
+      ds.changeStatusRegisterSales(chgStatus, function(){ document.getElementById("chgStatusOnAccountClosed").innerHTML = "..... OK"}, function(){ document.getElementById("chgStatusOnAccountClosed").innerHTML = "... NG"});
+      body.append("<p/>");
+
+      // delete
+      body.append("");
+      ls.removeLSData("TEST-RSID");
+      rs = ls.getLSData("TEST-RSID");
+      if(rs) { body.append("Delete RegisterSaleID from LocalStorage ..... NG : " + rs) }
+      else   { body.append("Delete RegisterSaleID from LocalStorage ..... OK : null" ) }
+      body.append("<p/>");
+    }
+    //============================================================================================================
+    // 8. Step Open Sale Load
+    if(doTest08) {
+      body.append("<hr height='1px' width='100%'>");
+      body.append("Step 8. Open Sale Load");
+      body.append("<p/>");
+
+      // Input Test Data
+      // Make new Register Sale ID
+      registerSaleId = getUUID();
+      body.append("TEST-DATA RegisterSaleID : " + registerSaleId);
+      body.append("<br/>");
+
+      // Add Open RegisterSales -
+      // Save Register Sale - open
+      var today = getDateString();
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_open",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales<span id='addRegisterSales8'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales8").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales8").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // 2 RegisterSalesItems
+      var id1 = getUUID(), id2 = getUUID();
+      var saleItem1 = {
+            "id": id1,
+            "sale_id": registerSaleId,
+            "product_id": "55d0fdef-d5f0-416e-a0e3-0c884cf3b98e",
+            "name": "undefined",
+            "quantity": 1,
+            "supply_price": 3,
+            "price": 3.6,
+            "price_include_tax": 4.14,
+            "tax": 0.54,
+            "tax_rate": 0,
+            "discount": 0,
+            "loyalty_value": 0,
+            "sequence": 1,
+            "status": "sale_item_status_valid"
+          },
+          saleItem2 = {
+            "id": id2,
+            "sale_id": registerSaleId,
+            "product_id": "55d0fb14-7fec-416c-9cff-0c884cf3b98e",
+            "name": "undefined",
+            "quantity": 1,
+            "supply_price": 3,
+            "price": 3.6,
+            "price_include_tax": 4.14,
+            "tax": 0.54,
+            "tax_rate": 0,
+            "discount": 0,
+            "loyalty_value": 0,
+            "sequence": 0,
+            "status": "sale_item_status_valid"
+          };
+      body.append("TEST-DATA Add RegisterSalesItems 1 <span id='addSaleItem8-1'> ..... checking</span>");
+      body.append("<br/>");
+      body.append("TEST-DATA Add RegisterSalesItems 2 <span id='addSaleItem8-2'> ..... checking</span>");
+      ds.saveRegisterSalesItem(saleItem1, function () {document.getElementById("addSaleItem8-1").innerHTML = "..... OK"}, function () {document.getElementById("addSaleItem8-1").innerHTML = "... NG"});
+      ds.saveRegisterSalesItem(saleItem2, function () {document.getElementById("addSaleItem8-2").innerHTML = "..... OK"}, function () {document.getElementById("addSaleItem8-2").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // 1 RegisterSalePayments
+      var id = getUUID();
+      var typeId = getUUID();
+      var pay1 = {
+        "id" : id,
+        "sale_id" : registerSaleId,
+        "register_id" : registerId,
+        "payment_type_id" : 1,
+        "merchant_payment_type_id" : typeId,
+        "amount" : 4.14,
+        "payment_date" : today
+      };
+      body.append("TEST-DATA Add RegisterSalePayments <span id='addPayment8'> ..... checking</span>");
+      ds.saveRegisterSalePayments(pay1, function(){ document.getElementById("addPayment8").innerHTML = "..... OK"}, function(){ document.getElementById("addPayment8").innerHTML = "... NG"});
+      body.append("<p/>");
+
+      // Get Open Sale from RegisterSales
+      var suc2 = function (rs) {
+        var cnt = rs.length;
+        if (cnt == 0) {document.getElementById("getOpenSale8").innerHTML = "..... NG"}
+        else {document.getElementById("getOpenSale8").innerHTML = "..... OK : " + cnt}
+      };
+      body.append("Get Open Sale from RegisterSales <span id='getOpenSale8'> ..... checking</span>");
+      ds.getRegisterSales('sale_status_open', suc2, function () {document.getElementById("getOpenSale8").innerHTML = "..... NG"});
+      body.append("<p/>");
+
+      // Save RegisterSaleID to LocalStorage
+      ls.setLSData("TEST-RSID", registerSaleId);
+      rs = ls.getLSData("TEST-RSID");
+      body.append("Saved Selected RegisterSaleID in LocalStorage : " + rs);
+      body.append("<p/>");
+
+      // Get Sale Items from RegisterSaleItems by RegisterSaleID
+      var succ = function (rs) {
+        var cnt = rs.length;
+        if (cnt == 0) { document.getElementById("getSaleItems8").innerHTML = "..... NG" }
+        else          { document.getElementById("getSaleItems8").innerHTML = "..... OK : " + cnt }
+      };
+      body.append("Get Sale Items from RegisterSaleItems <span id='getSaleItems8'> ..... checking</span>");
+      ds.getRegisterSaleItems(registerSaleId, succ, function () {document.getElementById("getSaleItems8").innerHTML = "..... NG"});
+      body.append("<br/>");
+
+
+      // Get Payment from RegisterSalePayments by RegisterSaleID
+      var chkData = {
+        "sale_id": registerSaleId
+      };
+      var suc = function (rs) {
+        var cnt = rs.length;
+        document.getElementById("chkPayment8").innerHTML = "..... OK : " + rs.length
+      };
+      body.append("Get payment information from RegisterSalePayments by RegisterID <span id='chkPayment8'> ..... checking</span>");
+      ds.getRegisterSalePayments(chkData, suc, function () {document.getElementById("chkPayment8").innerHTML = "..... NG"});
+      body.append("<p/>");
+
+    }
+    //============================================================================================================
+    // 9. Step Park(saved) Sale Load
+    if(doTest09) {
+      body.append("<hr height='1px' width='100%'>");
+      body.append("Step 9. Park(Saved) Sale Load");
+      body.append("<p/>");
+
+      // Input Test Data
+      // Make new Register Sale ID
+      registerSaleId = getUUID();
+      body.append("TEST-DATA RegisterSaleID : " + registerSaleId);
+      body.append("<br/>");
+
+      // Add park (saved) RegisterSales
+      var today = getDateString();
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_saved",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales<span id='addRegisterSales9'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales9").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales9").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // 2 RegisterSalesItems
+      var id1 = getUUID(), id2 = getUUID();
+      var saleItem1 = {
+            "id": id1,
+            "sale_id": registerSaleId,
+            "product_id": "55d0fdef-d5f0-416e-a0e3-0c884cf3b98e",
+            "name": "undefined",
+            "quantity": 1,
+            "supply_price": 3,
+            "price": 3.6,
+            "price_include_tax": 4.14,
+            "tax": 0.54,
+            "tax_rate": 0,
+            "discount": 0,
+            "loyalty_value": 0,
+            "sequence": 1,
+            "status": "sale_item_status_valid"
+          },
+          saleItem2 = {
+            "id": id2,
+            "sale_id": registerSaleId,
+            "product_id": "55d0fb14-7fec-416c-9cff-0c884cf3b98e",
+            "name": "undefined",
+            "quantity": 1,
+            "supply_price": 3,
+            "price": 3.6,
+            "price_include_tax": 4.14,
+            "tax": 0.54,
+            "tax_rate": 0,
+            "discount": 0,
+            "loyalty_value": 0,
+            "sequence": 0,
+            "status": "sale_item_status_valid"
+          };
+      body.append("TEST-DATA Add RegisterSalesItems 1 <span id='addSaleItem9-1'> ..... checking</span>");
+      body.append("<br/>");
+      body.append("TEST-DATA Add RegisterSalesItems 2 <span id='addSaleItem9-2'> ..... checking</span>");
+      ds.saveRegisterSalesItem(saleItem1, function () {document.getElementById("addSaleItem9-1").innerHTML = "..... OK"}, function () {document.getElementById("addSaleItem9-1").innerHTML = "... NG"});
+      ds.saveRegisterSalesItem(saleItem2, function () {document.getElementById("addSaleItem9-2").innerHTML = "..... OK"}, function () {document.getElementById("addSaleItem9-2").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // 1 RegisterSalePayments
+      var id = getUUID();
+      var typeId = getUUID();
+      var pay1 = {
+        "id" : id,
+        "sale_id" : registerSaleId,
+        "register_id" : registerId,
+        "payment_type_id" : 1,
+        "merchant_payment_type_id" : typeId,
+        "amount" : 4.14,
+        "payment_date" : today
+      };
+      body.append("TEST-DATA Add RegisterSalePayments <span id='addPayment9'> ..... checking</span>");
+      ds.saveRegisterSalePayments(pay1, function(){ document.getElementById("addPayment9").innerHTML = "..... OK"}, function(){ document.getElementById("addPayment9").innerHTML = "... NG"});
+      body.append("<p/>");
+
+      // Get Park(Saved) Sale from RegisterSales
+      var suc2 = function (rs) {
+        var cnt = rs.length;
+        if (cnt == 0) {document.getElementById("getParkSale9").innerHTML = "..... NG"}
+        else {document.getElementById("getParkSale9").innerHTML = "..... OK : " + cnt}
+      };
+      body.append("Get Park(Saved) Sale from RegisterSales <span id='getParkSale9'> ..... checking</span>");
+      ds.getRegisterSales('sale_status_saved', suc2, function () {document.getElementById("getParkSale9").innerHTML = "..... NG"});
+      body.append("<p/>");
+
+      // Save RegisterSaleID to LocalStorage
+      ls.setLSData("TEST-RSID", registerSaleId);
+      rs = ls.getLSData("TEST-RSID");
+      body.append("Saved Selected RegisterSaleID in LocalStorage : " + rs);
+      body.append("<p/>");
+
+      // Get Sale Items from RegisterSaleItems by RegisterSaleID
+      var succ = function (rs) {
+        var cnt = rs.length;
+        if (cnt == 0) { document.getElementById("getSaleItems9").innerHTML = "..... NG" }
+        else          { document.getElementById("getSaleItems9").innerHTML = "..... OK : " + cnt }
+      };
+      body.append("Get Sale Items from RegisterSaleItems <span id='getSaleItems9'> ..... checking</span>");
+      ds.getRegisterSaleItems(registerSaleId, succ, function () {document.getElementById("getSaleItems9").innerHTML = "..... NG"});
+      body.append("<br/>");
+
+
+      // Get Payment from RegisterSalePayments by RegisterSaleID
+      var chkData = {
+        "sale_id": registerSaleId
+      };
+      var suc = function (rs) {
+        var cnt = rs.length;
+        document.getElementById("chkPayment9").innerHTML = "..... OK : " + rs.length
+      };
+      body.append("Get payment information from RegisterSalePayments by RegisterID <span id='chkPayment9'> ..... checking</span>");
+      ds.getRegisterSalePayments(chkData, suc, function () {document.getElementById("chkPayment9").innerHTML = "..... NG"});
+      body.append("<p/>");
+
+    }
+    //============================================================================================================
+    // 10. Step Layby Sale Load
+    if(doTest10) {
+      body.append("<hr height='1px' width='100%'>");
+      body.append("Step 10. Layby Sale Load");
+      body.append("<p/>");
+
+      // Input Test Data
+      // Make new Register Sale ID
+      registerSaleId = getUUID();
+      body.append("TEST-DATA RegisterSaleID : " + registerSaleId);
+      body.append("<br/>");
+
+      // Add park (saved) RegisterSales
+      var today = getDateString();
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_layby",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales<span id='addRegisterSales10'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales10").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales10").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // 2 RegisterSalesItems
+      var id1 = getUUID(), id2 = getUUID();
+      var saleItem1 = {
+            "id": id1,
+            "sale_id": registerSaleId,
+            "product_id": "55d0fdef-d5f0-416e-a0e3-0c884cf3b98e",
+            "name": "undefined",
+            "quantity": 1,
+            "supply_price": 3,
+            "price": 3.6,
+            "price_include_tax": 4.14,
+            "tax": 0.54,
+            "tax_rate": 0,
+            "discount": 0,
+            "loyalty_value": 0,
+            "sequence": 1,
+            "status": "sale_item_status_valid"
+          },
+          saleItem2 = {
+            "id": id2,
+            "sale_id": registerSaleId,
+            "product_id": "55d0fb14-7fec-416c-9cff-0c884cf3b98e",
+            "name": "undefined",
+            "quantity": 1,
+            "supply_price": 3,
+            "price": 3.6,
+            "price_include_tax": 4.14,
+            "tax": 0.54,
+            "tax_rate": 0,
+            "discount": 0,
+            "loyalty_value": 0,
+            "sequence": 0,
+            "status": "sale_item_status_valid"
+          };
+      body.append("TEST-DATA Add RegisterSalesItems 1 <span id='addSaleItem10-1'> ..... checking</span>");
+      body.append("<br/>");
+      body.append("TEST-DATA Add RegisterSalesItems 2 <span id='addSaleItem10-2'> ..... checking</span>");
+      ds.saveRegisterSalesItem(saleItem1, function () {document.getElementById("addSaleItem10-1").innerHTML = "..... OK"}, function () {document.getElementById("addSaleItem10-1").innerHTML = "... NG"});
+      ds.saveRegisterSalesItem(saleItem2, function () {document.getElementById("addSaleItem10-2").innerHTML = "..... OK"}, function () {document.getElementById("addSaleItem10-2").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // 1 RegisterSalePayments
+      var id = getUUID();
+      var typeId = getUUID();
+      var pay1 = {
+        "id" : id,
+        "sale_id" : registerSaleId,
+        "register_id" : registerId,
+        "payment_type_id" : 1,
+        "merchant_payment_type_id" : typeId,
+        "amount" : 4.14,
+        "payment_date" : today
+      };
+      body.append("TEST-DATA Add RegisterSalePayments <span id='addPayment10'> ..... checking</span>");
+      ds.saveRegisterSalePayments(pay1, function(){ document.getElementById("addPayment10").innerHTML = "..... OK"}, function(){ document.getElementById("addPayment10").innerHTML = "... NG"});
+      body.append("<p/>");
+
+      // Get Park(Saved) Sale from RegisterSales
+      var suc2 = function (rs) {
+        var cnt = rs.length;
+        if (cnt == 0) {document.getElementById("getParkSale10").innerHTML = "..... NG"}
+        else {document.getElementById("getParkSale10").innerHTML = "..... OK : " + cnt}
+      };
+      body.append("Get Park(Saved) Sale from RegisterSales <span id='getParkSale10'> ..... checking</span>");
+      ds.getRegisterSales('sale_status_layby', suc2, function () {document.getElementById("getParkSale10").innerHTML = "..... NG"});
+      body.append("<p/>");
+
+      // Save RegisterSaleID to LocalStorage
+      ls.setLSData("TEST-RSID", registerSaleId);
+      rs = ls.getLSData("TEST-RSID");
+      body.append("Saved Selected RegisterSaleID in LocalStorage : " + rs);
+      body.append("<p/>");
+
+      // Get Sale Items from RegisterSaleItems by RegisterSaleID
+      var succ = function (rs) {
+        var cnt = rs.length;
+        if (cnt == 0) { document.getElementById("getSaleItems10").innerHTML = "..... NG" }
+        else          { document.getElementById("getSaleItems10").innerHTML = "..... OK : " + cnt }
+      };
+      body.append("Get Sale Items from RegisterSaleItems <span id='getSaleItems10'> ..... checking</span>");
+      ds.getRegisterSaleItems(registerSaleId, succ, function () {document.getElementById("getSaleItems10").innerHTML = "..... NG"});
+      body.append("<br/>");
+
+
+      // Get Payment from RegisterSalePayments by RegisterSaleID
+      var chkData = {
+        "sale_id": registerSaleId
+      };
+      var suc = function (rs) {
+        var cnt = rs.length;
+        document.getElementById("chkPayment10").innerHTML = "..... OK : " + rs.length
+      };
+      body.append("Get payment information from RegisterSalePayments by RegisterID <span id='chkPayment10'> ..... checking</span>");
+      ds.getRegisterSalePayments(chkData, suc, function () {document.getElementById("chkPayment10").innerHTML = "..... NG"});
+      body.append("<p/>");
+
+    }
+    //============================================================================================================
+    // 11. Step On Account Sale Load
+    if(doTest11) {
+      body.append("<hr height='1px' width='100%'>");
+      body.append("Step 11. On Account Sale Load");
+      body.append("<p/>");
+
+      // Input Test Data
+      // Make new Register Sale ID
+      registerSaleId = getUUID();
+      body.append("TEST-DATA RegisterSaleID : " + registerSaleId);
+      body.append("<br/>");
+
+      // Add On Account RegisterSales
+      var today = getDateString();
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_onaccount",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales<span id='addRegisterSales11'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales11").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales11").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // 2 RegisterSalesItems
+      var id1 = getUUID(), id2 = getUUID();
+      var saleItem1 = {
+            "id": id1,
+            "sale_id": registerSaleId,
+            "product_id": "55d0fdef-d5f0-416e-a0e3-0c884cf3b98e",
+            "name": "undefined",
+            "quantity": 1,
+            "supply_price": 3,
+            "price": 3.6,
+            "price_include_tax": 4.14,
+            "tax": 0.54,
+            "tax_rate": 0,
+            "discount": 0,
+            "loyalty_value": 0,
+            "sequence": 1,
+            "status": "sale_item_status_valid"
+          },
+          saleItem2 = {
+            "id": id2,
+            "sale_id": registerSaleId,
+            "product_id": "55d0fb14-7fec-416c-9cff-0c884cf3b98e",
+            "name": "undefined",
+            "quantity": 1,
+            "supply_price": 3,
+            "price": 3.6,
+            "price_include_tax": 4.14,
+            "tax": 0.54,
+            "tax_rate": 0,
+            "discount": 0,
+            "loyalty_value": 0,
+            "sequence": 0,
+            "status": "sale_item_status_valid"
+          };
+      body.append("TEST-DATA Add RegisterSalesItems 1 <span id='addSaleItem11-1'> ..... checking</span>");
+      body.append("<br/>");
+      body.append("TEST-DATA Add RegisterSalesItems 2 <span id='addSaleItem11-2'> ..... checking</span>");
+      ds.saveRegisterSalesItem(saleItem1, function () {document.getElementById("addSaleItem11-1").innerHTML = "..... OK"}, function () {document.getElementById("addSaleItem11-1").innerHTML = "... NG"});
+      ds.saveRegisterSalesItem(saleItem2, function () {document.getElementById("addSaleItem11-2").innerHTML = "..... OK"}, function () {document.getElementById("addSaleItem11-2").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // 1 RegisterSalePayments
+      var id = getUUID();
+      var typeId = getUUID();
+      var pay1 = {
+        "id" : id,
+        "sale_id" : registerSaleId,
+        "register_id" : registerId,
+        "payment_type_id" : 1,
+        "merchant_payment_type_id" : typeId,
+        "amount" : 4.14,
+        "payment_date" : today
+      };
+      body.append("TEST-DATA Add RegisterSalePayments <span id='addPayment11'> ..... checking</span>");
+      ds.saveRegisterSalePayments(pay1, function(){ document.getElementById("addPayment11").innerHTML = "..... OK"}, function(){ document.getElementById("addPayment11").innerHTML = "... NG"});
+      body.append("<p/>");
+
+      // Get Park(Saved) Sale from RegisterSales
+      var suc2 = function (rs) {
+        var cnt = rs.length;
+        if (cnt == 0) {document.getElementById("getParkSale11").innerHTML = "..... NG"}
+        else {document.getElementById("getParkSale11").innerHTML = "..... OK : " + cnt}
+      };
+      body.append("Get Park(Saved) Sale from RegisterSales <span id='getParkSale11'> ..... checking</span>");
+      ds.getRegisterSales('sale_status_saved', suc2, function () {document.getElementById("getParkSale11").innerHTML = "..... NG"});
+      body.append("<p/>");
+
+      // Save RegisterSaleID to LocalStorage
+      ls.setLSData("TEST-RSID", registerSaleId);
+      rs = ls.getLSData("TEST-RSID");
+      body.append("Saved Selected RegisterSaleID in LocalStorage : " + rs);
+      body.append("<p/>");
+
+      // Get Sale Items from RegisterSaleItems by RegisterSaleID
+      var succ = function (rs) {
+        var cnt = rs.length;
+        if (cnt == 0) { document.getElementById("getSaleItems11").innerHTML = "..... NG" }
+        else          { document.getElementById("getSaleItems11").innerHTML = "..... OK : " + cnt }
+      };
+      body.append("Get Sale Items from RegisterSaleItems <span id='getSaleItems11'> ..... checking</span>");
+      ds.getRegisterSaleItems(registerSaleId, succ, function () {document.getElementById("getSaleItems11").innerHTML = "..... NG"});
+      body.append("<br/>");
+
+
+      // Get Payment from RegisterSalePayments by RegisterSaleID
+      var chkData = {
+        "sale_id": registerSaleId
+      };
+      var suc = function (rs) {
+        var cnt = rs.length;
+        document.getElementById("chkPayment11").innerHTML = "..... OK : " + rs.length
+      };
+      body.append("Get payment information from RegisterSalePayments by RegisterID <span id='chkPayment11'> ..... checking</span>");
+      ds.getRegisterSalePayments(chkData, suc, function () {document.getElementById("chkPayment11").innerHTML = "..... NG"});
+      body.append("<p/>");
+
+    }
+    //============================================================================================================
+    // 12. Step retrieve sale list Load - each
+    if(doTest12) {
+      body.append("<hr height='1px' width='100%'>");
+      body.append("Step 12. Get retrieve sale list ");
+      body.append("<p/>");
+
+      // Make new Register Sale ID
+      registerSaleId = getUUID();
+      body.append("TEST-DATA RegisterSaleID : " + registerSaleId);
+      body.append("<br/>");
+
+      // Add Open RegisterSales
+      var today = getDateString();
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_open",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales (Open) <span id='addRegisterSales12-1'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales12-1").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales12-1").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // Add Layby RegisterSales
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_layby",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales (Layby) <span id='addRegisterSales12-2'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales12-2").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales12-2").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // Add On Account RegisterSales
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_onaccount",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales (On Account) <span id='addRegisterSales12-3'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales12-3").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales12-3").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // Add Saved RegisterSales
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_saved",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales (Saved) <span id='addRegisterSales12-4'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales12-4").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales12-4").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // Add Voided RegisterSales
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_voided",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales (Saved) <span id='addRegisterSales12-5'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales12-5").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales12-5").innerHTML = "... NG"});
+      body.append("<p/>");
+
+      // Get Open RegisterSales
+      body.append("Get RegisterSales List by status (open) <span id='getRegisterSales12-1'> ..... checking</span>");
+      ds.getRegisterSales('sale_status_open', function(rs){ document.getElementById("getRegisterSales12-1").innerHTML = "..... OK : " + rs.length}, function(){ document.getElementById("getRegisterSales12-1").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // Get Layby RegisterSales
+      body.append("Get RegisterSales List by status (layby) <span id='getRegisterSales12-2'> ..... checking</span>");
+//      ds.getRegisterSales('sale_status_layby', function(rs){ document.getElementById("getRegisterSales12-2").innerHTML = JSON.stringify(rs, null) }, function(){ document.getElementById("getRegisterSales12-2").innerHTML = "... NG"});
+      ds.getRegisterSales('sale_status_layby', function(rs){ document.getElementById("getRegisterSales12-2").innerHTML = "..... OK : " + rs.length }, function(){ document.getElementById("getRegisterSales12-2").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // Get On Account RegisterSales
+      body.append("Get RegisterSales List by status (onaccount) <span id='getRegisterSales12-3'> ..... checking</span>");
+      ds.getRegisterSales('sale_status_onaccount', function(rs){ document.getElementById("getRegisterSales12-3").innerHTML = "..... OK : " + rs.length}, function(){ document.getElementById("getRegisterSales12-3").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // Get Saved RegisterSales
+      body.append("Get RegisterSales List by status (saved) <span id='getRegisterSales12-4'> ..... checking</span>");
+      ds.getRegisterSales('sale_status_saved', function(rs){ document.getElementById("getRegisterSales12-4").innerHTML = "..... OK : " + rs.length}, function(){ document.getElementById("getRegisterSales12-4").innerHTML = "... NG"});
+      body.append("<p/>");
+
+      // Get Voided RegisterSales
+      body.append("Get RegisterSales List by status (voided) <span id='getRegisterSales12-5'> ..... checking</span>");
+      ds.getRegisterSales('sale_status_voided', function(rs){ document.getElementById("getRegisterSales12-5").innerHTML = "..... OK : " + rs.length}, function(){ document.getElementById("getRegisterSales12-5").innerHTML = "... NG"});
+      body.append("<p/>");
+    }
+    //============================================================================================================
+    // 13. Step retrieve sale list Load - all
+    if(doTest13) {
+      body.append("<hr height='1px' width='100%'>");
+      body.append("Step 13. Get retrieve sale list ");
+      body.append("<p/>");
+
+      // Make new Register Sale ID
+      registerSaleId = getUUID();
+      body.append("TEST-DATA RegisterSaleID : " + registerSaleId);
+      body.append("<br/>");
+
+      // Add Open RegisterSales
+      var today = getDateString();
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_open",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales (Open) <span id='addRegisterSales13-1'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales13-1").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales13-1").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // Add Layby RegisterSales
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_layby",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales (Layby) <span id='addRegisterSales12-2'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales12-2").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales13-2").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // Add On Account RegisterSales
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_onaccount",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales (On Account) <span id='addRegisterSales13-3'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales13-3").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales13-3").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // Add Saved RegisterSales
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_saved",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales (Saved) <span id='addRegisterSales13-4'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales13-4").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales13-4").innerHTML = "... NG"});
+      body.append("<p/>");
+
+      // Get All(open, layby, park, onaccount) RegisterSales
+      body.append("Get RegisterSales List by status (open, layby, park, onaccount) <span id='getRegisterSales13'> ..... checking</span>");
+      ds.getRegisterSales('all', function(rs){ document.getElementById("getRegisterSales13").innerHTML = "..... OK : " + rs.length}, function(){ document.getElementById("getRegisterSales13").innerHTML = "... NG"});
+      body.append("<p/>");
+    }
+    //============================================================================================================
+    // 14. Step Register History
+    if(doTest14) {
+      body.append("<hr height='1px' width='100%'>");
+      body.append("Step 14. Get Register History");
+      body.append("<p/>");
+
+
+      // Make new Register Sale ID
+      registerSaleId = getUUID();
+      body.append("TEST-DATA RegisterSaleID : " + registerSaleId);
+      body.append("<br/>");
+
+      // Add Open RegisterSales
+      var today = getDateString();
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_open",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales (Open) <span id='addRegisterSales14-1'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales14-1").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales14-1").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // Add Layby RegisterSales
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_layby",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales (Layby) <span id='addRegisterSales14-2'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales14-2").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales14-2").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // Add On Account RegisterSales
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_onaccount",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales (On Account) <span id='addRegisterSales14-3'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales14-3").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales14-3").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // Add Saved RegisterSales
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_saved",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales (Saved) <span id='addRegisterSales14-4'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales14-4").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales14-4").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // Add Voided RegisterSales
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_voided",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales (Voided) <span id='addRegisterSales14-5'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales14-5").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales14-5").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // Add Closed RegisterSales
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_closed",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales (Closed) <span id='addRegisterSales14-6'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales14-6").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales14-6").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // Add Layby Closed RegisterSales
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_laybyclosed",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales (Layby Closed) <span id='addRegisterSales14-7'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales14-7").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales14-7").innerHTML = "... NG"});
+      body.append("<br/>");
+
+      // Add On Account Closed RegisterSales
+      var regSale = {
+        "id": registerSaleId,
+        "register_id": registerId,
+        "user_id": userId,
+        "customer_id": customerId,
+        "xero_invoice_id": null,
+        "receipt_number": 2,
+        "status": "sale_status_onaccount_closed",
+        "total_cost": 9,
+        "total_price": 10.8,
+        "total_price_incl_tax": 12.42,
+        "total_discount": 0,
+        "total_tax": 1.62,
+        "note": null,
+        "sale_date": today
+      };
+      body.append("TEST-DATA Add RegisterSales (On Account Closed) <span id='addRegisterSales14-8'> ..... checking</span>");
+      ds.saveRegisterSales(regSale, function () {document.getElementById("addRegisterSales14-8").innerHTML = "..... OK"}, function () {document.getElementById("addRegisterSales14-8").innerHTML = "... NG"});
+      body.append("<p/>");
+
+      // Get All(everything) RegisterSales
+      body.append("Get RegisterSales List by status (everything) <span id='getRegisterSales14'> ..... checking</span>");
+      ds.getRegisterSales(null, function(rs){ document.getElementById('getRegisterSales14').innerHTML = "..... OK : " + rs.length}, function(){ document.getElementById("getRegisterSales14").innerHTML = "... NG"});
+      body.append("<p/>");
+    }
+
+
+
+
+
+
+
+
 
   });
 
