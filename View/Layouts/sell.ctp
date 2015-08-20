@@ -9,12 +9,12 @@
 <!--<![endif]-->
   <!-- BEGIN HEAD -->
   <head>
-    <title data-ng-bind="'ONZSA POS | ' + $state.current.data.pageTitle"></title>
+    <title data-ng-bind="ONZSA | <?php echo $this->fetch('title'); ?>"></title>
 
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"> 
     <meta name="description" content=""/>
     <meta name="author" content=""/>
 
@@ -115,6 +115,7 @@
     <script src="/lib/angular-resource/angular-resource.min.js" type="text/javascript"></script>
     <script src="/lib/angular-route/angular-route.min.js" type="text/javascript"></script>
     <script src="/lib/angular-sanitize/angular-sanitize.min.js" type="text/javascript"></script>
+    <script src="/lib/angular-localization/angular-localization.min.js" type="text/javascript"></script>
     <script src="/lib/angular-touch/angular-touch.min.js" type="text/javascript"></script>
     <script src="/lib/angular-bootstrap/ui-bootstrap-tpls.min.js" type="text/javascript"></script>
     <script src="/lib/angular-ui-router/release/angular-ui-router.min.js" type="text/javascript"></script>
@@ -123,6 +124,7 @@
 
     <!-- BEGIN APP LEVEL ANGULARJS SCRIPTS -->
     <script src="/app/scripts/app.js"></script>
+    <script src="/app/scripts/services/registerservice.js"></script>
     <!-- END APP LEVEL ANGULARJS SCRIPTS -->
 
     <!-- BEGIN PAGE LEVEL SCRIPTS -->
@@ -133,11 +135,12 @@
     -->
     <script src="/app/scripts/layout.js" type="text/javascript"></script>
     <script src="/app/scripts/onzsa.js" type="text/javascript"></script>
+    <script src="/app/scripts/onzsa_ds.js" type="text/javascript"></script>
     <!-- END PAGE LEVEL SCRIPTS -->
 
     <script>
       /* Init Metronic's core jquery plugins and layout scripts */
-      jQuery(document).ready(function () {
+      $(document).ready(function () {
         Metronic.init(); // Run metronic theme
         Metronic.setAssetsPath('/theme/metronic/assets/'); // Set the assets folder path     
       });

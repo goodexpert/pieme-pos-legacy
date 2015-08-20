@@ -56,6 +56,10 @@ Rounded Portlets
     width: 1270px !important;
   }
 
+  body.page-sidebar-closed .container {
+    width: 1128px !important;
+  }
+
 }
 
 @media (min-width: 992px) and (max-width: 1219px) {

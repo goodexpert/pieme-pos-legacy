@@ -8,12 +8,13 @@
  * Controller of the OnzsaApp
  */
 angular.module('OnzsaApp')
-  .controller('SellController', function($rootScope, $scope, $ocLazyLoad, $http) {
+  .controller('SellController', function($rootScope, $scope, $http, locale) {
     $scope.$on('$viewContentLoaded', function() {   
       // initialize core components
       Metronic.initAjax();
       TableAdvanced.init();
 
+      locale.setLocale("ko-KR");
       getQuickKeys();
     });
 
@@ -47,6 +48,14 @@ angular.module('OnzsaApp')
     };
 
     $scope.printReceipt = function() {
+      $scope.printDiv = function(divName) {
+        var printContents = document.getElementById(divName).innerHTML;
+        var popupWin = window.open('', '_blank', 'width=1200,height=1200');
+        popupWin.document.open()
+        popupWin.document.write('<html><head><link rel="stylesheet" type="text/css" href="style.css" /></head><body onload="window.print()">' + printContents + '</html>');
+        popupWin.document.close();
+      }
+      $scope.printDiv('receipt');
       console.log('printReceipt');
     };
 

@@ -1,5 +1,5 @@
 <!-- PAY POPUP BOX -->
-<div class="confirmation-modal modal fade in pay" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;margin-left:33%;">
+<div class="confirmation-modal modal fade in pay" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;margin-left:33%;" >
   <div class="modal-dialog col-md-12 col-sm-12 col-xs-12">
     <div class="modal-content col-md-12 col-sm-12 col-xs-12">
       <div class="modal-header col-md-12 col-sm-12 col-xs-12">
@@ -9,7 +9,8 @@
         <h4 class="modal-title">Select a payment method</h4>
       </div>
       <div class="modal-body col-md-12 col-sm-12 col-xs-12">
-        <div class="col-lg-12 col-omega col-alpha">
+        <div class="col-md-6">
+        <div  class="col-lg-12 col-omega col-alpha">
           <ul class="payment-display">
             <li>
               <ul class="total_cost">
@@ -24,17 +25,24 @@
             <input type="text" id="set-pay-amount">
           </div>
           <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 col-omega">
-            <button class="btn btn-primary pull-right"><span class="glyphicon glyphicon-th"></span> </button>
+            <button class="btn  pull-right"><span class="glyphicon glyphicon-th"></span> </button>
           </div>
         </div>
         <ul class="margin-top-20 col-lg-12 col-md-12 col-sm-12 col-omega col-alpha payment-btn">
-          <?php foreach ($payments as $payment) { ?>
-          <li class="col-lg-6 col-md-6 col-sm-6 col-xs-6 col-omega col-alpha btn-left payment_method" payment-id="<?= $payment['MerchantPaymentType']['id']; ?>" payment-type-id="<?php echo $payment['PaymentType']['id']; ?>" payment-type="<?php echo $payment['PaymentType']['name']; ?>">
-            <button class="btn btn-primary col-lg-12 col-md-12 col-sm-12 col-xs-12 col-omega col-alpha">
-              <span class="co-md-12"><img src="/img/<?php if ($payment['PaymentType']['name'] == 'Credit Card') { echo 'card'; } else if ($payment['PaymentType']['name'] == 'Cheque') { echo 'cheque'; } else { echo 'cash'; } ?>.png" alt="cash"></span>
-              <p class="co-md-12"><?= $payment['MerchantPaymentType']['name']; ?></p>
+        </div>
+        <div class="col-md-6 pull-right" data-ng-repeat="payment in payments" >
+          <li class="col-lg-6 col-md-6 col-sm-6 col-xs-6 col-omega col-alpha btn-left payment_method" payment-id="{{payment.id}}" payment-type-id="{{payment.payment_type_id}}" payment-type="{{payment.name}}">
+            <button class="btn ">
+              <span class="co-md-12">
+                <!--<img src="/img/<?php if ($payment['PaymentType']['name'] == 'Credit Card') { echo 'card'; } else if ($payment['PaymentType']['name'] == 'Cheque') { echo 'cheque'; } else { echo 'cash'; } ?>.png" alt="cash">-->
+                            <img ng-src="{{payment.image}}"/>
+
+              </span>
+
+              <p class="co-md-12">{{payment.name}}</p>
             </button>
           </li>
+        </div>
           <?php } ?>
         </ul>
       </div>
@@ -62,3 +70,4 @@
 <script src="scripts/TransactionControl.js" type="text/javascript"></script>
 <script src="scripts/payment.js" type="text/javascript"></script>
 <script src="/js/jxon.js" type="text/javascript"></script>
+<script src="/js/jQuery.print.js" type="text/javascript"></script>
