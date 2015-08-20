@@ -19,11 +19,15 @@ var OnzsaApp = angular.module('OnzsaApp', [
   'ngResource',
   'ngRoute',
 */
-  'cfp.hotkeys',
   'ngSanitize',
+  'ngLocalize',
+  'ngLocalize.Config',
+  'ngLocalize.InstalledLanguages',
   'ngTouch',
+  'cfp.hotkeys',
   'ui.router',
   'ui.bootstrap',
+  'RegisterService',
   'oc.lazyLoad'
 ]);
 
@@ -41,15 +45,25 @@ OnzsaApp.config(['$controllerProvider', function($controllerProvider) {
   $controllerProvider.allowGlobals();
 }]);
 
-/* Setup global register */
-OnzsaApp.factory('register', ['$rootScope', function($rootScope) {
-  var register = {
-  };
+/* Setup locale configurations */
+OnzsaApp.value('localeConf', {
+  basePath: 'languages',
+  defaultLocale: 'ko-KR',
+  sharedDictionary: 'common',
+  fileExtension: '.lang.json',
+  observableAttrs: new RegExp('^data-(?!ng-|i18n)')
+});
 
-  $rootScope.register = register;
-
-  return register;
-}]);
+OnzsaApp.value('localeSupported', [
+  'en-NZ',
+  /*
+  'en-AU',
+  'en-EB',
+  'en-US',
+  */
+  'ko-KR',
+  'pt-BR'
+]);
 
 /* Setup global settings */
 OnzsaApp.factory('settings', ['$rootScope', function($rootScope) {
@@ -69,6 +83,16 @@ OnzsaApp.factory('settings', ['$rootScope', function($rootScope) {
   $rootScope.settings = settings;
 
   return settings;
+}]);
+
+/* Setup global register */
+OnzsaApp.factory('register', ['$rootScope', function($rootScope) {
+  var register = {
+  };
+
+  $rootScope.register = register;
+
+  return register;
 }]);
 
 /* Setup App Main Controller */

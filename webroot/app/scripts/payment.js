@@ -1,6 +1,22 @@
 $(".confirm-close").click(function () {
   $(".fade").hide();
 });
+
+$(document).on("click", ".close-popup", function(){
+
+  $(".receipt-parent").hide();
+  $(".fade").hide();
+  $(".split_receipt_attr").remove();
+  console.log("ddddd");
+});
+
+$(document).on("click", ".print", function(){
+  console.log('asdfsd');
+  $(this).hide();
+  $("#receipt").print();
+  $(this).show();
+});
+
 var to_pay;
 $("#pay").click(function () {
   if ($(".added-null").is(':visible')) {
@@ -13,13 +29,15 @@ $("#pay").click(function () {
     if ($(".split_attr").length > 0) {
       current_amount = to_pay;
       $(".split_attr").each(function () {
-        current_amount = current_amount - $(this).find(".pull-right").text().split("$")[1];
+        //current_amount = current_amount - $(this).find(".pull-right").text().split("$")[1];
         to_pay = to_pay - $(this).find(".pull-right").text().split("$")[1];
       })
       $("#set-pay-amount").val(current_amount.toFixed(2));
+      /*
       $(".payment-display").find(".total_cost").children(".pull-right").text('$' + current_amount.toFixed(2));
     } else {
       $(".payment-display").find(".total_cost").children(".pull-right").text('$' + $(".toPay").text());
+      */
     }
     payments = [];
   }
@@ -40,8 +58,7 @@ $(document).on("click", ".payment_method", function () {
     dpsClient.connect(function (connected, error) {
       if (connected) {
         dpsClient.payment('TXN12345', paying, function (data, error) {
-          console.log('Call callback:');
-          console.log(data);
+
           if (data.responsetext == "ACCEPTED" || data.responsetext == "SIG ACCEPTED") {
 
             payments.push([payment_id, paying]);
@@ -67,7 +84,6 @@ $(document).on("click", ".payment_method", function () {
 
     return;
   }
-
 
 
   if (parseFloat(to_pay).toFixed(2) == parseFloat(paying).toFixed(2)) {
