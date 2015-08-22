@@ -1,6 +1,3 @@
-
-
-
 Datastore_sqlite = function() {
   //var e, t = function() {};
 
@@ -502,3 +499,7 @@ var Database_localstorage = function() {
   }
 };
 // -----------------     END Local Storage   ---------------
+
+var debug = function(s) {
+  console.log(s);
+}

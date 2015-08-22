@@ -149,7 +149,10 @@
                   id="tab_pane_{{group.position}}">
                 <a class="btn icon-btn {{viewMode}}"
                     data-ng-repeat="quickKey in group.pages[0].keys"
-                    data-ng-click="addSellItem(quickKey)">
+                    data-ng-click="{{quickKey.position == 0 ? '' : 'addSellItem(quickKey)'}}"
+                    data-ng-model="quickKey"
+                    popover-template="{{quickKey.position != 0 ? '' : '\'myPopoverTemplate.html\''}}"
+                    popover-placement="bottom">
                   <img class="img-responsive"
                     data-ng-src="{{quickKey.image || '/img/no-image.png'}}" alt="{{quickKey.label}}">
                   <div class="caption">
@@ -188,36 +191,5 @@
   </div>
   <!-- REGISTER END -->
 
-  <!--
-<button type="button" class="pull-right btn btn-white print">
-    <div class="glyphicon glyphicon-print"></div>
-    &nbsp;Print
-  </button>
-  <div data-ng-include="'tpl/reciept.html'"></div>
-  <input type="button" value="PAYMENT" id="pay" class="btn">
-  <div data-ng-include="'tpl/payment.html'" data-ng-controller="PaymentController">
-  </div>
-  -->
-
 </div>
 
-<!--
-  <div class="modal-backdrop fade in" style="display:none"></div>
-  <button data-ng-click="popOver($event, 'right')">test</button>
-  <button popover="test" popover-placement="right" popover-trigger="focus" class="btn btn-default">Right</button>
-  <button popover-template="templateUrl" popover-placement="right" class="btn btn-default">Right</button>
-  <button popover-template="templateUrl" popover-placement="right" popover-trigger="focus" class="btn btn-default">Right</button>
-  <button popover-template="templateUrl" popover-placement="right" popover-trigger="focus" class="btn btn-default">Right</button>
-  <button popover-template="templateUrl" popover-placement="right" popover-trigger="focus" class="btn btn-default">Right</button>
--->
-<!--
-<div ng-model="saleItem.qty" id="popup_sample" data-ng-keypad="numeric" ng-controller="SellController">
-  <div ng-include="" src="'views/quantity-pad.html'"></div>
-</div>
-  <div id="popup_sample2" data-ng-keypad="numeric" ng-controller="SellController">
-    <div ng-include="" src="'views/numeric.html'"></div>
-  </div>
-  <div id="popup_sample3" data-ng-keypad="numeric" ng-controller="SellController">
-  <div ng-include="" src="'views/discount-pad.html'"></div>
-</div>
--->

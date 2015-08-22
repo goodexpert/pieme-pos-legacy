@@ -8,8 +8,9 @@
  * Service in the OnzsaApp.
  */
 angular.module('RegisterService', [])
-  .factory('Register', function() {
+  .factory('Register', function($http) {
     // AngularJS will instantiate a singleton by calling "new" on this function
     var sharedService = {};
+
     return sharedService;
   });

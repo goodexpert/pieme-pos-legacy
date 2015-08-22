@@ -287,8 +287,12 @@ class SignupController extends AppController {
             // create default supplier
             $supplier_id = $this->_createDefaultSupplier($merchant_id, $contact, $data['name']);
 
+            // create discount product
+            $discount_product_id = $this->_createDiscountProduct($merchant_id, $tax_rates['default_tax_id']);
+
             // create default products
             $this->_createDefaultProducts($merchant_id, $supplier_id, $tax_rates['default_tax_id'], $quick_key_id);
+            $merchant['discount_product_id'] = $discount_product_id;
 
             // create a default price book
             $price_book_id = $this->_createDefaultPriceBook($merchant_id, $customer_group_id);
@@ -316,7 +320,7 @@ class SignupController extends AppController {
             } else {
                 $redirect_url = 'https://' . $data['domain_prefix'] . '.onzsa.com/signin';
             }
-            $this->redirect(redirect_url);
+            $this->redirect($redirect_url);
         } catch (Exception $e) {
             $dataSource->rollback();
             $this->Session->setFlash($e->getMessage());
@@ -512,7 +516,7 @@ class SignupController extends AppController {
 
         $payments = $this->PaymentType->find('all', array(
             'conditions' => array(
-                'PaymentType.name' => array('Cash', 'Credit Card', 'Loyalty')
+                'PaymentType.name' => array('Cash', 'Credit Card', 'Loyalty', 'Xero')
             )
         ));
 
@@ -883,6 +887,39 @@ class SignupController extends AppController {
 
         $this->MerchantQuickKey->id = $quick_key_id;
         $this->MerchantQuickKey->saveField('key_layouts', json_encode($quick_key_layout));
+    }
+
+/**
+ * Create discount products function.
+ *
+ * @param string merchant id
+ * @param string tax rate id
+ * @return void
+ */
+    protected function _createDiscountProduct($merchant_id, $default_tax_id) {
+        $this->loadModel('MerchantProduct');
+
+        // create a product of yoghurt flavour banana
+        $product['merchant_id'] = $merchant_id;
+        $product['name'] = 'Discount';
+        $product['handle'] = 'onzsa-discount';
+        $product['sku'] = 'onzsa-discount';
+        $product['supply_price'] = 0;
+        $product['markup'] = 0;
+        $product['price'] = 0;
+        $product['tax'] = 0;
+        $product['tax_id'] = $default_tax_id;
+        $product['price_include_tax'] = 0;
+        $product['image'] = "/img/no-image.png";
+        $product['image_large'] = "/img/no-image.png";
+
+        $this->MerchantProduct->create();
+        if (!$this->MerchantProduct->save(array('MerchantProduct' => $product))) {
+            $errors['internal'] = $this->MerchantProduct->validationErrors;
+            throw new Exception(json_encode($errors));
+        }
+
+        return $this->MerchantProduct->id;
     }
 
 /**
