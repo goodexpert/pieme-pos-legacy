@@ -357,9 +357,9 @@ class ApiController extends AppController {
  * @return array
  */
     public function get_quick_keys() {
-      $response = [];
-
       $this->request->onlyAllow('get');
+      $response = [];
+      $user = $this->Auth->user();
 
       $register_id = $this->get('register_id');
       if (empty($register_id)) {
@@ -377,9 +377,18 @@ class ApiController extends AppController {
             'conditions' => [
               'MerchantRegister.quick_key_id = MerchantQuickKey.id'
             ]
+          ],
+          [
+            'table' => 'merchant_outlets',
+            'alias' => 'MerchantOutlet',
+            'type' => 'INNER',
+            'conditions' => [
+              'MerchantOutlet.id = MerchantRegister.outlet_id'
+            ]
           ]
         ],
         'conditions' => [
+          'MerchantOutlet.merchant_id' => $user['merchant_id'],
           'MerchantRegister.id' => $register_id
         ]
       ]);
@@ -387,7 +396,6 @@ class ApiController extends AppController {
       if (!empty($quickKey)) {
         $response = json_decode($quickKey['MerchantQuickKey']['key_layouts'], true);
       }
-
       $this->serialize($response);
     }
 

@@ -29,14 +29,6 @@ angular.module('OnzsaApp', [])
   // set sidebar closed and body solid layout mode
   $rootScope.settings.layout.pageSidebarClosed = false;
 
-  /*
-  $rootScope.register.id = '55cfd1ed-4594-4e0f-8f76-14d84cf3b98e'; //TODO:
-  $rootScope.register.user = {
-    name: 'Goodexpert',
-    id: '55b99423-ab28-4a16-b477-25e04cf3b98e', //TODO:
-  };
-  */
-
   $scope.doLogout = function() {
     console.log('doLogout');
   };
@@ -668,7 +660,7 @@ angular.module('OnzsaApp', [])
         if (registers.length > 1) {
           openRegisterSelector(response.data);
         } else {
-          LocalStorage.saveRegister(registers[0]);
+          switchRegister(registers[0]);
         }
       }, function(response) {
         debug("REQUEST: data, error handler");
@@ -710,7 +702,7 @@ angular.module('OnzsaApp', [])
   }
 
   var refreshRegisters = function(callback) {
-    debug("REFRESH Registers");
+    debug("REFRESH registers");
     debug("REQUEST: registers >>>>>>>>>>>>>>>>>>>>>");
 
     $http.get('/api/registers.json')
@@ -725,7 +717,7 @@ angular.module('OnzsaApp', [])
           window.location = "/signin";
         }
 
-        debug("ERROR: There was a problem with the offline access (Registers).  Please try refreshing the page.");
+        debug("ERROR: There was a problem with the offline access (registers).  Please try refreshing the page.");
         debug(response);
 
         callback();
@@ -733,7 +725,7 @@ angular.module('OnzsaApp', [])
   }
 
   var refreshPaymentTypes = function(callback) {
-    debug("REFRESH: Payment types");
+    debug("REFRESH: payment types");
     debug("REQUEST: payment types >>>>>>>>>>>>>>>>>>>>>");
 
     $http.get('/api/payment_types.json')
@@ -748,7 +740,7 @@ angular.module('OnzsaApp', [])
           window.location = "/signin";
         }
 
-        debug("ERROR: There was a problem with the offline access (PaymentTypes).  Please try refreshing the page.");
+        debug("ERROR: There was a problem with the offline access (payment types).  Please try refreshing the page.");
         debug(response);
 
         callback();
@@ -756,22 +748,22 @@ angular.module('OnzsaApp', [])
   }
 
   var refreshTaxes = function(callback) {
-    debug("REFRESH: Taxes");
-    debug("REQUEST: Taxes >>>>>>>>>>>>>>>>>>>>>");
+    debug("REFRESH: taxes");
+    debug("REQUEST: taxes >>>>>>>>>>>>>>>>>>>>>");
 
     $http.get('/api/taxes.json')
       .then(function(response) {
-        debug("REQUEST: Taxes, success handler");
+        debug("REQUEST: taxes, success handler");
         debug(response.data);
 
         callback();
       }, function (response) {
-        debug("REQUEST: Taxes, error handler");
+        debug("REQUEST: taxes, error handler");
         if (401 == response.status) {
           window.location = "/signin";
         }
 
-        debug("ERROR: There was a problem with the offline access (Taxes).  Please try refreshing the page.");
+        debug("ERROR: There was a problem with the offline access (taxes).  Please try refreshing the page.");
         debug(response);
 
         callback();
@@ -779,54 +771,82 @@ angular.module('OnzsaApp', [])
   }
 
   var refreshProducts = function(callback) {
-    debug("REFRESH: Products");
-    debug("REQUEST: Products >>>>>>>>>>>>>>>>>>>>>");
+    debug("REFRESH: products");
+    debug("REQUEST: products >>>>>>>>>>>>>>>>>>>>>");
 
     $http.get('/api/products.json')
       .then(function(response) {
-        debug("REQUEST: Products, success handler");
+        debug("REQUEST: products, success handler");
         debug(response.data);
 
         callback();
       }, function (response) {
-        debug("REQUEST: Products, error handler");
+        debug("REQUEST: products, error handler");
         if (401 == response.status) {
           window.location = "/signin";
         }
 
-        debug("ERROR: There was a problem with the offline access (Products).  Please try refreshing the page.");
+        debug("ERROR: There was a problem with the offline access (products).  Please try refreshing the page.");
         debug(response);
 
         callback();
       });
   }
 
-  var switchRegister = function() {
-  }
+  var refreshQuickKeys = function(register_id) {
 
-  var getPriceBooks = function() {
-    $http.get('/api/get_price_books.json')  //TODO: need to parameter setting with register_id
+    $http.get('/api/get_quick_keys.json?register_id=' + register_id)
       .then(function(response) {
-        console.log(response.data);
-        for(var priceBook in response.data) {
-          if(priceBook.product_id == "55d0fdef-d5f0-416e-a0e3-0c884cf3b98e") {
-            console.log("GOT IT!!");
-          }
-        }
+        debug("REQUEST: quick keys, success handler");
+        debug(response.data);
       }, function (response) {
-        console.log(response);
+        debug("REQUEST: quick keys, error handler");
+        if (401 == response.status) {
+          window.location = "/signin";
+        }
+
+        debug("ERROR: There was a problem with the offline access (quick keys).  Please try refreshing the page.");
+        debug(response);
       });
   }
 
-  var getQuickKeys = function() {
-    $http.get('/api/get_quick_keys.json')  //TODO: need to parameter setting with register_id
+  var initOpenRegister = function() {
+  }
+
+  var openExistingOrNewRegister = function() {
+  }
+
+  var switchRegister = function(register) {
+    debug("*** Switching register");
+    debug("LOOKUP: Existing register from datastore – " + register);
+    //debug("SAVE: Prepare register " + t.id);
+    //debug("OPEN: register – " + r);
+    debug("register selected: " + register.id);
+    LocalStorage.saveRegister(register);
+
+    debug("REFRESH: quick keys");
+    debug("REQUEST: quick keys >>>>>>>>>>>>>>>>>>>>>");
+
+    $http.get('/api/get_quick_keys.json?register_id=' + register.id)
       .then(function(response) {
-        console.log(response);
+        debug("REQUEST: quick keys, success handler");
+        debug(response.data);
         $scope.keyLayout = response.data.quick_keys;
-        $scope.image = '/img/sample_1.png';
-        console.log($scope.keyLayout);
-      }, function (response) {
-        console.log(response);
+
+        debug("REFRESH price books");
+        debug("REQUEST: price books >>>>>>>>>>>>>>>>>>>>>");
+        return $http.get('/api/get_price_books.json?register_id=' + register.id);
+      }).then(function(response) {
+        debug("REQUEST: price books, success handler");
+        debug(response.data);
+      }, function(response) {
+        debug("REQUEST: data, error handler");
+        if (401 == response.status) {
+          window.location = "/signin";
+        }
+
+        debug("ERROR: There was a problem with the offline access.  Please try refreshing the page.");
+        debug(response);
       });
   }
 
@@ -869,8 +889,7 @@ angular.module('OnzsaApp', [])
     });
 
     modalInstance.result.then(function (selectedItem) {
-      debug("register selected: " + selectedItem.id);
-      LocalStorage.saveRegister(selectedItem);
+      switchRegister(selectedItem);
     });
   };
 
