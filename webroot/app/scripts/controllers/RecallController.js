@@ -14,6 +14,27 @@ angular.module('OnzsaApp', [])
   $scope.$on('$viewContentLoaded', function() {   
     // initialize core components
     Metronic.initAjax();
+    TableAdvanced.init();
+
+    //console.log('hoho');
+    // define alias for local strage
+    $scope.localstorage = Database_localstorage;
+
+    // define alias for local Datastore
+    $scope.ds = Datastore_sqlite;
+
+    var data = [];
+
+    $scope.ds.getRegisterSales("all", function(data){
+
+      for(var i=0; i< data.length; i++){
+        data[i]["status"] = data[i]["status"].replace("sale_status_", "");
+      }
+
+      $scope.register_sales = data;
+      $scope.$apply();
+      console.log($scope.register_sales);
+    });
   });
 
   /*
