@@ -23,38 +23,27 @@ var OnzsaApp = angular.module('OnzsaApp', [
   'ngLocalize',
   'ngLocalize.Config',
   'ngLocalize.InstalledLanguages',
+  'LocalStorageModule',
   'ngTouch',
   'cfp.hotkeys',
   'ui.router',
   'ui.bootstrap',
   'RegisterService',
   'oc.lazyLoad'
-]);
-
-/* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
-OnzsaApp.config(['$ocLazyLoadProvider', function($ocLazyLoadProvider) {
-  $ocLazyLoadProvider.config({
-    // global configs go here
-  });
-}]);
-
-//AngularJS v1.3.x workaround for old style controller declarition in HTML]);
-OnzsaApp.config(['$controllerProvider', function($controllerProvider) {
-  // this option might be handy for migrating old apps, but please don't use it
-  // in new ones!
-  $controllerProvider.allowGlobals();
-}]);
+])
 
 /* Setup locale configurations */
-OnzsaApp.value('localeConf', {
+.value('localeConf', {
   basePath: 'languages',
   defaultLocale: 'ko-KR',
   sharedDictionary: 'common',
   fileExtension: '.lang.json',
-  observableAttrs: new RegExp('^data-(?!ng-|i18n)')
-});
+  cookieName: 'COOKIE_LOCALE_LANG',
+  observableAttrs: new RegExp('^data-(?!ng-|i18n)'),
+  delimiter: '::'
+})
 
-OnzsaApp.value('localeSupported', [
+.value('localeSupported', [
   'en-NZ',
   /*
   'en-AU',
@@ -64,6 +53,27 @@ OnzsaApp.value('localeSupported', [
   'ko-KR',
   'pt-BR'
 ]);
+
+//AngularJS v1.3.x workaround for old style controller declarition in HTML]);
+OnzsaApp.config(['$controllerProvider', function($controllerProvider) {
+  // this option might be handy for migrating old apps, but please don't use it
+  // in new ones!
+  $controllerProvider.allowGlobals();
+}]);
+
+/* Configure ocLazyLoader(refer: https://github.com/ocombe/ocLazyLoad) */
+OnzsaApp.config(['$ocLazyLoadProvider', function($ocLazyLoadProvider) {
+  $ocLazyLoadProvider.config({
+    // global configs go here
+  });
+}]);
+
+// Configure localStorageService
+OnzsaApp.config(['localStorageServiceProvider', function(localStorageServiceProvider) {
+  localStorageServiceProvider
+    .setPrefix('onzsa')
+    .setStorageType('localStorage');
+}]);
 
 /* Setup global settings */
 OnzsaApp.factory('settings', ['$rootScope', function($rootScope) {
@@ -83,16 +93,6 @@ OnzsaApp.factory('settings', ['$rootScope', function($rootScope) {
   $rootScope.settings = settings;
 
   return settings;
-}]);
-
-/* Setup global register */
-OnzsaApp.factory('register', ['$rootScope', function($rootScope) {
-  var register = {
-  };
-
-  $rootScope.register = register;
-
-  return register;
 }]);
 
 /* Setup App Main Controller */
@@ -143,6 +143,13 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
       resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
         deps: ['$ocLazyLoad', function($ocLazyLoad) {
           return $ocLazyLoad.load([{
+            name: 'ui.register',
+            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+            files: [
+              '/app/scripts/ui-register-tpls.js',
+            ]
+          },
+          {
             name: 'OnzsaApp',
             insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
             files: [
@@ -169,10 +176,142 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
           }]);
         }]
       }
+    })
+    .state('recall-sale', {
+      url: "/recall-sale",
+      views: {
+        "lazyLoadView": {
+          controller: 'RecallController', // This view will use SellController loaded below in the resolve
+          templateUrl: '/app/views/recall-sale.html'
+        }
+      },
+      resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
+        deps: ['$ocLazyLoad', function($ocLazyLoad) {
+          return $ocLazyLoad.load([{
+            name: 'ui.register',
+            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+            files: [
+              '/app/scripts/ui-register-tpls.js',
+            ]
+          },
+          {
+            name: 'OnzsaApp',
+            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+            files: [
+              '/theme/metronic/assets/global/plugins/morris/morris.css',
+              '/theme/metronic/assets/global/plugins/select2/select2.css',
+              '/theme/metronic/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
+              '/theme/metronic/assets/global/plugins/datatables/extensions/Scroller/css/dataTables.scroller.min.css',
+              '/theme/metronic/assets/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css',
+              '/theme/metronic/assets/admin/pages/css/tasks.css',
+              '/app/styles/register.css',
+
+              '/theme/metronic/assets/global/plugins/morris/morris.min.js',
+              '/theme/metronic/assets/global/plugins/morris/raphael-min.js',
+              '/theme/metronic/assets/global/plugins/jquery.sparkline.min.js',
+
+              '/theme/metronic/assets/global/plugins/select2/select2.min.js',
+              '/theme/metronic/assets/global/plugins/datatables/all.min.js',
+              '/theme/metronic/assets/admin/pages/scripts/tasks.js',
+
+              '/app/scripts/table-advanced.js',
+              '/app/scripts/controllers/RecallController.js'
+            ]
+          }]);
+        }]
+      }
+    })
+    .state('daily-snapshot', {
+      url: "/daily-snapshot",
+      views: {
+        "lazyLoadView": {
+          controller: 'DailySnapshotController', // This view will use SellController loaded below in the resolve
+          templateUrl: '/app/views/daily-snapshot.html'
+        }
+      },
+      resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
+        deps: ['$ocLazyLoad', function($ocLazyLoad) {
+          return $ocLazyLoad.load([{
+            name: 'ui.register',
+            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+            files: [
+              '/app/scripts/ui-register-tpls.js',
+            ]
+          },
+          {
+            name: 'OnzsaApp',
+            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+            files: [
+              '/theme/metronic/assets/global/plugins/morris/morris.css',
+              '/theme/metronic/assets/global/plugins/select2/select2.css',
+              '/theme/metronic/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
+              '/theme/metronic/assets/global/plugins/datatables/extensions/Scroller/css/dataTables.scroller.min.css',
+              '/theme/metronic/assets/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css',
+              '/theme/metronic/assets/admin/pages/css/tasks.css',
+              '/app/styles/register.css',
+
+              '/theme/metronic/assets/global/plugins/morris/morris.min.js',
+              '/theme/metronic/assets/global/plugins/morris/raphael-min.js',
+              '/theme/metronic/assets/global/plugins/jquery.sparkline.min.js',
+
+              '/theme/metronic/assets/global/plugins/select2/select2.min.js',
+              '/theme/metronic/assets/global/plugins/datatables/all.min.js',
+              '/theme/metronic/assets/admin/pages/scripts/tasks.js',
+
+              '/app/scripts/table-advanced.js',
+              '/app/scripts/controllers/DailySnapshotController.js'
+            ]
+          }]);
+        }]
+      }
+    })
+    .state('close-register', {
+      url: "/close-register",
+      views: {
+        "lazyLoadView": {
+          controller: 'CloseRegisterController', // This view will use SellController loaded below in the resolve
+          templateUrl: '/app/views/daily-snapshot.html'
+        }
+      },
+      resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
+        deps: ['$ocLazyLoad', function($ocLazyLoad) {
+          return $ocLazyLoad.load([{
+            name: 'ui.register',
+            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+            files: [
+              '/app/scripts/ui-register-tpls.js',
+            ]
+          },
+          {
+            name: 'OnzsaApp',
+            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+            files: [
+              '/theme/metronic/assets/global/plugins/morris/morris.css',
+              '/theme/metronic/assets/global/plugins/select2/select2.css',
+              '/theme/metronic/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
+              '/theme/metronic/assets/global/plugins/datatables/extensions/Scroller/css/dataTables.scroller.min.css',
+              '/theme/metronic/assets/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css',
+              '/theme/metronic/assets/admin/pages/css/tasks.css',
+              '/app/styles/register.css',
+
+              '/theme/metronic/assets/global/plugins/morris/morris.min.js',
+              '/theme/metronic/assets/global/plugins/morris/raphael-min.js',
+              '/theme/metronic/assets/global/plugins/jquery.sparkline.min.js',
+
+              '/theme/metronic/assets/global/plugins/select2/select2.min.js',
+              '/theme/metronic/assets/global/plugins/datatables/all.min.js',
+              '/theme/metronic/assets/admin/pages/scripts/tasks.js',
+
+              '/app/scripts/table-advanced.js',
+              '/app/scripts/controllers/CloseRegisterController.js'
+            ]
+          }]);
+        }]
+      }
     });
 });
 
 /* Init global settings and run the app */
-OnzsaApp.run(["$rootScope", "$state", "settings", "register", function($rootScope, $state, settings, register) {
+OnzsaApp.run(["$rootScope", "$state", "$http", "settings", function($rootScope, $state, $http, settings) {
   $rootScope.$state = $state; // state to be accessed from view
 }]);

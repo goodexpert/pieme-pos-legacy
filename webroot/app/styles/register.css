@@ -76,7 +76,7 @@ fieldset[disabled] .btn-function.active {
 }
 
 .dataTables_scrollBody {
-  background-image: url('/img/no-order.png');
+  background-image: url('/app/images/onzsa_bg.png');
   background-repeat: no-repeat;
   background-position: center;
 }
@@ -264,9 +264,7 @@ fieldset[disabled] .btn-function.active {
   }
 
   #register_quick_keys {
-    /*
-    height: 580px;
-    */
+    height: 572px;
     margin-bottom: 3px;
   }
 
@@ -386,9 +384,7 @@ fieldset[disabled] .btn-function.active {
   }
 
   #register_quick_keys {
-    /*
-    height: 580px;
-    */
+    height: 572px;
     margin-bottom: 3px;
   }
 
@@ -488,6 +484,7 @@ fieldset[disabled] .btn-function.active {
 
 /** product View receipt **/
 
+/*
 .receipt-parent {
   text-align:center;
   margin-top:50px;
@@ -543,9 +540,11 @@ fieldset[disabled] .btn-function.active {
 .receipt-product-table-total tr:last-child{
   border-top:1px solid #373737;
 }
+*/
 
 /*modal css*/
 
+/*
 .modal-content{
   background-color: rgba(0,0,0,0.7);
   color:#ffffff;
@@ -585,3 +584,4 @@ ul, ol, li
   padding:0;
   margin:0;
 }
+*/

@@ -1,6 +1,3 @@
-
-
-
 Datastore_sqlite = function() {
   //var e, t = function() {};
 
@@ -130,7 +127,7 @@ Datastore_sqlite = function() {
     },
     initPriceBook: function(tr){
       var e = this;
-      t._log("initPriceBook", "Start");
+      //t._log("initPriceBook", "Start");
       e._doDSTransaction(function(t) {
         e._executeDSSql(t, "DROP TABLE IF EXISTS PriceBookEntry", [], null, function(){ } );
         e._executeDSSql(t, "CREATE TABLE IF NOT EXISTS PriceBookEntry ( id TEXT PRIMARY KEY ON CONFLICT REPLACE, product_id TEXT, customer_group_id TEXT, outlet_id TEXT, markup REAL, discount REAL, price REAL, tax REAL, price_include_tax REAL, loyalty_value REAL, min_units REAL, max_units REAL, is_default INT, valid_from TEXT, valid_to TEXT)");
@@ -163,7 +160,7 @@ Datastore_sqlite = function() {
       var e = this;
       e._doDSTransaction(function(t) {
         e._executeDSSql(t, "DROP TABLE IF EXISTS RegisterSales", []);
-        e._executeDSSql(t, "CREATE TABLE IF NOT EXISTS RegisterSales  ( id TEXT PRIMARY KEY ON CONFLICT REPLACE, register_id TEXT, user_id TEXT, customer_id TEXT, xero_invoice_id TEXT, receipt_number INTEGER, status TEXT, total_cost REAL, total_price REAL, total_price_incl_tax REAL, total_discount REAL, total_tax REAL, note TEXT, sale_date TEXT)");
+        e._executeDSSql(t, "CREATE TABLE IF NOT EXISTS RegisterSales  ( id TEXT PRIMARY KEY ON CONFLICT REPLACE, register_id TEXT, user_id TEXT, user_name TEXT, customer_id TEXT, customer_name TEXT, customer_code TEXT, xero_invoice_id TEXT, receipt_number INTEGER, status TEXT, total_cost REAL, total_price REAL, total_price_incl_tax REAL, total_discount REAL, total_tax REAL, note TEXT, sale_date TEXT)");
       })
     },
 
@@ -216,13 +213,17 @@ Datastore_sqlite = function() {
       });
     },
 
-    saveRegisterSales: function(saveArray, suc, err){
-      var i = saveArray;
+    saveRegisterSales: function(suc, saveArray, err){
+      var i = [];
       var n = this;
-      var inputValues = [i.id, i.register_id, i.user_id, i.customer_id, i.xero_invoice_id, i.receipt_number, i.status, i.total_cost, i.total_price, i.total_price_incl_tax, i.total_discount, i.total_tax, i.note, i.sale_date];
       try{
         n._doDSTransaction(function(e) {
-          n._executeDSSql(e, "INSERT or replace INTO RegisterSales (id, register_id, user_id, customer_id, xero_invoice_id, receipt_number, status, total_cost, total_price, total_price_incl_tax, total_discount, total_tax, note, sale_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputValues, suc, err);
+          for(var k=0; k < saveArray.length; k++)  {
+            i = saveArray[k];
+            var inputValues = [i.id, i.register_id, i.user_id, i.user_name, i.customer_id, i.customer_name, i.customer_code, i.xero_invoice_id, i.receipt_number, i.status, i.total_cost, i.total_price, i.total_price_incl_tax, i.total_discount, i.total_tax, i.note, i.sale_date];
+            console.log(saveArray);
+            n._executeDSSql(e, "INSERT or replace INTO RegisterSales (id, register_id, user_id, user_name, customer_id, customer_name, customer_code, xero_invoice_id, receipt_number, status, total_cost, total_price, total_price_incl_tax, total_discount, total_tax, note, sale_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputValues, suc, err);
+          }
         });
       }catch(ex){
         n._logDBError(ex.message);
@@ -256,7 +257,7 @@ Datastore_sqlite = function() {
       var n = this;
       var inputValues = [];
 
-      for(var k=0; k < saveArray.length; k++)	{
+      for(var k=0; k < saveArray.length; k++)  {
         i = saveArray[k];
         inputValues.push([i.id, i.sale_id, i.product_id, i.name, i.quantity, i.supply_price, i.price, i.price_include_tax, i.tax, i.tax_rate, i.discount, i.loyalty_value, i.sequence, i.status]);
       }
@@ -279,7 +280,7 @@ Datastore_sqlite = function() {
       var i = [];
       var inputItems = [];
 
-      for(var k=0; k < salesItems.length; k++)	{
+      for(var k=0; k < salesItems.length; k++)  {
         i = salesItems[k];
         inputItems.push([i.id, i.sale_id, i.product_id, i.name, i.quantity, i.supply_price, i.price, i.price_include_tax, i.tax, i.tax_rate, i.discount, i.loyalty_value, i.sequence, i.status]);
       }
@@ -413,10 +414,10 @@ Datastore_sqlite = function() {
       var sqlQuery = "SELECT * FROM Products WHERE id = ? or name like ? or sku like ? or name like ? ";
       var searchValues = [null, null, null, null];
 
-			if(searchData != null && searchData.id != null){searchValues[0] = searchData.id;}
-			else if(searchData != null && searchData.handle != null){searchValues[1] = "%" + searchData.handle + "%";}
-			else if(searchData != null && searchData.sku != null){searchValues[2] = "%" + searchData.sku + "%";}
-			else if(searchData != null && searchData.name != null){searchValues[3] = "%" + searchData.name + "%";}
+      if(searchData != null && searchData.id != null){searchValues[0] = searchData.id;}
+      else if(searchData != null && searchData.handle != null){searchValues[1] = "%" + searchData.handle + "%";}
+      else if(searchData != null && searchData.sku != null){searchValues[2] = "%" + searchData.sku + "%";}
+      else if(searchData != null && searchData.name != null){searchValues[3] = "%" + searchData.name + "%";}
 
       excuteCallback = function(e, a) {
         var resultset = a.rows, i=0;
@@ -502,3 +503,7 @@ var Database_localstorage = function() {
   }
 };
 // -----------------     END Local Storage   ---------------
+
+var debug = function(s) {
+  console.log(s);
+}

@@ -38,6 +38,7 @@
     <link href="/theme/metronic/assets/global/css/plugins-md.css" rel="stylesheet" type="text/css"/>
     <!--
     <link href="/theme/metronic/assets/admin/layout2/css/layout.css" rel="stylesheet" type="text/css"/>
+    <link href="/theme/metronic/assets/admin/layout2/css/themes/default.css" rel="stylesheet" type="text/css" id="style_color">
     <link href="/theme/metronic/assets/admin/layout2/css/custom.css" rel="stylesheet" type="text/css"/>
     -->
     <link href="/app/styles/layout.css" rel="stylesheet" type="text/css"/>
@@ -50,14 +51,16 @@
   <!-- END HEAD -->
 
   <!-- BEGIN BODY -->
-  <body data-ng-controller="AppController" class="page-md page-boxed page-header-fixed page-container-bg-solid">
+  <body data-ng-controller="AppController" class="page-md page-boxed page-header-fixed page-container-bg-solid page-sidebar-closed-hide-logo">
 
     <!-- BEGIN PAGE SPINNER -->
+    <!--
     <div ng-spinner-bar class="page-spinner-bar">
         <div class="bounce1"></div>
         <div class="bounce2"></div>
         <div class="bounce3"></div>
     </div>
+    -->
     <!-- END PAGE SPINNER -->
 
     <!-- BEGIN HEADER -->
@@ -122,7 +125,11 @@
     <script src="/lib/angular-sanitize/angular-sanitize.min.js" type="text/javascript"></script>
     <script src="/lib/angular-localization/angular-localization.min.js" type="text/javascript"></script>
     <script src="/lib/angular-touch/angular-touch.min.js" type="text/javascript"></script>
+    <!-- current version of ui-bootstrap has a modal-backdrop issue.
     <script src="/lib/angular-bootstrap/ui-bootstrap-tpls.min.js" type="text/javascript"></script>
+    <script src="/theme/metronic/assets/global/plugins/angularjs/plugins/ui-bootstrap-tpls.min.js" type="text/javascript"></script>
+    -->
+    <script src="/lib/ui-bootstrap-custom-build/ui-bootstrap-custom-tpls-0.13.3.js" type="text/javascript"></script>
     <script src="/lib/angular-ui-router/release/angular-ui-router.min.js" type="text/javascript"></script>
     <script src="/lib/oclazyload/dist/ocLazyLoad.min.js" type="text/javascript"></script>
     <!-- END CORE ANGULARJS PLUGINS -->
@@ -148,11 +155,19 @@
       $(document).ready(function () {
         Metronic.init(); // Run metronic theme
         Metronic.setAssetsPath('/theme/metronic/assets/'); // Set the assets folder path     
+
+        window.onpopstate = function(event) {
+          if (location.pathname == '/sell/') {
+            console.log("location: " + location.pathname + ", state: " + JSON.stringify(event));
+          }
+        }
+        history.pushState(location.origin, location.hash, location.pathname);
       });
     </script>
     <!-- END JAVASCRIPTS -->
 
     <!-- BEGIN SESSION TIMEOUT SCRIPTS -->
+    <!--
     <script src="/theme/onzsa/assets/global/plugins/bootstrap-sessiontimeout/jquery.sessionTimeout.min.js" type="text/javascript"></script>
     <script type="text/javascript">
     $(document).ready(function() {    
@@ -168,6 +183,7 @@
         });
     });
     </script>
+    -->
     <!-- END SESSION TIMEOUT SCRIPTS -->
 
     <!-- BEGIN GOOGLE ANALYTICS SCRIPTS -->

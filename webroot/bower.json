@@ -17,6 +17,7 @@
     "angular-ui-router": "^0.2.15",
     "angular-datatables": "^0.4.3",
     "angular-hotkeys": "chieffancypants/angular-hotkeys#~1.5.0",
+    "angular-local-storage": "~0.2.2",
     "angular-virtual-keyboard": "^0.4.2",
     "oclazyload": "^1.0.4"
   },
