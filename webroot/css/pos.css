@@ -2242,6 +2242,7 @@ input#search {
     border-radius: 3px;
     box-shadow: 0 1px 1px rgba(0,0,0,0.2);
     padding: 8px;
+    height: 54px;
 }
 
 .quick-key-btn {

@@ -74,9 +74,11 @@
                        <span class="layout-name">Layout Name: </span>
                     </div>
                     <div class="quick-key-add-page">
+                      <!--
                         <span class="page-add">Pages</span>
                         <button id="remove-page" class="btn btn-white btn-left">-</button>
                         <button id="add-page" class="btn btn-white btn-right">+</button>
+                      -->
                     </div>
                 </div>
                 <div id="block-center" class="quick-key-body">
@@ -89,16 +91,17 @@
                         <ul id="sortable" class="ui-sortable disabled">
                         </ul>
                     </div>
+                  <!--
                     <div class="quick-key-list-footer">
                         <span class="pull-left clickable prev"><i class="glyphicon glyphicon-chevron-left"></i></span>
                         <span class="pull-right clickable next"><i class="glyphicon glyphicon-chevron-right"></i></span>
                     </div>
+                  -->
                 </div>
             </div>
         </div>
     </div>
 </div>
-<?php $quick_keys['quick']['groups'] ?>
 <div id="popover-content" class="hide">
     <div class="form-line" role="form">
         <div class="form-group">
