@@ -29,14 +29,6 @@
     var strToday = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate();
     return strToday;
   }
-  function convArrayToHtml(array) {
-    var html = "<table width=100% border=1 border-color=#aaa margin=0 padding=0><tr width=100%>";
-    for(var i=0; i<array.length; i++) {
-      html = "<td>" + array[i] + "</td>";
-    }
-    html += "</tr></table>";
-    return html;
-  }
   $(document).ready(function(){
     var ds = Datastore_sqlite;
     var ls = Database_localstorage();
