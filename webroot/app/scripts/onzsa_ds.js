@@ -156,7 +156,7 @@ Datastore_sqlite = function() {
         t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS PriceBookEntry ( id TEXT PRIMARY KEY ON CONFLICT REPLACE, product_id TEXT, customer_group_id TEXT, outlet_id TEXT, markup REAL, discount REAL, price REAL, tax REAL, price_include_tax REAL, loyalty_value REAL, min_units REAL, max_units REAL, is_default INT, valid_from TEXT, valid_to TEXT)", [], function() {t._log("initLocalDataStore", "PriceBookEntry : Success")}, function(e) {t._log("initLocalDataStore", "PriceBookEntry : Error : " + e)});
 
         // Products
-        t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS Products (id TEXT PRIMARY KEY ON CONFLICT REPLACE, name TEXT, handle TEXT, description TEXT, brand_name TEXT, supplier_name TEXT, sku TEXT, supplier_price REAL, price REAL, tax REAL, tax_name TEXT, tax_rate REAL, retail_price REAL, thumbnail TEXT, image TEXT)", [], function() {t._log("initLocalDataStore", "Products : Success")}, function(e) {t._log("initLocalDataStore", "Products : Error : " + e)});
+        t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS Products (id TEXT PRIMARY KEY ON CONFLICT REPLACE, name TEXT, handle TEXT, description TEXT, brand_name TEXT, supplier_name TEXT, sku TEXT, supply_price REAL, price REAL, tax REAL, tax_name TEXT, tax_rate REAL, retail_price REAL, image TEXT, image_large TEXT)", [], function() {t._log("initLocalDataStore", "Products : Success")}, function(e) {t._log("initLocalDataStore", "Products : Error : " + e)});
 
         // RegisterSales
         t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS RegisterSales  ( id TEXT PRIMARY KEY ON CONFLICT REPLACE, register_id TEXT, user_id TEXT, user_name TEXT, customer_id TEXT, customer_name TEXT, customer_code TEXT, xero_invoice_id TEXT, receipt_number INTEGER, status TEXT, total_cost REAL, total_price REAL, total_price_incl_tax REAL, total_discount REAL, total_tax REAL, note TEXT, sale_date TEXT)", [], function() {t._log("initLocalDataStore", "RegisterSales : Success")}, function(e) {t._log("initLocalDataStore", "RegisterSales : Error : " + e)});
@@ -189,17 +189,37 @@ Datastore_sqlite = function() {
             ", brand_name TEXT" +
             ", supplier_name TEXT" +
             ", sku TEXT" +
-            ", supplier_price REAL" +
+            ", supply_price REAL" +
             ", price REAL" +
             ", tax REAL" +
             ", tax_name TEXT" +
             ", tax_rate REAL" +
             ", retail_price REAL" +
-            ", thumbnail TEXT" +
             ", image TEXT" +
+            ", image_large TEXT" +
             " )");
       })
     },
+    /**
+     * CREATE TABLE IF NOT EXISTS RegisterSales
+     * ( id TEXT PRIMARY KEY ON CONFLICT REPLACE,
+     *  register_id TEXT,
+     *  user_id TEXT,
+     *  user_name TEXT,
+     *  customer_id TEXT,
+     *  customer_name TEXT,
+     *  customer_code TEXT,
+     *  xero_invoice_id TEXT,
+     *  receipt_number INTEGER,
+     *  status TEXT,
+     *  total_cost REAL,
+     *  total_price REAL,
+     *  total_price_incl_tax REAL,
+     *  total_discount REAL,
+     *  total_tax REAL,
+     *  note TEXT,
+     *  sale_date TEXT)
+     */
     initRegisterSales: function(){
       var e = this;
       e._doDSTransaction(function(t) {
@@ -225,6 +245,7 @@ Datastore_sqlite = function() {
             "payment_type_id INTEGER, merchant_payment_type_id TEXT, amount REAL, payment_date TEXT)")
       })
     },
+
 
     saveRegisterSalePayments: function(data, suc, err) {
       var t = this, input = [data.id, data.sale_id, data.register_id, data.payment_type_id, data.merchant_payment_type_id, data.amount, data.payment_date];
@@ -265,7 +286,7 @@ Datastore_sqlite = function() {
           for(var k=0; k < saveArray.length; k++)  {
             i = saveArray[k];
             var inputValues = [i.id, i.register_id, i.user_id, i.user_name, i.customer_id, i.customer_name, i.customer_code, i.xero_invoice_id, i.receipt_number, i.status, i.total_cost, i.total_price, i.total_price_incl_tax, i.total_discount, i.total_tax, i.note, i.sale_date];
-            console.log(saveArray);
+            //console.log(saveArray);
             n._executeDSSql(e, "INSERT or replace INTO RegisterSales (id, register_id, user_id, user_name, customer_id, customer_name, customer_code, xero_invoice_id, receipt_number, status, total_cost, total_price, total_price_incl_tax, total_discount, total_tax, note, sale_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputValues, suc, err);
           }
         });
@@ -274,11 +295,46 @@ Datastore_sqlite = function() {
       }
     },
 
-    changeStatusRegisterSales: function(data, suc, err) {
-      var t = this, condition = [data.status, data.id];
-          t._doDSTransaction(function(tr) {
-            t._executeDSSql(tr, "UPDATE RegisterSales SET status = ? WHERE id = ?", condition, suc, err);
-          });
+    changeRegisterSales: function(data, suc, err) {
+      var t = this, condition = [], sqlParamString = "";
+
+      if(data.status != null) {
+        condition.push(data.status);
+        if(sqlParamString != "") sqlParamString += ",";
+        sqlParamString += " status = ?";
+      }
+      if(data.total_cost != null) {
+        condition.push(data.total_cost);
+        if(sqlParamString != "") sqlParamString += ",";
+        sqlParamString += " total_cost = ?";
+      }
+      if(data.total_price != null) {
+        condition.push(data.total_price);
+        if(sqlParamString != "") sqlParamString += ",";
+        sqlParamString += " total_price = ?";
+      }
+      if(data.total_price_incl_tax != null) {
+        condition.push(data.total_price_incl_tax);
+        if(sqlParamString != "") sqlParamString += ",";
+        sqlParamString += " total_price_incl_tax = ?";
+      }
+      if(data.total_discount != null) {
+        condition.push(data.total_discount);
+        if(sqlParamString != "") sqlParamString += ",";
+        sqlParamString += " total_discount = ?";
+      }
+      if(data.total_tax != null) {
+        condition.push(data.total_tax);
+        if(sqlParamString != "") sqlParamString += ",";
+        sqlParamString += " total_tax = ?";
+      }
+      if(data.id != null) {
+        condition.push(data.id);
+        sqlParamString = "UPDATE RegisterSales SET " + sqlParamString + " WHERE id = ?";
+      }
+      t._doDSTransaction(function(tr) {
+        t._executeDSSql(tr, sqlParamString, condition, suc, err);
+      });
     },
 
     // 1 item
@@ -445,7 +501,7 @@ Datastore_sqlite = function() {
       var inputValues = [i.id, i.customer_group_id, i.product_id, i.outlet_id, i.markup, i.discount, i.price, i.tax, i.price_include_tax, i.loyalty_value, i.min_units, i.max_units, i.is_default, i.valid_from, i.valid_to];
       try{
         n._doDSTransaction(function(e) {
-          console.log(saveArray);
+          //console.log(saveArray);
           n._executeDSSql(e, "INSERT or replace INTO PriceBookEntry (id, customer_group_id, product_id, outlet_id, markup, discount, price, tax, price_include_tax, loyalty_value, min_units, max_units, is_default, valid_from, valid_to) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputValues);
         });
       }catch(ex) {
@@ -482,8 +538,8 @@ Datastore_sqlite = function() {
       var t = this;
       var sqlQuery = "INSERT  INTO Products (" +
           "  id, name, handle, description, brand_name, supplier_name, sku" +
-          ", supplier_price, price, tax, tax_name, tax_rate, retail_price" +
-          ", thumbnail, image" +
+          ", supply_price, price, tax, tax_name, tax_rate, retail_price" +
+          ", image, image_large" +
           ") values (" +
           "  ?, ?, ?, ?, ?, ?, ?" +
           ", ?, ?, ?, ?, ?, ?" +
@@ -493,7 +549,7 @@ Datastore_sqlite = function() {
       for(i = 0; i < setData.length; i++){
         var data = [
           setData[i].id, setData[i].name, setData[i].handle, setData[i].description, setData[i].brand_name, setData[i].supplier_name, setData[i].sku,
-          setData[i].supplier_price, setData[i].price, setData[i].tax, setData[i].tax_name, setData[i].tax_rate, setData[i].price_include_tax,
+          setData[i].supply_price, setData[i].price, setData[i].tax, setData[i].tax_name, setData[i].tax_rate, setData[i].price_include_tax,
           setData[i].image, setData[i].image_large
         ];
         setValues.push(data);
