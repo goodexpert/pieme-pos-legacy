@@ -123,6 +123,7 @@
     <script src="/lib/angular-resource/angular-resource.min.js" type="text/javascript"></script>
     <script src="/lib/angular-route/angular-route.min.js" type="text/javascript"></script>
     <script src="/lib/angular-sanitize/angular-sanitize.min.js" type="text/javascript"></script>
+    <script src="/lib/angular-local-storage/dist/angular-local-storage.min.js" type="text/javascript"></script>
     <script src="/lib/angular-localization/angular-localization.min.js" type="text/javascript"></script>
     <script src="/lib/angular-touch/angular-touch.min.js" type="text/javascript"></script>
     <!-- current version of ui-bootstrap has a modal-backdrop issue.

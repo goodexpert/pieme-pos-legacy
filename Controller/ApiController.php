@@ -85,7 +85,6 @@ class ApiController extends AppController {
         ]
       ]);
 
-      $response = $result;
       $response['version']                     = 1.0;
       $response['merchant_id']                 = $result['Merchant']['id'];
       $response['merchant_name']               = $result['Merchant']['name'];

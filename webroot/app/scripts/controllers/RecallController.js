@@ -7,9 +7,9 @@
  * @description
  * Controller of the OnzsaApp
  */
-angular.module('OnzsaApp', ['ngLocalize'])
+angular.module('OnzsaApp', [])
 
-.controller('RecallController', function($rootScope, $scope, $http, $modal, locale, LocalStorage) {
+.controller('RecallController', function($rootScope, $scope, $state, $http, $modal, locale, LocalStorage) {
 
   $scope.$on('$viewContentLoaded', function() {   
     // initialize core components

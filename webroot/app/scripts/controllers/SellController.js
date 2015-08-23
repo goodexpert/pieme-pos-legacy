@@ -7,9 +7,9 @@
  * @description
  * Controller of the OnzsaApp
  */
-angular.module('OnzsaApp', ['ngLocalize'])
+angular.module('OnzsaApp', [])
 
-.controller('SellController', function($rootScope, $scope, $state, $http, $modal, locale, LocalStorage) {
+.controller('SellController', function($rootScope, $scope, $state, $location, $http, $modal, locale, LocalStorage) {
 
   $scope.$on('$viewContentLoaded', function() {   
     // initialize core components
@@ -84,19 +84,22 @@ angular.module('OnzsaApp', ['ngLocalize'])
 
   $scope.viewRecall = function() {
     console.log('viewRecall');
-    $state.go("recall");
+    $state.go("recall-sale");
   };
 
   $scope.viewHistory = function() {
     console.log('viewHistory');
+    window.location = "/history";
   };
 
   $scope.viewDailyReport = function() {
     console.log('viewDailyReport');
+    $state.go("daily-snapshot");
   };
 
   $scope.closeRegister = function() {
     console.log('closeRegister');
+    $state.go("close-register");
   };
 
   $scope.functions = {
@@ -618,53 +621,67 @@ angular.module('OnzsaApp', ['ngLocalize'])
   }
 
   var bootstrapSystem = function() {
-    /*
-    var config = {};
-    var chain = [checkLocalSystem, undefined];
-    var promise = $q.when(config);
+    debug("INIT: checking for the init of the config table");
+    var config = LocalStorage.getConfig();
+    var register_id = config.register_id;
 
-    while (chain.length) {
-      var thenFn = chain.shift();
-      var rejectFn = chain.shift();
+    debug("REFRESH config");
+    debug("REQUEST: config >>>>>>>>>>>>>>>>>>>>>");
 
-      promise = promise.then(thenFn, rejectFn);
-    }
+    $http.get('/api/config.json')
+      .then(function(response) {
+        debug("REQUEST: config, success handler");
+        debug(response.data);
+        LocalStorage.saveConfig(response.data);
 
-    promise.then(function(response) {
-    }, function(response) {
-    });
-    */
+        debug("REFRESH taxes");
+        debug("REQUEST: taxes >>>>>>>>>>>>>>>>>>>>>");
+        return $http.get('/api/taxes.json');
+      }).then(function(response) {
+        debug("REQUEST: taxes, success handler");
+        debug(response.data);
+
+        debug("REFRESH payment types");
+        debug("REQUEST: payment types >>>>>>>>>>>>>>>>>>>>>");
+        return $http.get('/api/payment_types.json');
+      }).then(function(response) {
+        debug("REQUEST: payment types, success handler");
+        debug(response.data);
+
+        debug("REFRESH products");
+        debug("REQUEST: products >>>>>>>>>>>>>>>>>>>>>");
+        return $http.get('/api/products.json');
+      }).then(function(response) {
+        debug("REQUEST: products, success handler");
+        debug(response.data);
+
+        debug("REFRESH registers");
+        debug("REQUEST: registers >>>>>>>>>>>>>>>>>>>>>");
+        return $http.get('/api/registers.json');
+      }).then(function(response) {
+        debug("REQUEST: registers, success handler");
+        debug(response.data);
+
+        debug("current register_id: " + register_id);
+        var registers = response.data;
+
+        if (registers.length > 1) {
+          openRegisterSelector(response.data);
+        } else {
+          LocalStorage.saveRegister(registers[0]);
+        }
+      }, function(response) {
+        debug("REQUEST: data, error handler");
+        if (401 == response.status) {
+          window.location = "/signin";
+        }
+
+        debug("ERROR: There was a problem with the offline access.  Please try refreshing the page.");
+        debug(response);
+      });
   }
 
   var checkLocalSystem = function(param) {
-    var test = window.localStorage.getItem("ONZSAPOS_REGISTER");
-    return "undefined" != test && null != test;
-  }
-
-  var bootstrapLocalDataStore = function() {
-    debug("Bootstrapping");
-
-    if (checkRegister()) {
-    } else {
-      debug("REFRESH: Refreshing config");
-      refreshConfig(function() {
-        debug("REFRESH: Refreshing taxes");
-        refreshTaxes(function() {
-          debug("REFRESH: Refreshing payments");
-          refreshPaymentTypes(function() {
-            debug("REFRESH: Refreshing products");
-            refreshProducts(function() {
-              debug("REFRESH: Refreshing registers");
-              refreshRegisters(function() {
-              });
-            });
-          });
-        });
-      });
-    }
-  }
-
-  var checkRegister = function() {
     var test = window.localStorage.getItem("ONZSAPOS_REGISTER");
     return "undefined" != test && null != test;
   }
@@ -852,10 +869,8 @@ angular.module('OnzsaApp', ['ngLocalize'])
     });
 
     modalInstance.result.then(function (selectedItem) {
-      $rootScope.register = selectedItem;
-      debug("register selected: " + $rootScope.register.id);
-
-      //LocalStorage.saveRegister(register, callback);
+      debug("register selected: " + selectedItem.id);
+      LocalStorage.saveRegister(selectedItem);
     });
   };
 
@@ -879,35 +894,71 @@ angular.module('OnzsaApp')
 
 angular.module('OnzsaApp')
 
-.factory('LocalStorage', ['$rootScope', function($rootScope) {
+.factory('LocalStorage', ['$rootScope', 'localStorageService',  function($rootScope, localStorageService) {
   // The default config for register
   var defaultConfig = {
-    varstion: null,
+    version: null,
     user_hash: null,
-    user_id: null,
-    user_email: null,
-    user_name: null,
     merchant_id: null,
-    cashier_discount: false,
-    enable_loyalty: false,
-    outlet_name: null,
+    merchant_name: null,
+    domain_prefix: null,
+    business_type_id: null,
     default_customer_group_id: null,
     default_customer_id: null,
+    default_no_tax_group_id: null,
+    default_tax_id: null,
+    discount_product_id: null,
+    default_quick_key_id: null,
+    default_currency: null,
+    time_zone: null,
+    display_price_tax_inclusive: null,
+    allow_cashier_discount: null,
+    allow_use_scale: null,
+    retailer_id: null,
+    outlet_id: null,
+    outlet_name: null,
+    enable_loyalty: null,
+    loyalty_ratio: null,
+    user_id: null,
+    user_name: null,
+    user_display_name: null,
+    user_type: null,
+  };
+
+  // The config specified to the module globally.
+  var globalConfig = {};
+
+  var getConfigAll = function() {
+    return JSON.parse(localStorageService.get('config'));
+  };
+
+  var getConfig = function() {
+    var config = getConfigAll();
+    if (config == null || "object" != typeof config) {
+      debug("GET CONFIG: local store config empty, setting up config defaults");
+      config = defaultConfig;
+    }
+    return config;
+  };
+
+  var saveConfig = function(config) {
+    angular.extend(globalConfig, config);
+    localStorageService.set('config', JSON.stringify(globalConfig));
+  };
+
+  var saveRegister = function(register) {
+    debug("saving register", + JSON.stringify(register));
+    localStorageService.set('register', JSON.stringify(register));
+    localStorageService.set('register_id', register.id);
+
+    var config = { register_id: register.id };
+    saveConfig(config);
   };
 
   return {
-    store: window.localStorage,
-    generateKey: function() {
-      //return this.prefix + t.toUpperCase() + ("undefined" == typeof e ? "" : "_" + String(e).toUpperCase())
-    },
-    saveRegister: function(register, callback) {
-      console.log($rootScope);
-      debug("saving register");
-
-      if ("function" == typeof callback) {
-        callback.call();
-      }
-    }
+    getConfig: getConfig,
+    saveConfig: saveConfig,
+    saveRegister: saveRegister,
   };
 }]);
 
