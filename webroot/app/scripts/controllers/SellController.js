@@ -219,7 +219,7 @@ angular.module('OnzsaApp', [])
 
   $scope.addSellItem = function(quickKey) {
     console.log('ok');
-    /*
+
     var priceBook = null;
     var saleProduct = null;
     var lastestSaleItem = null;
@@ -272,7 +272,7 @@ angular.module('OnzsaApp', [])
         console.log("Not found Product : " + quickKey.product_id);
       }
     }, quickKey.product_id); //Get Product
-    */
+
   };
 
   $scope.removeSellItem = function(saleItem) {
@@ -401,7 +401,7 @@ angular.module('OnzsaApp', [])
       'pqty': productQty,
       'customergroupId': customerGroupId
     }
-    ds.getPriceBook(function(rs) {
+    $scope.ds.getPriceBook(function(rs) {
       callback(rs);
     }, searchInfo);
   }
@@ -413,7 +413,7 @@ angular.module('OnzsaApp', [])
     var searchInfo = {
       'id': productId
     };
-    ds.getProduct(function(rs) {
+    $scope.ds.getProduct(function(rs) {
       callback(rs);
     }, searchInfo);
   }
@@ -537,35 +537,36 @@ angular.module('OnzsaApp', [])
     var saleUUID = getUUID();
     var now = getUnixTimestamp();
 
-    for(var item in $scope.saleItems) {
-      var uuid = getUUID();
-      var input = {
-        'id': uuid,
-        'sale_id': saleUUID,
-        'product_id': item.product_id,
-        'name': item.name,
-        'quantity': item.qty,
-        'supply_price': item.supply_price,
-        'price': item.price,
-        'price_include_tax': item.price_include_tax,
-        'tax': item.tax,
-        'tax_rate': item.tax_rate,
-        'discount': item.discount,
-        'loyalty_value': item.loyalty_value,
-        'sequence': item.sequence,
-        'status': "sale_items_status_closed",
-      };
-      inputRegisterSalesItems.push(input);
-    }
-
+    //for(var item in $scope.saleItems) {
+    //  var uuid = getUUID();
+    //  var input = {
+    //    'id': uuid,
+    //    'sale_id': saleUUID,
+    //    'product_id': item.product_id,
+    //    'name': item.name,
+    //    'quantity': item.qty,
+    //    'supply_price': item.supply_price,
+    //    'price': item.price,
+    //    'price_include_tax': item.price_include_tax,
+    //    'tax': item.tax,
+    //    'tax_rate': item.tax_rate,
+    //    'discount': item.discount,
+    //    'loyalty_value': item.loyalty_value,
+    //    'sequence': item.sequence,
+    //    'status': "sale_items_status_closed",
+    //  };
+    //  inputRegisterSalesItems.push(input);
+    //}
+    var config = LocalStorage.getConfig();
     var inputRegisterSales = {
       'id': saleUUID,
-      'register_id': $rootScope.register.id,
-      'user_id': $rootScope.register.user.id,
-      'customer_id': $scope.customer_id,
+      'register_id': config.register_id,
+      'user_id': config.user_id,
+      'customer_id': config.default_customer_id,
       'xero_invoice_id': null,
       'receipt_number': $scope.registerSale.receipt_number,
-      'status': "sale_items_status_closed",
+      //'status': "sale_status_closed",
+      'status': "sale_status_saved",
       'total_cost': $scope.registerSale.total_cost,
       'total_price': $scope.registerSale.total_price,
       'total_price_incl_tax': $scope.registerSale.total_price_incl_tax,
@@ -574,10 +575,12 @@ angular.module('OnzsaApp', [])
       'note': null,
       'sale_date': now,
     }
+    var data = [];
+    data.push(inputRegisterSales);
 
-    ds.saveRegisterAll(function(rs) {
+    $scope.ds.saveRegisterSales(function(rs) {
       console.log(rs);
-    }, inputRegisterSales, inputRegisterSalesItems);
+    }, data);
 
   }
 
@@ -607,7 +610,7 @@ angular.module('OnzsaApp', [])
       };
       inputValue.push(input);
     }
-    ds.saveRegisterSalesItems(function(rs) {
+    $scope.ds.saveRegisterSalesItems(function(rs) {
       callback(rs);
     }, inputValue);
   }
@@ -616,6 +619,10 @@ angular.module('OnzsaApp', [])
     debug("INIT: checking for the init of the config table");
     var config = LocalStorage.getConfig();
     var register_id = config.register_id;
+
+    debug("INIT: checking for the init of the Web SQL Database");
+    //$scope.ds.dropAllLocalDataStore();  //TODO:
+    $scope.ds.initLocalDataStore();
 
     debug("REFRESH config");
     debug("REQUEST: config >>>>>>>>>>>>>>>>>>>>>");
@@ -640,12 +647,20 @@ angular.module('OnzsaApp', [])
         debug("REQUEST: payment types, success handler");
         debug(response.data);
 
+        //TODO:
+        for(var i=0; i<response.data.length; i++) {
+          $scope.ds.saveRegisterSalePayments(response.data[i]);
+        }
+
         debug("REFRESH products");
         debug("REQUEST: products >>>>>>>>>>>>>>>>>>>>>");
         return $http.get('/api/products.json');
       }).then(function(response) {
         debug("REQUEST: products, success handler");
         debug(response.data);
+
+        //TODO:
+        $scope.ds.saveProducts(null, response.data);
 
         debug("REFRESH registers");
         debug("REQUEST: registers >>>>>>>>>>>>>>>>>>>>>");
@@ -839,6 +854,12 @@ angular.module('OnzsaApp', [])
       }).then(function(response) {
         debug("REQUEST: price books, success handler");
         debug(response.data);
+
+        //TODO:
+        for(var i=0; i<response.data.length; i++) {
+          $scope.ds.savePriceBook(null, response.data[i]);
+        }
+
       }, function(response) {
         debug("REQUEST: data, error handler");
         if (401 == response.status) {

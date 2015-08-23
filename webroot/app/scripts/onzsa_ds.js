@@ -118,11 +118,55 @@ Datastore_sqlite = function() {
       if(logData != null)console.log(logData)
     },
 
-    initLocalDataStore: function() {
-      var t = this;
-      t._log("initLocalDataStore", "Start");
+    /** -------------------
+     *  dropAllLocalDataStore
+     *  ------------------- */
+    dropAllLocalDataStore: function() {
+      var t = this, success, error;
       t._doDSTransaction(function(tr) {
-        t.initPriceBook(tr), t.initProducts(tr), t.initRegisterSaleItems(tr), t.initRegisterSales(tr), t.initRegisterSalePayment(tr)
+        t._log("dropAllLocalDataStore", "Start");
+
+        // PriceBookEntery
+        t._executeDSSql(tr, "DROP TABLE IF EXISTS PriceBookEntry", [], function() {t._log("dropAllLocalDataStore", "PriceBookEntry : Success")}, function(e) {t._log("dropAllLocalDataStore", "PriceBookEntry : Error : " + e)});
+
+        // Products
+        t._executeDSSql(tr, "DROP TABLE IF EXISTS Products", [], function() {t._log("dropAllLocalDataStore", "Products : Success")}, function(e) {t._log("dropAllLocalDataStore", "Products : Error : " + e)});
+
+        // RegisterSales
+        t._executeDSSql(tr, "DROP TABLE IF EXISTS RegisterSales", [], function() {t._log("dropAllLocalDataStore", "RegisterSales : Success")}, function(e) {t._log("dropAllLocalDataStore", "RegisterSales : Error : " + e)});
+
+        // RegisterSalePayments
+        t._executeDSSql(tr, "DROP TABLE IF EXISTS RegisterSalePayments", [], function() {t._log("dropAllLocalDataStore", "RegisterSalePayments : Success")}, function(e) {t._log("dropAllLocalDataStore", "RegisterSalePayments : Error : " + e)});
+
+        // RegisterSaleItems
+        t._executeDSSql(tr, "DROP TABLE IF EXISTS RegisterSaleItems", [], function() {t._log("dropAllLocalDataStore", "RegisterSaleItems : Success")}, function(e) {t._log("dropAllLocalDataStore", "RegisterSaleItems : Error : " + e)});
+
+      })
+    },
+
+    /** -------------------
+     *  initLocalDataStore
+     *  ------------------- */
+    initLocalDataStore: function() {
+      var t = this, success, error;
+      t._doDSTransaction(function(tr) {
+        t._log("initLocalDataStore", "Start");
+
+        // PriceBookEntery
+        t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS PriceBookEntry ( id TEXT PRIMARY KEY ON CONFLICT REPLACE, product_id TEXT, customer_group_id TEXT, outlet_id TEXT, markup REAL, discount REAL, price REAL, tax REAL, price_include_tax REAL, loyalty_value REAL, min_units REAL, max_units REAL, is_default INT, valid_from TEXT, valid_to TEXT)", [], function() {t._log("initLocalDataStore", "PriceBookEntry : Success")}, function(e) {t._log("initLocalDataStore", "PriceBookEntry : Error : " + e)});
+
+        // Products
+        t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS Products (id TEXT PRIMARY KEY ON CONFLICT REPLACE, name TEXT, handle TEXT, description TEXT, brand_name TEXT, supplier_name TEXT, sku TEXT, supplier_price REAL, price REAL, tax REAL, tax_name TEXT, tax_rate REAL, retail_price REAL, thumbnail TEXT, image TEXT)", [], function() {t._log("initLocalDataStore", "Products : Success")}, function(e) {t._log("initLocalDataStore", "Products : Error : " + e)});
+
+        // RegisterSales
+        t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS RegisterSales  ( id TEXT PRIMARY KEY ON CONFLICT REPLACE, register_id TEXT, user_id TEXT, user_name TEXT, customer_id TEXT, customer_name TEXT, customer_code TEXT, xero_invoice_id TEXT, receipt_number INTEGER, status TEXT, total_cost REAL, total_price REAL, total_price_incl_tax REAL, total_discount REAL, total_tax REAL, note TEXT, sale_date TEXT)", [], function() {t._log("initLocalDataStore", "RegisterSales : Success")}, function(e) {t._log("initLocalDataStore", "RegisterSales : Error : " + e)});
+
+        // RegisterSalePayments
+        t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS RegisterSalePayments (id TEXT PRIMARY KEY ON CONFLICT REPLACE, sale_id TEXT, register_id TEXT, payment_type_id INTEGER, merchant_payment_type_id TEXT, amount REAL, payment_date TEXT)", [], function() {t._log("initLocalDataStore", "RegisterSalePayments : Success")}, function(e) {t._log("initLocalDataStore", "RegisterSalePayments : Error : " + e)})
+
+        // RegisterSaleItems
+        t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS RegisterSaleItems ( id TEXT PRIMARY KEY ON CONFLICT REPLACE, sale_id TEXT, product_id TEXT, name TEXT, quantity REAL, supply_price REAL, price REAL, price_include_tax REAL, tax REAL, tax_rate REAL, discount REAL, loyalty_value  REAL, sequence INTEGER, status TEXT)", [], function() {t._log("initLocalDataStore", "RegisterSaleItems : Success")}, function(e) {t._log("initLocalDataStore", "RegisterSaleItems : Error : " + e)})
+
       })
     },
     initPriceBook: function(tr){
@@ -296,7 +340,7 @@ Datastore_sqlite = function() {
           //  self._executeDSSql(e, "INSERT or replace INTO RegisterSaleItems (id, sale_id, product_id, name, quantity, supply_price, price, price_include_tax, tax, tax_rate, discount, loyalty_value, sequence, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputValue);
           //}
         }, function(e) {
-          console.log("Transaction Error: " + e.message);
+          console.log("Transaction Error: ");
         }, function(rs) {
           console.log("Transaction Success: ");
         });
@@ -434,7 +478,7 @@ Datastore_sqlite = function() {
           )
     },
 
-    setProducts: function(successCallback, setData) {
+    saveProducts: function(successCallback, setData) {
       var t = this;
       var sqlQuery = "INSERT  INTO Products (" +
           "  id, name, handle, description, brand_name, supplier_name, sku" +
@@ -462,7 +506,7 @@ Datastore_sqlite = function() {
             }, t._logDBError);
           }
         }, function(e) {
-          console.log("Transaction Error: " + e.message);
+          console.log("Transaction Error: ");
         }, function() {
           console.log("Transaction Success: ");
         });
