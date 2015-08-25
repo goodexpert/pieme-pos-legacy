@@ -1,4 +1,10 @@
 <div data-ng-controller="SellController">
+  <p class="input-group">
+    <input type="date" class="form-control ng-pristine ng-isolate-scope ng-valid ng-valid-required ng-touched" datepicker-popup="" ng-model="dt" is-open="true" min-date="minDate" max-date="'2020-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" required="required"><!-- ngIf: isOpen -->
+    <span class="input-group-btn">
+    <button type="button" class="btn btn-default"><i class="glyphicon glyphicon-calendar"></i></button>
+    </span>
+  </p>
 
   <!-- REGISTER BEGIN -->
   <div class="row" id="register">
@@ -70,6 +76,10 @@
               <div class="input-icon left">
                 <i class="icon-magnifier"></i>
                 <input type="text" class="form-control form-control-solid" placeholder="Customer Search" id="customer_code">
+                <!--
+                -->
+                <input type="text" class="form-control form-control-solid" placeholder="Customer Search" id="customer_code" numpad-popup numpad-mode="'quantity'" ng-model="customer_code1" ng-required="true">
+                <input type="text" class="form-control form-control-solid" placeholder="Customer Search" id="customer_code" numpad-popup numpad-mode="'currency'" ng-model="customer_code2" ng-required="true">
               </div>
             </div>
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">

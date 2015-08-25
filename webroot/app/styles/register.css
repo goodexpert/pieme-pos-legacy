@@ -161,6 +161,67 @@ fieldset[disabled] .btn-function.active {
   background-color: #e6e6e6;
 }
 
+.numpad-content-wrap {
+  background-color: #525252;
+  display: block;
+  padding: 20px;
+}
+
+.numpad-switch-btn-group {
+  width: 100%;
+  padding-bottom: 10px;
+}
+
+.numpad-switch-btn-group .btn {
+  width: 50%;
+}
+
+.numpad-number-input-group {
+  width: 100%;
+  padding-bottom: 20px;
+}
+
+.numpad-number-input {
+  text-align: right;
+}
+
+.numpad-content {
+  width: 244px;
+  margin-left: -4px;
+  margin-right: -4px;
+  display: table;
+}
+
+.numpad-section {
+  float: left;
+  display: block;
+  max-width: 186px;
+}
+
+.numpad-section.last {
+  max-width: 58px;
+}
+
+.numpad-key {
+  background-color: #ff0000;
+  width: 50px;
+  height: 50px;
+  margin: 4px !important;
+}
+
+.numpad-key-return {
+  height: 108px;
+  padding: 0px !important;
+}
+
+.numpad-key span {
+  font-size: 18px;
+}
+
+.numpad-key-return span {
+  font-size: 8px;
+}
+
 @media (max-width: 1260px) {
 
   #register_quick_keys .icon-btn {

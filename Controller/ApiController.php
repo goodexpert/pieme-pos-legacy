@@ -396,6 +396,7 @@ class ApiController extends AppController {
       if (!empty($quickKey)) {
         $response = json_decode($quickKey['MerchantQuickKey']['key_layouts'], true);
       }
+
       $this->serialize($response);
     }
 

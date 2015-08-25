@@ -46,7 +46,7 @@ var TableAdvanced = function () {
 
         var oTable = table.dataTable({
             "dom": "<'row'<'col-md-6 col-sm-12'l><'col-md-6 col-sm-12'f>r>t<'row'<'col-md-5 col-sm-12'i><'col-md-7 col-sm-12'p>>", // datatable layout without  horizobtal scroll
-            "scrollY": "350px",
+            "scrollY": "480px",
             "deferRender": true,
             "paging": false,
             "searching": false,

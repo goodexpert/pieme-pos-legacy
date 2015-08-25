@@ -702,15 +702,6 @@ angular.module('OnzsaApp', [])
     //TODO: change to status $scope.ds.deleteRegisterSaleItems(delInfo);
   }
 
-
-
-
-
-
-
-
-
-
   var bootstrapSystem = function() {
     debug("INIT: checking for the init of the config table");
     var config = LocalStorage.getConfig();
@@ -772,7 +763,7 @@ angular.module('OnzsaApp', [])
         if (registers.length > 1) {
           openRegisterSelector(response.data);
         } else {
-          switchRegister(registers[0]);
+          LocalStorage.saveRegister(registers[0]);
         }
       }, function(response) {
         debug("REQUEST: data, error handler");
@@ -967,10 +958,10 @@ angular.module('OnzsaApp', [])
       });
   }
 
-  $scope.openDialog = function() {
+  var openDialog = function() {
     var modalInstance = $modal.open({
       animation: true,
-      templateUrl: 'tpl/select_register.html',
+      templateUrl: '/app/tpl/dopayment.html',
     });
     console.log($modal);
     console.log(modalInstance);
@@ -1053,6 +1044,8 @@ angular.module('OnzsaApp')
 
 .controller('RegisterSelectorController', function($rootScope, $scope, $modalInstance, $window, locale, items) {
   $scope.items = items;
+
+    console.log('loading here.....');
 
   $scope.cancel = function() {
     $modalInstance.dismiss('cancel');
