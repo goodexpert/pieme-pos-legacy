@@ -36,8 +36,8 @@ angular.module("OnzsaApp")
         console.table($scope.register_id);
 
         // Initialize amount
-        $scope.remains = $rootScope.registerSale.total_price_incl_tax;
-        $scope.toPayAmount = $rootScope.registerSale.total_price_incl_tax - $rootScope.registerSale.total_payment;
+        $scope.remains = $rootScope.registerSale.total_price_incl_tax - $rootScope.registerSale.total_payment;
+        $scope.toPayAmount = $scope.remains;
 
         // Get Payment Type from Local DB
         $scope.paymentTypes = [];
@@ -46,6 +46,7 @@ angular.module("OnzsaApp")
             for (var idx=0; idx < rs.length; idx++) {
               $scope.paymentTypes.push(rs[idx]);
             }
+            console.table($scope.paymentTypes);
           } else {
             debug("PAYMENT: [WARNING] Not found payment types.");
           }
@@ -56,25 +57,22 @@ angular.module("OnzsaApp")
 
         // Payment Infomation
         $scope.paymentInfo = [];
-        var data = [{'sale_id':$scope.sale_id}];
+        var data = {'sale_id':$scope.sale_id};
         $scope.ds.getRegisterSalePayments(data, function(rs) {
-          console.table(rs);
           if (rs.length > 0) {
             for (var idx=0; idx < rs.length; idx++) {
-              $scope.paymentInfo.push(rs[idx]);
+              var item = rs[idx];
+              item.name = _getPaymentTypeName(item.payment_type_id);
+              $scope.paymentInfo.push(item);
             }
-
           } else {
             debug("PAYMENT: [WARNING] Not found register sale payments.");
           }
           // Display reload
           $scope.$apply();
         });
-
-        // Display reload
-        $scope.$apply();
       }
-      $modalInstance.opened.then(function(){ console.log("@@@333"); $scope.init();});
+      $modalInstance.opened.then( $scope.init() );
 
       // Initialize Payment Table Screen
       var initPaymentTable = function(){
@@ -170,6 +168,7 @@ angular.module("OnzsaApp")
 
 
         $scope.remains = $scope.remains - paying;
+        $scope.toPayAmount = $scope.remains;
 
         var now =  getUnixTimestamp();
         var payment = [];
@@ -186,7 +185,8 @@ angular.module("OnzsaApp")
         console.log("date : " +now);
         console.log("type : "+payment_name);
 
-        $rootScope.registerSale.total_payment += paying;
+        $rootScope.registerSale.total_payment = parseFloat($rootScope.registerSale.total_payment) + parseFloat(paying);
+        console.log("total_payment : "+$rootScope.registerSale.total_payment);
         $scope.paymentInfo.push(payment);
 
         // Save to Payment
@@ -262,6 +262,18 @@ angular.module("OnzsaApp")
         $(".modal-backdrop").show();
       }
 
+      _getPaymentTypeName = function(typeID) {
+        var name;
+        for(var idx=0; idx<$scope.paymentTypes.length; idx++) {
+          var paymentType = $scope.paymentTypes[idx];
+          if(paymentType.payment_type_id == typeID) {
+            name = paymentType.name;
+            break;
+          }
+        }
+
+        return name;
+      }
     });
 
 //TODO: Get UUID for PaymentID
