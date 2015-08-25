@@ -114,7 +114,7 @@
     <!-- END CORE JQUERY PLUGINS -->
 
     <!-- BEGIN CORE ANGULARJS PLUGINS -->
-    <script src="/lib/angular/angular.min.js" type="text/javascript"></script>
+    <script src="/lib/angular/angular.js" type="text/javascript"></script>
     <script src="/lib/angular-animate/angular-animate.min.js" type="text/javascript"></script>
     <script src="/lib/angular-aria/angular-aria.min.js" type="text/javascript"></script>
     <script src="/lib/angular-cookies/angular-cookies.min.js" type="text/javascript"></script>
@@ -123,8 +123,11 @@
     <script src="/lib/angular-resource/angular-resource.min.js" type="text/javascript"></script>
     <script src="/lib/angular-route/angular-route.min.js" type="text/javascript"></script>
     <script src="/lib/angular-sanitize/angular-sanitize.min.js" type="text/javascript"></script>
+    <script src="/lib/angular-local-storage/dist/angular-local-storage.min.js" type="text/javascript"></script>
     <script src="/lib/angular-localization/angular-localization.min.js" type="text/javascript"></script>
     <script src="/lib/angular-touch/angular-touch.min.js" type="text/javascript"></script>
+    <script src="/lib/angular-useragent-parser/release/angular-useragent-parser.min.js"></script>
+    <script src="/lib/angular-virtual-keyboard/release/angular-virtual-keyboard.min.js"></script>
     <!-- current version of ui-bootstrap has a modal-backdrop issue.
     <script src="/lib/angular-bootstrap/ui-bootstrap-tpls.min.js" type="text/javascript"></script>
     <script src="/theme/metronic/assets/global/plugins/angularjs/plugins/ui-bootstrap-tpls.min.js" type="text/javascript"></script>
@@ -157,8 +160,8 @@
         Metronic.setAssetsPath('/theme/metronic/assets/'); // Set the assets folder path     
 
         window.onpopstate = function(event) {
+          console.log("location: " + location.pathname + ", state: " + JSON.stringify(event));
           if (location.pathname == '/sell/') {
-            console.log("location: " + location.pathname + ", state: " + JSON.stringify(event));
           }
         }
         history.pushState(location.origin, location.hash, location.pathname);

@@ -68,14 +68,11 @@ angular.module('ui.register.numpad', ['ui.bootstrap.position'])
 
   this.render = function() {
     if (ngModelCtrl.$viewValue) {
+      $scope.number = ngModelCtrl.$viewValue;
     }
-    this.refreshView();
   };
 
   this.refreshView = function() {
-    if (this.element) {
-      this._refreshView();
-    }
   };
 
   // Key event mapper
@@ -115,6 +112,84 @@ angular.module('ui.register.numpad', ['ui.bootstrap.position'])
       self.refreshView();
     }
   };
+
+  $scope.onChangeNumber = function() {
+    console.log('scope.onChangeNumber > this: ' + this.number);
+    console.log('scope.onChangeNumber > scope: ' + $scope.number);
+    //$scope.number = this.number;
+    ngModelCtrl.$setViewValue(this.number);
+    ngModelCtrl.$render();
+  };
+
+  $scope.onBackspace = function() {
+    this.number = ('undefined' == typeof this.number ? '' : this.number);
+    this.number = this.number.slice(0, -1);
+
+    console.log('scope.onBackspace > this: ' + this.number);
+    console.log('scope.Backspace > scope: ' + $scope.number);
+
+    ngModelCtrl.$setViewValue(this.number);
+    ngModelCtrl.$render();
+  };
+
+  $scope.onPercentage = function() {
+  };
+
+  $scope.onReturn = function() {
+    console.log(this.number);
+  };
+
+  $scope.onSign = function() {
+    var number = parseFloat('undefined' == typeof this.number ? '' : this.number);
+    number *= -1;
+
+    ngModelCtrl.$setViewValue(number.toString());
+    ngModelCtrl.$render();
+  };
+
+  $scope.onNumber = function(string) {
+    var number = ('undefined' == typeof this.number ? '' : this.number.toString());
+    var regexp = /^\d+?$/;
+    console.log(number + ':' + regexp.test(number));
+
+    if ('.' == string) {
+      if (regexp.test(number)) {
+        number += string;
+      } else if (number.length == 0) {
+        number = '0';
+        number += string;
+      }
+    } else if ('0' == string || '00' == string) {
+      if (!regexp.test(number) || parseFloat(number) > 0) {
+        number += string;
+      } else if (number.length == 0) {
+        number = '0';
+      }
+    } else {
+      number += string;
+    }
+
+    if (regexp.test(number)) {
+    } else {
+    }
+
+    /*
+    regexp = /^\d+?$/;
+    if (number.length == 0 && '.' == string) {
+      number = '0.';
+    } else if (number.length == 0 && '0' == string || '00' == string) {
+      var regexp = /^
+      number = '0';
+    } else {
+    }
+    */
+
+    regexp = /^\d{0,9}(\.\d{0,5})?$/;
+    if (regexp.test(number)) {
+      ngModelCtrl.$setViewValue(number);
+      ngModelCtrl.$render();
+    }
+  };
 }])
 
 .directive('numpad', function () {
@@ -147,8 +222,8 @@ angular.module('ui.register.numpad', ['ui.bootstrap.position'])
   placement: 'auto'
 })
 
-.directive('numpadPopup', ['$compile', '$parse', '$document', '$rootScope', '$position', 'numpadPopupConfig', '$timeout',
-function ($compile, $parse, $document, $rootScope, $position, numpadPopupConfig, $timeout) {
+.directive('numpadPopup', ['$compile', '$parse', '$document', '$rootScope', '$position', 'numpadPopupConfig', '$timeout', '$q',
+function ($compile, $parse, $document, $rootScope, $position, numpadPopupConfig, $timeout, $q) {
   return {
     restrict: 'EA',
     require: 'ngModel',
@@ -166,6 +241,7 @@ function ($compile, $parse, $document, $rootScope, $position, numpadPopupConfig,
       var popupEl = angular.element('<div numpad-popup-wrap><div numpad></div></div>');
       popupEl.attr({
         'ng-model': 'number',
+        'ng-change': 'numberChange(number)',
         'template-url': numpadPopupTemplateUrl
       });
 
@@ -206,16 +282,26 @@ function ($compile, $parse, $document, $rootScope, $position, numpadPopupConfig,
         }
       });
 
-      // For triggering close to non-focused numpad
-      scope.closeOthers = function() {
+      function addEventListener(element, event, callback, useCapture) {
+        if (element.addEventListener) {
+          element.addEventListener(event, callback, useCapture);
+        } else if (element.attachEvent) {
+          element.attachEvent('on' + event, callback);
+        }
       };
 
       // Inner change
       scope.numberChange = function(number) {
+        if (angular.isDefined(number)) {
+          scope.number = number;
+        }
+        element.val(number);
+        ngModel.$setViewValue(number);
       };
 
       // Detect changes in the view from the text box
       ngModel.$viewChangeListeners.push(function () {
+        scope.number = ngModel.$viewValue;
       });
 
       var documentClickBind = function(event) {
@@ -251,6 +337,26 @@ function ($compile, $parse, $document, $rootScope, $position, numpadPopupConfig,
         }
       };
 
+      scope.show = function() {
+        var placement = 'right';
+        var position = $position.positionElements(element, numpadEl, placement, appendToBody);
+        scope.position = position;
+
+        scope.closeOthers();
+        scope.$apply(function() {
+          scope.isOpen = true;
+        });
+
+        $timeout(function() {
+          if (onOpenFocus) {
+            scope.$broadcast('numpad.focus');
+          }
+          $document.bind('click', documentClickBind);
+        }, 0, false);
+      };
+      addEventListener(element[0], 'click', scope.show);
+
+      /*
       scope.$watch('isOpen', function(value) {
         if (value) {
           var placement = placementPopup;
@@ -274,17 +380,23 @@ function ($compile, $parse, $document, $rootScope, $position, numpadPopupConfig,
           $document.unbind('click', documentClickBind);
         }
       });
+      */
 
       scope.close = function() {
         scope.isOpen = false;
         element[0].focus();
       };
 
+      // For triggering close to non-focused numpad
+      scope.closeOthers = function() {
+        $document.click();
+      };
+
       var $popup = $compile(popupEl)(scope);
       // Prevent jQuery cache memory leak (template is now redundant after linking)
       popupEl.remove();
 
-      if ( appendToBody ) {
+      if (appendToBody) {
         $document.find('body').append($popup);
       } else {
         element.after($popup);
@@ -322,8 +434,8 @@ angular.module("template/numpad/numpad.html", []).run(["$templateCache", functio
   $templateCache.put("template/numpad/numpad.html",
     "<div class=\"numpad-content-wrap\" ng-switch=\"numpadMode\" role=\"application\">\n" +
     "  <div ng-switch-when=\"currency\" class=\"btn-group numpad-switch-btn-group\">\n" +
-    "    <label class=\"btn btn-default\" data-ng-model=\"discountUnit\" btn-radio=\"\'Left\'\">Percentage</label>\n" +
-    "    <label class=\"btn btn-default\" data-ng-model=\"discountUnit\" btn-radio=\"\'Right\'\">Unit Price</label>\n" +
+    "    <label class=\"btn btn-default\" ng-model=\"discountPercentage\" btn-radio=\"\'Left\'\">Percentage</label>\n" +
+    "    <label class=\"btn btn-default\" ng-model=\"discountUnit\" btn-radio=\"\'Right\'\">Unit Price</label>\n" +
     "  </div>\n" +
     "  <div class=\"numpad-number-input-group\">\n" +
     "    <label ng-switch-when=\"currency\" class=\"numpad-input-label\" for=\"change-item-discount-input\">Apply discount percentage</label>\n" +
@@ -334,30 +446,30 @@ angular.module("template/numpad/numpad.html", []).run(["$templateCache", functio
     "          <i class=\"glyphicon glyphicon-th\"></i>\n" +
     "        </button>\n" +
     "      </span>\n" +
-    "      <input ng-switch-when=\"currency\" type=\"text\" class=\"form-control numpad-number-input\" id=\"change-item-discount-input\" placeholder=\"E.g. 20% or 20\" title=\"E.g. 20% or 20\" ng-model=\"number\" autofocus>\n" +
-    "      <input ng-switch-when=\"quantity\" type=\"text\" class=\"form-control numpad-number-input\" id=\"change-item-quantity-input\" placeholder=\"E.g. 20\" title=\"E.g. 20\" ng-model=\"number\" autofocus>\n" +
+    "      <input ng-switch-when=\"currency\" type=\"text\" class=\"form-control numpad-number-input\" id=\"change-item-discount-input\" placeholder=\"E.g. 20% or 20\" title=\"E.g. 20% or 20\" ng-model=\"number\" ng-change=\"onChangeNumber()\" autofocus>\n" +
+    "      <input ng-switch-when=\"quantity\" type=\"text\" class=\"form-control numpad-number-input\" id=\"change-item-quantity-input\" placeholder=\"E.g. 20\" title=\"E.g. 20\" ng-model=\"number\" ng-change=\"onChangeNumber()\" autofocus>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <div class=\"numpad-content\">\n" +
     "    <div class=\"numpad-section\">\n" +
-    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onKeyDown(i)\" tabindex=\"-1\"><span>1</span></button>\n" +
-    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onKeyDown(i)\" tabindex=\"-1\"><span>2</span></button>\n" +
-    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onKeyDown(i)\" tabindex=\"-1\"><span>3</span></button>\n" +
-    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onKeyDown(i)\" tabindex=\"-1\"><span>4</span></button>\n" +
-    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onKeyDown(i)\" tabindex=\"-1\"><span>5</span></button>\n" +
-    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onKeyDown(i)\" tabindex=\"-1\"><span>6</span></button>\n" +
-    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onKeyDown(i)\" tabindex=\"-1\"><span>7</span></button>\n" +
-    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onKeyDown(i)\" tabindex=\"-1\"><span>8</span></button>\n" +
-    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onKeyDown(i)\" tabindex=\"-1\"><span>9</span></button>\n" +
-    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onKeyDown(i)\" tabindex=\"-1\"><span>0</span></button>\n" +
-    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onKeyDown(i)\" tabindex=\"-1\"><span>00</span></button>\n" +
-    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onKeyDown(i)\" tabindex=\"-1\"><span>.</span></button>\n" +
+    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onNumber(\'1\')\" tabindex=\"-1\"><span>1</span></button>\n" +
+    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onNumber(\'2\')\" tabindex=\"-1\"><span>2</span></button>\n" +
+    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onNumber(\'3\')\" tabindex=\"-1\"><span>3</span></button>\n" +
+    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onNumber(\'4\')\" tabindex=\"-1\"><span>4</span></button>\n" +
+    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onNumber(\'5\')\" tabindex=\"-1\"><span>5</span></button>\n" +
+    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onNumber(\'6\')\" tabindex=\"-1\"><span>6</span></button>\n" +
+    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onNumber(\'7\')\" tabindex=\"-1\"><span>7</span></button>\n" +
+    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onNumber(\'8\')\" tabindex=\"-1\"><span>8</span></button>\n" +
+    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onNumber(\'9\')\" tabindex=\"-1\"><span>9</span></button>\n" +
+    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onNumber(\'0\')\" tabindex=\"-1\"><span>0</span></button>\n" +
+    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onNumber(\'00\')\" tabindex=\"-1\"><span>00</span></button>\n" +
+    "      <button type=\"button\" class=\"btn btn-default numpad-key\" ng-click=\"onNumber(\'.\')\" tabindex=\"-1\"><span>.</span></button>\n" +
     "    </div>\n" +
     "    <div class=\"numpad-section last\">\n" +
-    "      <button type=\"button\" class=\"btn btn-default numpad-key numpad-key-delete\" ng-click=\"onKeyDown(i)\" tabindex=\"-1\"><span><i class=\"fa fa-arrow-left\"></i></span></button>\n" +
-    "      <button ng-switch-when=\"currency\" type=\"button\" class=\"btn btn-default numpad-key numpad-key-perent\" ng-click=\"onKeyDown(i)\" tabindex=\"-1\"><span>%</span></button>\n" +
-    "      <button ng-switch-when=\"quantity\" type=\"button\" class=\"btn btn-default numpad-key numpad-key-sign\" ng-click=\"onKeyDown(i)\" tabindex=\"-1\"><span>+/-</span></button>\n" +
-    "      <button type=\"button\" class=\"btn btn-default numpad-key numpad-key-return\" ng-click=\"onKeyDown(i)\" tabindex=\"-1\"><span>return</span></button>\n" +
+    "      <button type=\"button\" class=\"btn btn-default numpad-key numpad-key-delete\" ng-click=\"onBackspace()\" tabindex=\"-1\"><span><i class=\"fa fa-arrow-left\"></i></span></button>\n" +
+    "      <button ng-switch-when=\"currency\" type=\"button\" class=\"btn btn-default numpad-key numpad-key-perent\" ng-click=\"onPercentage()\" tabindex=\"-1\"><span>%</span></button>\n" +
+    "      <button ng-switch-when=\"quantity\" type=\"button\" class=\"btn btn-default numpad-key numpad-key-sign\" ng-click=\"onSign()\" tabindex=\"-1\"><span>+/-</span></button>\n" +
+    "      <button type=\"button\" class=\"btn btn-default numpad-key numpad-key-return\" ng-click=\"onReturn()\" tabindex=\"-1\"><span>return</span></button>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "</div>");

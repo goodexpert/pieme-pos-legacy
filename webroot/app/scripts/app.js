@@ -146,7 +146,7 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
             name: 'ui.register',
             insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
             files: [
-              '/app/scripts/ui-register-tpls.js',
+              '/app/scripts/ui-register-tpls-new.js',
             ]
           },
           {

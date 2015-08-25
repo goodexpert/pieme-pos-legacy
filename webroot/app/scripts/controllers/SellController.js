@@ -17,7 +17,7 @@ angular.module('OnzsaApp', [])
     TableAdvanced.init();
 
     // define alias for local strage
-    $scope.localstorage = Database_localstorage;
+    //$scope.localstorage = Database_localstorage;
 
     // define alias for local Datastore
     $scope.ds = Datastore_sqlite;
@@ -43,7 +43,7 @@ angular.module('OnzsaApp', [])
 
   $scope.doPayment = function() {
     console.log('doPayment');
-    paySaleItems();
+    //paySaleItems();
   };
 
   $scope.openCashDrawer = function() {
@@ -660,7 +660,7 @@ angular.module('OnzsaApp', [])
         if (registers.length > 1) {
           openRegisterSelector(response.data);
         } else {
-          switchRegister(registers[0]);
+          LocalStorage.saveRegister(registers[0]);
         }
       }, function(response) {
         debug("REQUEST: data, error handler");
@@ -850,10 +850,10 @@ angular.module('OnzsaApp', [])
       });
   }
 
-  $scope.openDialog = function() {
+  var openDialog = function() {
     var modalInstance = $modal.open({
       animation: true,
-      templateUrl: 'tpl/select_register.html',
+      templateUrl: '/app/tpl/dopayment.html',
     });
     console.log($modal);
     console.log(modalInstance);
@@ -899,6 +899,8 @@ angular.module('OnzsaApp')
 
 .controller('RegisterSelectorController', function($rootScope, $scope, $modalInstance, $window, locale, items) {
   $scope.items = items;
+
+    console.log('loading here.....');
 
   $scope.cancel = function() {
     $modalInstance.dismiss('cancel');
