@@ -16,9 +16,6 @@ angular.module('OnzsaApp', [])
     Metronic.initAjax();
     TableAdvanced.init();
 
-    // define alias for local strage
-    $scope.localstorage = Database_localstorage;
-
     // define alias for local Datastore
     $scope.ds = Datastore_sqlite;
 
