@@ -16,9 +16,6 @@ angular.module('OnzsaApp', [])
     Metronic.initAjax();
     TableAdvanced.init();
 
-    // define alias for local strage
-    $scope.localstorage = Database_localstorage;
-
     // define alias for local Datastore
     $scope.ds = Datastore_sqlite;
 
@@ -39,11 +36,13 @@ angular.module('OnzsaApp', [])
 
   $scope.voidSale = function() {
     console.log('voidSale');
+    endRegisterSale("sale_status_voided")
   };
 
   $scope.doPayment = function() {
     console.log('doPayment');
-    payRegisterSale();
+    openPayment();
+    //payRegisterSale();
   };
 
   $scope.openCashDrawer = function() {
@@ -96,11 +95,7 @@ angular.module('OnzsaApp', [])
 
   $scope.doParkSale = function() {
     console.log('doParkSale');
-
-    var saleID = LocalStorage.getSaleID();
-    if(saleID != null) {
-      parkRegisterSale(saleID, "sale_status_saved");
-    }
+    endRegisterSale("sale_status_saved");
   };
 
   $scope.functions = {
@@ -203,7 +198,8 @@ angular.module('OnzsaApp', [])
   $scope.priceBooks = [];
   $scope.modified = false;
 
-  $scope.registerSale = {
+  //$rootScope.paymentTypes = [];  //TODO: Payment Type
+  $rootScope.registerSale = {
     'receipt_number': 0,
     'total_cost': 0.0,            //supply_price
     'total_price': 0.0,           //price_exclude_tax(supply_price * markup)
@@ -232,6 +228,10 @@ angular.module('OnzsaApp', [])
     }
   };
 
+  /**
+   * Add Sell Item to List from Quick Key Click event
+   * @param quickKey
+   */
   $scope.addSellItem = function(quickKey) {
     var priceBook = null;
     var saleProduct = null;
@@ -245,7 +245,7 @@ angular.module('OnzsaApp', [])
       saleID = getUUID();
       LocalStorage.saveSaleID(saleID);
 
-      saveRegisterSale(saleID, "sale_status_open");
+      saveRegisterSales(saleID, "sale_status_open");
     }
 
     //STEP 0. Get Product by ProductId
@@ -297,14 +297,32 @@ angular.module('OnzsaApp', [])
         console.log("Not found Product : " + quickKey.product_id);
       }
     }, quickKey.product_id); //Get Product
-
   };
 
+  /**
+   * Remove Sale Item in List from delete icon click event
+   * @param saleItem
+   */
   $scope.removeSellItem = function(saleItem) {
+
+    // Delete Sale Item from List
     deleteSaleItemBySequence(saleItem.sequence);
+
+    // Recalcurate Total
     subtractionRegisterSaleTotal(saleItem);
 
-    //TODO: delete RegisterSaleItems
+    // Delete Sale Item from RegisterSaleItems
+    var saleID = LocalStorage.getSaleID();
+    //TODO: change to status deleteRegisterSaleItem(saleItem, saleID);
+
+    // Update RegisterSale
+    updateRegiserSale(saleID);
+
+    // If list to be empty, Delete RegisterSale and RegisterSaleID
+    if($scope.saleItems.length == 0) {
+      //TODO: change to status deleteRegisterSales(saleID);
+      LocalStorage.clearSaleID();
+    }
   };
 
   $scope.customer = {
@@ -407,6 +425,15 @@ angular.module('OnzsaApp', [])
   }
 
   // --------------------------
+  // clear sellItem structure
+  // --------------------------
+  var clearSellItems = function() {
+    //console.log("BEFORE saleItems.length : " + $scope.saleItems.length);
+    $scope.saleItems.length = 0;
+    //console.log("AFTER  saleItems.length : " + $scope.saleItems.length);
+  }
+
+  // --------------------------
   // get price book
   // --------------------------
   var getPriceBook = function(callback, productId, outletId, productQty, customerGroupId) {
@@ -444,18 +471,9 @@ angular.module('OnzsaApp', [])
     saleItem.discount = priceBook.discount;
     saleItem.qty = 1;
     saleItem.loyalty_value = priceBook.loyalty_value;
-    saleItem.sequence = $scope.registerSale.sequence++;
+    saleItem.sequence = $rootScope.registerSale.sequence++;
     $scope.saleItems.unshift(saleItem);
     return saleItem;
-  }
-
-  // --------------------------
-  // clear sellItem structure
-  // --------------------------
-  var clearSellItems = function() {
-    console.log("BEFORE saleItems.length : " + $scope.saleItems.length);
-    $scope.saleItems.length = 0;
-    console.log("AFTER  saleItems.length : " + $scope.saleItems.length);
   }
 
   // --------------------------
@@ -475,34 +493,34 @@ angular.module('OnzsaApp', [])
   // addition to registerSale structure using saleItem
   // --------------------------
   var additionRegisterSaleTotal = function(saleItem) {
-    $scope.registerSale.total_cost += saleItem.supply_price * saleItem.qty;
-    $scope.registerSale.total_price += saleItem.price * saleItem.qty;
-    $scope.registerSale.total_price_incl_tax += saleItem.price_include_tax * saleItem.qty;
-    $scope.registerSale.total_discount += saleItem.discount * saleItem.qty;
-    $scope.registerSale.total_tax += saleItem.tax * saleItem.qty;
+    $rootScope.registerSale.total_cost += saleItem.supply_price * saleItem.qty;
+    $rootScope.registerSale.total_price += saleItem.price * saleItem.qty;
+    $rootScope.registerSale.total_price_incl_tax += saleItem.price_include_tax * saleItem.qty;
+    $rootScope.registerSale.total_discount += saleItem.discount * saleItem.qty;
+    $rootScope.registerSale.total_tax += saleItem.tax * saleItem.qty;
   }
 
   // --------------------------
   // subtraction to registerSale structure using saleItem
   // --------------------------
   var subtractionRegisterSaleTotal = function(saleItem) {
-    $scope.registerSale.total_cost -= saleItem.supply_price * saleItem.qty;
-    $scope.registerSale.total_price -= saleItem.price * saleItem.qty;
-    $scope.registerSale.total_price_incl_tax -= saleItem.price_include_tax * saleItem.qty;
-    $scope.registerSale.total_discount -= saleItem.discount * saleItem.qty;
-    $scope.registerSale.total_tax -= saleItem.tax * saleItem.qty;
+    $rootScope.registerSale.total_cost -= saleItem.supply_price * saleItem.qty;
+    $rootScope.registerSale.total_price -= saleItem.price * saleItem.qty;
+    $rootScope.registerSale.total_price_incl_tax -= saleItem.price_include_tax * saleItem.qty;
+    $rootScope.registerSale.total_discount -= saleItem.discount * saleItem.qty;
+    $rootScope.registerSale.total_tax -= saleItem.tax * saleItem.qty;
   }
 
   // --------------------------
   // clear registerSale structure
   // --------------------------
   var clearRegisterSaleTotal = function() {
-    $scope.registerSale.total_cost = 0;
-    $scope.registerSale.total_price = 0;
-    $scope.registerSale.total_price_incl_tax = 0;
-    $scope.registerSale.total_discount = 0;
-    $scope.registerSale.total_tax = 0;
-    $scope.registerSale.total_payment = 0;
+    $rootScope.registerSale.total_cost = 0;
+    $rootScope.registerSale.total_price = 0;
+    $rootScope.registerSale.total_price_incl_tax = 0;
+    $rootScope.registerSale.total_discount = 0;
+    $rootScope.registerSale.total_tax = 0;
+    $rootScope.registerSale.total_payment = 0;
   }
 
 
@@ -539,11 +557,11 @@ angular.module('OnzsaApp', [])
     var inputRegisterSales = {
       'id': saleUUID,
       'status': status,
-      'total_cost': $scope.registerSale.total_cost,
-      'total_price': $scope.registerSale.total_price,
-      'total_price_incl_tax': $scope.registerSale.total_price_incl_tax,
-      'total_discount': $scope.registerSale.total_discount,
-      'total_tax': $scope.registerSale.total_tax,
+      'total_cost': $rootScope.registerSale.total_cost,
+      'total_price': $rootScope.registerSale.total_price,
+      'total_price_incl_tax': $rootScope.registerSale.total_price_incl_tax,
+      'total_discount': $rootScope.registerSale.total_discount,
+      'total_tax': $rootScope.registerSale.total_tax,
     }
     var data = [];
     data.push(inputRegisterSales);
@@ -554,9 +572,9 @@ angular.module('OnzsaApp', [])
   }
 
   // --------------------------
-  // Save RegisterSale
+  // Save RegisterSales
   // --------------------------
-  var saveRegisterSale = function(saleID, status) {
+  var saveRegisterSales = function(saleID, status) {
     var config = LocalStorage.getConfig();
     var data = {
       'id': saleID,
@@ -567,13 +585,13 @@ angular.module('OnzsaApp', [])
       'customer_code': "12345678",      //TODO: customer_code
       'customer_name': "New Customer",  //TODO: customer_name
       'xero_invoice_id': null,
-      'receipt_number': $scope.registerSale.receipt_number,
+      'receipt_number': $rootScope.registerSale.receipt_number,
       'status': status,
-      'total_cost': $scope.registerSale.total_cost,
-      'total_price': $scope.registerSale.total_price,
-      'total_price_incl_tax': $scope.registerSale.total_price_incl_tax,
-      'total_discount': $scope.registerSale.total_discount,
-      'total_tax': $scope.registerSale.total_tax,
+      'total_cost': $rootScope.registerSale.total_cost,
+      'total_price': $rootScope.registerSale.total_price,
+      'total_price_incl_tax': $rootScope.registerSale.total_price_incl_tax,
+      'total_discount': $rootScope.registerSale.total_discount,
+      'total_tax': $rootScope.registerSale.total_tax,
       'note': null,
       'sale_date': null,
     }
@@ -583,13 +601,20 @@ angular.module('OnzsaApp', [])
   }
 
   // --------------------------
-  // Paking RegisterSale
+  // Delete RegisterSales
   // --------------------------
-  var parkRegisterSale = function(saleID, status) {
+  var deleteRegisterSales = function(saleID) {
     var data = {
-      'id': saleID,
-      'status': status,
+      'id': saleID
     }
+    //TODO: change to status $scope.ds.deleteRegisterSalePayments(data);
+  }
+
+  // --------------------------
+  // End RegisterSale
+  // --------------------------
+  var endRegisterSale = function(status) {
+    var saleID = LocalStorage.getSaleID();
     var suc = function() {
       // Clear Register Sale Item in UI
       clearSellItems();
@@ -603,25 +628,38 @@ angular.module('OnzsaApp', [])
       // Update View
       $scope.$apply();
     }
-    $scope.ds.changeRegisterSales(data, suc);
+    updateRegiserSale(saleID, status, suc);  //TODO: layby closed / onaccount_closed
   }
 
   // --------------------------
   // Update RegisterSale
   // --------------------------
-  var updateRegiserSale = function(saleID) {
+  var updateRegiserSale = function(saleID, status, suc) {
     var now = getUnixTimestamp();
     var config = LocalStorage.getConfig();
-    //TODO: If Payment Done, Set sale_date
-    var data = {
-      'id': saleID,
-      'total_cost': $scope.registerSale.total_cost,
-      'total_price': $scope.registerSale.total_price,
-      'total_price_incl_tax': $scope.registerSale.total_price_incl_tax,
-      'total_discount': $scope.registerSale.total_discount,
-      'total_tax': $scope.registerSale.total_tax,
+    var data =[];
+    if(status != null) {
+      data = {
+        'id': saleID,
+        'status': status,
+        'sale_date': now,
+        'total_cost': $rootScope.registerSale.total_cost,
+        'total_price': $rootScope.registerSale.total_price,
+        'total_price_incl_tax': $rootScope.registerSale.total_price_incl_tax,
+        'total_discount': $rootScope.registerSale.total_discount,
+        'total_tax': $rootScope.registerSale.total_tax,
+      }
+    } else {
+      data = {
+        'id': saleID,
+        'total_cost': $rootScope.registerSale.total_cost,
+        'total_price': $rootScope.registerSale.total_price,
+        'total_price_incl_tax': $rootScope.registerSale.total_price_incl_tax,
+        'total_discount': $rootScope.registerSale.total_discount,
+        'total_tax': $rootScope.registerSale.total_tax,
+      }
     }
-    $scope.ds.changeRegisterSales(data, null);
+    $scope.ds.changeRegisterSales(data, suc);
   }
 
   // --------------------------
@@ -653,13 +691,33 @@ angular.module('OnzsaApp', [])
     $scope.ds.saveRegisterSalesItems(null, inputValue);
   }
 
+  // --------------------------
+  // Delete SaleItem from RegisterSaleItems
+  // --------------------------
+  var deleteRegisterSaleItem = function(saleItem, saleID) {
+    var delInfo = {
+      'sale_id': saleID,
+      'sequence': saleItem.sequence
+    };
+    //TODO: change to status $scope.ds.deleteRegisterSaleItems(delInfo);
+  }
+
+
+
+
+
+
+
+
+
+
   var bootstrapSystem = function() {
     debug("INIT: checking for the init of the config table");
     var config = LocalStorage.getConfig();
     var register_id = config.register_id;
 
     debug("INIT: checking for the init of the Web SQL Database");
-    $scope.ds.dropAllLocalDataStore();  //TODO: Drop Table
+    //$scope.ds.dropAllLocalDataStore();  //TODO: Drop Table
     $scope.ds.initLocalDataStore();
 
     debug("REFRESH config");
@@ -679,11 +737,17 @@ angular.module('OnzsaApp', [])
         debug(response.data);
 
         debug("REFRESH payment types");
-        debug("REQUEST: payment types >>>>>>>>>>>>>>>>>>>>>");
+        debug("REQUEST: payment types >>>>>>>>>>>>>>>>>>>");
         return $http.get('/api/payment_types.json');
       }).then(function(response) {
         debug("REQUEST: payment types, success handler");
         debug(response.data);
+
+        //TODO: saveRegisterPaymentTypes log
+        $scope.ds.saveRegisterPaymentTypes(response.data);
+
+        console.table($scope.paymentType);
+        debug("REQUEST: payment types <<<<<<<<<<<<<<<<<<<<<<<");
 
         debug("REFRESH products");
         debug("REQUEST: products >>>>>>>>>>>>>>>>>>>>>");
@@ -692,7 +756,7 @@ angular.module('OnzsaApp', [])
         debug("REQUEST: products, success handler");
         debug(response.data);
 
-        //TODO: saveProducts
+        //TODO: saveProducts log
         $scope.ds.saveProducts(null, response.data);
 
         debug("REFRESH registers");
@@ -779,7 +843,6 @@ angular.module('OnzsaApp', [])
     $http.get('/api/payment_types.json')
       .then(function(response) {
         debug("REQUEST: payment types, success handler");
-        debug(response.data);
 
         callback();
       }, function (response) {
@@ -926,6 +989,43 @@ angular.module('OnzsaApp', [])
     evt.stopPropagation();
 
     $scope.opened = true;
+  };
+
+  var openPayment = function(data) {
+    var modalPaymentInstance = $modal.open({
+      templateUrl: '/app/tpl/payment.html',
+      controller: 'PaymentController',
+      backdrop: 'static',
+      keyboard: false,
+      size: 'lg',
+      resolve: {
+        items: function() {
+          return data;
+        }
+      }
+    });
+    // callback logic from payment
+    modalPaymentInstance.result.then(function (payinfo) {
+
+      console.table(payinfo);
+      switch (payinfo.status) {
+        case 'done' :
+          console.log("SELL-C : done");
+          endRegisterSale("sale_status_closed")
+          break;
+        case 'layby' :
+          console.log("SELL-C : layby");
+          endRegisterSale("sale_status_layby")
+          break;
+        case 'onaccount' :
+          console.log("SELL-C : onaccount");
+          endRegisterSale("sale_status_onaccount")
+          break;
+        default:
+          //cancel
+          console.log("SELL-C : cancel");
+      }
+    });
   };
 
   var openRegisterSelector = function(registers) {

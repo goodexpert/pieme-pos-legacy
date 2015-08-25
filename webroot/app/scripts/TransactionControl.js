@@ -19,7 +19,7 @@
     function print_receipt(payment_name, paying) {
         var now = new Date(Date.now());
 
-        $(".invoice-date").text($.datepicker.formatDate('yy/mm/dd', new Date()) + ' ' + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds());
+        //$(".invoice-date").text($.datepicker.formatDate('yy/mm/dd', new Date()) + ' ' + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds());
         $(".fade").hide();
         $(".receipt-product-table").children("tbody").text('');
         $(".order-product").each(function () {

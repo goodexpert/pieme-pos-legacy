@@ -585,3 +585,21 @@ ul, ol, li
   margin:0;
 }
 */
+img.img-responsive.payment{
+
+  height: 30px;
+}
+.payment.modal-dialog{
+  width:900px;
+
+}
+
+.payment.modal {
+  width:1000px;
+  margin:auto;
+  box-shadow: none ;
+}
+
+.hide{
+  visibility:hidden;
+}
