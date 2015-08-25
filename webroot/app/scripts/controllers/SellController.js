@@ -9,7 +9,7 @@
  */
 angular.module('OnzsaApp', [])
 
-.controller('SellController', function($rootScope, $scope, $state, $location, $http, $modal, locale, LocalStorage) {
+.controller('SellController', function($rootScope, $scope, $state, $stateParams, $location, $http, $modal, locale, LocalStorage) {
 
   $scope.$on('$viewContentLoaded', function() {   
     // initialize core components
@@ -39,10 +39,14 @@ angular.module('OnzsaApp', [])
     endRegisterSale("sale_status_voided")
   };
 
+  $scope.doParking = function() {
+    console.log('doParking');
+    endRegisterSale("sale_status_saved");
+  };
+
   $scope.doPayment = function() {
     console.log('doPayment');
     openPayment();
-    //payRegisterSale();
   };
 
   $scope.openCashDrawer = function() {
@@ -93,11 +97,6 @@ angular.module('OnzsaApp', [])
     $state.go("close-register");
   };
 
-  $scope.doParkSale = function() {
-    console.log('doParkSale');
-    endRegisterSale("sale_status_saved");
-  };
-
   $scope.functions = {
     'fn_void_sale' : {
       id      : 'fn_void_sale',
@@ -113,6 +112,11 @@ angular.module('OnzsaApp', [])
       id      : 'fn_do_line_price',
       name    : 'Line Price',
       callback: $scope.doLinePrice
+    },
+    'fn_do_parking' : {
+      id      : 'fn_do_parking',
+      name    : 'Save',
+      callback: $scope.doParking
     },
     'fn_do_payment' : {
       id      : 'fn_do_payment',
@@ -168,12 +172,7 @@ angular.module('OnzsaApp', [])
       id      : 'fn_do_nothing',
       name    : '',
       callback: function() {}
-    },
-    'fn_do_parking' : {
-      id      : 'fn_do_parking',
-      name    : 'Park',
-      callback: $scope.doParkSale
-    },
+    }
   };
 
   $scope.function_keys = [
@@ -182,17 +181,16 @@ angular.module('OnzsaApp', [])
     angular.extend({position: 2}, $scope.functions['fn_do_line_price']),
     angular.extend({position: 3}, $scope.functions['fn_do_payment']),
     angular.extend({position: 4}, $scope.functions['fn_do_refund']),
-    angular.extend({position: 5}, $scope.functions['fn_do_recall']),
-    angular.extend({position: 6}, $scope.functions['fn_view_history']),
-    angular.extend({position: 7}, $scope.functions['fn_view_daily_report']),
-    angular.extend({position: 8}, $scope.functions['fn_close_register']),
-    angular.extend({position: 9}, $scope.functions['fn_print_receipt']),
+    angular.extend({position: 5}, $scope.functions['fn_do_parking']),
+    angular.extend({position: 6}, $scope.functions['fn_do_recall']),
+    angular.extend({position: 7}, $scope.functions['fn_view_history']),
+    angular.extend({position: 8}, $scope.functions['fn_view_daily_report']),
+    angular.extend({position: 9}, $scope.functions['fn_close_register']),
     angular.extend({position: 10}, $scope.functions['fn_open_cash_drawer']),
     angular.extend({position: 11}, $scope.functions['fn_do_setup']),
     angular.extend({position: 12}, $scope.functions['fn_do_logout']),
     angular.extend({position: 13}, $scope.functions['fn_do_nothing']),
-    //angular.extend({position: 14}, $scope.functions['fn_do_nothing']),
-    angular.extend({position: 14}, $scope.functions['fn_do_parking']),  //TODO: for Test
+    angular.extend({position: 14}, $scope.functions['fn_do_nothing'])
   ];
 
   $scope.priceBooks = [];
@@ -371,7 +369,6 @@ angular.module('OnzsaApp', [])
   $scope.templateUrl = 'views/quantity-pad.html';
   $scope.templateUrl = 'myPopoverTemplate.html';
 
-
   // --------------------------
   // delete saleItem using sequence
   // --------------------------
@@ -522,7 +519,6 @@ angular.module('OnzsaApp', [])
     $rootScope.registerSale.total_tax = 0;
     $rootScope.registerSale.total_payment = 0;
   }
-
 
   //TODO: Get Outlet ID
 
@@ -764,6 +760,7 @@ angular.module('OnzsaApp', [])
           openRegisterSelector(response.data);
         } else {
           LocalStorage.saveRegister(registers[0]);
+          switchRegister(registers[0]);
         }
       }, function(response) {
         debug("REQUEST: data, error handler");
@@ -995,10 +992,11 @@ angular.module('OnzsaApp', [])
         }
       }
     });
+
     // callback logic from payment
     modalPaymentInstance.result.then(function (payinfo) {
-
       console.table(payinfo);
+
       switch (payinfo.status) {
         case 'done' :
           console.log("SELL-C : done");

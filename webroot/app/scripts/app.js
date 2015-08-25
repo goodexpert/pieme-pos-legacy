@@ -19,6 +19,7 @@ var OnzsaApp = angular.module('OnzsaApp', [
   'ngResource',
   'ngRoute',
 */
+  'datatables',
   'ngSanitize',
   'ngLocalize',
   'ngLocalize.Config',
@@ -169,6 +170,7 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
               '/theme/metronic/assets/global/plugins/datatables/all.min.js',
               '/theme/metronic/assets/admin/pages/scripts/tasks.js',
 
+              '/app/scripts/onzsa_ds.js',
               '/app/scripts/table-advanced.js',
               '/app/scripts/controllers/PaymentController.js',
               '/app/scripts/controllers/SellController.js'
@@ -200,9 +202,11 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
             files: [
               '/theme/metronic/assets/global/plugins/morris/morris.css',
               '/theme/metronic/assets/global/plugins/select2/select2.css',
+          /*
               '/theme/metronic/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
               '/theme/metronic/assets/global/plugins/datatables/extensions/Scroller/css/dataTables.scroller.min.css',
               '/theme/metronic/assets/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css',
+           */
               '/theme/metronic/assets/admin/pages/css/tasks.css',
               '/app/styles/register.css',
 
@@ -211,10 +215,18 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
               '/theme/metronic/assets/global/plugins/jquery.sparkline.min.js',
 
               '/theme/metronic/assets/global/plugins/select2/select2.min.js',
+              /*
               '/theme/metronic/assets/global/plugins/datatables/all.min.js',
+              */
               '/theme/metronic/assets/admin/pages/scripts/tasks.js',
+              '/lib/angular-datatables/dist/plugins/colreorder/angular-datatables.colreorder.min.js',
+              '/lib/angular-datatables/dist/plugins/columnfilter/angular-datatables.columnfilter.min.js',
+              '/lib/angular-datatables/dist/plugins/fixedcolumns/angular-datatables.fixedcolumns.min.js',
+              '/lib/angular-datatables/dist/plugins/fixedheader/angular-datatables.fixedheader.min.js',
+              '/lib/angular-datatables/dist/plugins/scroller/angular-datatables.scroller.min.js',
+              '/lib/angular-datatables/dist/plugins/tabletools/angular-datatables.tabletools.min.js',
 
-              '/app/scripts/table-advanced.js',
+              '/app/scripts/onzsa_ds.js',
               '/app/scripts/controllers/RecallController.js'
             ]
           }]);
@@ -258,7 +270,7 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
               '/theme/metronic/assets/global/plugins/datatables/all.min.js',
               '/theme/metronic/assets/admin/pages/scripts/tasks.js',
 
-              '/app/scripts/table-advanced.js',
+              '/app/scripts/onzsa_ds.js',
               '/app/scripts/controllers/DailySnapshotController.js'
             ]
           }]);
@@ -302,7 +314,7 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
               '/theme/metronic/assets/global/plugins/datatables/all.min.js',
               '/theme/metronic/assets/admin/pages/scripts/tasks.js',
 
-              '/app/scripts/table-advanced.js',
+              '/app/scripts/onzsa_ds.js',
               '/app/scripts/controllers/CloseRegisterController.js'
             ]
           }]);

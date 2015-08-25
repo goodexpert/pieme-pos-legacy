@@ -1,10 +1,4 @@
 <div data-ng-controller="SellController">
-  <p class="input-group">
-    <input type="date" class="form-control ng-pristine ng-isolate-scope ng-valid ng-valid-required ng-touched" datepicker-popup="" ng-model="dt" is-open="true" min-date="minDate" max-date="'2020-06-22'" datepicker-options="dateOptions" date-disabled="disabled(date, mode)" ng-required="true" close-text="Close" required="required"><!-- ngIf: isOpen -->
-    <span class="input-group-btn">
-    <button type="button" class="btn btn-default"><i class="glyphicon glyphicon-calendar"></i></button>
-    </span>
-  </p>
 
   <!-- REGISTER BEGIN -->
   <div class="row" id="register">
@@ -37,19 +31,25 @@
             </thead>
 
             <tbody>
-            <tr class="order-product" data-ng-repeat="saleItem in saleItems">
-              <td class="sale-item-name text-left">{{saleItem.name}}</td>
-              <td class="sale-item-qty text-right">{{saleItem.qty}}</td>
-              <td class="sale-item-discount text-right">
-                ${{(saleItem.discount * saleItem.qty) | number:2}}
-              </td>
-              <td class="sale-item-price text-right">${{(saleItem.price_include_tax * saleItem.qty) | number:2}}</td>
-              <td class="sale-item-remove text-center">
-                <button class="btn btn-xs btn-circle btn-danger" data-ng-click="removeSellItem(saleItem)">
-                  <i class="glyphicon glyphicon-remove" aria-hidden="true"></i>
-                </button>
-              </td>
-            </tr>
+              <tr class="order-product" data-ng-repeat="saleItem in saleItems">
+                <td class="sale-item-name text-left">
+                  {{saleItem.name}}
+                </td>
+                <td class="sale-item-qty text-right" numpad-popup numpad-append-to-body="true" numpad-mode="'quantity'" ng-model="saleItem.qty" ng-required="true">
+                  {{saleItem.qty}}
+                </td>
+                <td class="sale-item-discount text-right" numpad-popup numpad-append-to-body="true" numpad-mode="'currency'" ng-model="saleItem.discount" ng-required="true">
+                  ${{(saleItem.discount * saleItem.qty) | number:2}}
+                </td>
+                <td class="sale-item-price text-right">
+                  ${{((saleItem.price_include_tax - saleItem.discount) * saleItem.qty) | number:2}}
+                </td>
+                <td class="sale-item-remove text-center">
+                  <button class="btn btn-xs btn-circle btn-danger" data-ng-click="removeSellItem(saleItem)">
+                    <i class="glyphicon glyphicon-remove" aria-hidden="true"></i>
+                  </button>
+                </td>
+              </tr>
             </tbody>
 
             <tfoot>
@@ -76,10 +76,6 @@
               <div class="input-icon left">
                 <i class="icon-magnifier"></i>
                 <input type="text" class="form-control form-control-solid" placeholder="Customer Search" id="customer_code">
-                <!--
-                -->
-                <input type="text" class="form-control form-control-solid" placeholder="Customer Search" id="customer_code" numpad-popup numpad-mode="'quantity'" ng-model="customer_code1" ng-required="true">
-                <input type="text" class="form-control form-control-solid" placeholder="Customer Search" id="customer_code" numpad-popup numpad-mode="'currency'" ng-model="customer_code2" ng-required="true">
               </div>
             </div>
             <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">

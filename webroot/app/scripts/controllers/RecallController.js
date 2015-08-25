@@ -9,11 +9,12 @@
  */
 angular.module('OnzsaApp', [])
 
-.controller('RecallController', function($rootScope, $scope, $state, $http, $modal, locale, LocalStorage) {
+.controller('RecallController', function($rootScope, $scope, $state, $http, $modal, $q, locale, DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder) {
 
   $scope.$on('$viewContentLoaded', function() {   
     // initialize core components
     Metronic.initAjax();
+    /*
     TableAdvanced.init();
 
     // define alias for local Datastore
@@ -31,26 +32,45 @@ angular.module('OnzsaApp', [])
       $scope.$apply();
       console.log($scope.register_sales);
     });
+    */
   });
 
-  /*
-  $scope.register_sales = [];
+  var vm = this;
+  vm.dtOptions = DTOptionsBuilder.fromFnPromise(function() {
+    return reloadData();
+  }).withPaginationType('full_numbers');
 
-  var register_sale = {};
-  register_sale.id = '1234';
-  register_sale.sale_date = '2015-08-06 15:49:00';
-  register_sale.sale_status = 'ONACCOUNT';
-  register_sale.amount = '20.0';
-  register_sale.user = {
-    'id': '1',
-    'name': 'Steve Park'
-  };
-  register_sale.customer = {
-    'id': '1',
-    'name': 'Steve Park',
-    'customer_code': 'N1K2'
-  };
+  vm.dtColumns = [
+    DTColumnBuilder.newColumn('sale_date').withTitle('Date').renderWith(function(data, type, full) {
+      return new Date(data * 1000);
+    }),
+    DTColumnBuilder.newColumn('status').withTitle('Status'),
+    DTColumnBuilder.newColumn('user_name').withTitle('User'),
+    DTColumnBuilder.newColumn('customer_name').withTitle('Customer'),
+    DTColumnBuilder.newColumn('total_price_incl_tax').withTitle('Total'),
+    DTColumnBuilder.newColumn('note').withTitle('Note'),
+    DTColumnBuilder.newColumn('').renderWith(function(data, type, full) {
+      return '<a href="#sale/' + full.id + '">Open</a>';
+    })
+  ];
 
-  $scope.register_sales.push(register_sale);
-  */
+  // define alias for local Datastore
+  $scope.ds = Datastore_sqlite;
+
+  function reloadData() {
+    var defer = $q.defer();
+    var data = [];
+
+    $scope.ds.getRegisterSales("all", function(data) {
+
+      for(var i=0; i< data.length; i++){
+        data[i]["status"] = data[i]["status"].replace("sale_status_", "");
+      }
+
+      $scope.register_sales = data;
+      defer.resolve(data);
+    });
+
+    return defer.promise;
+  }
 });

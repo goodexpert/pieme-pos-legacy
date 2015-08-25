@@ -108,33 +108,31 @@
     <script src="/theme/metronic/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
     <script src="/theme/metronic/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
     <script src="/theme/metronic/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+    <script src="/lib/datatables/media/js/jquery.dataTables.min.js"></script>
     <!--
     <script src="/theme/metronic/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
     -->
     <!-- END CORE JQUERY PLUGINS -->
 
     <!-- BEGIN CORE ANGULARJS PLUGINS -->
-    <script src="/lib/angular/angular.js" type="text/javascript"></script>
+    <script src="/lib/angular/angular.min.js" type="text/javascript"></script>
     <script src="/lib/angular-animate/angular-animate.min.js" type="text/javascript"></script>
     <script src="/lib/angular-aria/angular-aria.min.js" type="text/javascript"></script>
     <script src="/lib/angular-cookies/angular-cookies.min.js" type="text/javascript"></script>
+    <script src="/lib/angular-datatables/dist/angular-datatables.min.js" type="text/javascript"></script>
     <script src="/lib/angular-hotkeys/build/hotkeys.min.js" type="text/javascript"></script>
+    <script src="/lib/angular-local-storage/dist/angular-local-storage.min.js" type="text/javascript"></script>
+    <script src="/lib/angular-localization/angular-localization.min.js" type="text/javascript"></script>
     <script src="/lib/angular-messages/angular-messages.min.js" type="text/javascript"></script>
     <script src="/lib/angular-resource/angular-resource.min.js" type="text/javascript"></script>
     <script src="/lib/angular-route/angular-route.min.js" type="text/javascript"></script>
     <script src="/lib/angular-sanitize/angular-sanitize.min.js" type="text/javascript"></script>
-    <script src="/lib/angular-local-storage/dist/angular-local-storage.min.js" type="text/javascript"></script>
-    <script src="/lib/angular-localization/angular-localization.min.js" type="text/javascript"></script>
     <script src="/lib/angular-touch/angular-touch.min.js" type="text/javascript"></script>
+    <script src="/lib/angular-ui-router/release/angular-ui-router.min.js" type="text/javascript"></script>
     <script src="/lib/angular-useragent-parser/release/angular-useragent-parser.min.js"></script>
     <script src="/lib/angular-virtual-keyboard/release/angular-virtual-keyboard.min.js"></script>
-    <!-- current version of ui-bootstrap has a modal-backdrop issue.
-    <script src="/lib/angular-bootstrap/ui-bootstrap-tpls.min.js" type="text/javascript"></script>
-    <script src="/theme/metronic/assets/global/plugins/angularjs/plugins/ui-bootstrap-tpls.min.js" type="text/javascript"></script>
-    -->
-    <script src="/lib/ui-bootstrap-custom-build/ui-bootstrap-custom-tpls-0.13.3.js" type="text/javascript"></script>
-    <script src="/lib/angular-ui-router/release/angular-ui-router.min.js" type="text/javascript"></script>
     <script src="/lib/oclazyload/dist/ocLazyLoad.min.js" type="text/javascript"></script>
+    <script src="/lib/ui-bootstrap-custom-build/ui-bootstrap-custom-tpls-0.13.3.js" type="text/javascript"></script>
     <!-- END CORE ANGULARJS PLUGINS -->
 
     <!-- BEGIN APP LEVEL ANGULARJS SCRIPTS -->

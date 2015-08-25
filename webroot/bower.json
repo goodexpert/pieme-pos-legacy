@@ -1,39 +1,48 @@
 {
   "name": "onzsa-pos",
   "version": "1.0.0",
+  "authors": [
+    "Seongwuk Park <seongwuk.park@gmail.com>"
+  ],
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "Cloud",
+    "Point-of-sale"
+  ],
+  "license": "MIT",
+  "homepage": "http://www.onzsa.com",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "lib",
+    "test",
+    "tests"
+  ],
   "dependencies": {
-    "angular": "^1.3.0",
-    "bootstrap": "^3.2.0",
-    "angular-animate": "^1.3.0",
-    "angular-aria": "^1.3.0",
-    "angular-cookies": "^1.3.0",
-    "angular-localization": "~1.2.1",
-    "angular-messages": "^1.3.0",
-    "angular-resource": "^1.3.0",
-    "angular-route": "^1.3.0",
-    "angular-sanitize": "^1.3.0",
-    "angular-touch": "^1.3.0",
-    "angular-bootstrap": "^0.13.2",
-    "angular-ui-router": "^0.2.15",
-    "angular-datatables": "^0.4.3",
+    "angular": "~1.4.4",
+    "angular-animate": "~1.4.4",
+    "angular-aria": "~1.4.4",
+    "angular-bootstrap": "~0.13.3",
+    "angular-cookies": "~1.4.4",
+    "angular-datatables": "~0.4.3",
     "angular-hotkeys": "chieffancypants/angular-hotkeys#~1.5.0",
     "angular-local-storage": "~0.2.2",
+    "angular-localization": "~1.2.1",
+    "angular-messages": "~1.4.4",
+    "angular-resource": "~1.4.4",
+    "angular-route": "~1.4.4",
+    "angular-sanitize": "~1.4.4",
+    "angular-touch": "~1.4.4",
+    "angular-ui-router": "~0.2.15",
     "angular-useragent-parser": "~0.1.0",
-    "angular-virtual-keyboard": "^0.4.2",
-    "oclazyload": "^1.0.4"
+    "angular-virtual-keyboard": "~0.4.2",
+    "bootstrap": "~3.3.5",
+    "oclazyload": "~1.0.4"
   },
   "devDependencies": {
-    "angular-mocks": "^1.3.0"
-  },
-  "appPath": "onzsa-pos",
-  "moduleName": "OnzsaPos",
-  "overrides": {
-    "bootstrap": {
-      "main": [
-        "less/bootstrap.less",
-        "dist/css/bootstrap.css",
-        "dist/js/bootstrap.js"
-      ]
-    }
+    "angular-mocks": "~1.4.4"
   }
 }

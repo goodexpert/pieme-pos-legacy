@@ -165,6 +165,7 @@ fieldset[disabled] .btn-function.active {
   background-color: #525252;
   display: block;
   padding: 20px;
+  width: 276px;
 }
 
 .numpad-switch-btn-group {

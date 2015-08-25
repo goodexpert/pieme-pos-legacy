@@ -57,6 +57,7 @@ angular.module('ui.register.numpad', ['ui.bootstrap.position'])
 
   $scope.numpadMode = $scope.numpadMode || numpadConfig.numpadMode;
   $scope.uniqueId = 'numpad-' + $scope.$id + '-' + Math.floor(Math.random() * 10000);
+  $scope.discountUnit = 'percentage';
 
   this.init = function( ngModelCtrl_ ) {
     ngModelCtrl = ngModelCtrl_;
@@ -432,22 +433,38 @@ function ($compile, $parse, $document, $rootScope, $position, numpadPopupConfig,
 
 angular.module("template/numpad/numpad.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("template/numpad/numpad.html",
-    "<div class=\"numpad-content-wrap\" ng-switch=\"numpadMode\" role=\"application\">\n" +
-    "  <div ng-switch-when=\"currency\" class=\"btn-group numpad-switch-btn-group\">\n" +
-    "    <label class=\"btn btn-default\" ng-model=\"discountPercentage\" btn-radio=\"\'Left\'\">Percentage</label>\n" +
-    "    <label class=\"btn btn-default\" ng-model=\"discountUnit\" btn-radio=\"\'Right\'\">Unit Price</label>\n" +
+    "<div ng-switch=\"numpadMode\" class=\"numpad-content-wrap\" role=\"application\">\n" +
+    "  <div ng-switch-when=\"currency\">\n" +
+    "    <div class=\"btn-group numpad-switch-btn-group\">\n" +
+    "      <label class=\"btn btn-default\" ng-model=\"discountUnit\" btn-radio=\"\'percentage\'\">Percentage</label>\n" +
+    "      <label class=\"btn btn-default\" ng-model=\"discountUnit\" btn-radio=\"\'unit-price\'\">Unit Price</label>\n" +
+    "    </div>\n" +
+    "    <div ng-switch=\"discountUnit\" class=\"numpad-number-input-group\">\n" +
+    "      <label ng-switch-when=\"percentage\" class=\"numpad-input-label\" for=\"change-item-quantity-input\">Apply discount percentage</label>\n" +
+    "      <label ng-switch-when=\"unit-price\" class=\"numpad-input-label\" for=\"change-item-quantity-input\">Edit unit price</label>\n" +
+    "      <div class=\"input-group\">\n" +
+    "        <span class=\"input-group-btn\">\n" +
+    "          <button class=\"btn btn-default\" type=\"button\">\n" +
+    "            <i class=\"fa fa-keyboard-o\"></i>\n" +
+    "          </button>\n" +
+    "        </span>\n" +
+    "        <input type=\"text\" class=\"form-control numpad-number-input\" id=\"change-item-discount-input\" placeholder=\"E.g. 20% or 20\" title=\"E.g. 20% or 20\" ng-model=\"number\" ng-change=\"onChangeNumber()\" autofocus>\n" +
+    "        <span ng-switch-when=\"percentage\" class=\"input-group-addon\">%</span>\n" +
+    "        <span ng-switch-when=\"unit-price\" class=\"input-group-addon\">ea</span>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
     "  </div>\n" +
-    "  <div class=\"numpad-number-input-group\">\n" +
-    "    <label ng-switch-when=\"currency\" class=\"numpad-input-label\" for=\"change-item-discount-input\">Apply discount percentage</label>\n" +
-    "    <label ng-switch-when=\"quantity\" class=\"numpad-input-label\" for=\"change-item-quantity-input\">Quantity</label>\n" +
-    "    <div class=\"input-group\">\n" +
-    "      <span class=\"input-group-btn\">\n" +
-    "        <button class=\"btn btn-default\" type=\"button\">\n" +
-    "          <i class=\"glyphicon glyphicon-th\"></i>\n" +
-    "        </button>\n" +
-    "      </span>\n" +
-    "      <input ng-switch-when=\"currency\" type=\"text\" class=\"form-control numpad-number-input\" id=\"change-item-discount-input\" placeholder=\"E.g. 20% or 20\" title=\"E.g. 20% or 20\" ng-model=\"number\" ng-change=\"onChangeNumber()\" autofocus>\n" +
-    "      <input ng-switch-when=\"quantity\" type=\"text\" class=\"form-control numpad-number-input\" id=\"change-item-quantity-input\" placeholder=\"E.g. 20\" title=\"E.g. 20\" ng-model=\"number\" ng-change=\"onChangeNumber()\" autofocus>\n" +
+    "  <div ng-switch-when=\"quantity\">\n" +
+    "    <div class=\"numpad-number-input-group\">\n" +
+    "      <label class=\"numpad-input-label\" for=\"change-item-quantity-input\">Quantity</label>\n" +
+    "      <div class=\"input-group\">\n" +
+    "        <span class=\"input-group-btn\">\n" +
+    "          <button class=\"btn btn-default\" type=\"button\">\n" +
+    "            <i class=\"fa fa-keyboard-o\"></i>\n" +
+    "          </button>\n" +
+    "        </span>\n" +
+    "        <input type=\"text\" class=\"form-control numpad-number-input\" id=\"change-item-quantity-input\" placeholder=\"E.g. 20\" title=\"E.g. 20\" ng-model=\"number\" ng-change=\"onChangeNumber()\" autofocus>\n" +
+    "      </div>\n" +
     "    </div>\n" +
     "  </div>\n" +
     "  <div class=\"numpad-content\">\n" +

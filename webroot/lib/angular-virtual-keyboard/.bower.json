@@ -32,6 +32,7 @@
     "commit": "e21345de2a51f9c570127003ffa865ff8be2ab23"
   },
   "_source": "git://github.com/the-darc/angular-virtual-keyboard.git",
-  "_target": "^0.4.2",
-  "_originalSource": "angular-virtual-keyboard"
+  "_target": "~0.4.2",
+  "_originalSource": "angular-virtual-keyboard",
+  "_direct": true
 }
