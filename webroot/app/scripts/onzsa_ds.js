@@ -360,8 +360,14 @@ Datastore_sqlite = function() {
      *  ------------------- */
     getProduct: function(successCallback, searchData) {
       var excuteCallback, t = this;
-      var sqlQuery = "SELECT * FROM Products WHERE id = ? or name like ? or sku like ? or name like ? ";
+      var sqlQuery = "SELECT * FROM Products WHERE (id = ? or name like ? or sku like ? or name like ?)";
+
       var searchValues = [null, null, null, null];
+      if(searchData != null && searchData.discountProduct != null){
+        searchValues = [null, null, null, null, null];
+        searchValues[4] = searchData.discountProduct;
+        sqlQuery += " and id <> ? ";
+      }
 
       if(searchData != null && searchData.id != null){searchValues[0] = searchData.id;}
       else if(searchData != null && searchData.handle != null){searchValues[1] = "%" + searchData.handle + "%";}
@@ -727,28 +733,35 @@ Datastore_sqlite = function() {
     /** -------------------
      *  [GET] SELECT
      *  ------------------- */
-    getRegisterSaleItems: function(saleId, suc, err) {
+    getRegisterSaleItems: function(data, suc, err) {
 
-      var t = this, searchValue = [], queryString = '', success;
+      var t = this, searchValue, queryString = "", success;
 
-      if(saleId == null){
-        console.log('1');
-        queryString = "SELECT * FROM RegisterSaleItems where status = 'sale_item_status_open'";
-      }else{
-        queryString = "SELECT * FROM RegisterSaleItems where sale_id = ? ";
-        searchValue = [saleId];
+      if (data.sale_id != null && data.status != null) {
+        searchValue = [data.sale_id , data.status];
+        queryString += "SELECT * FROM RegisterSaleItems WHERE sale_id = ? and status = ?";
       }
+      else if (data.status != null) {
+        searchValue = [data.status];
+        queryString += "SELECT * FROM RegisterSaleItems WHERE status = ?";
+      }
+      else if (data.sale_id != null) {
+        searchValue = [data.sale_id];
+        queryString += "SELECT * FROM RegisterSaleItems WHERE sale_id = ?";
+      }
+      else {
+        queryString = "SELECT * FROM RegisterSaleItems";
+      }
+
       success = function(tr, rt) {
         var rs = rt.rows, i=0;
         var resultSet = [];
-
         for(i = 0; i < rs.length; i++){
           resultSet.push(rs.item(i));
         }
-
         typeof(suc) == 'function' && suc(resultSet);
       }, t._doDSTransaction(function(tr) {
-        t._executeDSSql(tr, queryString, searchValue, success, err)
+            t._executeDSSql(tr, queryString, searchValue, success, err)
       })
     },
 

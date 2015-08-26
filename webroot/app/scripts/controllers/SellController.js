@@ -11,7 +11,7 @@ angular.module('OnzsaApp', [])
 
 .controller('SellController', function($rootScope, $scope, $state, $stateParams, $location, $http, $modal, locale, LocalStorage) {
 
-  $scope.$on('$viewContentLoaded', function() {   
+  $scope.$on('$viewContentLoaded', function() {
     // initialize core components
     Metronic.initAjax();
     TableAdvanced.init();
@@ -19,8 +19,65 @@ angular.module('OnzsaApp', [])
     // define alias for local Datastore
     $scope.ds = Datastore_sqlite;
 
-    debug("INIT: Bootstrapping >>>>>>>>>>>>>>>>>>>>>");
-    bootstrapSystem();
+    // start checking for online status
+    $rootScope.online = false;
+    debug("INIT: [ONLINE] Checking Start >>>>>>>>>>>>>>>>>>>>>");
+    isOnline();
+
+    // Online status
+    //if ($rootScope.online == true) {
+    //  debug("INIT: Bootstrapping >>>>>>>>>>>>>>>>>>>>>");
+    //  bootstrapSystem();
+    //}
+    //// Offline status
+    //else {
+    //  // has Local data
+    //  if(validateDataStore() == true) {
+    //    debug("INIT: Pass checking >>>>>>>>>>>>>>>>>>>>>");
+    //  }
+    //  // Local data nothing
+    //  else {
+    //    debug("INIT: Back to Singin Screen >>>>>>>>>>>>>>>>>>>>>");
+    //    alert("You must connect to server at first time.");
+    //    window.location = "/users/logout";
+    //  }
+    //}
+    $.ajax({
+      url: '//localhost/',
+      complete: function (jqXHR, statusText) {
+
+        // Online status
+        if (statusText === 'success' && window.navigator.onLine == true) {
+          $rootScope.online = true;
+          console.log("[ONLINE] status : %s", $rootScope.online);
+          debug("INIT: Bootstrapping >>>>>>>>>>>>>>>>>>>>>");
+          bootstrapSystem();
+        }
+        // Offline status
+        else {
+          $rootScope.online = false;
+          console.log("[ONLINE] status : %s", $rootScope.online);
+          // has Local data
+          debug("INIT: Checking DataStore Validate >>>>>>>>>>>>>>>>>>>>>");
+          if(validateDataStore() == true) {
+            debug("INIT: Pass checking >>>>>>>>>>>>>>>>>>>>>");
+          }
+          // Local data nothing
+          else {
+            debug("INIT: Back to Singin Screen >>>>>>>>>>>>>>>>>>>>>");
+            alert("You must connect to server at first time.");
+            window.location = "/users/logout";
+          }
+        }
+
+        setTimeout(function () {
+          isOnline();
+        }, 5000); // 5sec
+      }
+    });
+
+    debug("CHECK: Opend Sale Recover >>>>>>>>>>>>>>>>>>>>>");
+    recoverOpenedSale();
   });
 
   // set sidebar closed and body solid layout mode
@@ -204,10 +261,12 @@ angular.module('OnzsaApp', [])
     'total_price_incl_tax': 0.0,  //retail_price(price + tax)
     'total_discount': 0.0,
     'total_tax': 0.0,             //price * tax_rate
-    'total_payment': 0.0,         //TODO: check
+    'total_payment': 0.0,         //Paid
     'sequence': 1
   };
-  $scope.saleItems = [];
+
+  // If recovery, already exsit
+  if ($scope.saleItems == null) $scope.saleItems = [];
 
   $scope.viewMode = 'small';
   $scope.onChangeViewMode = function(e) {
@@ -309,17 +368,12 @@ angular.module('OnzsaApp', [])
     // Recalcurate Total
     subtractionRegisterSaleTotal(saleItem);
 
-    // Delete Sale Item from RegisterSaleItems
-    var saleID = LocalStorage.getSaleID();
-    //TODO: change to status deleteRegisterSaleItem(saleItem, saleID);
-
-    // Update RegisterSale
-    updateRegiserSale(saleID);
-
-    // If list to be empty, Delete RegisterSale and RegisterSaleID
+    // If list to be empty, Delete RegisterSale
     if($scope.saleItems.length == 0) {
-      //TODO: change to status deleteRegisterSales(saleID);
-      LocalStorage.clearSaleID();
+      endRegisterSale("sale_status_voided");
+    } else {
+      var saleID = LocalStorage.getSaleID();
+      updateRegiserSale(saleID);
     }
   };
 
@@ -688,6 +742,17 @@ angular.module('OnzsaApp', [])
   }
 
   // --------------------------
+  // Get SaleItems to RegisterSaleItems
+  // --------------------------
+  var getRegisterSaleItems = function(saleID, status, suc, err) {
+    var data = {
+      'sale_id': saleID,
+      'status': status,
+    };
+    $scope.ds.getRegisterSaleItems(data, suc, err);
+  }
+
+  // --------------------------
   // Delete SaleItem from RegisterSaleItems
   // --------------------------
   var deleteRegisterSaleItem = function(saleItem, saleID) {
@@ -993,7 +1058,9 @@ angular.module('OnzsaApp', [])
       }
     });
 
-    // callback logic from payment
+    /**
+     * callback logic from payment
+     */
     modalPaymentInstance.result.then(function (payinfo) {
       console.table(payinfo);
 
@@ -1035,6 +1102,84 @@ angular.module('OnzsaApp', [])
       switchRegister(selectedItem);
     });
   };
+
+  /**
+   *  Recover Opened Sale Items
+   */
+  var recoverOpenedSale = function(){
+
+    // Get Sale ID
+    var sale_id = LocalStorage.getSaleID();
+    if (sale_id != null) {
+      var suc = function(rs) {
+        for (var idx=0; idx<rs.length; idx++) {
+          var item = rs[idx];
+          var saleItem = {};
+          saleItem.product_id = item.product_id;
+          saleItem.name = item.name;
+          saleItem.supply_price = item.supply_price;
+          saleItem.price = item.price;
+          saleItem.price_include_tax = item.price_include_tax;
+          saleItem.tax = item.tax;
+          saleItem.tax_rate = item.tax_rate;
+          saleItem.discount = item.discount;
+          saleItem.qty = item.quantity;
+          saleItem.loyalty_value = item.loyalty_value;
+          saleItem.sequence = item.sequence;
+          saleItem.status = item.status;
+          $scope.saleItems.unshift(saleItem);
+
+          additionRegisterSaleTotal(saleItem);
+        }
+        $scope.$apply();
+      }
+      var err = function(e) {
+          LocalStorage.clearSaleID();
+      }
+
+      // Get Opened Register sale Itmes
+      getRegisterSaleItems(sale_id, "sale_items_status_open", suc, err);
+    }
+  };
+
+
+
+  /**
+   * Check for online status
+   *    set to $rootScope.online = [true | false]
+   */
+  var isOnline = function () {
+    $.ajax({
+      url: '//localhost/',
+      complete: function (jqXHR, statusText) {
+
+        // check status
+        if (statusText === 'success' && window.navigator.onLine == true) {
+          $rootScope.online = true;
+        } else {
+          $rootScope.online = false;
+        }
+        console.log("[ONLINE] status : %s", $rootScope.online);
+
+        setTimeout(function () {
+          isOnline();
+        }, 5000); // 5초
+      }
+    });
+  };
+
+  /**
+   * Check for Local Storage Information
+   *  @return [true | false]
+   */
+  var validateDataStore = function() {
+    if ((LocalStorage.getRegister() == null) ||
+        (LocalStorage.getRegisterID() == null) ||
+        (LocalStorage.getConfig(true) == null))  {  //true : notUseDefault
+      return false;
+    }
+    return true;
+  }
 
 });
 
@@ -1096,11 +1241,13 @@ angular.module('OnzsaApp')
     return JSON.parse(localStorageService.get('config'));
   };
 
-  var getConfig = function() {
+  var getConfig = function(notUseDefault) {
     var config = getConfigAll();
     if (config == null || "object" != typeof config) {
       debug("GET CONFIG: local store config empty, setting up config defaults");
-      config = defaultConfig;
+      if (notUseDefault == null || notUseDefault == false) {
+        config = defaultConfig;
+      }
     }
     return config;
   };
@@ -1117,6 +1264,16 @@ angular.module('OnzsaApp')
 
     var config = { register_id: register.id };
     saveConfig(config);
+  };
+
+  var getRegister = function(saleID) {
+    debug("get register");
+    return localStorageService.get('register');
+  };
+
+  var getRegisterID = function(saleID) {
+    debug("get register id");
+    return localStorageService.get('register_id');
   };
 
   var saveSaleID = function(saleID) {
@@ -1137,6 +1294,8 @@ angular.module('OnzsaApp')
   return {
     getConfig: getConfig,
     saveConfig: saveConfig,
+    getRegister: getRegister,
+    getRegisterID: getRegisterID,
     saveRegister: saveRegister,
     saveSaleID: saveSaleID,
     getSaleID: getSaleID,

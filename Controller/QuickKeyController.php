@@ -170,6 +170,9 @@ class QuickKeyController extends AppController {
                     'MerchantProduct.name LIKE' => '%' . $keyword . '%',
                     'MerchantProduct.handle LIKE' => '%' . $keyword . '%',
                     'MerchantProduct.sku LIKE' => '%' . $keyword . '%'
+                ),
+                'NOT' => array(
+                    'MerchantProduct.id' => $user['Merchant']['discount_product_id']
                 )
             )
         ));
