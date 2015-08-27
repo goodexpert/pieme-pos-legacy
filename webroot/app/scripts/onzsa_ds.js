@@ -708,7 +708,7 @@ Datastore_sqlite = function() {
     /** -------------------
      *  [SAVE] INSERT OR REPLACE
      *  ------------------- */
-    saveRegisterSalesItems: function(e, saveArray){
+    saveRegisterSaleItems: function(e, saveArray){
       var i = [];
       var n = this;
       var inputValues = [];
@@ -765,7 +765,34 @@ Datastore_sqlite = function() {
       })
     },
 
-    /** ------------------------------------------------------------------------------------------------------------ */
+    /** -------------------
+     *  [UPDATE] SELECT & UPDATE
+     *  ------------------- */
+    updateRegisterSaleItems: function(data, suc, err){
+      var t = this;
+      var queryString = "SELECT * FROM RegisterSaleItems WHERE sale_id = ? and product_id = ? and sequence = ?";
+      var condition = [data.sale_id, data.product_id, data.sequence];
+      var success = function(tr, rs) {
+        if (rs.rows.length > 0) {
+          var selectedID = rs.rows.item(0).id;
+          queryString = "UPDATE RegisterSaleItems SET " +
+              "quantity = ?, supply_price = ?, price = ?, price_include_tax = ?, tax = ?, tax_rate = ?, discount = ?, loyalty_value = ?, status = ? " +
+              " WHERE id = ?";
+          condition = [data.quantity, data.supply_price, data.price, data.price_include_tax, data.tax, data.tax_rate, data.discount, data.loyalty_value, data.status, selectedID];
+          t._executeDSSql(tr, queryString, condition, suc, err);
+        } else {
+          'function' == typeof(err) && err
+        }
+      }
+      try{
+        t._doDSTransaction(function(tr) {
+            t._executeDSSql(tr, queryString, condition, success, err);
+        });
+      }catch(ex){
+        t._logDBError(ex.message);
+      }
+    },
+
     /** [RegisterSalePayments] -------------------------------------------------------------- [RegisterSalePayments] */
     /** ------------------------------------------------------------------------------------------------------------ */
 

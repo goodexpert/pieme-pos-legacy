@@ -253,16 +253,15 @@ angular.module('OnzsaApp', [])
   $scope.priceBooks = [];
   $scope.modified = false;
 
-  //$rootScope.paymentTypes = [];  //TODO: Payment Type
   $rootScope.registerSale = {
-    'receipt_number': 0,
+    'receipt_number': 1,
     'total_cost': 0.0,            //supply_price
     'total_price': 0.0,           //price_exclude_tax(supply_price * markup)
     'total_price_incl_tax': 0.0,  //retail_price(price + tax)
     'total_discount': 0.0,
     'total_tax': 0.0,             //price * tax_rate
     'total_payment': 0.0,         //Paid
-    'sequence': 1
+    'sequence': 0
   };
 
   // If recovery, already exsit
@@ -301,7 +300,8 @@ angular.module('OnzsaApp', [])
     if(saleID == null) {
       saleID = getUUID();
       LocalStorage.saveSaleID(saleID);
-
+      $rootScope.registerSale.sequence = 0;
+      $rootScope.registerSale.receipt_number++;
       saveRegisterSales(saleID, "sale_status_open");
     }
 
@@ -329,20 +329,23 @@ angular.module('OnzsaApp', [])
 
               //STEP 3.3. Recalcurate to registerSale structure
               additionRegisterSaleTotal(saleItem);
+
+              // Save to RegisterSaleItems : status_open
+              saveRegisterSaleItem([saleItem], saleID, "sale_items_status_open");
             }
             //STEP 3.2.
             else {
               //STEP 3.3. Recalcurate to registerSale structure
               subtractionRegisterSaleTotal(lastestSaleItem);
-              saleItem = additionSellItem(lastestSaleItem, quickKey, saleProduct, priceBook, productQty);
+              saleItem = additionSellItemQty(lastestSaleItem, quickKey, saleProduct, priceBook, productQty);
               additionRegisterSaleTotal(saleItem);
+
+              // Save to RegisterSaleItems : status_open
+              updateRegisterSaleItems(saleItem, saleID, "sale_items_status_open");
             }
 
-            // Save to RegisterSaleItems : status_open
-            saveRegisterSaleItem([saleItem], saleID, "sale_items_status_open");
-
             // Change(Update) RegisterSale
-            updateRegiserSale(saleID);
+            updateRegisterSale(saleID);
 
             // Update View
             $scope.$apply();
@@ -373,7 +376,7 @@ angular.module('OnzsaApp', [])
       endRegisterSale("sale_status_voided");
     } else {
       var saleID = LocalStorage.getSaleID();
-      updateRegiserSale(saleID);
+      updateRegisterSale(saleID);
     }
   };
 
@@ -523,6 +526,7 @@ angular.module('OnzsaApp', [])
     saleItem.qty = 1;
     saleItem.loyalty_value = priceBook.loyalty_value;
     saleItem.sequence = $rootScope.registerSale.sequence++;
+    saleItem.status = "sale_items_status_open";
     $scope.saleItems.unshift(saleItem);
     return saleItem;
   }
@@ -530,7 +534,7 @@ angular.module('OnzsaApp', [])
   // --------------------------
   // update sellItem structure using price book
   // --------------------------
-  var additionSellItem = function(lastestSaleItem, quickKey, saleProduct, priceBook) {
+  var additionSellItemQty = function(lastestSaleItem, quickKey, saleProduct, priceBook) {
     lastestSaleItem.qty = lastestSaleItem.qty + 1;
     lastestSaleItem.supply_price = saleProduct.supply_price;
     lastestSaleItem.price = priceBook.price;
@@ -678,13 +682,13 @@ angular.module('OnzsaApp', [])
       // Update View
       $scope.$apply();
     }
-    updateRegiserSale(saleID, status, suc);  //TODO: layby closed / onaccount_closed
+    updateRegisterSale(saleID, status, suc);  //TODO: layby closed / onaccount_closed
   }
 
   // --------------------------
   // Update RegisterSale
   // --------------------------
-  var updateRegiserSale = function(saleID, status, suc) {
+  var updateRegisterSale = function(saleID, status, suc) {
     var now = getUnixTimestamp();
     var config = LocalStorage.getConfig();
     var data =[];
@@ -738,7 +742,29 @@ angular.module('OnzsaApp', [])
       };
       inputValue.push(input);
     }
-    $scope.ds.saveRegisterSalesItems(null, inputValue);
+    $scope.ds.saveRegisterSaleItems(null, inputValue);
+  }
+
+  // --------------------------
+  // Update RegisterSaleItems
+  // --------------------------
+  var updateRegisterSaleItems = function(saleItem, saleID, status) {
+    var data = {
+      'sale_id': saleID,
+      'product_id': saleItem.product_id,
+      'name': saleItem.name,
+      'quantity': saleItem.qty,
+      'supply_price': saleItem.supply_price,
+      'price': saleItem.price,
+      'price_include_tax': saleItem.price_include_tax,
+      'tax': saleItem.tax,
+      'tax_rate': saleItem.tax_rate,
+      'discount': saleItem.discount,
+      'loyalty_value': saleItem.loyalty_value,
+      'sequence': saleItem.sequence,
+      'status': status,
+    };
+    $scope.ds.updateRegisterSaleItems(data);
   }
 
   // --------------------------
@@ -778,54 +804,74 @@ angular.module('OnzsaApp', [])
     $http.get('/api/config.json')
       .then(function(response) {
         debug("REQUEST: config, success handler");
-        debug(response.data);
-        LocalStorage.saveConfig(response.data);
+
+        if (response.data == null) {
+          debug("REQUEST: config, [WARNING] empty data]");
+        } else {
+          LocalStorage.saveConfig(response.data);
+          console.log("REQUEST: config : %o", response.data);
+        }
 
         debug("REFRESH taxes");
         debug("REQUEST: taxes >>>>>>>>>>>>>>>>>>>>>");
         return $http.get('/api/taxes.json');
       }).then(function(response) {
         debug("REQUEST: taxes, success handler");
-        debug(response.data);
+
+        if (response.data == null) {
+          debug("REQUEST: taxes, [WARNING] empty data]");
+        } else {
+          debug(response.data);
+          console.log("REQUEST: taxes : %o", response.data);
+        }
 
         debug("REFRESH payment types");
         debug("REQUEST: payment types >>>>>>>>>>>>>>>>>>>");
         return $http.get('/api/payment_types.json');
       }).then(function(response) {
         debug("REQUEST: payment types, success handler");
-        debug(response.data);
 
         //TODO: saveRegisterPaymentTypes log
-        $scope.ds.saveRegisterPaymentTypes(response.data);
-
-        console.table($scope.paymentType);
-        debug("REQUEST: payment types <<<<<<<<<<<<<<<<<<<<<<<");
+        if (response.data == null) {
+          debug("REQUEST: payment types, [WARNING] empty data]");
+        } else {
+          $scope.ds.saveRegisterPaymentTypes(response.data);
+          console.log("REQUEST: payment types : %o", response.data);
+        }
 
         debug("REFRESH products");
         debug("REQUEST: products >>>>>>>>>>>>>>>>>>>>>");
         return $http.get('/api/products.json');
       }).then(function(response) {
         debug("REQUEST: products, success handler");
-        debug(response.data);
 
         //TODO: saveProducts log
-        $scope.ds.saveProducts(null, response.data);
+        if (response.data == null) {
+          debug("REQUEST: product, [WARNING] empty data]");
+        } else {
+          $scope.ds.saveProducts(null, response.data);
+          console.log("REQUEST: product : %o", response.data);
+        }
 
         debug("REFRESH registers");
         debug("REQUEST: registers >>>>>>>>>>>>>>>>>>>>>");
         return $http.get('/api/registers.json');
       }).then(function(response) {
         debug("REQUEST: registers, success handler");
-        debug(response.data);
 
-        debug("current register_id: " + register_id);
-        var registers = response.data;
-
-        if (registers.length > 1) {
-          openRegisterSelector(response.data);
+        if (response.data == null) {
+          debug("REQUEST: registers, [WARNING] empty data]");
         } else {
-          LocalStorage.saveRegister(registers[0]);
-          switchRegister(registers[0]);
+          console.log("REQUEST: registers : %o", response.data);
+
+          debug("current register_id: " + register_id);
+          var registers = response.data;
+          if (registers.length > 1) {
+            openRegisterSelector(response.data);
+          } else {
+            LocalStorage.saveRegister(registers[0]);
+            switchRegister(registers[0]);
+          }
         }
       }, function(response) {
         debug("REQUEST: data, error handler");
@@ -985,6 +1031,10 @@ angular.module('OnzsaApp', [])
     debug("LOOKUP: Existing register from datastore – " + register);
     //debug("SAVE: Prepare register " + t.id);
     //debug("OPEN: register – " + r);
+
+    //TODO: Check and change for Reopen register
+    checkRegisterReopen(register);
+
     debug("register selected: " + register.id);
     LocalStorage.saveRegister(register);
 
@@ -994,19 +1044,28 @@ angular.module('OnzsaApp', [])
     $http.get('/api/get_quick_keys.json?register_id=' + register.id)
       .then(function(response) {
         debug("REQUEST: quick keys, success handler");
-        debug(response.data);
-        $scope.keyLayout = response.data.quick_keys;
+
+        if (response.data == null) {
+          debug("REQUEST: quick keys, [WARNING] empty data]");
+        } else {
+          $scope.keyLayout = response.data.quick_keys;
+          console.log("REQUEST: quick keys : ", response.data);
+        }
 
         debug("REFRESH price books");
         debug("REQUEST: price books >>>>>>>>>>>>>>>>>>>>>");
         return $http.get('/api/get_price_books.json?register_id=' + register.id);
       }).then(function(response) {
         debug("REQUEST: price books, success handler");
-        debug(response.data);
 
         //TODO: Loop savePriceBook
-        for(var i=0; i<response.data.length; i++) {
-          $scope.ds.savePriceBook(null, response.data[i]);
+        if (response.data == null) {
+          debug("REQUEST: price books, [WARNING] empty data]");
+        } else {
+          for(var i=0; i<response.data.length; i++) {
+            $scope.ds.savePriceBook(null, response.data[i]);
+          }
+          console.log("REQUEST: price books : ", response.data);
         }
 
       }, function(response) {
@@ -1181,6 +1240,17 @@ angular.module('OnzsaApp', [])
     return true;
   }
 
+  /**
+   * Check and change for Reopen register
+   */
+  var checkRegisterReopen = function(register) {
+    var savedRegister = LocalStorage.getRegister();
+    if (register.register_open_count_sequence != savedRegister.register_open_count_sequence) {
+      $rootScope.registerOpenCountSequence = register.register_open_count_sequence;
+      $rootScope.registerSale.receipt_number = 1;
+    }
+  }
+
 });
 
 angular.module('OnzsaApp')
@@ -1268,7 +1338,7 @@ angular.module('OnzsaApp')
 
   var getRegister = function(saleID) {
     debug("get register");
-    return localStorageService.get('register');
+    return JSON.parse(localStorageService.get('register'));
   };
 
   var getRegisterID = function(saleID) {
