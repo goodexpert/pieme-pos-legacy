@@ -251,6 +251,10 @@ angular.module('OnzsaApp', [])
     angular.extend({position: 14}, $scope.functions['fn_do_nothing'])
   ];
 
+  $scope.isTabActive = function(position) {
+    return 0 == position ? "active" : "";
+  }
+
   $scope.priceBooks = [];
   $scope.modified = false;
 

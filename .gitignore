@@ -3,9 +3,16 @@
 *.log*
 cake_toolbar_cache*
 myapp_cake_*
+/Config/core.php
+/Config/database.php
+/tmp/*
+
+# IDEA log and generated files
+####################################
+/.idea/*
 
 # OS generated files
 ####################################
+*.swp
 .DS_Store
 Thumbs.db
-*.swp

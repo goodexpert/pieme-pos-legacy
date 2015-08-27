@@ -9,27 +9,26 @@
  * Onzsa AngularJS App Main Script
  */
 
-/* Onzsa App */
+// Declare app level module which depends on filters, and services
 var OnzsaApp = angular.module('OnzsaApp', [
 /*
   'ngAnimate',
   'ngAria',
   'ngCookies',
   'ngMessages',
-  'ngResource',
   'ngRoute',
 */
-  'datatables',
   'ngSanitize',
+  'ngTouch',
+  'ngResource',
+  'ui.bootstrap',
+  'ui.router',
   'ngLocalize',
   'ngLocalize.Config',
   'ngLocalize.InstalledLanguages',
   'LocalStorageModule',
-  'ngTouch',
   'cfp.hotkeys',
-  'ui.router',
-  'ui.bootstrap',
-  'RegisterService',
+  'datatables',
   'oc.lazyLoad'
 ])
 
@@ -134,6 +133,8 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
   // You can also load via resolve
   $stateProvider
     .state('index', {
+      absolute: true,
+      cache: false,
       url: "/", // root route
       views: {
         "lazyLoadView": {
@@ -144,14 +145,7 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
       resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
         deps: ['$ocLazyLoad', function($ocLazyLoad) {
           return $ocLazyLoad.load([{
-            name: 'ui.register',
-            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
-            files: [
-              '/app/scripts/ui-register-tpls-new.js',
-            ]
-          },
-          {
-            name: 'OnzsaApp',
+            name: 'dependencies',
             insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
             files: [
               '/theme/metronic/assets/global/plugins/morris/morris.css',
@@ -172,7 +166,14 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
 
               '/app/scripts/onzsa_ds.js',
               '/app/scripts/table-advanced.js',
+              '/app/scripts/ui-register-tpls-new.js',
               '/app/scripts/controllers/PaymentController.js',
+            ]
+          },
+          {
+            name: 'SellController',
+            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+            files: [
               '/app/scripts/controllers/SellController.js'
             ]
           }]);
@@ -180,6 +181,8 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
       }
     })
     .state('recall-sale', {
+      absolute: true,
+      cache: false,
       url: "/recall-sale",
       views: {
         "lazyLoadView": {
@@ -190,23 +193,11 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
       resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
         deps: ['$ocLazyLoad', function($ocLazyLoad) {
           return $ocLazyLoad.load([{
-            name: 'ui.register',
-            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
-            files: [
-              '/app/scripts/ui-register-tpls-new.js',
-            ]
-          },
-          {
-            name: 'OnzsaApp',
+            name: 'dependencies',
             insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
             files: [
               '/theme/metronic/assets/global/plugins/morris/morris.css',
               '/theme/metronic/assets/global/plugins/select2/select2.css',
-          /*
-              '/theme/metronic/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
-              '/theme/metronic/assets/global/plugins/datatables/extensions/Scroller/css/dataTables.scroller.min.css',
-              '/theme/metronic/assets/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css',
-           */
               '/theme/metronic/assets/admin/pages/css/tasks.css',
               '/app/styles/register.css',
 
@@ -215,10 +206,8 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
               '/theme/metronic/assets/global/plugins/jquery.sparkline.min.js',
 
               '/theme/metronic/assets/global/plugins/select2/select2.min.js',
-              /*
-              '/theme/metronic/assets/global/plugins/datatables/all.min.js',
-              */
               '/theme/metronic/assets/admin/pages/scripts/tasks.js',
+
               '/lib/angular-datatables/dist/plugins/colreorder/angular-datatables.colreorder.min.js',
               '/lib/angular-datatables/dist/plugins/columnfilter/angular-datatables.columnfilter.min.js',
               '/lib/angular-datatables/dist/plugins/fixedcolumns/angular-datatables.fixedcolumns.min.js',
@@ -227,6 +216,13 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
               '/lib/angular-datatables/dist/plugins/tabletools/angular-datatables.tabletools.min.js',
 
               '/app/scripts/onzsa_ds.js',
+              '/app/scripts/ui-register-tpls-new.js',
+            ]
+          },
+          {
+            name: 'RecallController',
+            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+            files: [
               '/app/scripts/controllers/RecallController.js'
             ]
           }]);
@@ -234,6 +230,8 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
       }
     })
     .state('daily-snapshot', {
+      absolute: true,
+      cache: false,
       url: "/daily-snapshot",
       views: {
         "lazyLoadView": {
@@ -244,14 +242,7 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
       resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
         deps: ['$ocLazyLoad', function($ocLazyLoad) {
           return $ocLazyLoad.load([{
-            name: 'ui.register',
-            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
-            files: [
-              '/app/scripts/ui-register-tpls-new.js',
-            ]
-          },
-          {
-            name: 'OnzsaApp',
+            name: 'dependencies',
             insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
             files: [
               '/theme/metronic/assets/global/plugins/morris/morris.css',
@@ -271,6 +262,13 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
               '/theme/metronic/assets/admin/pages/scripts/tasks.js',
 
               '/app/scripts/onzsa_ds.js',
+              '/app/scripts/ui-register-tpls-new.js',
+            ]
+          },
+          {
+            name: 'DailySnapshotController',
+            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+            files: [
               '/app/scripts/controllers/DailySnapshotController.js'
             ]
           }]);
@@ -278,6 +276,8 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
       }
     })
     .state('close-register', {
+      absolute: true,
+      cache: false,
       url: "/close-register",
       views: {
         "lazyLoadView": {
@@ -288,14 +288,7 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
       resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
         deps: ['$ocLazyLoad', function($ocLazyLoad) {
           return $ocLazyLoad.load([{
-            name: 'ui.register',
-            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
-            files: [
-              '/app/scripts/ui-register-tpls-new.js',
-            ]
-          },
-          {
-            name: 'OnzsaApp',
+            name: 'dependencies',
             insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
             files: [
               '/theme/metronic/assets/global/plugins/morris/morris.css',
@@ -315,12 +308,68 @@ OnzsaApp.config(function($stateProvider, $locationProvider, $urlRouterProvider, 
               '/theme/metronic/assets/admin/pages/scripts/tasks.js',
 
               '/app/scripts/onzsa_ds.js',
+              '/app/scripts/ui-register-tpls-new.js',
+            ]
+          },
+          {
+            name: 'CloseRegisterController',
+            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+            files: [
               '/app/scripts/controllers/CloseRegisterController.js'
             ]
           }]);
         }]
       }
+    })
+    .state('test', {
+      absolute: true,
+      cache: false,
+      url: "/test",
+      views: {
+        "lazyLoadView": {
+          controller: 'TestController', // This view will use SellController loaded below in the resolve
+          templateUrl: '/app/views/test.html'
+        }
+      },
+      resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
+        deps: ['$ocLazyLoad', function($ocLazyLoad) {
+          return $ocLazyLoad.load([{
+            name: 'dependencies',
+            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+            files: [
+              '/theme/metronic/assets/global/plugins/morris/morris.css',
+              '/theme/metronic/assets/global/plugins/select2/select2.css',
+              '/theme/metronic/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css',
+              '/theme/metronic/assets/global/plugins/datatables/extensions/Scroller/css/dataTables.scroller.min.css',
+              '/theme/metronic/assets/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css',
+              '/theme/metronic/assets/admin/pages/css/tasks.css',
+              '/app/styles/register.css',
+
+              '/theme/metronic/assets/global/plugins/morris/morris.min.js',
+              '/theme/metronic/assets/global/plugins/morris/raphael-min.js',
+              '/theme/metronic/assets/global/plugins/jquery.sparkline.min.js',
+
+              '/theme/metronic/assets/global/plugins/select2/select2.min.js',
+              '/theme/metronic/assets/global/plugins/datatables/all.min.js',
+              '/theme/metronic/assets/admin/pages/scripts/tasks.js',
+
+              '/app/scripts/onzsa_ds.js',
+              '/app/scripts/ui-register-tpls-new.js',
+            ]
+          },
+          {
+            name: 'TestController',
+            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
+            files: [
+              '/app/scripts/controllers/TestController.js'
+            ]
+          }]);
+        }]
+      }
     });
+
+    // Without server side support html5 must be disabled.
+    $locationProvider.html5Mode(false);
 });
 
 /* Init global settings and run the app */
