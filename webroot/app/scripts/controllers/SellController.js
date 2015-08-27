@@ -124,6 +124,7 @@ angular.module('OnzsaApp', [])
 
   $scope.doRefund = function() {
     console.log('doRefund');
+    syncData();
   };
 
   $scope.doDiscount = function() {
@@ -1251,6 +1252,52 @@ angular.module('OnzsaApp', [])
     }
   }
 
+  /**
+   * Sync local data to server
+   */
+  var syncData = function() {
+    var dataRS = [];
+    var dataRSI = [];
+    var dataRSP = [];
+
+    // get RegisterSales
+    var sucRS = function(tr, rs) {
+      console.log("SYNC RegisterSales : %o", rs);
+      dataRS = rs;
+    }
+    $scope.ds.getRegisterSales(null, sucRS);
+
+    // get RegisterSaleItems
+    var sucRSI = function(tr, rs) {
+      console.log("SYNC RegisterSaleItems : %o", rs);
+      dataRSI = rs;
+    }
+    $scope.ds.getRegisterSaleItems(null, sucRSI);
+
+    // get RegisterSalePayments
+    var sucRSP = function(tr, rs) {
+      console.log("SYNC RegisterSalePayments : %o", rs);
+      dataRSP = rs;
+    }
+    $scope.ds.getRegisterSalePayments(null, sucRSP);
+
+    $.ajax({
+      url: location.href,
+      type: "POST",
+      data: {
+        ResisterSales: dataRS,
+        ResisterSaleItems: dataRSI,
+        ResisterSalePayments: dataRSP,
+      },
+      success: function(result) {
+        if(result.success) {
+          console.log(result);
+        } else {
+          console.log(result);
+        }
+      }
+    });
+  }
 });
 
 angular.module('OnzsaApp')

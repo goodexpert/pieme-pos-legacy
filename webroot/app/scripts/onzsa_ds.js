@@ -61,7 +61,7 @@ Datastore_sqlite = function() {
         //console.log("[EXEC] START: "),
         //tr ? console.log(tr) : console.log("[EXEC] START: tr: null"),
         //sql ? console.log(sql) : console.log("[EXEC] START: sql: null"),
-        //param ? console.log(param) : console.log("[EXEC] START: param: null"),
+        //param ? console.log(param) : console.log("[EXEC] START: param: null")
         //suc ? console.log(suc) : console.log("[EXEC] START: suc: null")
         //err ? console.log(err) : console.log("[EXEC] START: err: null")
 
@@ -735,22 +735,22 @@ Datastore_sqlite = function() {
      *  ------------------- */
     getRegisterSaleItems: function(data, suc, err) {
 
-      var t = this, searchValue, queryString = "", success;
+      var t = this, searchValue, success,
+      queryString = "SELECT * FROM RegisterSaleItems";
 
-      if (data.sale_id != null && data.status != null) {
-        searchValue = [data.sale_id , data.status];
-        queryString += "SELECT * FROM RegisterSaleItems WHERE sale_id = ? and status = ?";
-      }
-      else if (data.status != null) {
-        searchValue = [data.status];
-        queryString += "SELECT * FROM RegisterSaleItems WHERE status = ?";
-      }
-      else if (data.sale_id != null) {
-        searchValue = [data.sale_id];
-        queryString += "SELECT * FROM RegisterSaleItems WHERE sale_id = ?";
-      }
-      else {
-        queryString = "SELECT * FROM RegisterSaleItems";
+      if (data != null) {
+        if (data.sale_id != null && data.status != null) {
+          searchValue = [data.sale_id, data.status];
+          queryString = "SELECT * FROM RegisterSaleItems WHERE sale_id = ? and status = ?";
+        }
+        else if (data.status != null) {
+          searchValue = [data.status];
+          queryString = "SELECT * FROM RegisterSaleItems WHERE status = ?";
+        }
+        else if (data.sale_id != null) {
+          searchValue = [data.sale_id];
+          queryString = "SELECT * FROM RegisterSaleItems WHERE sale_id = ?";
+        }
       }
 
       success = function(tr, rt) {
@@ -836,7 +836,13 @@ Datastore_sqlite = function() {
      *  [GET] SELECT
      *  ------------------- */
     getRegisterSalePayments: function(data, suc, err) {
-      var t = this, input = [data.sale_id],success;
+      var t = this, input = [], success,
+      sqlString = "SELECT * FROM RegisterSalePayments";
+
+      if (data != null && data.sale_id != null) {
+        input = [data.sale_id];
+        sqlString += " WHERE sale_id = ?";
+      }
       success = function(tr, rt) {
         var rs = rt.rows, i=0, resultSet = [];
         for(i = 0; i < rs.length; i++){
@@ -845,7 +851,7 @@ Datastore_sqlite = function() {
         suc(resultSet);
       };
       t._doDSTransaction(function(tr) {
-        t._executeDSSql(tr, "SELECT * FROM RegisterSalePayments WHERE sale_id = ?" , input, success, err);
+        t._executeDSSql(tr, sqlString , input, success, err);
       });
     },
 
