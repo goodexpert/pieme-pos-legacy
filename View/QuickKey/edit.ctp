@@ -376,41 +376,61 @@ jQuery(document).ready(function() {
             product = ui.item.data;
             $(this).val(ui.item.sku);
 
+          // If it has variants or child node, need to one more query
+          if (product.has_variants == "1" || product.parent_id != null) {
             $.ajax({
-                url: "/quick_key/variants.json",
-                method: "POST",
-                dataType: "json",
-                data: {
-                    sku: ui.item.sku,
-                    label: ui.item.label,
-                    product_id: ui.item.data.id,
-                    parent_id: ui.item.data.parent_id
-                },
-                success: function (data) {
-                  product = null;
-                  if (!data.success)
-                      return;
+              url: "/quick_key/variants.json",
+              method: "POST",
+              dataType: "json",
+              data: {
+                sku: ui.item.sku,
+                label: ui.item.label,
+                product_id: ui.item.data.id,
+                parent_id: ui.item.data.parent_id
+              },
+              success: function (data) {
+                product = null;
+                if (!data.success)
+                    return;
 
-                  var key = {};
-                  key.position = quick_keys["quick_keys"]["groups"][currentGroupNo]["pages"][currentPageNo]["keys"].length;
-                  key.color = "White";
-                  key.label = data.label;
-                  key.sku = data.sku;
-                  key.product_id = data.id;
-                  key.parent = data.parent;
+                var key = {};
+                key.position = quick_keys["quick_keys"]["groups"][currentGroupNo]["pages"][currentPageNo]["keys"].length;
+                key.color = "White";
+                key.label = data.label;
+                key.sku = data.sku;
+                key.product_id = data.id;
+                key.parent = data.parent;
+                key.selections = data.selections;
+                if (data.parent == true) {
                   key.options = data.options;
-                  key.selections = data.selections;
                   key.variants = data.variants;
-
-                  quick_keys["quick_keys"]["groups"][currentGroupNo]["pages"][currentPageNo]["keys"].push(key);
-                  initQuickKeys();
-                  setQuickKeys();
-
-                  $("#search").val("");
                 }
-            });
 
-            return false;
+                quick_keys["quick_keys"]["groups"][currentGroupNo]["pages"][currentPageNo]["keys"].push(key);
+                initQuickKeys();
+                setQuickKeys();
+
+                $("#search").val("");
+              }
+            });
+          }
+          // Normal Item
+          else {
+            var key = {};
+            key.position = quick_keys["quick_keys"]["groups"][currentGroupNo]["pages"][currentPageNo]["keys"].length;
+            key.color = "White";
+            key.label = ui.item.label;
+            key.sku = ui.item.sku;
+            key.product_id = product.id;
+            key.parent = false;
+
+            quick_keys["quick_keys"]["groups"][currentGroupNo]["pages"][currentPageNo]["keys"].push(key);
+            initQuickKeys();
+            setQuickKeys();
+
+            $("#search").val("");
+          }
+          return false;
         },
         open: function( event, ui ) {
             $("ul").last().attr({class:"ui-autocomplete ui-front ui-menu ui-widget-1 ui-widget-content-1 ui-corner-all"});

@@ -193,100 +193,117 @@ class QuickKeyController extends AppController {
  * @return void
  */
     public function variants() {
-        $user = $this->Auth->user();
+      $user = $this->Auth->user();
 
-        $result = array(
-            'success' => false
-        );
+      $result = array(
+        'success' => false
+      );
 
-        $keyword = null;
-        if ($this->request->is('get')) {
-            $product_id = $this->get('product_id');
-            $sku =  $this->get('sku');
-            $label =  $this->get('label');
-            $parent_id =  $this->get('parent_id');
-        } elseif ($this->request->is('post')) {
-            $product_id = $this->post('product_id');
-            $sku =  $this->post('sku');
-            $label =  $this->post('label');
-            $parent_id =  $this->post('parent_id');
-        }
-        $parent = true;
-        $searchId = $product_id;
-        if( $parent_id != null ) {
-            $searchId = $parent_id;
-            $parent = false;
-        }
+      $keyword = null;
+      if ($this->request->is('get')) {
+        $product_id = $this->get('product_id');
+        $sku =  $this->get('sku');
+        $label =  $this->get('label');
+        $parent_id =  $this->get('parent_id');
+      } elseif ($this->request->is('post')) {
+        $product_id = $this->post('product_id');
+        $sku =  $this->post('sku');
+        $label =  $this->post('label');
+        $parent_id =  $this->post('parent_id');
+      }
+      $parent = true;
+      $searchId = $product_id;
+      if( $parent_id != null ) {
+        $searchId = $parent_id;
+        $parent = false;
+      }
 
-        $products = $this->MerchantProduct->find('all', array(
-            'fields' => array(
-                'MerchantProduct.*'
-            ),
-            'conditions' => array(
-                'MerchantProduct.merchant_id' => $user['merchant_id'],
-                'MerchantProduct.is_active = 1',
-                'OR' => array(
-                    'MerchantProduct.id' => $searchId,
-                    'MerchantProduct.parent_id' => $searchId
-                )
+      $products = $this->MerchantProduct->find('all', array(
+        'fields' => array(
+          'MerchantProduct.*'
+        ),
+        'conditions' => array(
+          'MerchantProduct.merchant_id' => $user['merchant_id'],
+          'MerchantProduct.is_active = 1',
+          'OR' => array(
+            'MerchantProduct.id' => $searchId,
+            'MerchantProduct.parent_id' => $searchId
             )
-        ));
+        )
+      ));
 
-        $vValue1; $vValue2; $vValue3;
-        $parentItem = []; $product = [];
-        $options = []; $variants = []; $selections = [];
+      $vValue1 = array(); $vValue2 = array(); $vValue3 = array();
+      $parentItem = [];
+      $variants = array(); $selections = array();
 
-        foreach($products as $item) {
-            $product = $item['MerchantProduct'];
-            if($product['parent_id'] == null || $product['id'] == $parent_id) {
-                $parentItem = $product;
-            }
-            // selected item
-            if($product['id'] == $product_id) {
-                // make selections
-                $selections[] = array($product['variant_option_one_name'] => $product['variant_option_one_value'],
-                                        $product['variant_option_two_name'] => $product['variant_option_two_value'],
-                                        $product['variant_option_three_name'] => $product['variant_option_three_value']);
-            }
-            // gather all value
-            $vValue1[] = strtolower($product['variant_option_one_value']);
-            $vValue2[] = strtolower($product['variant_option_two_value']);
-            $vValue3[] = strtolower($product['variant_option_three_value']);
-
-            // make variants
-            $variant = array(
-                'product_id' => $product['id'],
-                $product['variant_option_one_name'] => $product['variant_option_one_value'],
-                $product['variant_option_two_name'] => $product['variant_option_two_value'],
-                $product['variant_option_three_name'] => $product['variant_option_three_value']
-            );
-            array_push($variants, $variant);
+      foreach($products as $item) {
+        $product = $item['MerchantProduct'];
+        if($product['parent_id'] == null || $product['id'] == $parent_id) {
+          $parentItem = $product;
         }
-
-        // remove same value
-        $vValue1 = array_unique($vValue1);
-        $vValue2 = array_unique($vValue2);
-        $vValue3 = array_unique($vValue3);
-
-        // make options
-        $options = [];
-        $options[] = array('label' => $parentItem['variant_option_one_name'], 'options' => $vValue1);
-        $options[] = array('label' => $parentItem['variant_option_two_name'], 'options' => $vValue2);
-        $options[] = array('label' => $parentItem['variant_option_three_name'], 'options' => $vValue3);
-
-        // set array
-        $result['success'] = true;
-        $result['id'] = $product_id;
-        $result['sku'] = $sku;
-        $result['label'] = $label;
-        $result['parent'] = $parent;
-        if($parent == true) {
-            $result['options'] = $options;
-            $result['variants'] = $variants;
+        // selected item
+        if($product['id'] == $product_id) {
+          // make selections
+          $selections = array();
+          if ($product['variant_option_one_name'] != "") {
+            $selections = array_merge($selections, array($product['variant_option_one_name'] => $product['variant_option_one_value']));
+          }
+          if ($product['variant_option_two_name'] != "") {
+            $selections = array_merge($selections, array($product['variant_option_two_name'] => $product['variant_option_two_value']));
+          }
+          if ($product['variant_option_three_name'] != "") {
+            $selections = array_merge($selections, array($product['variant_option_three_name'] => $product['variant_option_three_value']));
+          }
         }
-        $result['selections'] = $selections;
+        // gather all value
+        $vValue1[] = strtolower($product['variant_option_one_value']);
+        $vValue2[] = strtolower($product['variant_option_two_value']);
+        $vValue3[] = strtolower($product['variant_option_three_value']);
 
-        $this->serialize($result);
+        // make variants
+        $variant = array('product_id' => $product['id']);
+        if ($product['variant_option_one_name'] != "") {
+          $variant = array_merge($variant, array($product['variant_option_one_name'] => $product['variant_option_one_value']));
+        }
+        if ($product['variant_option_two_name'] != "") {
+          $variant = array_merge($variant, array($product['variant_option_two_name'] => $product['variant_option_two_value']));
+        }
+        if ($product['variant_option_three_name'] != "") {
+          $variant = array_merge($variant, array($product['variant_option_three_name'] => $product['variant_option_three_value']));
+        }
+        array_push($variants, $variant);
+      }
+
+      // remove same value
+      $vValue1 = array_unique($vValue1);
+      $vValue2 = array_unique($vValue2);
+      $vValue3 = array_unique($vValue3);
+
+      // make options
+      if ($parentItem['variant_option_one_name'] != "") {
+        $options[] = ['label' => $parentItem['variant_option_one_name'], 'options' => $vValue1];
+      }
+      if ($parentItem['variant_option_two_name'] != "") {
+        $options[] = ['label' => $parentItem['variant_option_two_name'], 'options' => $vValue2];
+      }
+      if ($parentItem['variant_option_three_name'] != "") {
+        $options[] = ['label' => $parentItem['variant_option_three_name'], 'options' => $vValue3];
+      }
+
+//      $result['debug'] = $debug;
+      // set array
+      $result['success'] = true;
+      $result['id'] = $product_id;
+      $result['sku'] = $sku;
+      $result['label'] = $label;
+      $result['parent'] = $parent;
+      if($parent == true) {
+        $result['options'] = $options;
+        $result['variants'] = $variants;
+      }
+      $result['selections'] = $selections;
+
+      $this->serialize($result);
     }
 
 }
