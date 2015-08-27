@@ -1245,7 +1245,7 @@ angular.module('OnzsaApp', [])
    */
   var checkRegisterReopen = function(register) {
     var savedRegister = LocalStorage.getRegister();
-    if (register.register_open_count_sequence != savedRegister.register_open_count_sequence) {
+    if (savedRegister == null || register.register_open_count_sequence != savedRegister.register_open_count_sequence) {
       $rootScope.registerOpenCountSequence = register.register_open_count_sequence;
       $rootScope.registerSale.receipt_number = 1;
     }
