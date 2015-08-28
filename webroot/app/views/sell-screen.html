@@ -35,14 +35,14 @@
                 <td class="sale-item-name text-left">
                   {{saleItem.name}}
                 </td>
-                <td class="sale-item-qty text-right" numpad-popup numpad-append-to-body="true" numpad-mode="'quantity'" ng-model="saleItem.qty" ng-required="true">
-                  {{saleItem.qty}}
+                <td class="sale-item-qty text-right" numpad-popup numpad-append-to-body="true" numpad-mode="'quantity'" ng-model="saleItem.quantity" ng-required="true">
+                  {{saleItem.quantity}}
                 </td>
                 <td class="sale-item-discount text-right" numpad-popup numpad-append-to-body="true" numpad-mode="'currency'" ng-model="saleItem.discount" ng-required="true">
-                  ${{(saleItem.discount * saleItem.qty) | number:2}}
+                  {{(saleItem.discount * saleItem.quantity) | currency}}
                 </td>
                 <td class="sale-item-price text-right">
-                  ${{((saleItem.price_include_tax - saleItem.discount) * saleItem.qty) | number:2}}
+                  {{((saleItem.sale_price - saleItem.discount) * saleItem.quantity) | currency}}
                 </td>
                 <td class="sale-item-remove text-center">
                   <button class="btn btn-xs btn-circle btn-danger" data-ng-click="removeSellItem(saleItem)">
@@ -57,7 +57,7 @@
                 <td class="sale-item-name text-left">TOTAL</td>
                 <td class="sale-item-qty  text-left">&nbsp;</td>
                 <td class="sale-item-discount text-left">&nbsp;</td>
-                <td class="sale-item-price text-right">${{(registerSale.total_price_incl_tax) | number:2}}</td>
+                <td class="sale-item-price text-right">{{(registerSale.total_price_incl_tax) | currency}}</td>
                 <td class="text-left">&nbsp;</td>
               </tr>
             </tfoot>

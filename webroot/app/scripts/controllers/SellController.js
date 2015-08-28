@@ -20,7 +20,7 @@ angular.module('OnzsaApp', [])
     $scope.ds = Datastore_sqlite;
 
     // start checking for online status
-    $rootScope.online = false;
+    $rootScope.online = 'offline';
     debug("INIT: [ONLINE] Checking Start >>>>>>>>>>>>>>>>>>>>>");
     isOnline();
 
@@ -45,7 +45,6 @@ angular.module('OnzsaApp', [])
     $.ajax({
       url: '//localhost/',
       complete: function (jqXHR, statusText) {
-
         // Online status
         if (statusText === 'success' && window.navigator.onLine == true) {
           $rootScope.online = true;
@@ -316,7 +315,7 @@ angular.module('OnzsaApp', [])
 
         //STEP 2. If same item, increase sellItem's quantity
         if (lastestSaleItem && lastestSaleItem.product_id == quickKey.product_id) {
-          productQty = lastestSaleItem.qty + 1;
+          productQty = lastestSaleItem.quantity + 1;
         }
 
         //STEP 3. Get PriceBook by ProductID and quantity
@@ -332,7 +331,7 @@ angular.module('OnzsaApp', [])
               additionRegisterSaleTotal(saleItem);
 
               // Save to RegisterSaleItems : status_open
-              saveRegisterSaleItem([saleItem], saleID, "sale_items_status_open");
+              saveRegisterSaleItem([saleItem], saleID, "sale_items_status_valid");
             }
             //STEP 3.2.
             else {
@@ -342,7 +341,7 @@ angular.module('OnzsaApp', [])
               additionRegisterSaleTotal(saleItem);
 
               // Save to RegisterSaleItems : status_open
-              updateRegisterSaleItems(saleItem, saleID, "sale_items_status_open");
+              updateRegisterSaleItems(saleItem, saleID, "sale_items_status_valid");
             }
 
             // Change(Update) RegisterSale
@@ -519,16 +518,35 @@ angular.module('OnzsaApp', [])
     saleItem.product_id = priceBook.product_id;
     saleItem.name = saleProduct.name;
     saleItem.supply_price = saleProduct.supply_price;
-    saleItem.price = priceBook.price;
-    saleItem.price_include_tax = priceBook.price_include_tax;
-    saleItem.tax = priceBook.tax;
-    saleItem.tax_rate = saleProduct.tax_rate;
     saleItem.discount = priceBook.discount;
-    saleItem.qty = 1;
+    saleItem.price = priceBook.price;
+
+    saleItem.tax_rate = saleProduct.tax_rate;
+    saleItem.tax = priceBook.tax;
+    saleItem.sale_price = saleItem.price + saleItem.tax;
+    
+    saleItem.quantity = 1;
     saleItem.loyalty_value = priceBook.loyalty_value;
     saleItem.sequence = $rootScope.registerSale.sequence++;
     saleItem.status = "sale_items_status_open";
     $scope.saleItems.unshift(saleItem);
+    console.log("[SS] Add Sell Item : %o", saleItem);
+    return saleItem;
+  }
+
+  // --------------------------
+  // re-calcurate for sellItem
+  // --------------------------
+  var recalcSellItem = function(saleItem) {
+    saleItem.price = saleItem.price - saleItem.discount;
+    saleItem.tax = priceBook.tax;
+    saleItem.sale_price = saleItem.price + saleItem.tax;
+    saleItem.tax_rate = saleProduct.tax_rate;
+    saleItem.quantity = 1;
+    saleItem.loyalty_value = priceBook.loyalty_value;
+    saleItem.sequence = $rootScope.registerSale.sequence++;
+    saleItem.status = "sale_items_status_open";
+    console.log("[SS] Recalcuratated Sell Item : %o", saleItem);
     return saleItem;
   }
 
@@ -536,12 +554,13 @@ angular.module('OnzsaApp', [])
   // update sellItem structure using price book
   // --------------------------
   var additionSellItemQty = function(lastestSaleItem, quickKey, saleProduct, priceBook) {
-    lastestSaleItem.qty = lastestSaleItem.qty + 1;
+    lastestSaleItem.quantity = lastestSaleItem.quantity + 1;
     lastestSaleItem.supply_price = saleProduct.supply_price;
-    lastestSaleItem.price = priceBook.price;
-    lastestSaleItem.price_include_tax = priceBook.price_include_tax;
-    lastestSaleItem.tax = priceBook.tax;
     lastestSaleItem.discount = priceBook.discount;
+    lastestSaleItem.price = priceBook.price - lastestSaleItem.discount;
+    lastestSaleItem.tax = lastestSaleItem.price * priceBook.tax_rate;
+    lastestSaleItem.sale_price = lastestSaleItem.price + lastestSaleItem.tax;
+    console.log("[SS] Add Quantity for Same Sell Item : %o", lastestSaleItem);
     return lastestSaleItem;
   }
 
@@ -549,22 +568,22 @@ angular.module('OnzsaApp', [])
   // addition to registerSale structure using saleItem
   // --------------------------
   var additionRegisterSaleTotal = function(saleItem) {
-    $rootScope.registerSale.total_cost += saleItem.supply_price * saleItem.qty;
-    $rootScope.registerSale.total_price += saleItem.price * saleItem.qty;
-    $rootScope.registerSale.total_price_incl_tax += saleItem.price_include_tax * saleItem.qty;
-    $rootScope.registerSale.total_discount += saleItem.discount * saleItem.qty;
-    $rootScope.registerSale.total_tax += saleItem.tax * saleItem.qty;
+    $rootScope.registerSale.total_cost += saleItem.supply_price * saleItem.quantity;
+    $rootScope.registerSale.total_price += saleItem.price * saleItem.quantity;
+    $rootScope.registerSale.total_price_incl_tax += saleItem.sale_price * saleItem.quantity;
+    $rootScope.registerSale.total_discount += saleItem.discount * saleItem.quantity;
+    $rootScope.registerSale.total_tax += saleItem.tax * saleItem.quantity;
   }
 
   // --------------------------
   // subtraction to registerSale structure using saleItem
   // --------------------------
   var subtractionRegisterSaleTotal = function(saleItem) {
-    $rootScope.registerSale.total_cost -= saleItem.supply_price * saleItem.qty;
-    $rootScope.registerSale.total_price -= saleItem.price * saleItem.qty;
-    $rootScope.registerSale.total_price_incl_tax -= saleItem.price_include_tax * saleItem.qty;
-    $rootScope.registerSale.total_discount -= saleItem.discount * saleItem.qty;
-    $rootScope.registerSale.total_tax -= saleItem.tax * saleItem.qty;
+    $rootScope.registerSale.total_cost -= saleItem.supply_price * saleItem.quantity;
+    $rootScope.registerSale.total_price -= saleItem.price * saleItem.quantity;
+    $rootScope.registerSale.total_price_incl_tax -= saleItem.sale_price * saleItem.quantity;
+    $rootScope.registerSale.total_discount -= saleItem.discount * saleItem.quantity;
+    $rootScope.registerSale.total_tax -= saleItem.tax * saleItem.quantity;
   }
 
   // --------------------------
@@ -730,10 +749,10 @@ angular.module('OnzsaApp', [])
         'sale_id': saleID,
         'product_id': item.product_id,
         'name': item.name,
-        'quantity': item.qty,
+        'quantity': item.quantity,
         'supply_price': item.supply_price,
         'price': item.price,
-        'price_include_tax': item.price_include_tax,
+        'sale_price': item.sale_price,
         'tax': item.tax,
         'tax_rate': item.tax_rate,
         'discount': item.discount,
@@ -754,10 +773,10 @@ angular.module('OnzsaApp', [])
       'sale_id': saleID,
       'product_id': saleItem.product_id,
       'name': saleItem.name,
-      'quantity': saleItem.qty,
+      'quantity': saleItem.quantity,
       'supply_price': saleItem.supply_price,
       'price': saleItem.price,
-      'price_include_tax': saleItem.price_include_tax,
+      'sale_price': saleItem.sale_price,
       'tax': saleItem.tax,
       'tax_rate': saleItem.tax_rate,
       'discount': saleItem.discount,
@@ -1172,33 +1191,37 @@ angular.module('OnzsaApp', [])
     var sale_id = LocalStorage.getSaleID();
     if (sale_id != null) {
       var suc = function(rs) {
-        for (var idx=0; idx<rs.length; idx++) {
-          var item = rs[idx];
-          var saleItem = {};
-          saleItem.product_id = item.product_id;
-          saleItem.name = item.name;
-          saleItem.supply_price = item.supply_price;
-          saleItem.price = item.price;
-          saleItem.price_include_tax = item.price_include_tax;
-          saleItem.tax = item.tax;
-          saleItem.tax_rate = item.tax_rate;
-          saleItem.discount = item.discount;
-          saleItem.qty = item.quantity;
-          saleItem.loyalty_value = item.loyalty_value;
-          saleItem.sequence = item.sequence;
-          saleItem.status = item.status;
-          $scope.saleItems.unshift(saleItem);
+        if (rs.length > 0) {
+          for (var idx = 0; idx < rs.length; idx++) {
+            var item = rs[idx];
+            var saleItem = {};
+            saleItem.product_id = item.product_id;
+            saleItem.name = item.name;
+            saleItem.supply_price = item.supply_price;
+            saleItem.price = item.price;
+            saleItem.sale_price = item.sale_price;
+            saleItem.tax = item.tax;
+            saleItem.tax_rate = item.tax_rate;
+            saleItem.discount = item.discount;
+            saleItem.quantity = item.quantity;
+            saleItem.loyalty_value = item.loyalty_value;
+            saleItem.sequence = item.sequence;
+            saleItem.status = item.status;
+            $scope.saleItems.unshift(saleItem);
 
-          additionRegisterSaleTotal(saleItem);
+            additionRegisterSaleTotal(saleItem);
+          }
+          $scope.$apply();
+        } else {
+          LocalStorage.clearSaleID();
         }
-        $scope.$apply();
       }
       var err = function(e) {
           LocalStorage.clearSaleID();
       }
 
       // Get Opened Register sale Itmes
-      getRegisterSaleItems(sale_id, "sale_items_status_open", suc, err);
+      getRegisterSaleItems(sale_id, null, suc, err);
     }
   };
 
@@ -1206,7 +1229,7 @@ angular.module('OnzsaApp', [])
 
   /**
    * Check for online status
-   *    set to $rootScope.online = [true | false]
+   *    set to $rootScope.online = ['online' | 'offline']
    */
   var isOnline = function () {
     $.ajax({
@@ -1215,9 +1238,9 @@ angular.module('OnzsaApp', [])
 
         // check status
         if (statusText === 'success' && window.navigator.onLine == true) {
-          $rootScope.online = true;
+          $rootScope.online = 'online';
         } else {
-          $rootScope.online = false;
+          $rootScope.online = 'offline';
         }
         console.log("[ONLINE] status : %s", $rootScope.online);
 

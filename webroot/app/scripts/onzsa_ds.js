@@ -210,7 +210,7 @@ Datastore_sqlite = function() {
         t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS RegisterPaymentTypes (id TEXT PRIMARY KEY ON CONFLICT REPLACE, merchant_id TEXT, payment_type_id INTEGER, name TEXT, config TEXT, account_code TEXT, is_active INTEGER, is_deleted INTEGER, created TEXT, modified TEXT, deleted TEXT)", [], function() {t._log("initLocalDataStore", "RegisterPaymentTypes : Success")}, function(e) {t._log("initLocalDataStore", "RegisterPaymentTypes : Error : " + e)})
 
         // Products
-        t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS Products (id TEXT PRIMARY KEY ON CONFLICT REPLACE, name TEXT, handle TEXT, description TEXT, brand_name TEXT, supplier_name TEXT, sku TEXT, supply_price REAL, price REAL, tax REAL, tax_name TEXT, tax_rate REAL, retail_price REAL, image TEXT, image_large TEXT)", [], function() {t._log("initLocalDataStore", "Products : Success")}, function(e) {t._log("initLocalDataStore", "Products : Error : " + e)});
+        t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS Products (id TEXT PRIMARY KEY ON CONFLICT REPLACE, merchant_id TEXT, name TEXT, handle TEXT, description TEXT, brand_name TEXT, supplier_name TEXT, sku TEXT, supply_price REAL, price REAL, tax REAL, tax_name TEXT, tax_rate REAL, retail_price REAL, image TEXT, image_large TEXT)", [], function() {t._log("initLocalDataStore", "Products : Success")}, function(e) {t._log("initLocalDataStore", "Products : Error : " + e)});
 
         //TODO: Registers
 
@@ -221,7 +221,7 @@ Datastore_sqlite = function() {
         t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS RegisterSales  ( id TEXT PRIMARY KEY ON CONFLICT REPLACE, register_id TEXT, user_id TEXT, user_name TEXT, customer_id TEXT, customer_name TEXT, customer_code TEXT, xero_invoice_id TEXT, receipt_number INTEGER, status TEXT, total_cost REAL, total_price REAL, total_price_incl_tax REAL, total_discount REAL, total_tax REAL, note TEXT, sale_date TEXT)", [], function() {t._log("initLocalDataStore", "RegisterSales : Success")}, function(e) {t._log("initLocalDataStore", "RegisterSales : Error : " + e)});
 
         // RegisterSaleItems
-        t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS RegisterSaleItems ( id TEXT PRIMARY KEY ON CONFLICT REPLACE, sale_id TEXT, product_id TEXT, name TEXT, quantity REAL, supply_price REAL, price REAL, price_include_tax REAL, tax REAL, tax_rate REAL, discount REAL, loyalty_value  REAL, sequence INTEGER, status TEXT)", [], function() {t._log("initLocalDataStore", "RegisterSaleItems : Success")}, function(e) {t._log("initLocalDataStore", "RegisterSaleItems : Error : " + e)})
+        t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS RegisterSaleItems ( id TEXT PRIMARY KEY ON CONFLICT REPLACE, sale_id TEXT, product_id TEXT, name TEXT, quantity REAL, supply_price REAL, price REAL, sale_price REAL, tax REAL, tax_rate REAL, discount REAL, loyalty_value  REAL, sequence INTEGER, status TEXT)", [], function() {t._log("initLocalDataStore", "RegisterSaleItems : Success")}, function(e) {t._log("initLocalDataStore", "RegisterSaleItems : Error : " + e)})
 
         // RegisterSalePayments
         t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS RegisterSalePayments (id TEXT PRIMARY KEY ON CONFLICT REPLACE, sale_id TEXT, register_id TEXT, payment_type_id INTEGER, merchant_payment_type_id TEXT, amount REAL, payment_date TEXT)", [], function() {t._log("initLocalDataStore", "RegisterSalePayments : Success")}, function(e) {t._log("initLocalDataStore", "RegisterSalePayments : Error : " + e)})
@@ -312,6 +312,7 @@ Datastore_sqlite = function() {
     /**
      * CREATE TABLE IF NOT EXISTS Products (
      * id TEXT PRIMARY KEY ON CONFLICT REPLACE,
+     * merchant_id TEXT,
      * name TEXT,
      * handle TEXT,
      * description TEXT,
@@ -337,6 +338,7 @@ Datastore_sqlite = function() {
         e._executeDSSql(t, "DROP TABLE IF EXISTS Products", []);
         e._executeDSSql(t, "CREATE TABLE IF NOT EXISTS Products ( " +
             "id TEXT PRIMARY KEY ON CONFLICT REPLACE" +
+            ", merchant_id TEXT" +
             ", name TEXT" +
             ", handle TEXT" +
             ", description TEXT" +
@@ -395,18 +397,18 @@ Datastore_sqlite = function() {
     saveProducts: function(successCallback, setData) {
       var t = this;
       var sqlQuery = "INSERT or REPLACE INTO Products (" +
-          "  id, name, handle, description, brand_name, supplier_name, sku" +
+          "  id, merchant_id, name, handle, description, brand_name, supplier_name, sku" +
           ", supply_price, price, tax, tax_name, tax_rate, retail_price" +
           ", image, image_large" +
           ") values (" +
-          "  ?, ?, ?, ?, ?, ?, ?" +
+          "  ?, ?, ?, ?, ?, ?, ?, ?" +
           ", ?, ?, ?, ?, ?, ?" +
           ", ?, ?" +
           ")";
       var setValues = [], i = 0;
       for(i = 0; i < setData.length; i++){
         var data = [
-          setData[i].id, setData[i].name, setData[i].handle, setData[i].description, setData[i].brand_name, setData[i].supplier_name, setData[i].sku,
+          setData[i].id, setData[i].merchant_id, setData[i].name, setData[i].handle, setData[i].description, setData[i].brand_name, setData[i].supplier_name, setData[i].sku,
           setData[i].supply_price, setData[i].price, setData[i].tax, setData[i].tax_name, setData[i].tax_rate, setData[i].price_include_tax,
           setData[i].image, setData[i].image_large
         ];
@@ -656,6 +658,21 @@ Datastore_sqlite = function() {
     /** ------------------------------------------------------------------------------------------------------------ */
     /** [RegisterSaleItems] -------------------------------------------------------------------- [RegisterSaleItems] */
     /** ------------------------------------------------------------------------------------------------------------ */
+    /** CREATE TABLE IF NOT EXISTS RegisterSaleItems (
+     * id TEXT PRIMARY KEY ON CONFLICT REPLACE,
+     * sale_id TEXT,
+     * product_id TEXT,
+     * name TEXT,
+     * quantity REAL,
+     * supply_price REAL,
+     * price REAL,
+     * sale_price REAL,
+     * tax REAL,
+     * tax_rate REAL,
+     * discount REAL,
+     * loyalty_value  REAL,
+     * sequence INTEGER,
+     * status TEXT ) */
 
     /** -------------------
      *  [INIT] DROP & CREATE
@@ -664,7 +681,7 @@ Datastore_sqlite = function() {
       var e = this;
       e._doDSTransaction(function(t) {
         e._executeDSSql(t, "DROP TABLE IF EXISTS RegisterSaleItems", []);
-        e._executeDSSql(t, "CREATE TABLE IF NOT EXISTS RegisterSaleItems ( id TEXT PRIMARY KEY ON CONFLICT REPLACE, sale_id TEXT, product_id TEXT, name TEXT, quantity REAL, supply_price REAL, price REAL, price_include_tax REAL, tax REAL, tax_rate REAL, discount REAL, loyalty_value  REAL, sequence INTEGER, status TEXT)")
+        e._executeDSSql(t, "CREATE TABLE IF NOT EXISTS RegisterSaleItems ( id TEXT PRIMARY KEY ON CONFLICT REPLACE, sale_id TEXT, product_id TEXT, name TEXT, quantity REAL, supply_price REAL, price REAL, sale_price REAL, tax REAL, tax_rate REAL, discount REAL, loyalty_value  REAL, sequence INTEGER, status TEXT)")
       })
     },
 
@@ -694,10 +711,10 @@ Datastore_sqlite = function() {
     saveRegisterSalesItem: function(saveArray, suc, err){
       var i = saveArray;
       var n = this;
-      var inputValues = [i.id, i.sale_id, i.product_id, i.name, i.quantity, i.supply_price, i.price, i.price_include_tax, i.tax, i.tax_rate, i.discount, i.loyalty_value, i.sequence, i.status];
+      var inputValues = [i.id, i.sale_id, i.product_id, i.name, i.quantity, i.supply_price, i.price, i.sale_price, i.tax, i.tax_rate, i.discount, i.loyalty_value, i.sequence, i.status];
       try{
         n._doDSTransaction(function(e) {
-          n._executeDSSql(e, "INSERT or replace INTO RegisterSaleItems (id, sale_id, product_id, name, quantity, supply_price, price, price_include_tax, tax, tax_rate, discount, loyalty_value, sequence, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputValues, suc, err);
+          n._executeDSSql(e, "INSERT or replace INTO RegisterSaleItems (id, sale_id, product_id, name, quantity, supply_price, price, sale_price, tax, tax_rate, discount, loyalty_value, sequence, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputValues, suc, err);
         });
       }catch(ex){
         n._logDBError(ex.message);
@@ -715,14 +732,14 @@ Datastore_sqlite = function() {
 
       for(var k=0; k < saveArray.length; k++)  {
         i = saveArray[k];
-        inputValues.push([i.id, i.sale_id, i.product_id, i.name, i.quantity, i.supply_price, i.price, i.price_include_tax, i.tax, i.tax_rate, i.discount, i.loyalty_value, i.sequence, i.status]);
+        inputValues.push([i.id, i.sale_id, i.product_id, i.name, i.quantity, i.supply_price, i.price, i.sale_price, i.tax, i.tax_rate, i.discount, i.loyalty_value, i.sequence, i.status]);
       }
 
       try{
         n._doDSTransaction(function(e) {
           for(var j=0; j < inputValues.length; j++){
             var inputValue = inputValues[j];
-            n._executeDSSql(e, "INSERT or replace INTO RegisterSaleItems (id, sale_id, product_id, name, quantity, supply_price, price, price_include_tax, tax, tax_rate, discount, loyalty_value, sequence, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputValue);
+            n._executeDSSql(e, "INSERT or replace INTO RegisterSaleItems (id, sale_id, product_id, name, quantity, supply_price, price, sale_price, tax, tax_rate, discount, loyalty_value, sequence, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputValue);
           }
         });
       }catch(ex){
@@ -776,9 +793,9 @@ Datastore_sqlite = function() {
         if (rs.rows.length > 0) {
           var selectedID = rs.rows.item(0).id;
           queryString = "UPDATE RegisterSaleItems SET " +
-              "quantity = ?, supply_price = ?, price = ?, price_include_tax = ?, tax = ?, tax_rate = ?, discount = ?, loyalty_value = ?, status = ? " +
+              "quantity = ?, supply_price = ?, price = ?, sale_price = ?, tax = ?, tax_rate = ?, discount = ?, loyalty_value = ?, status = ? " +
               " WHERE id = ?";
-          condition = [data.quantity, data.supply_price, data.price, data.price_include_tax, data.tax, data.tax_rate, data.discount, data.loyalty_value, data.status, selectedID];
+          condition = [data.quantity, data.supply_price, data.price, data.sale_price, data.tax, data.tax_rate, data.discount, data.loyalty_value, data.status, selectedID];
           t._executeDSSql(tr, queryString, condition, suc, err);
         } else {
           'function' == typeof(err) && err
@@ -792,7 +809,7 @@ Datastore_sqlite = function() {
         t._logDBError(ex.message);
       }
     },
-
+    /** ------------------------------------------------------------------------------------------------------------ */
     /** [RegisterSalePayments] -------------------------------------------------------------- [RegisterSalePayments] */
     /** ------------------------------------------------------------------------------------------------------------ */
 
@@ -870,7 +887,7 @@ Datastore_sqlite = function() {
 
       for(var k=0; k < salesItems.length; k++)  {
         i = salesItems[k];
-        inputItems.push([i.id, i.sale_id, i.product_id, i.name, i.quantity, i.supply_price, i.price, i.price_include_tax, i.tax, i.tax_rate, i.discount, i.loyalty_value, i.sequence, i.status]);
+        inputItems.push([i.id, i.sale_id, i.product_id, i.name, i.quantity, i.supply_price, i.price, i.sale_price, i.tax, i.tax_rate, i.discount, i.loyalty_value, i.sequence, i.status]);
       }
 
       try{
@@ -881,7 +898,7 @@ Datastore_sqlite = function() {
               });
           //for(var j=0; j < inputItems.length; j++){
           //  var inputValue = inputItems[j];
-          //  self._executeDSSql(e, "INSERT or replace INTO RegisterSaleItems (id, sale_id, product_id, name, quantity, supply_price, price, price_include_tax, tax, tax_rate, discount, loyalty_value, sequence, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputValue);
+          //  self._executeDSSql(e, "INSERT or replace INTO RegisterSaleItems (id, sale_id, product_id, name, quantity, supply_price, price, sale_price, tax, tax_rate, discount, loyalty_value, sequence, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputValue);
           //}
         }, function(e) {
           console.log("Transaction Error: ");
