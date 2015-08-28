@@ -636,7 +636,7 @@ Datastore_sqlite = function() {
       if(statusCode == null){
         queryString = "SELECT * FROM RegisterSales";
       }else if(statusCode == 'all'){
-        queryString = "SELECT * FROM RegisterSales where status in ('sale_status_open', 'sale_status_layby', 'sale_status_saved', 'sale_status_onaccount')";
+        queryString = "SELECT * FROM RegisterSales where status != 'sale_status_voided'";
       }else{
         queryString = "SELECT * FROM RegisterSales where status = ? ";
         searchValue.push(statusCode);
