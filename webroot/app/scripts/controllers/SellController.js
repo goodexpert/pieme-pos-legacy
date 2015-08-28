@@ -371,11 +371,14 @@ angular.module('OnzsaApp', [])
     // Recalcurate Total
     subtractionRegisterSaleTotal(saleItem);
 
+    // Delete from RegisterSaleItems
+    var saleID = LocalStorage.getSaleID();
+    deleteRegisterSaleItem(saleItem, saleID);
+
     // If list to be empty, Delete RegisterSale
     if($scope.saleItems.length == 0) {
       endRegisterSale("sale_status_voided");
     } else {
-      var saleID = LocalStorage.getSaleID();
       updateRegisterSale(saleID);
     }
   };
@@ -803,7 +806,7 @@ angular.module('OnzsaApp', [])
       'sale_id': saleID,
       'sequence': saleItem.sequence
     };
-    //TODO: change to status $scope.ds.deleteRegisterSaleItems(delInfo);
+    $scope.ds.deleteRegisterSaleItems(delInfo);
   }
 
   var bootstrapSystem = function() {
