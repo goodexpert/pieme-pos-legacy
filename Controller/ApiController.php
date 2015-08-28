@@ -234,6 +234,7 @@ class ApiController extends AppController {
       $products = $this->MerchantProduct->find('all', [
         'fields' => [
           'MerchantProduct.id',
+          'MerchantProduct.merchant_id',
           'MerchantProduct.name',
           'MerchantProduct.handle',
           'MerchantProduct.description',
