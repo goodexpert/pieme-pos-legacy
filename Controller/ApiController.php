@@ -129,9 +129,6 @@ class ApiController extends AppController {
         'conditions' => [
           'MerchantTaxRate.merchant_id' => $user['merchant_id'],
           'MerchantTaxRate.is_deleted' => 0
-        ],
-        'order' => [
-          'MerchantTaxRate.created'
         ]
       ]);
 
@@ -157,9 +154,6 @@ class ApiController extends AppController {
         'conditions' => [
           'MerchantPaymentType.merchant_id' => $user['merchant_id'],
           'MerchantPaymentType.is_deleted' => 0
-        ],
-        'order' => [
-          'MerchantPaymentType.created'
         ]
       ]);
 
@@ -208,10 +202,7 @@ class ApiController extends AppController {
             ]
           ]
         ],
-        'conditions' => $conditions,
-        'order' => [
-          'MerchantRegister.created'
-        ]
+        'conditions' => $conditions
       ]);
 
       $response = Hash::map($registers, "{n}", function($array) {
@@ -254,7 +245,7 @@ class ApiController extends AppController {
           [
             'table' => 'merchant_product_brands',
             'alias' => 'MerchantProductBrand',
-            'type' => 'LEFT',
+            'type' => 'INNER',
             'conditions' => [
               'MerchantProductBrand.id = MerchantProduct.product_brand_id'
             ]
@@ -262,7 +253,7 @@ class ApiController extends AppController {
           [
             'table' => 'merchant_suppliers',
             'alias' => 'MerchantSupplier',
-            'type' => 'LEFT',
+            'type' => 'INNER',
             'conditions' => [
               'MerchantSupplier.id = MerchantProduct.supplier_id'
             ]
@@ -280,9 +271,6 @@ class ApiController extends AppController {
           'MerchantProduct.merchant_id' => $user['merchant_id'],
           'MerchantProduct.is_active' => 1,
           'MerchantProduct.is_deleted' => 0,
-        ],
-        'order' => [
-          'MerchantProduct.created'
         ]
       ]);
 
