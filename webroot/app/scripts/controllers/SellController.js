@@ -520,11 +520,10 @@ angular.module('OnzsaApp', [])
     saleItem.supply_price = saleProduct.supply_price;
     saleItem.discount = priceBook.discount;
     saleItem.price = priceBook.price;
-
     saleItem.tax_rate = saleProduct.tax_rate;
-    saleItem.tax = priceBook.tax;
-    saleItem.sale_price = saleItem.price + saleItem.tax;
-    
+    var excPrice = priceBook.price + (priceBook.price * saleProduct.tax_rate) - priceBook.discount;
+    saleItem.tax = excPrice / (1 + saleProduct.tax_rate);
+    saleItem.sale_price = excPrice * saleProduct.tax_rate / (1 + saleProduct.tax_rate);
     saleItem.quantity = 1;
     saleItem.loyalty_value = priceBook.loyalty_value;
     saleItem.sequence = $rootScope.registerSale.sequence++;
@@ -538,14 +537,9 @@ angular.module('OnzsaApp', [])
   // re-calcurate for sellItem
   // --------------------------
   var recalcSellItem = function(saleItem) {
-    saleItem.price = saleItem.price - saleItem.discount;
-    saleItem.tax = priceBook.tax;
-    saleItem.sale_price = saleItem.price + saleItem.tax;
-    saleItem.tax_rate = saleProduct.tax_rate;
-    saleItem.quantity = 1;
-    saleItem.loyalty_value = priceBook.loyalty_value;
-    saleItem.sequence = $rootScope.registerSale.sequence++;
-    saleItem.status = "sale_items_status_open";
+    var excPrice = saleItem.price + (saleItem.price * saleItem.tax_rate) - saleItem.discount;
+    saleItem.tax = excPrice / (1 + saleItem.tax_rate);
+    saleItem.sale_price = excPrice * saleItem.tax_rate / (1 + saleItem.tax_rate);
     console.log("[SS] Recalcuratated Sell Item : %o", saleItem);
     return saleItem;
   }
@@ -554,13 +548,16 @@ angular.module('OnzsaApp', [])
   // update sellItem structure using price book
   // --------------------------
   var additionSellItemQty = function(lastestSaleItem, quickKey, saleProduct, priceBook) {
+    console.log("[SS] Add Quantity for Same Sell Item from : %o", lastestSaleItem);
     lastestSaleItem.quantity = lastestSaleItem.quantity + 1;
     lastestSaleItem.supply_price = saleProduct.supply_price;
     lastestSaleItem.discount = priceBook.discount;
-    lastestSaleItem.price = priceBook.price - lastestSaleItem.discount;
-    lastestSaleItem.tax = lastestSaleItem.price * priceBook.tax_rate;
-    lastestSaleItem.sale_price = lastestSaleItem.price + lastestSaleItem.tax;
-    console.log("[SS] Add Quantity for Same Sell Item : %o", lastestSaleItem);
+    lastestSaleItem.price = priceBook.price;
+    lastestSaleItem.tax_rate = saleProduct.tax_rate;
+    var excPrice = priceBook.price + (priceBook.price * saleProduct.tax_rate) - priceBook.discount;
+    lastestSaleItem.tax = excPrice / (1 + saleProduct.tax_rate);
+    lastestSaleItem.sale_price = excPrice * saleProduct.tax_rate / (1 + saleProduct.tax_rate);
+    console.log("[SS] Add Quantity for Same Sell Item  to : %o", lastestSaleItem);
     return lastestSaleItem;
   }
 
