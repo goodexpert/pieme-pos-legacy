@@ -692,7 +692,7 @@ Datastore_sqlite = function() {
     deleteRegisterSaleItems: function(delInfo, suc, err) {
       var t = this, condition = [], sqlQuery = "DELETE from RegisterSaleItems WHERE sale_id = ? ";
       condition.push(delInfo.sale_id);
-      if(delInfo.sequence != null) { sqlQuery += ", sequence = ?"; condition.push(delInfo.sequence); }
+      if(delInfo.sequence != null) { sqlQuery += "and sequence = ?"; condition.push(delInfo.sequence); }
       console.log(sqlQuery);
       console.log(condition);
       try{
