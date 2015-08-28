@@ -239,6 +239,11 @@ fieldset[disabled] .btn-function.active {
   font-size: 8px;
 }
 
+/* to reset a datatables wrapper margin top. */
+.dataTables_wrapper .row {
+  margin-top: 0px !important;
+}
+
 @media (max-width: 1260px) {
 
   #register_quick_keys .icon-btn {

@@ -29,6 +29,7 @@ var OnzsaApp = angular.module('OnzsaApp', [
   'LocalStorageModule',
   'cfp.hotkeys',
   'datatables',
+  'datatables.tabletools',
   'oc.lazyLoad'
 ])
 
