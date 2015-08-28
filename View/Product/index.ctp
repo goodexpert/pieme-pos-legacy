@@ -421,16 +421,21 @@ $(document).ready(function () {
 
     // Import CSV
     $("#txtFileUpload").change(function(e){
+
         if(e.target.files != undefined) {
             var reader = new FileReader();
-            reader.onload = function(e) {
+              reader.onload = function(e) {
                 var csvval = e.target.result.split("\n");
                 datas = $.csv.toObjects(e.target.result);
+
                 $("#import").attr({"style":"color:red"});
                 
                 $("#import[style='color:red']").click(function(){
                     var i = 0;
                     $.each(datas, function(){
+
+                      console.log(datas);
+
                         var id = datas[i]['id'];
                         var name = datas[i]['name'];
                         var handle = datas[i]['handle'];

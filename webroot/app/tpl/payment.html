@@ -1,81 +1,78 @@
 <!-- PAY POPUP BOX -->
-      <div class="modal-header">
-        <button data-ng-click="cancel()" type="button" class="pull-right confirm-close" data-dismiss="modal" aria-hidden="true">
-          <i class="glyphicon glyphicon-remove"></i>
-        </button>
-        <h4 class="modal-title">Select a payment method</h4>
-      </div>
+<div class="modal-header">
+  <button data-ng-click="cancel()" type="button" class="pull-right confirm-close" data-dismiss="modal" aria-hidden="true">
+    <i class="glyphicon glyphicon-remove"></i>
+  </button>
+  <h4 class="modal-title">Select a payment method</h4>
+</div>
 
-      <div class="modal-body">
-          <div  class="row">
-            <div class="col-md-6">
-              <table class="table table-hover payment-table" id="table_payment">
-                <thead>
-                <tr>
-                  <th>TO PAY</th>
-                  <th class="text-right" >{{registerSale.total_price_incl_tax | currency}}</th>
-                </tr>
-                <tr>
-                  <th class=" text-left">TO TOTAL PAY</th>
-                  <th class="text-right" >$<input class="pull-right" id ="set-pay-amount" value="{{toPayAmount | number:2 }}"></input></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr class="payment-info"data-ng-repeat="payment in paymentInfo">
-                  <td class=" text-left">{{payment.name}}</td>
-                  <td class=" text-right">{{payment.amount | currency}}</td>
-                </tr>
-                </tbody>
-                <tfoot>
-                <tr>
-                  <td class=" text-left">remains</td>
-                  <td class=" text-right">{{remains | currency}}</td>
-                </tr>
-                <tr>
-                  <td class=" text-left">TOTAL paid</td>
-                  <!--<td class=" text-center">$ {{getTotal()}} divided {{example.text}}</td>-->
-                  <td class=" text-right">{{registerSale.total_payment | currency}}</td>
-                </tr>
-                </tfoot>
-              </table>
-            </div>
-            <div class="col-md-6">
-              <div class="margin-top-20 col-lg-12 col-md-12 col-sm-12 col-omega col-alpha">
-                <div data-ng-repeat="payment in paymentTypes" >
-                  <div class="col-md-4 payment_method" payment-id="{{payment.id}}" payment-type-id="{{payment.payment_type_id}}" payment-type="{{payment.name}}">
-                    <div>
-                      <a class="btn icon-btn medium">
-                        <img class="img-responsive payment" data-ng-src="{{payment.image}}" alt="{{payment.name}}">
-                        <div class="payment caption">
-                          <span>{{payment.name}}</span>
-                        </div>
-                      </a>
-                    </div>
+<div class="modal-body">
+  <div class="row">
+    <div class="col-md-6">
+      <table class="table table-hover payment-table" id="table_payment">
+        <thead>
+          <tr>
+            <th>TO PAY</th>
+            <th class="text-right" >{{registerSale.total_price_incl_tax | currency}}</th>
+          </tr>
+          <tr>
+            <th class=" text-left">TO TOTAL PAY</th>
+            <th class="text-right" >$<input class="pull-right" id ="set-pay-amount" value="{{toPayAmount | number:2 }}"></input></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="payment-info"data-ng-repeat="payment in paymentInfo">
+            <td class=" text-left">{{payment.name}}</td>
+            <td class=" text-right">{{payment.amount | currency}}</td>
+          </tr>
+          </tbody>
+          <tfoot>
+          <tr>
+            <td class=" text-left">remains</td>
+            <td class=" text-right">{{remains | currency}}</td>
+          </tr>
+          <tr>
+            <td class=" text-left">TOTAL paid</td>
+            <!--<td class=" text-center">$ {{getTotal()}} divided {{example.text}}</td>-->
+            <td class=" text-right">{{registerSale.total_payment | currency}}</td>
+          </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="col-md-6">
+        <div class="margin-top-20 col-lg-12 col-md-12 col-sm-12 col-omega col-alpha">
+          <div data-ng-repeat="payment in paymentTypes" >
+            <div class="col-md-4 payment_method" payment-id="{{payment.id}}" payment-type-id="{{payment.payment_type_id}}" payment-type="{{payment.name}}">
+              <div>
+                <a class="btn icon-btn medium">
+                  <img class="img-responsive payment" data-ng-src="{{payment.image}}" alt="{{payment.name}}">
+                  <div class="payment caption">
+                    <span>{{payment.name}}</span>
                   </div>
-                </div>
+                </a>
               </div>
             </div>
           </div>
-
-        </div>
-
-      <div class="modal-footer">
-        <div class="col-md-8">
-          <button data-ng-click="cancel()" class="confirm-close pull-left btn btn-primary" type="button" data-dismiss="modal">Cancel </button>
-          <button class="split-payment pull-left btn btn-primary" type="button" data-dismiss="modal">Split payment</button>
-          <label class="split-by hide pull-left ">
-            <input type="number" name="input" ng-model="example.text" ng-pattern="example.word" required ng-trim="false" placeholder="No. people" min="2" max="99">
-          </label>
-        </div>
-        <div class=col-md-4">
-          <button class="btn btn-success onaccount-sale inactive" type="button" data-dismiss="modal">On account </button>
-          <button class="btn btn-success layby-sale inactive" type="button" data-dismiss="modal">{{example.text}}</button>
         </div>
       </div>
+    </div>
+  </div>
+</div>
 
-
+<div class="modal-footer">
+  <div class="col-md-8">
+    <button type="button" class="confirm-close pull-left btn btn-primary" data-ng-click="cancel()" data-dismiss="modal">Cancel </button>
+    <button type="button" class="split-payment pull-left btn btn-primary" data-dismiss="modal">Split payment</button>
+    <label class="split-by hide pull-left ">
+      <input type="number" name="input" ng-model="example.text" ng-pattern="example.word" required ng-trim="false" placeholder="No. people" min="2" max="99">
+    </label>
+  </div>
+  <div class=col-md-4">
+    <button type="button" class="btn btn-success onaccount-sale inactive" data-dismiss="modal">On account </button>
+    <button type="button" class="btn btn-success layby-sale inactive" data-dismiss="modal">Layby</button>
+  </div>
+</div>
 <!-- PAY POPUP BOX END -->
-
 
 <!-- EFTPOS TRANSACTION BOX -->
 <div class="confirmation-modal modal fade in eftpos_status" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;">
