@@ -161,6 +161,18 @@ fieldset[disabled] .btn-function.active {
   background-color: #e6e6e6;
 }
 
+/*
+.numpad-content-wrap:before {
+  content: "\A";
+  border-style: solid;
+  border-width: 0px 10px 15px 10px;
+  border-color: transparent transparent #525252  transparent;
+  position: absolute;
+  left: 0px;
+  top: -15px;
+}
+*/
+
 .numpad-content-wrap {
   background-color: #525252;
   display: block;
@@ -179,7 +191,10 @@ fieldset[disabled] .btn-function.active {
 
 .numpad-number-input-group {
   width: 100%;
-  padding-bottom: 20px;
+}
+
+.numpad-input-label {
+  color: #f6f6f6;
 }
 
 .numpad-number-input {
@@ -190,6 +205,7 @@ fieldset[disabled] .btn-function.active {
   width: 244px;
   margin-left: -4px;
   margin-right: -4px;
+  margin-top: 20px;
   display: table;
 }
 
@@ -221,6 +237,15 @@ fieldset[disabled] .btn-function.active {
 
 .numpad-key-return span {
   font-size: 8px;
+}
+
+/* to reset a datatables wrapper margin top. */
+.dataTables_wrapper .row {
+  margin-top: 0px !important;
+}
+
+table.dataTable tbody tr {
+  background-color: transparent !important;
 }
 
 @media (max-width: 1260px) {

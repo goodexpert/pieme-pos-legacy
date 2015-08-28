@@ -1,0 +1,19 @@
+<div data-ng-controller="TestController">
+
+  <div style="width: 200px;">
+    <div style="background-color: #ccc; width: 300px; height: 30px;"
+      numpad-mode="'discount'"
+      data-discount-type="0"
+      data-discount="{{saleItem.discount}}"
+      data-price="{{saleItem.price}}"
+      data-price_include_tax="{{saleItem.price_include_tax}}"
+      data-tax="{{saleItem.tax}}"
+      numpad-popup="" numpad-append-to-body="true" ng-model="saleItem" ng-required="true">
+      <span>{{saleItem.discount}}</span>
+    </div>
+    <div style="background-color: #ccc; width: 300px; height: 30px;">
+      <span>{{saleItem.price_include_tax - saleItem.discount | number:2}}</span>
+    </div>
+  </div>
+
+</div>

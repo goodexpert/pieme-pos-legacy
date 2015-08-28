@@ -35,14 +35,23 @@
                 <td class="sale-item-name text-left">
                   {{saleItem.name}}
                 </td>
-                <td class="sale-item-qty text-right" numpad-popup numpad-append-to-body="true" numpad-mode="'quantity'" ng-model="saleItem.quantity" ng-required="true">
+                <td class="sale-item-qty text-right"
+                    data-quantity="{{saleItem.quantity}}"
+                    numpad-popup numpad-append-to-body="true" numpad-mode="'quantity'" ng-model="saleItem.quantity" ng-required="true">
                   {{saleItem.quantity}}
                 </td>
-                <td class="sale-item-discount text-right" numpad-popup numpad-append-to-body="true" numpad-mode="'currency'" ng-model="saleItem.discount" ng-required="true">
-                  {{(saleItem.discount * saleItem.quantity) | currency}}
+                <td class="sale-item-discount text-right"
+                    data-discount-type="0"
+                    data-discount="{{saleItem.discount}}"
+                    data-price="{{saleItem.price}}"
+                    data-sale-price="{{saleItem.sale_price}}"
+                    data-tax="{{saleItem.tax}}"
+                    data-tax-rate="{{saleItem.tax_rate}}"
+                    numpad-popup numpad-append-to-body="true" numpad-mode="'discount'" ng-model="saleItem" ng-required="true">
+                  ${{(saleItem.sale_price + saleItem.tax) | number:2}}
                 </td>
                 <td class="sale-item-price text-right">
-                  {{((saleItem.sale_price - saleItem.discount) * saleItem.quantity) | currency}}
+                  ${{((saleItem.sale_price + saleItem.tax) * saleItem.qty) | number:2}}
                 </td>
                 <td class="sale-item-remove text-center">
                   <button class="btn btn-xs btn-circle btn-danger" data-ng-click="removeSellItem(saleItem)">
@@ -55,9 +64,9 @@
             <tfoot>
               <tr>
                 <td class="sale-item-name text-left">TOTAL</td>
-                <td class="sale-item-qty  text-left">&nbsp;</td>
+                <td class="sale-item-qty text-left">&nbsp;</td>
                 <td class="sale-item-discount text-left">&nbsp;</td>
-                <td class="sale-item-price text-right">{{(registerSale.total_price_incl_tax) | currency}}</td>
+                <td class="sale-item-price text-right">${{(registerSale.total_price_incl_tax) | number:2}}</td>
                 <td class="text-left">&nbsp;</td>
               </tr>
             </tfoot>
@@ -129,7 +138,7 @@
           <div class="caption">
             <div class="input-icon left">
               <i class="icon-magnifier"></i>
-              <input type="search" class="form-control form-control-solid" data-ng-model="criteria" placeholder="Product Search">
+              <input type="search" class="form-control form-control-solid" data-ng-model="search" placeholder="Product Search">
             </div>
           </div>
           <div class="tools">
@@ -151,10 +160,10 @@
           <div class="tabbable-custom tabs-below" id="register_quick_keys">
             <div class="tab-content">
               <div data-ng-repeat="group in keyLayout.groups"
-                  class="tab-pane active"
+                  class="tab-pane {{::isTabActive(group.position)}}"
                   id="tab_pane_{{group.position}}">
                 <a class="btn icon-btn {{viewMode}}"
-                    data-ng-repeat="quickKey in group.pages[0].keys"
+                    data-ng-repeat="quickKey in group.pages[0].keys | filter:search"
                     data-ng-click="{{quickKey.position == 0 ? '' : 'addSellItem(quickKey)'}}"
                     data-ng-model="quickKey"
                     popover-template="{{quickKey.position != 0 ? '' : '\'myPopoverTemplate.html\''}}"
@@ -171,7 +180,7 @@
               </div>
             </div>
             <ul class="nav nav-tabs">
-              <li class="active" data-ng-repeat="group in keyLayout.groups">
+              <li class="{{::isTabActive(group.position)}}" data-ng-repeat="group in keyLayout.groups">
                 <a href="#tab_pane_{{group.position}}" data-toggle="tab" aria-expanded="true">{{group.name}}</a>
               </li>
             </ul>

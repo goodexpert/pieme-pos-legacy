@@ -778,7 +778,7 @@ Datastore_sqlite = function() {
         }
         typeof(suc) == 'function' && suc(resultSet);
       }, t._doDSTransaction(function(tr) {
-            t._executeDSSql(tr, queryString, searchValue, success, err)
+        t._executeDSSql(tr, queryString, searchValue, success, err)
       })
     },
 

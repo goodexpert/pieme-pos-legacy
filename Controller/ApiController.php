@@ -129,6 +129,9 @@ class ApiController extends AppController {
         'conditions' => [
           'MerchantTaxRate.merchant_id' => $user['merchant_id'],
           'MerchantTaxRate.is_deleted' => 0
+        ],
+        'order' => [
+          'MerchantTaxRate.created'
         ]
       ]);
 
@@ -154,6 +157,9 @@ class ApiController extends AppController {
         'conditions' => [
           'MerchantPaymentType.merchant_id' => $user['merchant_id'],
           'MerchantPaymentType.is_deleted' => 0
+        ],
+        'order' => [
+          'MerchantPaymentType.created'
         ]
       ]);
 
@@ -202,7 +208,10 @@ class ApiController extends AppController {
             ]
           ]
         ],
-        'conditions' => $conditions
+        'conditions' => $conditions,
+        'order' => [
+          'MerchantRegister.created'
+        ]
       ]);
 
       $response = Hash::map($registers, "{n}", function($array) {
@@ -225,6 +234,7 @@ class ApiController extends AppController {
       $products = $this->MerchantProduct->find('all', [
         'fields' => [
           'MerchantProduct.id',
+          'MerchantProduct.merchant_id',
           'MerchantProduct.name',
           'MerchantProduct.handle',
           'MerchantProduct.description',
@@ -244,7 +254,7 @@ class ApiController extends AppController {
           [
             'table' => 'merchant_product_brands',
             'alias' => 'MerchantProductBrand',
-            'type' => 'INNER',
+            'type' => 'LEFT',
             'conditions' => [
               'MerchantProductBrand.id = MerchantProduct.product_brand_id'
             ]
@@ -252,7 +262,7 @@ class ApiController extends AppController {
           [
             'table' => 'merchant_suppliers',
             'alias' => 'MerchantSupplier',
-            'type' => 'INNER',
+            'type' => 'LEFT',
             'conditions' => [
               'MerchantSupplier.id = MerchantProduct.supplier_id'
             ]
@@ -270,6 +280,9 @@ class ApiController extends AppController {
           'MerchantProduct.merchant_id' => $user['merchant_id'],
           'MerchantProduct.is_active' => 1,
           'MerchantProduct.is_deleted' => 0,
+        ],
+        'order' => [
+          'MerchantProduct.created'
         ]
       ]);
 

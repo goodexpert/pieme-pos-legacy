@@ -61,6 +61,15 @@ class ProductController extends AppController {
             'MerchantProduct.is_active' => 1
         );
 
+        $discount_id = $this->Merchant->find('first', Array(
+          'fields' => array('Merchant.discount_product_id'),
+          'conditions' => array(
+            'Merchant.id' => $user['merchant_id']
+          )
+        ));
+
+        $discount_id = $discount_id['Merchant']['discount_product_id'];
+
         if(isset($_GET)) {
             foreach($_GET as $filtering_option_name => $filtering_option_value) {
                 if($filtering_option_name == 'is_active') {
@@ -103,6 +112,8 @@ class ProductController extends AppController {
                 }
             }
         }
+
+        $filter['MerchantProduct.id <>'] = $discount_id;
 
         $categories = $this->MerchantProductTag->find('all', array(
             'conditions' => array(
@@ -221,6 +232,10 @@ class ProductController extends AppController {
                 // Step 1: add a new product.
                 $data = $this->request->data;
                 $data['merchant_id'] = $user['merchant_id'];
+
+                if($this->MerchantProduct->find(count, array( 'conditions' => array('id' => $data['id']))) > 0){
+                  return;
+                }
 
                 if (isset($data['parent_id']) && empty($data['parent_id'])) {
                     unset($data['parent_id']);
