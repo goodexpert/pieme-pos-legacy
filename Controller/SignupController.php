@@ -289,10 +289,10 @@ class SignupController extends AppController {
 
             // create discount product
             $discount_product_id = $this->_createDiscountProduct($merchant_id, $tax_rates['default_tax_id']);
+            $merchant['discount_product_id'] = $discount_product_id;
 
             // create default products
             $this->_createDefaultProducts($merchant_id, $supplier_id, $tax_rates['default_tax_id'], $quick_key_id);
-            $merchant['discount_product_id'] = $discount_product_id;
 
             // create a default price book
             $price_book_id = $this->_createDefaultPriceBook($merchant_id, $customer_group_id);
@@ -890,7 +890,7 @@ class SignupController extends AppController {
     }
 
 /**
- * Create discount products function.
+ * Create discount product function.
  *
  * @param string merchant id
  * @param string tax rate id
@@ -899,7 +899,7 @@ class SignupController extends AppController {
     protected function _createDiscountProduct($merchant_id, $default_tax_id) {
         $this->loadModel('MerchantProduct');
 
-        // create a product of yoghurt flavour banana
+        // create a discount product
         $product['merchant_id'] = $merchant_id;
         $product['name'] = 'Discount';
         $product['handle'] = 'onzsa-discount';

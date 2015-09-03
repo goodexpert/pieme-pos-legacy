@@ -112,6 +112,7 @@
     <script src="/theme/metronic/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
     <script src="/theme/metronic/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
     <script src="/lib/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script src="/lib/datatables/vendor/datatables-scroller/js/dataTables.scroller.js"></script>
     <script src="/lib/datatables/vendor/datatables-tabletools/js/dataTables.tableTools.js"></script>
     <!--
     <script src="/theme/metronic/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
@@ -142,7 +143,6 @@
 
     <!-- BEGIN APP LEVEL ANGULARJS SCRIPTS -->
     <script src="/app/scripts/app.js"></script>
-    <script src="/app/scripts/services/registerservice.js"></script>
     <!-- END APP LEVEL ANGULARJS SCRIPTS -->
 
     <!-- BEGIN PAGE LEVEL SCRIPTS -->
@@ -151,9 +151,7 @@
     <script src="/theme/metronic/assets/admin/layout2/scripts/layout.js" type="text/javascript"></script>
     <script src="/theme/metronic/assets/admin/layout2/scripts/demo.js" type="text/javascript"></script>
     -->
-    <script src="/app/scripts/layout.js" type="text/javascript"></script>
-    <script src="/app/scripts/onzsa.js" type="text/javascript"></script>
-    <script src="/app/scripts/onzsa_ds.js" type="text/javascript"></script>
+    <script src="/app/scripts/modules/layout.js" type="text/javascript"></script>
     <!-- END PAGE LEVEL SCRIPTS -->
 
     <script>

@@ -38,6 +38,26 @@ class ApiController extends AppController {
     }
 
 /**
+ * Check network connectivity.
+ *
+ * @return array
+ */
+    public function ping() {
+      $response['success'] = true;
+      $this->serialize($response);
+    }
+
+/**
+ * Retreive session user variable
+ *
+ * @return array
+ */
+    public function check_user_session() {
+      $response["user"] = $this->Auth->user();
+      $this->serialize($response);
+    }
+
+/**
  * Retreive registers config by user_id
  *
  * @return array
@@ -198,6 +218,38 @@ class ApiController extends AppController {
       }
 
       $registers = $this->MerchantRegister->find('all', [
+        'fields' => [
+          'MerchantRegister.id',
+          'MerchantRegister.name',
+          'MerchantRegister.outlet_id',
+          'MerchantRegister.invoice_sequence',
+          'MerchantRegister.invoice_prefix',
+          'MerchantRegister.invoice_suffix',
+          'MerchantRegister.email_receipt',
+          'MerchantRegister.print_receipt',
+          'MerchantRegister.ask_for_user_on_sale',
+          'MerchantRegister.ask_for_note_on_save',
+          'MerchantRegister.print_note_on_receipt',
+          'MerchantRegister.show_discounts',
+          'MerchantRegister.register_open_count_sequence',
+          'MerchantQuickKey.key_layouts',
+          'MerchantReceiptTemplate.receipt_header',
+          'MerchantReceiptTemplate.receipt_footer',
+          'MerchantReceiptTemplate.receipt_barcode',
+          'MerchantReceiptTemplate.label_invoice',
+          'MerchantReceiptTemplate.label_invoice_title',
+          'MerchantReceiptTemplate.label_served_by',
+          'MerchantReceiptTemplate.label_line_discount',
+          'MerchantReceiptTemplate.label_sub_total',
+          'MerchantReceiptTemplate.label_tax',
+          'MerchantReceiptTemplate.label_to_pay',
+          'MerchantReceiptTemplate.label_total',
+          'MerchantReceiptTemplate.label_change',
+          'MerchantReceiptTemplate.banner_image',
+          'MerchantRegisterOpen.id',
+          'MerchantRegisterOpen.register_open_time',
+          'MerchantRegisterOpen.register_close_time',
+        ],
         'joins' => [
           [
             'table' => 'merchant_outlets',
@@ -205,6 +257,31 @@ class ApiController extends AppController {
             'type' => 'INNER',
             'conditions' => [
               'MerchantOutlet.id = MerchantRegister.outlet_id'
+            ]
+          ],
+          [
+            'table' => 'merchant_quick_keys',
+            'alias' => 'MerchantQuickKey',
+            'type' => 'INNER',
+            'conditions' => [
+              'MerchantQuickKey.id = MerchantRegister.quick_key_id'
+            ]
+          ],
+          [
+            'table' => 'merchant_receipt_templates',
+            'alias' => 'MerchantReceiptTemplate',
+            'type' => 'INNER',
+            'conditions' => [
+              'MerchantReceiptTemplate.id = MerchantRegister.receipt_template_id'
+            ]
+          ],
+          [
+            'table' => 'merchant_register_opens',
+            'alias' => 'MerchantRegisterOpen',
+            'type' => 'LEFT',
+            'conditions' => [
+              'MerchantRegisterOpen.register_id = MerchantRegister.id',
+              'MerchantRegisterOpen.register_open_count_sequence = MerchantRegister.register_open_count_sequence'
             ]
           ]
         ],
@@ -215,8 +292,75 @@ class ApiController extends AppController {
       ]);
 
       $response = Hash::map($registers, "{n}", function($array) {
-        return $array['MerchantRegister'];
+        $newArray = $array['MerchantRegister'];
+        $newArray['register_open_sequence_id'] = $array['MerchantRegisterOpen']['id'];
+        $newArray['register_open_time'] = $array['MerchantRegisterOpen']['register_open_time'];
+        $newArray['register_close_time'] = $array['MerchantRegisterOpen']['register_close_time'];
+        $newArray['quick_keys_template'] = $array['MerchantQuickKey'];
+        $newArray['receipt_template'] = $array['MerchantReceiptTemplate'];
+        return $newArray;
       });
+      $this->serialize($response);
+    }
+
+/**
+ * Search customer by query string
+ *
+ * @return array
+ */
+    public function search_customer() {
+      $this->request->onlyAllow('get');
+
+      $this->loadModel('MerchantCustomer');
+      $user = $this->Auth->user();
+      $query = $this->get('query');
+
+      $customers = $this->MerchantCustomer->find('all', [
+        'fields' => [
+          'MerchantCustomer.id',
+          'MerchantCustomer.customer_group_id',
+          'MerchantCustomer.customer_code',
+          'MerchantCustomer.name',
+          'MerchantCustomer.balance',
+          'MerchantCustomer.loyalty_balance',
+          'Contact.first_name',
+          'Contact.last_name',
+          'Contact.email',
+          'Contact.company_name',
+        ],
+        'joins' => [
+          [
+            'table' => 'merchants',
+            'alias' => 'Merchant',
+            'type' => 'INNER',
+            'conditions' => [
+              'Merchant.id = MerchantCustomer.merchant_id'
+            ]
+          ],
+          [
+            'table' => 'contacts',
+            'alias' => 'Contact',
+            'type' => 'INNER',
+            'conditions' => [
+              'Contact.id = MerchantCustomer.contact_id'
+            ]
+          ]
+        ],
+        'conditions' => [
+          'Merchant.id' => $user['merchant_id'],
+          'MerchantCustomer.is_deleted = 0',
+          'OR' => [
+            'MerchantCustomer.name like' => '%' . $query . '%',
+            'MerchantCustomer.customer_code like' => '%' . $query . '%',
+          ]
+        ]
+      ]);
+
+      if (!empty($customers) && is_array($customers)) {
+        $response = Hash::map($customers, "{n}", function($array) {
+          return $array['MerchantCustomer'];
+        });
+      }
       $this->serialize($response);
     }
 
@@ -358,7 +502,9 @@ class ApiController extends AppController {
         ]
       ]);
       $response = Hash::map($list, "{n}", function($array) {
-        return array_merge($array['MerchantPriceBook'], $array['MerchantPriceBookEntry']);
+        $newArray = array_merge($array['MerchantPriceBook'], $array['MerchantPriceBookEntry']);
+        $newArray['price_book_created'] = $array['MerchantPriceBook']['created'];
+        return $newArray;
       });
 
       $this->serialize($response);
