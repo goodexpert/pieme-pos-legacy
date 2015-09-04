@@ -26,6 +26,7 @@
     <div class="top-menu">
       <ul class="nav navbar-nav pull-right">
         <!-- BEGIN REGISTER DROPDOWN -->
+        <!--
         <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
           <a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true">
             <i class="icon-screen-desktop"></i>
@@ -132,8 +133,10 @@
             </li>
           </ul>
         </li>
+        -->
         <!-- END REGISTER DROPDOWN -->
         <!-- BEGIN REGISTER DROPDOWN -->
+        <!--
         <li class="dropdown dropdown-extended dropdown-notification" id="header_notification_bar">
           <a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true">
             <i class="icon-pointer"></i>
@@ -146,6 +149,7 @@
             </li>
           </ul>
         </li>
+        -->
         <!-- END REGISTER DROPDOWN -->
         <!-- BEGIN NOTIFICATION DROPDOWN -->
         <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
@@ -353,6 +357,7 @@
         <!-- END INBOX DROPDOWN -->
         <!-- BEGIN TODO DROPDOWN -->
         <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
+        <!--
         <li class="dropdown dropdown-extended dropdown-tasks" id="header_task_bar">
           <a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true">
             <i class="icon-rocket"></i>
@@ -446,6 +451,7 @@
             </li>
           </ul>
         </li>
+        -->
         <!-- END TODO DROPDOWN -->
         <!-- BEGIN USER LOGIN DROPDOWN -->
         <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
@@ -453,10 +459,11 @@
           <a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true">
           <img alt="" class="img-circle" src="/theme/metronic/assets/admin/layout2/img/avatar.png"/>
           <span class="username username-hide-on-mobile">
-          {{register.user.name}}</span>
+          {{config.user_name}}</span>
           <i class="fa fa-angle-down"></i>
           </a>
           <ul class="dropdown-menu dropdown-menu-default">
+            <!--
             <li>
               <a href="#/profile/dashboard">
               <i class="icon-user"></i> My Profile </a>
@@ -483,6 +490,12 @@
               <a href="#">
               <i class="icon-lock"></i> Lock Screen </a>
             </li>
+            -->
+            <li>
+              <a href="#">
+              <i class="icon-notebook"></i> My Sales </a>
+            </li>
+            <li class="divider">
             <li>
               <a href="/signin/logout">
                 <i class="icon-key"></i> Log Out </a>

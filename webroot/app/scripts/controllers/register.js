@@ -27,6 +27,7 @@ angular.module('OnzsaApp', [])
         openRegisterSelector(response.data);
       } else if (response.status == "initialized") {
         debug('register initialized');
+        $rootScope.config = LocalStorage.getConfig();
       }
     }, function(response) {
       debug('register initialize failed');
@@ -44,8 +45,8 @@ angular.module('OnzsaApp', [])
   $scope.$on('saleItems.updated', refreshSaleItems);
   $scope.$on('sale.ended', refreshSale);
   $scope.$on('sale.reloaded', reloadedSale);
-  $scope.$on('register.ready', function(){debug("register.ready")});      //TODO: change function name
-  $scope.$on('register.failed', function(){debug("register.failed")});    //TODO: change function name
+  $scope.$on('register.ready', preparedRegister);
+  $scope.$on('register.failed', preparedRegister);
 
   // initialize the sale items table
   var vm = this;
@@ -405,6 +406,14 @@ angular.module('OnzsaApp', [])
       }
     }
   };
+
+  function preparedRegister(result) {
+    $rootScope.config = LocalStorage.getConfig();
+
+    if ('register.ready' == result.name) {
+    } else {
+    }
+  }
 
   function reload(saleId) {
     debug("do reload");
