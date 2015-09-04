@@ -1,0 +1,54 @@
+<div class="modal-body numpad-content-wrap">
+  <div>
+    <div ng-if="isDiscountMode()" class="btn-group numpad-switch-btn-group">
+      <label class="btn btn-default" ng-model="discountType" btn-radio="0" ng-change="onChangeUnit()">Percentage</label>
+      <label class="btn btn-default" ng-model="discountType" btn-radio="1" ng-change="onChangeUnit()">Unit Price</label>
+    </div>
+    <div class="numpad-number-input-group">
+      <label ng-if="isDiscountLabelPercent()" class="numpad-input-label" for="change_number_input">Apply discount percentage</label>
+      <label ng-if="isDiscountLabelPrice()" class="numpad-input-label" for="change_number_input">Edit unit price</label>
+      <label ng-if="isQuantityMode()" class="numpad-input-label" for="change_number_input">Quantity</label>
+      <label ng-if="isLineDiscountMode()" class="numpad-input-label" for="change_number_input">Line Discount</label>
+      <label ng-if="isLinePriceMode()" class="numpad-input-label" for="change_number_input">Line Price</label>
+      <div class="input-group">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button" ng-model="numpad_visible" btn-checkbox btn-checkbox-true="1" btn-checkbox-false="0">
+            <i class="fa fa-keyboard-o"></i>
+          </button>
+        </span>
+        <input type="text" class="form-control numpad-number-input" id="change_number_input" placeholder="" title="" ng-model="number" ng-change="onChangeInput()" autofocus>
+        <span ng-if="isDiscountTypePercent()" class="input-group-addon">%</span>
+        <span ng-if="isDiscountTypePrice()" class="input-group-addon"><i class="fa fa-usd"></i></span>
+      </div>
+    </div>
+  </div>
+  <div ng-if="isVisibleNumpad()" class="numpad-content">
+    <div class="numpad-section">
+      <button type="button" class="btn btn-default numpad-key" ng-click="onNumber('1')" tabindex="-1"><span>1</span></button>
+      <button type="button" class="btn btn-default numpad-key" ng-click="onNumber('2')" tabindex="-1"><span>2</span></button>
+      <button type="button" class="btn btn-default numpad-key" ng-click="onNumber('3')" tabindex="-1"><span>3</span></button>
+      <button type="button" class="btn btn-default numpad-key" ng-click="onNumber('4')" tabindex="-1"><span>4</span></button>
+      <button type="button" class="btn btn-default numpad-key" ng-click="onNumber('5')" tabindex="-1"><span>5</span></button>
+      <button type="button" class="btn btn-default numpad-key" ng-click="onNumber('6')" tabindex="-1"><span>6</span></button>
+      <button type="button" class="btn btn-default numpad-key" ng-click="onNumber('7')" tabindex="-1"><span>7</span></button>
+      <button type="button" class="btn btn-default numpad-key" ng-click="onNumber('8')" tabindex="-1"><span>8</span></button>
+      <button type="button" class="btn btn-default numpad-key" ng-click="onNumber('9')" tabindex="-1"><span>9</span></button>
+      <button type="button" class="btn btn-default numpad-key" ng-click="onNumber('0')" tabindex="-1"><span>0</span></button>
+      <button type="button" class="btn btn-default numpad-key" ng-click="onNumber('00')" tabindex="-1"><span>00</span></button>
+      <button type="button" class="btn btn-default numpad-key" ng-click="onNumber('.')" tabindex="-1"><span>.</span></button>
+    </div>
+    <div class="numpad-section last">
+      <button type="button" class="btn btn-default numpad-key numpad-key-delete" ng-click="onBackspace()" tabindex="-1"><span><i class="fa fa-arrow-left"></i></span></button>
+      <button ng-if="isVisiblePercentage()" type="button" class="btn btn-default numpad-key numpad-key-perent" ng-click="onPercentage()" tabindex="-1"><span>%</span></button>
+      <button ng-if="isVisibleSign()" type="button" class="btn btn-default numpad-key numpad-key-sign" ng-click="onSign()" tabindex="-1"><span>+/-</span></button>
+      <button type="button" class="btn btn-default numpad-key numpad-key-return" ng-click="onReturn()" tabindex="-1"><span>return</span></button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .modal-dialog {
+    width: 276px !important;
+    margin-top: 70px !important;
+  }
+</style>

@@ -1444,6 +1444,20 @@ background:rgba(223,173,53,1.00);
     padding: 5px 0;
     font-weight: bold;
 }
+
+.ui-state-active {
+    border: 1px solid #aaaaaa !important;
+    background: #C2C0AC  50% 50% repeat-x !important;
+    font-weight: normal !important;
+    color: #212121 !important;
+}
+
+.ui-state-highlight {
+    border: 1px solid #fcefa1 !important;
+    background: #fbf9ee 50% 50% repeat-x !important;
+    color: #363636 !important;
+}
+
 .ui-datepicker-calendar tr, .ui-datepicker-calendar thead {
     width:100%;
     display:inline-block;

@@ -23,8 +23,8 @@
     <link href="/theme/metronic/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
     <link href="/theme/metronic/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
     <link href="/theme/metronic/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-    <link href="/theme/metronic/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
     <link href="/theme/metronic/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/theme/metronic/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
     <link href="/lib/angular-hotkeys/build/hotkeys.min.css" rel="stylesheet" type="text/css"/>
     <link href="/lib/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
     <link href="/lib/datatables/vendor/datatables-tabletools/css/dataTables.tableTools.css" rel="stylesheet" type="text/css">
@@ -107,6 +107,7 @@
     <script src="/theme/metronic/assets/global/plugins/jquery-migrate.min.js" type="text/javascript"></script>
     <script src="/theme/metronic/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="/theme/metronic/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+    <script src="/theme/metronic/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
     <script src="/theme/metronic/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
     <script src="/theme/metronic/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
     <script src="/theme/metronic/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
@@ -114,9 +115,6 @@
     <script src="/lib/datatables/media/js/jquery.dataTables.min.js"></script>
     <script src="/lib/datatables/vendor/datatables-scroller/js/dataTables.scroller.js"></script>
     <script src="/lib/datatables/vendor/datatables-tabletools/js/dataTables.tableTools.js"></script>
-    <!--
-    <script src="/theme/metronic/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
-    -->
     <!-- END CORE JQUERY PLUGINS -->
 
     <!-- BEGIN CORE ANGULARJS PLUGINS -->
@@ -125,6 +123,7 @@
     <script src="/lib/angular-aria/angular-aria.min.js" type="text/javascript"></script>
     <script src="/lib/angular-cookies/angular-cookies.min.js" type="text/javascript"></script>
     <script src="/lib/angular-datatables/dist/angular-datatables.min.js" type="text/javascript"></script>
+    <script src="/lib/angular-datatables/dist/plugins/bootstrap/angular-datatables.bootstrap.min.js" type="text/javascript"></script>
     <script src="/lib/angular-datatables/dist/plugins/tabletools/angular-datatables.tabletools.min.js"></script>
     <script src="/lib/angular-hotkeys/build/hotkeys.min.js" type="text/javascript"></script>
     <script src="/lib/angular-local-storage/dist/angular-local-storage.min.js" type="text/javascript"></script>

@@ -1,0 +1,1451 @@
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name OnzsaApp.module:LocalStorage
+ *
+ * @description
+ * Register sharedService module of the OnzsaApp
+ */
+angular.module('OnzsaApp.register', [])
+
+.constant('registerConfig', {
+  debug: true,
+  statusCheckInterval: 5000,
+  syncCheckInterval: 5000,
+})
+
+.factory('Register', [
+           '$rootScope', '$cookies', '$q',
+           '$http', '$interval', '$timeout',
+           'LocalStorage', 'registerConfig',
+  function ($rootScope, $cookies, $q,
+            $http, $interval, $timeout,
+            LocalStorage, registerConfig) {
+
+    // AngularJS will instantiate a singleton by calling "new" on this function
+    var sharedService = {};
+
+    // The variables specified to the service globally.
+    var ds = Datastore_sqlite;
+    var quickKeyLayout = [];
+    var onlineStatus = 'offline';
+    var statusCheckInterval = registerConfig.statusCheckInterval;
+    var saleItems = [];
+    var registerSale = {
+      'receipt_number': 1,
+      'line_discount_type': 0,      // line discount type (0: percent, 1: currency)
+      'line_discount': 0.0,         // line discount number
+      'total_cost': 0.0,            // supply_price
+      'total_price': 0.0,           // price_exclude_tax(supply_price * markup)
+      'total_price_incl_tax': 0.0,  // retail_price(price + tax)
+      'total_discount': 0.0,
+      'total_tax': 0.0,             // price * tax_rate
+      'total_payment': 0.0,         // Paid
+      'sequence': 0
+    };
+    var customerInfo = {
+      'id': null,
+      'customer_group_id': null,
+      'customer_code': null,
+      'name': null,
+      'balance': 0.0,
+      'loyalty_balance': 0.0
+    };
+
+    // Defines sharedService
+    sharedService.init = function() {
+      debug('Register: init register');
+
+      return _bootstrapSystem();
+    };
+
+    sharedService.inOnline = function() {
+      debug('Register: check the network connectivity');
+
+      return _isOnline();
+    }
+
+    sharedService.openRegister = function() {
+      debug('Register: open existing or new register');
+    };
+
+    sharedService.closeRegister = function() {
+      debug('Register: close register');
+    };
+
+    sharedService.switchRegister = function(register) {
+      debug('Register: switch register');
+      return _switchRegister(register);
+    };
+
+    sharedService.openSale = function() {
+      debug('Register: open new or existing sale');
+    };
+
+    sharedService.closeSale = function() {
+      debug('Register: close sale');
+    };
+
+    sharedService.donePaymentSale = function() {
+      debug('Register: payment done sale');
+
+      // get RegisterSales
+      var saleID = LocalStorage.getSaleID();
+      var condition = { 'id' : saleID }
+      var suc = function(rs) {
+        if (rs.length > 0) {
+          var status = rs[0]["status"];
+
+          switch (status) {
+            case 'sale_status_layby':
+              _endRegisterSale("sale_status_layby_closed")
+              break;
+            case 'sale_status_onaccount':
+              _endRegisterSale("sale_status_onaccount_closed")
+              break;
+            case 'sale_status_open':
+              _endRegisterSale("sale_status_closed")
+              break;
+          }
+        }
+      }
+      ds.getRegisterSales(condition, suc);
+    };
+
+    sharedService.onAccountSale = function() {
+      debug('Register: on account sale');
+      _endRegisterSale("sale_status_onaccount")
+    };
+
+    sharedService.laybySale = function() {
+      debug('Register: layby sale');
+      _endRegisterSale("sale_status_layby")
+    };
+
+    sharedService.parkSale = function() {
+      debug('Register: park sale');
+      _endRegisterSale("sale_status_saved")
+    };
+
+    sharedService.refundSale = function() {
+      debug('Register: refund sale');
+    };
+
+    sharedService.voidSale = function() {
+      debug('Register: void sale');
+      _endRegisterSale("sale_status_voided")
+    };
+
+    sharedService.getRegisterSaleTotal = function() {
+      debug('Register: retrieve register sale total');
+      return registerSale;
+    };
+
+    sharedService.getCurrentSaleItems = function() {
+      debug('Register: retrieve current sale items');
+      return angular.copy(saleItems);
+    };
+
+    sharedService.getQuickKeyLayout = function() {
+      debug('Register: retrieve quick key layout');
+      return quickKeyLayout;
+    };
+
+    sharedService.addLineItem = function(saleItem) {
+      debug('Register: add line item');
+
+      var saleID = _newRegisterSale();
+      _additionRegisterSaleTotal(saleItem);
+
+      saleItem.sequence = registerSale.sequence++;
+      saleItems.unshift(saleItem);
+
+      _saveRegisterSaleItems([saleItem], saleID);
+      _updateRegisterSale(saleID);
+
+      $rootScope.$broadcast('saleItems.added');
+    };
+
+    sharedService.createLineItem = function() {
+      debug('Register: create line item');
+
+      var defer = $q.defer();
+      var config = LocalStorage.getConfig();
+      var defDiscItemID = config.discount_product_id;
+      if (defDiscItemID == null) {
+        return null;
+      }
+      _getProduct(function(rs) {
+        if (rs.length == 0) {
+          defer.reject('not found');
+        }
+        var product = rs[0];
+        var uuid = _getUUID();
+        var saleItem = {};
+        saleItem.id = uuid;
+        saleItem.product_id = defDiscItemID;
+        saleItem.name = product.name;
+        saleItem.supply_price = product.supply_price;
+        saleItem.price = product.price;
+        saleItem.sale_price = product.price;
+        saleItem.tax = product.tax;
+        saleItem.tax_rate = product.tax_rate;
+        saleItem.discount = 0;
+        saleItem.quantity = 1;
+        saleItem.loyalty_value = 0;
+        saleItem.sequence = -1;
+        saleItem.status = "sale_item_status_valid";
+
+        defer.resolve(saleItem);
+      },  defDiscItemID); //Get Product
+
+      return defer.promise;
+    };
+
+    sharedService.addSaleItem = function(product_id) {
+      debug('Register: add sale item');
+
+      var priceBook = null;
+      var saleProduct = null;
+      var lastestSaleItem = null;
+      var saleItem = null;
+      var productQty = 1;
+
+      // If first addition for sale, make RegisterSaleID
+      var saleID = _newRegisterSale();
+
+      //STEP 0. Get Product by ProductId
+      _getProduct(function (rs) {
+        if (rs.length > 0) {
+          saleProduct = rs[0];
+
+          //STEP 1. Get lastest sellItem from saleItem
+          lastestSaleItem = _getLastestSaleItem();
+
+          //STEP 2. If same item, increase sellItem's quantity
+          if (lastestSaleItem && lastestSaleItem.product_id == product_id) {
+            productQty = lastestSaleItem.quantity + 1;
+          }
+
+          //STEP 3. Get PriceBook by ProductID and quantity
+          var config = LocalStorage.getConfig();
+          var outlet_id = config.outlet_id;
+          var customer_group_id = config.default_customer_group_id;
+
+          _getPriceBook(function (rs) {
+
+            //TODO: del end of debug
+            console.groupCollapsed("# PriceBook (%s) : size %d", product_id, rs.length);
+            for(var idx=0; idx<rs.length; idx++) {
+              console.group("# PriceBook(%d) %o", idx, rs[idx]);
+              console.debug("# id       : %s", rs[idx].id);
+              console.debug("# price    : %f", rs[idx].price);
+              console.debug("# tax      : %f", rs[idx].tax);
+              console.debug("# discount : %f", rs[idx].discount);
+              console.debug("# pr_inc_t : %f", rs[idx].price_include_tax);
+              console.debug("# isDef    : %d", rs[idx].is_default);
+              console.groupEnd();
+            }
+            console.groupEnd();
+
+            if (rs.length > 0) {
+              priceBook = rs[0];
+
+              //STEP 3.1. Set data to sellItem structure
+              if (productQty == 1) {
+                saleItem = _addSellItem(product_id, saleProduct, priceBook);
+
+                //STEP 3.3. Recalcurate to registerSale structure
+                _additionRegisterSaleTotal(saleItem);
+
+                // Save to RegisterSaleItems : status_open
+                _saveRegisterSaleItems([saleItem], saleID);
+              }
+              //STEP 3.2.
+              else {
+                //STEP 3.3. Recalcurate to registerSale structure
+                _subtractionRegisterSaleTotal(lastestSaleItem);
+                saleItem = _additionSellItemQty(lastestSaleItem, saleProduct, priceBook, productQty);
+                _additionRegisterSaleTotal(saleItem);
+
+                // Save to RegisterSaleItems : status_open
+                _updateRegisterSaleItems(saleItem, saleID, "sale_items_status_valid");
+              }
+
+              // Change(Update) RegisterSale
+              _updateRegisterSale(saleID);
+
+              // Finished add process
+              $rootScope.$broadcast('saleItems.added');
+            } else {
+              debug("Not found PriceBook : " + product_id);
+            }
+          }, product_id, outlet_id, productQty, customer_group_id);  //Get PriceBook
+        } else {
+          debug("Not found Product : " + product_id);
+        }
+      }, product_id); //Get Product
+
+    };
+
+    sharedService.removeSaleItem = function(sequence) {
+      debug('Register: remove sale item : ' + sequence);
+
+      // Get Sale Item
+      var saleItem = _getSaleItemBySequence(sequence);
+
+      // Delete Sale Item from List
+      _deleteSaleItemBySequence(sequence);
+
+      // Recalcurate Total
+      _subtractionRegisterSaleTotal(saleItem);
+
+      // Delete from RegisterSaleItems
+      var saleID = LocalStorage.getSaleID();
+      _deleteRegisterSaleItem(saleItem, saleID);
+
+      // If list to be empty, Delete RegisterSale
+      if (saleItems.length == 0) {
+        _endRegisterSale("sale_status_voided");
+      } else {
+        _updateRegisterSale(saleID);
+
+        $rootScope.$broadcast('saleItems.removed');
+      }
+    };
+
+    sharedService.updateSaleItem = function(newItem) {
+      debug('Register: update sale item');
+
+      var config = LocalStorage.getConfig();
+      var outlet_id = config.outlet_id;
+      var customer_group_id = config.default_customer_group_id;
+      var saleID = LocalStorage.getSaleID();
+      var discProcId = config.discount_product_id;
+
+      var idx = _getSaleItemIndexBySequence(newItem.sequence);
+      var oldItem = saleItems[idx];
+      var suc;
+
+      if (oldItem.quantity != newItem.quantity) {
+        suc = function (rs) {
+          if (rs.length > 0) {
+            var priceBook = rs[0];
+
+            _subtractionRegisterSaleTotal(oldItem);
+            _additionRegisterSaleTotal(newItem);
+            saleItems[idx] = newItem;
+            _updateRegisterSaleItems(newItem, saleID, newItem.status);
+
+            // Finished add process
+            $rootScope.$broadcast('saleItems.updated');
+          }
+        }
+      } else {
+        suc = function (rs) {
+          if (rs.length > 0) {
+            var priceBook = rs[0];
+
+            if (discProcId != oldItem.product_id) {
+              _recalcSellItem(oldItem, newItem, priceBook);
+            }
+            _subtractionRegisterSaleTotal(oldItem);
+            _additionRegisterSaleTotal(newItem);
+            saleItems[idx] = newItem;
+            _updateRegisterSaleItems(newItem, saleID, newItem.status);
+
+            // Finished add process
+            $rootScope.$broadcast('saleItems.updated');
+          }
+        }
+      }
+      _getPriceBook(suc, newItem.product_id, outlet_id, newItem.quantity, customer_group_id);  //Get PriceBook
+    };
+
+    sharedService.reloadRegisterSale = function(saleId) {
+      debug('Register: reload register sale');
+      return angular.copy(_reloadRegisterSale(saleId));
+    };
+
+    sharedService.getRegisterSaleItems = function(saleID, status, suc, err) {
+      debug('Register: retrieve sale items');
+      return angular.copy(_getRegisterSaleItems(saleID, status, suc, err));
+    };
+
+    sharedService.getRegisterSaleItemBySequence = function(sequence) {
+      return angular.copy(_getSaleItemBySequence(sequence));
+    };
+
+    sharedService.openDrawer = function() {
+      debug('Register: open cash drawer');
+    };
+
+    sharedService.switchRegister = function(register) {
+      debug('Register: switchRegister');
+      return _subBootstrapSystem(register);
+    };
+
+    sharedService.updateLineDiscount = function(discount, type) {
+      debug('Register: updateLineDiscount');
+      _updateLineDiscount(discount, type);
+    }
+
+    sharedService.setCustomerInfo = function(infoArray) {
+      debug('Register: setCustomerInfo');
+      if (infoArray != null) {
+        if (infoArray.id != null)                 customerInfo.id = infoArray.id;
+        if (infoArray.customer_group_id != null)  customerInfo.customer_group_id = infoArray.customer_group_id;
+        if (infoArray.customer_code != null)      customerInfo.customer_code = infoArray.customer_code;
+        if (infoArray.name != null)               customerInfo.name = infoArray.name;
+        if (infoArray.balance != null)            customerInfo.balance = infoArray.balance;
+        if (infoArray.loyalty_balance != null)    customerInfo.loyalty_balance = infoArray.loyalty_balance;
+      }
+    }
+
+    sharedService.getCustomerInfo = function(infoArray) {
+      debug('Register: getCustomerInfo');
+      var infoArray = {};
+      infoArray.id                = customerInfo.id;
+      infoArray.customer_group_id = customerInfo.customer_group_id;
+      infoArray.customer_code     = customerInfo.customer_code;
+      infoArray.name              = customerInfo.name;
+      infoArray.balance           = customerInfo.balance;
+      infoArray.loyalty_balance   = customerInfo.loyalty_balance;
+      return infoArray;
+    }
+
+    sharedService.isSelectedCustomer = function() {
+      return (customerInfo.id != null && customerInfo.name != null && customerInfo.customer_code != null);
+    }
+
+    sharedService.createNewPayment = function(paymentId, paymentTypeId, paymentName, amount) {
+      var saleID = LocalStorage.getSaleID();
+      var registerId = LocalStorage.getRegisterID();
+      var payment = [];
+      payment.id = _getUUID();
+      payment.sale_id = saleID;
+      payment.register_id = registerId;
+      payment.name = paymentName;
+      payment.payment_type_id = paymentTypeId;
+      payment.merchant_payment_type_id = paymentId;
+      payment.amount = amount;
+      payment.payment_date = _getUnixTimestamp();
+      return payment;
+    }
+
+    function _updateLineDiscount(discount, type) {
+      debug('Register: updateLineDiscount');
+      var discountValue = 0;
+      var saleID = LocalStorage.getSaleID();
+
+      //TODO: del end of debug
+      console.group("@ Line Discount");
+      console.group("@ old value");
+      console.debug("@ total_price_incl_tax : %f", registerSale.total_price_incl_tax);
+      console.debug("@ total_discount       : %f", registerSale.total_discount);
+      console.debug("@ line_discount        : %f", registerSale.line_discount);
+      console.debug("@ line_discount_type   : %d", registerSale.line_discount_type);
+      console.groupEnd("");
+
+      // restore old value
+      discountValue = registerSale.line_discount;
+      if (registerSale.line_discount_type == 0) { // percent
+        discountValue = registerSale.total_price_incl_tax / (1 - discountValue / 100) - registerSale.total_price_incl_tax;
+      }
+      registerSale.total_price_incl_tax += discountValue;
+      registerSale.total_discount -= discountValue;
+
+      // apply new value
+      discountValue = discount;
+      if (type == 0) { // percent
+        discountValue = registerSale.total_price_incl_tax * discount / 100;
+      }
+      registerSale.total_price_incl_tax -= discountValue;
+      registerSale.total_discount += discountValue;
+
+      // save value
+      registerSale.line_discount = discount;
+      registerSale.line_discount_type = type;
+
+      // saver register sales
+      _saveRegisterSales(saleID, "sale_status_open");
+
+      //TODO: del end of debug
+      console.group("@ New value");
+      console.debug("@ total_price_incl_tax : %f", registerSale.total_price_incl_tax);
+      console.debug("@ total_discount       : %f", registerSale.total_discount);
+      console.debug("@ line_discount        : %f", registerSale.line_discount);
+      console.debug("@ line_discount_type   : %d", registerSale.line_discount_type);
+      console.groupEnd();
+      console.groupEnd();
+
+      $rootScope.$broadcast('saleItems.updated');
+    };
+
+    // --------------------------
+    // bootstrapSystem
+    // --------------------------
+    function _bootstrapSystem() {
+      debug("Register: do bootstrapSystem");
+      $interval(_updateNetworkConnectivity, statusCheckInterval);
+
+      return _checkNetworkConnectivity()
+        .then(function(response) {
+          onlineStatus = 'online';
+          return _receiveSessionUser()
+        })
+        .then(function(userInfo){
+          return _checkInitDatastore(userInfo);
+        })
+        .then(function(){
+          return _receiveProducts();
+        })
+        .then(function(){
+          return _receivePaymentTypes();
+        })
+        .then(function(){
+          return _receiveTaxes();
+        })
+        .then(function(){
+          return _checkRegisterID();
+        })
+
+        .then(function(result){
+            if (result.status == "selected") {
+              return _subBootstrapSystem(result.register);
+            } else if (result.status == "waitRegister") {
+              var deferred = $q.defer();
+              deferred.resolve(result);
+              return deferred.promise;
+            }
+        }
+        , function(response) {
+          onlineStatus = 'offline';
+          return _instantBootstrapSystem();
+        });
+    }
+
+    // --------------------------
+    // bootstrapSystem - 2nd routine
+    // --------------------------
+    function _subBootstrapSystem(register) {
+      debug("Register: do sub BootstrapSystem");
+
+      return _switchRegister(register)
+      .then(function(regsterId){
+        return _receivePriceBooks(regsterId);
+      })
+      .then(function(){
+        return _receiveConfig();
+      })
+      .then(function() {
+        var deferred = $q.defer();
+        var result = [];
+
+        _newRegisterSale();
+        _reloadRegisterSale();
+
+        result["status"] = "initialized";
+        deferred.resolve(result);
+        $rootScope.$broadcast('register.ready');
+        return deferred.promise;
+      }
+      , function(response) {
+        onlineStatus = 'offline';
+        return _instantBootstrapSystem();
+      });
+    }
+
+    // --------------------------
+    // bootstrapSystem - offline routine
+    // --------------------------
+    function _instantBootstrapSystem() {
+      debug("Register: do instant BootstrapSystem");
+      var deferred = $q.defer();
+      var result = [];
+
+      var register = LocalStorage.getRegister();
+      if (register == null) {
+        result["status"] = "noneRegister";
+        deferred.reject(result);
+        $rootScope.$broadcast('register.failed');
+        return deferred.promise;
+      }
+      quickKeyLayout = JSON.parse(register["quick_keys_template"]["key_layouts"]);
+      quickKeyLayout = quickKeyLayout["quick_keys"];
+      $rootScope.$broadcast('quickkey.ready');
+
+      if (_isValidateDataStore() != true) {
+        result["status"] = "unvaliedDataStore";
+        deferred.reject(result);
+        $rootScope.$broadcast('register.failed');
+        return deferred.promise;
+      }
+      _newRegisterSale();
+      _reloadRegisterSale();
+
+      result["status"] = "initialized";
+      deferred.resolve(result);
+      $rootScope.$broadcast('register.ready');
+      return deferred.promise;
+    }
+
+    //TODO: check Local Data store
+    function _isValidateDataStore() {
+      return true;
+    }
+
+    function _isOnline() {
+      return onlineStatus;
+    }
+
+    function _checkNetworkConnectivity() {
+      //debug("REQUEST: ping...");
+
+      if (window.navigator.onLine == true) {  //TODO: check for mobile
+        return $http.get('/api/ping.json');
+      } else {
+        var defer = $q.defer();
+        defer.reject();
+        return defer.promise;
+      }
+    }
+
+    function _updateNetworkConnectivity() {
+      _checkNetworkConnectivity()
+        .then(function(response) {
+          onlineStatus = 'online';
+          //debug('status : ' + onlineStatus);
+        }, function(response) {
+          onlineStatus = 'offline';
+          //debug('status : ' + onlineStatus);
+        });
+    }
+
+    //
+    // Sync local data to server
+    //
+    function _syncData() {
+      var dataRS = [];
+      var dataRSI = [];
+      var dataRSP = [];
+      debug("[SYNC] Start");
+      // get RegisterSales
+      var sucRS = function(tr, rs) {
+        debug("[SYNC] RegisterSales : %o", rs);
+        dataRS = rs;
+      }
+      ds.getRegisterSales(null, sucRS);
+
+      // get RegisterSaleItems
+      var sucRSI = function(tr, rs) {
+        debug("[SYNC] RegisterSaleItems : %o", rs);
+        dataRSI = rs;
+      }
+      ds.getRegisterSaleItems(null, sucRSI);
+
+      // get RegisterSalePayments
+      var sucRSP = function(tr, rs) {
+        debug("[SYNC] RegisterSalePayments : %o", rs);
+        dataRSP = rs;
+      }
+      ds.getRegisterSalePayments(null, sucRSP);
+
+      $.ajax({
+        url: "//localhost",
+        type: "POST",
+        data: {
+          ResisterSales: dataRS,
+          ResisterSaleItems: dataRSI,
+          ResisterSalePayments: dataRSP,
+        },
+        success: function(result) {
+          if(result.success) {
+            debug(result);
+          } else {
+            debug(result);
+          }
+        }
+      });
+    }
+
+    // --------------------------
+    // Check merchant and user ID
+    // --------------------------
+    function _checkInitDatastore(userInfo) {
+      debug("INIT: check merchant id or user id");
+      var deferred = $q.defer();
+
+      // Get saved ID from Cookie
+      var savedMerchantID = $cookies.get('onzsa.merchant_id');
+      var savedUserID = $cookies.get('onzsa.user_id');
+
+      // Check merchant and user ID
+      if (savedMerchantID != userInfo["merchant_id"] || savedUserID != userInfo["id"]) {
+        debug("INIT: diffrent merchant id or user id");
+        // Save ID to cookie
+        $cookies.put('onzsa.merchant_id', userInfo["merchant_id"]);
+        $cookies.put('onzsa.user_id', userInfo["id"]);
+
+        debug("INIT: checking for the init of the Web SQL Database");
+        ds.dropAllLocalDataStore();
+        ds.initLocalDataStore();
+      }
+      debug("INIT: both id same");
+      deferred.resolve();
+      return deferred.promise;
+    }
+
+    // --------------------------
+    // Check Register ID
+    // --------------------------
+    function _findSameRegisterID(id, registers) {
+      if (id != null) {
+        for (var idx = 0; idx < registers.length; idx++) {
+          if (registers[idx].id == id) {
+            debug("INIT: found same register_id index : (%d) ", idx);
+            return idx;
+          }
+        }
+      }
+      return -1;
+    }
+
+    // --------------------------
+    // Check Register ID
+    // --------------------------
+    function _checkRegisterID() {
+      var deferred = $q.defer();
+
+      debug("REFRESH: registers");
+      debug("REQUEST: registers >>>>>>>>>>>>>>>>>>>>>");
+
+      $http.get('/api/registers.json')
+        .then(function (response) {
+          debug("REQUEST: registers, success handler");
+
+          var config = LocalStorage.getConfig();
+          var register_id = config.register_id;
+          var result = [];
+
+          if (response.data == null) {
+            debug("REQUEST: registers, [WARNING] empty data]");
+            deferred.reject(response);
+          } else {
+            debug("REQUEST: registers : %o", response.data);
+            var registers = response.data;
+            debug("INIT: current register_id: " + register_id);
+
+            // find same register id
+            var idx = _findSameRegisterID(register_id, registers);
+
+            if (idx >= 0) {
+              result["status"] = "selected";
+              result["register"] = registers[idx];
+              result["data"] = registers;
+              deferred.resolve(result);
+            } else {
+              if (registers.length > 1) {
+                result["status"] = "waitRegister";
+                result["register"] = null;
+                result["data"] = registers;
+                deferred.resolve(result);
+              } else {
+                result["status"] = "selected";
+                result["register"] = registers[0];
+                result["data"] = registers;
+                deferred.resolve(result);
+              }
+            }
+          }
+        }, function (response) {
+          debug("REQUEST: registers, error handler");
+          deferred.reject(response);
+        });
+
+      return deferred.promise;
+    }
+
+    // --------------------------
+    // Receive Products from server
+    // --------------------------
+    function _receiveProducts() {
+      debug("REFRESH: products");
+      debug("REQUEST: products >>>>>>>>>>>>>>>>>>>>>");
+
+      var deferred = $q.defer();
+      $http.get('/api/products.json')
+          .then(function (response) {
+            debug("REQUEST: products, success handler");
+
+            if (response.data == null) {
+              debug("REQUEST: products, [WARNING] empty data]");
+            } else {
+              ds.saveProducts(null, response.data);
+              debug("REQUEST: products : %o", response.data);
+            }
+            deferred.resolve();
+          }, function (response) {
+            debug("REQUEST: products, error handler");
+            deferred.reject(response);
+          });
+      return deferred.promise;
+    }
+
+    // --------------------------
+    // Receive payment_types from server
+    // --------------------------
+    function _receivePaymentTypes() {
+      debug("REFRESH: payment_types");
+      debug("REQUEST: payment_types >>>>>>>>>>>>>>>>>>>>>");
+
+      var deferred = $q.defer();
+      $http.get('/api/payment_types.json')
+          .then(function (response) {
+            debug("REQUEST: payment_types, success handler");
+
+            if (response.data == null) {
+              debug("REQUEST: payment_types, [WARNING] empty data]");
+            } else {
+              ds.saveRegisterPaymentTypes(response.data);
+              debug("REQUEST: payment_types : %o", response.data);
+            }
+            deferred.resolve();
+          }, function (response) {
+            debug("REQUEST: payment_types, error handler");
+            deferred.reject(response);
+          });
+      return deferred.promise;
+    }
+
+    // --------------------------
+    // Receive Taxes from server
+    // --------------------------
+    function _receiveTaxes() {
+      debug("REFRESH: taxes");
+      debug("REQUEST: taxes >>>>>>>>>>>>>>>>>>>>>");
+
+      var deferred = $q.defer();
+      $http.get('/api/taxes.json')
+          .then(function (response) {
+            debug("REQUEST: taxes, success handler");
+
+            if (response.data == null) {
+              debug("REQUEST: taxes, [WARNING] empty data]");
+            } else {
+              debug("REQUEST: taxes : %o", response.data);
+              ds.saveTaxes(response.data);
+            }
+            deferred.resolve();
+          }, function (response) {
+            debug("REQUEST: taxes, error handler");
+            deferred.reject(response);
+          });
+      return deferred.promise;
+    }
+
+    // --------------------------
+    // Receive PriceBooks from server
+    // --------------------------
+    function _receivePriceBooks(register_id) {
+      debug("REFRESH: price books");
+      debug("REQUEST: price books >>>>>>>>>>>>>>>>>>>>>");
+
+      var deferred = $q.defer();
+      $http.get('/api/get_price_books.json?register_id=' + register_id)
+        .then(function (response) {
+          debug("REQUEST: price books, success handler");
+
+          if (response.data == null) {
+            debug("REQUEST: price books, [WARNING] empty data");
+          } else {
+            for(var i=0; i<response.data.length; i++) {
+              ds.savePriceBook(null, response.data[i]);
+            }
+            debug("REQUEST: price books : ", response.data);
+          }
+          deferred.resolve();
+        }, function (response) {
+          debug("REQUEST: price books, error handler");
+          deferred.reject(response);
+        });
+      return deferred.promise;
+    }
+
+    // --------------------------
+    // Receive Config from server
+    // --------------------------
+    function _receiveConfig() {
+      debug("REFRESH: config");
+      debug("REQUEST: config >>>>>>>>>>>>>>>>>>>>>");
+
+      var deferred = $q.defer();
+      $http.get('/api/config.json')
+        .then(function (response) {
+          debug("REQUEST: config, success handler");
+
+          if (response.data == null) {
+            debug("REQUEST: config, [WARNING] empty data]");
+            deferred.reject(response);
+          } else {
+            LocalStorage.saveConfig(response.data);
+            debug("REQUEST: config : %o", response.data);
+          }
+          deferred.resolve();
+        }, function (response) {
+          debug("REQUEST: config, error handler");
+          deferred.reject(response);
+        });
+      return deferred.promise;
+    }
+
+    // --------------------------
+    // Switching Register
+    // --------------------------
+    function _switchRegister(register) {
+      debug("*** Switching register");
+      debug("LOOKUP: Existing register from datastore – %o", register);
+      //debug("SAVE: Prepare register " + t.id);
+      //debug("OPEN: register – " + r);
+
+      var deferred = $q.defer();
+
+      //TODO: Check and change for Reopen register
+      //_checkRegisterReopen(register);
+
+      // Save register information to Local Storage
+      debug("register selected: " + register.id);
+      LocalStorage.saveRegister(register);
+
+      // Save Quick Key Layout
+      quickKeyLayout = JSON.parse(register["quick_keys_template"]["key_layouts"]);
+      quickKeyLayout = quickKeyLayout["quick_keys"];
+      $rootScope.$broadcast('quickkey.ready');
+
+      deferred.resolve(register.id);
+      return deferred.promise;
+    }
+
+    // --------------------------
+    // Receive Session User Information
+    // --------------------------
+    function _receiveSessionUser() {
+      //debug("REFRESH: signed user information");
+      //debug("REQUEST: signed user information  >>>>>>>>>>>>>>>>>>>>>");
+
+      var deferred = $q.defer();
+      $http.get('/api/check_user_session.json')
+        .then(function (response) {
+          debug("REQUEST: signed user information, success handler");
+
+          if (response.data == null) {
+            debug("REQUEST: signed user information, [WARNING] empty data]");
+          } else {
+            debug("REQUEST: signed user information : ", response.data);
+          }
+          deferred.resolve(response.data.user);
+        }, function (response) {
+          debug("REQUEST: signed user information, error handler");
+          deferred.reject(response);
+        });
+      return deferred.promise;
+    }
+
+    // --------------------------
+    // get last saleItem
+    // --------------------------
+    function _getLastestSaleItem() {
+      var len = saleItems.length;
+      if (len > 0) {
+        var item = saleItems[0];
+        return item;
+      }
+      return null;
+    }
+
+    // --------------------------
+    // add new sellItem structure using price book
+    // --------------------------
+    function _addSellItem(product_id, saleProduct, priceBook) {
+      var uuid = _getUUID();
+      var item = {};
+      item.id = uuid;
+      item.product_id = product_id;
+      item.name = saleProduct.name;
+      item.supply_price = saleProduct.supply_price;
+      item.discount = priceBook.discount;
+      item.price = priceBook.price;
+      item.tax_rate = saleProduct.tax_rate;
+
+      var excPrice = priceBook.price + (priceBook.price * saleProduct.tax_rate) - priceBook.discount;
+      item.sale_price = excPrice                        / (1 + saleProduct.tax_rate);
+      item.tax        = excPrice * saleProduct.tax_rate / (1 + saleProduct.tax_rate);
+
+      //TODO: delete debug
+      console.groupCollapsed("@ Price Calcuration");
+      console.debug("@ supply_price   : %f  ", item.supply_price);
+      console.debug("@ mark           : %f%", (item.price - item.supply_price) * 100 / item.supply_price);
+      console.debug("@ price          : %f  ", item.price);
+      console.debug("@ discount       : %f  ", item.discount);
+      console.debug("@ price_incl_tax : %f  ", excPrice);
+      console.debug("@ tax_rate       : %f(%f%)  ", saleProduct.tax_rate, (item.tax * 100));
+      console.debug("@ sale_price     : %f  ", item.sale_price);
+      console.debug("@ tax            : %f  ", item.tax);
+      console.groupEnd();
+
+      item.quantity = 1;
+      item.loyalty_value = priceBook.loyalty_value;
+      item.sequence = registerSale.sequence++;
+      item.status = "sale_item_status_valid";
+      saleItems.unshift(item);
+      debug("Add Sell Item : %o", item);
+      return item;
+    }
+
+
+    // --------------------------
+    // re-calcurate for sellItem
+    // --------------------------
+    function _recalcSellItem(oldItem, newItem, priceBook) {
+      var discount = priceBook.discount;
+      if (oldItem.discount != newItem.discount) {
+        discount = newItem.discount;
+      }
+      var price = priceBook.price;
+      if (oldItem.price != newItem.price) {
+        price = newItem.price;
+      }
+      var excPrice = price + (price * newItem.tax_rate) - discount;
+      newItem.sale_price = excPrice                    / (1 + newItem.tax_rate);
+      newItem.tax        = excPrice * newItem.tax_rate / (1 + newItem.tax_rate);
+
+      //TODO: delete debug
+      console.groupCollapsed("@ Price Calcuration");
+      console.debug("@ supply_price   : %f  ", newItem.supply_price);
+      console.debug("@ mark           : %f%", (price - newItem.supply_price) * 100 / newItem.supply_price);
+      console.debug("@ price(old)     : %f  ", oldItem.price);
+      console.debug("@ price(new)     : %f  ", newItem.price);
+      console.debug("@ discount(old)  : %f  ", oldItem.discount);
+      console.debug("@ discount(new)  : %f  ", newItem.discount);
+      console.debug("@ price_incl_tax : %f  ", excPrice);
+      console.debug("@ tax_rate       : %f(%f%)", newItem.tax_rate, (newItem.tax_rate * 100));
+      console.debug("@ sale_price     : %f  ", newItem.sale_price);
+      console.debug("@ tax            : %f  ", newItem.tax);
+      console.groupEnd();
+      return newItem;
+    }
+
+    // --------------------------
+    // update sellItem structure using price book
+    // --------------------------
+    function _additionSellItemQty(lastestSaleItem, saleProduct, priceBook) {
+      debug("Add Quantity for Same Sell Item from : %o", lastestSaleItem);
+      lastestSaleItem.quantity = lastestSaleItem.quantity + 1;
+      lastestSaleItem.supply_price = saleProduct.supply_price;
+      lastestSaleItem.discount = priceBook.discount;
+      lastestSaleItem.price = priceBook.price;
+      lastestSaleItem.tax_rate = saleProduct.tax_rate;
+      var excPrice = priceBook.price + (priceBook.price * saleProduct.tax_rate) - priceBook.discount;
+      lastestSaleItem.sale_price = excPrice                        / (1 + saleProduct.tax_rate);
+      lastestSaleItem.tax        = excPrice * saleProduct.tax_rate / (1 + saleProduct.tax_rate);
+      debug("Add Quantity for Same Sell Item  to : %o", lastestSaleItem);
+
+      //TODO: delete debug
+      console.groupCollapsed("@ Price Calcuration");
+      console.debug("@ supply_price   : %f  ", lastestSaleItem.supply_price);
+      console.debug("@ mark           : %f%", (lastestSaleItem.price - lastestSaleItem.supply_price) * 100 / lastestSaleItem.supply_price);
+      console.debug("@ price          : %f  ", lastestSaleItem.price);
+      console.debug("@ discount       : %f  ", lastestSaleItem.discount);
+      console.debug("@ price_incl_tax : %f  ", excPrice);
+      console.debug("@ tax_rate       : %f(%f%)", saleProduct.tax_rate, (lastestSaleItem.tax_rate * 100));
+      console.debug("@ sale_price     : %f  ", lastestSaleItem.sale_price);
+      console.debug("@ tax            : %f  ", lastestSaleItem.tax);
+      console.groupEnd();
+      return lastestSaleItem;
+    }
+
+    // --------------------------
+    // addition to registerSale structure using saleItem
+    // --------------------------
+    function _additionRegisterSaleTotal(saleItem) {
+      registerSale.total_cost += saleItem.supply_price * saleItem.quantity;
+      registerSale.total_price += saleItem.price * saleItem.quantity;
+      registerSale.total_price_incl_tax += (saleItem.sale_price + saleItem.tax) * saleItem.quantity;
+      registerSale.total_discount += saleItem.discount * saleItem.quantity;
+      registerSale.total_tax += saleItem.tax * saleItem.quantity;
+    }
+
+    // --------------------------
+    // subtraction to registerSale structure using saleItem
+    // --------------------------
+    function _subtractionRegisterSaleTotal(saleItem) {
+      registerSale.total_cost -= saleItem.supply_price * saleItem.quantity;
+      registerSale.total_price -= saleItem.price * saleItem.quantity;
+      registerSale.total_price_incl_tax -= (saleItem.sale_price + saleItem.tax) * saleItem.quantity;
+      registerSale.total_discount -= saleItem.discount * saleItem.quantity;
+      registerSale.total_tax -= saleItem.tax * saleItem.quantity;
+    }
+
+    // --------------------------
+    // clear registerSale structure
+    // --------------------------
+    function _clearRegisterSaleTotal() {
+      registerSale.total_cost = 0;
+      registerSale.total_price = 0;
+      registerSale.total_price_incl_tax = 0;
+      registerSale.total_discount = 0;
+      registerSale.total_tax = 0;
+      registerSale.total_payment = 0;
+      registerSale.line_discount = 0;
+      registerSale.line_discount_type = 0;
+    }
+
+    // --------------------------
+    // get price book
+    // --------------------------
+    function _getPriceBook(callback, productId, outletId, productQty, customerGroupId) {
+      var searchInfo = {
+        'productId': productId,
+        'outletId': outletId,
+        'pqty': productQty,
+        'customergroupId': customerGroupId
+      }
+      ds.getPriceBook(callback, searchInfo);
+    };
+
+    // --------------------------
+    // get Product
+    // --------------------------
+    function _getProduct(callback, productId) {
+      var searchInfo = {
+        'id': productId
+      };
+      ds.getProduct(callback, searchInfo);
+    };
+
+    // --------------------------
+    // Save RegisterSales
+    // --------------------------
+    function _saveRegisterSales(saleID, status) {
+      var config = LocalStorage.getConfig();
+      var customer_id = customerInfo.id;
+      var customer_code = customerInfo.customer_code;
+      var customer_name = customerInfo.name;
+
+      if (customer_id == null) {
+        customer_id = config.default_customer_id;
+        customer_code = "walkin";
+        customer_name = "Walkin";
+      }
+
+      var data = {
+        'id': saleID,
+        'register_id': config.register_id,
+        'user_id': config.user_id,
+        'user_name': config.user_name,
+        'customer_id': customer_id,
+        'customer_code': customer_code,   
+        'customer_name': customer_name, 
+        'xero_invoice_id': null,
+        'receipt_number': registerSale.receipt_number,
+        'status': status,
+        'total_cost': registerSale.total_cost,
+        'total_price': registerSale.total_price,
+        'total_price_incl_tax': registerSale.total_price_incl_tax,
+        'total_discount': registerSale.total_discount,
+        'total_tax': registerSale.total_tax,
+        'total_payment': registerSale.total_payment,
+        'line_discount': registerSale.line_discount,
+        'line_discount_type': registerSale.line_discount_type,
+        'note': null,
+        'sale_date': null,
+        'sync_status': "sync_wait",     //TODO: sync_status
+        'sync_date': null
+      }
+
+      var inputData = [];
+      inputData.push(data);
+      ds.saveRegisterSales(null, inputData);
+    };
+
+    // --------------------------
+    // Update RegisterSale
+    // --------------------------
+    function _updateRegisterSale(saleID, status, suc) {
+      var data = {
+        'id': saleID,
+        'total_cost': registerSale.total_cost,
+        'total_price': registerSale.total_price,
+        'total_price_incl_tax': registerSale.total_price_incl_tax,
+        'total_discount': registerSale.total_discount,
+        'total_tax': registerSale.total_tax,
+        'total_payment': registerSale.total_payment,
+        'line_discount': registerSale.line_discount,
+        'line_discount_type': registerSale.line_discount_type,
+      };
+      if(status != null) {
+        data['status'] = status;
+        data['sale_date'] = _getUnixTimestamp();
+      }
+      ds.changeRegisterSales(data, suc);
+    };
+
+    // --------------------------
+    // Save SaleItem to RegisterSaleItems
+    // --------------------------
+    function _saveRegisterSaleItems(saleItems, saleID) {
+      var inputValue = [];
+      for(var idx in saleItems) {
+        var item = saleItems[idx];
+        var input = {
+          'id': item.id,
+          'sale_id': saleID,
+          'product_id': item.product_id,
+          'name': item.name,
+          'quantity': item.quantity,
+          'supply_price': item.supply_price,
+          'price': item.price,
+          'sale_price': item.sale_price,
+          'tax': item.tax,
+          'tax_rate': item.tax_rate,
+          'discount': item.discount,
+          'loyalty_value': item.loyalty_value,
+          'sequence': item.sequence,
+          'status': item.status,
+        };
+        inputValue.push(input);
+      }
+      ds.saveRegisterSaleItems(null, inputValue);
+    };
+
+    // --------------------------
+    // Update RegisterSaleItems
+    // --------------------------
+    function _updateRegisterSaleItems(saleItem, saleID, status) {
+      var data = {
+        'id': saleItem.id,
+        'sale_id': saleID,
+        'product_id': saleItem.product_id,
+        'name': saleItem.name,
+        'quantity': saleItem.quantity,
+        'supply_price': saleItem.supply_price,
+        'price': saleItem.price,
+        'sale_price': saleItem.sale_price,
+        'tax': saleItem.tax,
+        'tax_rate': saleItem.tax_rate,
+        'discount': saleItem.discount,
+        'loyalty_value': saleItem.loyalty_value,
+        'sequence': saleItem.sequence,
+        'status': status,
+      };
+      ds.updateRegisterSaleItems(data);
+    };
+
+    // --------------------------
+    // Get SaleItems to RegisterSaleItems
+    // --------------------------
+    function _getRegisterSaleItems(saleID, status, suc, err) {
+      var data = {
+        'sale_id': saleID,
+        'status': status,
+      };
+      ds.getRegisterSaleItems(data, suc, err);
+    };
+
+    // --------------------------
+    // Delete SaleItem from RegisterSaleItems
+    // --------------------------
+    function _deleteRegisterSaleItem(saleItem, saleID) {
+      var delInfo = {
+        'sale_id': saleID,
+        'sequence': saleItem.sequence
+      };
+      ds.deleteRegisterSaleItems(delInfo);
+    };
+
+    // --------------------------
+    // delete saleItem using sequence
+    // --------------------------
+    function _deleteSaleItemBySequence(sequence) {
+      for (var idx in saleItems) {
+        var item = saleItems[idx];
+        if (item.sequence == sequence) {
+          saleItems.splice(idx, 1);
+          break;
+        }
+      }
+      return saleItems.length;
+    }
+
+    // --------------------------
+    // get saleItem using sequence
+    // --------------------------
+    function _getSaleItemBySequence(sequence) {
+      for (var idx in saleItems) {
+        var item = saleItems[idx];
+        if (item.sequence == sequence) {
+          return item;
+        }
+      }
+      return null;
+    }
+
+    // --------------------------
+    // get saleItem index using sequence
+    // --------------------------
+    function _getSaleItemIndexBySequence(sequence) {
+      for (var idx in saleItems) {
+        var item = saleItems[idx];
+        if (item.sequence == sequence) {
+          return idx;
+        }
+      }
+      return null;
+    }
+
+    // --------------------------
+    // get sequence number from saleItem by productId
+    // --------------------------
+    function _getSequenceNumberByProductId(productId) {
+      for (var idx in saleItems) {
+        var item = saleItems[idx];
+        if (item.product_id == productId) {
+          return item.sequence;
+        }
+      }
+      return null;
+    }
+
+    // --------------------------
+    // clear sellItem structure
+    // --------------------------
+    function _clearSellItems() {
+      saleItems.length = 0;
+    }
+
+    // --------------------------
+    // End RegisterSale
+    // --------------------------
+    var _endRegisterSale = function(status) {
+      var saleID = LocalStorage.getSaleID();
+      var suc = function() {
+        // Clear Register Sale Item in UI
+        _clearSellItems();
+
+        // Clear Register Sale Total Section
+        _clearRegisterSaleTotal();
+
+        // clear RegisterSaleID
+        LocalStorage.clearSaleID();
+
+        debug("Register: end register sale");
+        $rootScope.$broadcast('sale.ended');
+      }
+      // change RegisterSales status
+      _updateRegisterSale(saleID, status, suc);
+
+      // make new register saleID
+      _newRegisterSale();
+    }
+
+    // --------------------------
+    // Make new Register Sale
+    // --------------------------
+    function _newRegisterSale() {
+      var saleID = LocalStorage.getSaleID();
+      if(saleID == null) {
+         saleID = _getUUID();
+        LocalStorage.saveSaleID(saleID);
+        registerSale.sequence = 0;
+        registerSale.receipt_number++;
+        _saveRegisterSales(saleID, "sale_status_open");
+      }
+      return saleID;
+    }
+
+    // --------------------------
+    // Make new Register Sale
+    // --------------------------
+    function _reloadRegisterSale(receivedSaleID) {
+      var saleID = receivedSaleID;
+      if (saleID == null) {
+        saleID = LocalStorage.getSaleID();
+        if (saleID == null) {
+          return;
+        }
+      } else {
+        LocalStorage.saveSaleID(receivedSaleID);
+      }
+      var sucSales = function(rs) {
+        debug("Register: reload find registerSale count : %d", rs.length);
+        if (rs.length > 0) {
+          if (rs.length > 0) {
+            var sale = rs[0];
+            registerSale.receipt_number = sale['receipt_number'];
+            registerSale.total_cost = sale['total_cost'];
+            registerSale.total_price = sale['total_price'];
+            registerSale.total_price_incl_tax = sale['total_price_incl_tax'];
+            registerSale.total_discount = sale['total_discount'];
+            registerSale.total_tax = sale['total_tax'];
+            registerSale.total_payment = sale['total_payment'];
+            registerSale.line_discount = sale['line_discount'];
+            registerSale.line_discount_type = sale['line_discount_type'];
+            debug("Register: reloaded registerSale : %o", registerSale);
+
+            var sucItems = function(rs) {
+              debug("Register: reload find registerSaleItems count : %d", rs.length);
+              if (rs.length > 0) {
+                _clearSellItems();
+
+                for (var idx=0; idx<rs.length; idx++) {
+                  var item = rs[idx];
+                  var saleItem = {};
+                  saleItem.id = item.id;
+                  saleItem.product_id = item.product_id;
+                  saleItem.name = item.name;
+                  saleItem.supply_price = item.supply_price;
+                  saleItem.price = item.price;
+                  saleItem.sale_price = item.sale_price;
+                  saleItem.tax = item.tax;
+                  saleItem.tax_rate = item.tax_rate;
+                  saleItem.discount = item.discount;
+                  saleItem.quantity = item.quantity;
+                  saleItem.loyalty_value = item.loyalty_value;
+                  saleItem.sequence = item.sequence;
+                  saleItem.status = item.status;
+                  saleItems.unshift(saleItem);
+
+                  //get max sequence number
+                  if (registerSale.sequence <= saleItem.sequence) {
+                    registerSale.sequence = saleItem.sequence + 1;
+                  }
+                }
+                debug("Register: reloaded registerSaleItems : %o", saleItems);
+                $rootScope.$broadcast('sale.reloaded');
+              }
+            }
+            debug("Register: reload registerSaleItems sale id : %s", saleID);
+            ds.getRegisterSaleItems({'sale_id':saleID}, sucItems);
+          }
+        }
+      }
+      debug("Register: reload registerSale : %s", saleID);
+      ds.getRegisterSales({'id':saleID}, sucSales);
+    }
+
+    //TODO: Get UUID for RegisterSaleItem
+    function _getUUID() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+        return v.toString(16);
+      });
+    }
+
+    function _getUnixTimestamp() {
+      return Math.floor(new Date().getTime() / 1000);
+    }
+
+    return sharedService;
+  }]);
+

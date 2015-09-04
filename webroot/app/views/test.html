@@ -1,19 +1,83 @@
 <div data-ng-controller="TestController">
 
-  <div style="width: 200px;">
-    <div style="background-color: #ccc; width: 300px; height: 30px;"
-      numpad-mode="'discount'"
-      data-discount-type="0"
-      data-discount="{{saleItem.discount}}"
-      data-price="{{saleItem.price}}"
-      data-price_include_tax="{{saleItem.price_include_tax}}"
-      data-tax="{{saleItem.tax}}"
-      numpad-popup="" numpad-append-to-body="true" ng-model="saleItem" ng-required="true">
-      <span>{{saleItem.discount}}</span>
+  <div class="portlet light bordered" style="margin-top: 200px;">
+
+    <div class="portlet-title">
+      <p>{{'common.title1' | i18n}}</p>
     </div>
-    <div style="background-color: #ccc; width: 300px; height: 30px;">
-      <span>{{saleItem.price_include_tax - saleItem.discount | number:2}}</span>
+    <div class="portlet-body">
+      <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+          <a class="btn btn-primary btn-sm" popover-tamplete="'option.html'" popup-placement="bottom">
+            <span>Test Click</span>
+          </a>
+          <button
+            popover-toggle
+            popover-template="'option.html'"
+            popover-placement="bottom"
+            popover-trigger="open"
+            type="button"
+            class="btn btn-default">pop over</button>
+          <button
+            popover-toggle
+            popover-template="'option.html'"
+            popover-trigger="open"
+            popover-placement="bottom"
+            type="button"
+            class="btn btn-default">popup</button>
+          <button
+            popover-toggle
+            popover-template="'myPopoverTemplate.html'"
+            popover-trigger="open"
+            popover-placement="right"
+            type="button"
+            class="btn btn-default">popup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="portlet light bordered">
+
+    <div class="portlet-body">
+      <table class="datatables" style="width: 100%;">
+        <tbody>
+          <tr>
+            <td
+                data-quantity="{{saleItem.quantity}}"
+                keypad-popup keypad-append-to-body="true"
+                keypad-mode="'quantity'" ng-model="saleItem" ng-required="true">
+              {{saleItem.quantity}}
+            </td>
+            <td
+                data-discount-type="0"
+                data-discount="{{saleItem.discount}}"
+                data-price="{{saleItem.price}}"
+                data-sale-price="{{saleItem.sale_price}}"
+                data-tax="{{saleItem.tax}}"
+                data-tax-rate="{{saleItem.tax_rate}}"
+                keypad-popup keypad-append-to-body="true"
+                keypad-mode="'discount'" ng-model="saleItem" ng-required="true">
+              {{(saleItem.sale_price + saleItem.tax) | number:2}}
+            </td>
+            <td>
+              {{(saleItem.sale_price + saleItem.tax) * saleItem.quantity | number:2}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
 </div>
+<script type="text/ng-template" id="option.html">
+  <div ng-click="$event.stopPropagation()">{{dynamicPopover.content}}</div>
+    <div class="form-group" ng-click="$event.stopPropagation();">
+      <label>Popup Title:</label>
+    <input type="text" ng-model="dynamicPopover.title" class="form-control">
+  </div>
+</script>
+
+<script type="text/ng-template" id="myPopoverTemplate.html">
+  <div numpad ng-click="$event.stopPropagation();"></div>
+</script>

@@ -267,6 +267,7 @@
                             <div class="set-price-box col-md-2 col-xs-2 col-sm-2 col-alpha">
                                 <h5><strong> = Retail price</strong></h5>
                               <input type="text" id="retail_price_exclude" value="<?php if(isset($_GET['parent_id'])){echo number_format($parent['MerchantProduct']['price'],2,'.','');} else {echo "0.00";}?>">
+                              <input type="hidden" id="retail_price_exclude_hidden" value="<?php if(isset($_GET['parent_id'])){echo number_format($parent['MerchantProduct']['price'],5,'.','');} else {echo "0.00";}?>">
                               <div class="info">Excluding tax</div>
                             </div>
                             <div class="set-price-box col-md-3 col-xs-3 col-sm-3 col-alpha">
@@ -282,6 +283,7 @@
                             <div class="set-price-box col-md-3 col-xs-3 col-sm-3 col-alpha col-omega">
                                 <h5><strong>= Retail price</strong></h5>
                               <input type="text" id="retail_price_include" value="<?php if(isset($_GET['parent_id'])){echo number_format($parent['MerchantProduct']['price_include_tax'],2,'.','');} else {echo "0.00";}?>">
+                              <input type="hidden" id="retail_price_include_hidden" value="<?php if(isset($_GET['parent_id'])){echo number_format($parent['MerchantProduct']['price_include_tax'],5,'.','');} else {echo "0.00";}?>">
                               <div class="info">Including tax</div>
                             </div>
                           </div>
@@ -529,15 +531,33 @@ $(document).ready(function(){
     });
 
     $(document).on("keyup", "#retail_price_exclude", function(key){
-         var code = key.keyCode || key.which;
-         var clean = $(this).val().replace(/[^\d\.]/g, '');
-         $(this).val(clean);
-         if(code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8"){
-             var sales_tax = $(this).val() * $("#sales_tax").val();
-             $("#markup").val(parseFloat(($("#retail_price_exclude").val() - $("#supply_price").val()) * 100 / $("#supply_price").val()).toFixed(2));
-             $("#sales_tax_calc").val(parseFloat(sales_tax).toFixed(2));
-             $("#retail_price_include").val(parseFloat(sales_tax + parseFloat($(this).val())).toFixed(2));
-         }
+      var code = key.keyCode || key.which;
+      var clean = $(this).val().replace(/[^\d\.]/g, '');
+      $(this).val(clean);
+      if(code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8"){
+        var sales_tax = $(this).val() * $("#sales_tax").val();
+        $("#markup").val(parseFloat(($("#retail_price_exclude").val() - $("#supply_price").val()) * 100 / $("#supply_price").val()).toFixed(2));
+        $("#sales_tax_calc").val(parseFloat(sales_tax).toFixed(2));
+        $("#retail_price_include").val(parseFloat(sales_tax + parseFloat($(this).val())).toFixed(2));
+        $("#sales_tax_calc_hidden").val(parseFloat(sales_tax).toFixed(5));
+        $("#retail_price_include_hidden").val(parseFloat(sales_tax + parseFloat($(this).val())).toFixed(5));
+      }
+    });
+
+    $(document).on("keyup", "#retail_price_include", function(key){
+      var code = key.keyCode || key.which;
+      var clean = $(this).val().replace(/[^\d\.]/g, '');
+      $(this).val(clean);
+      if(code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8"){
+        var calcValue = parseFloat( $("#sales_tax").val());
+        console.log(calcValue);
+        $("#retail_price_exclude").val(parseFloat($(this).val() / (1 + parseFloat($("#sales_tax").val()))).toFixed(2));
+        $("#retail_price_exclude_hidden").val(parseFloat($(this).val() / (1 + parseFloat($("#sales_tax").val()))).toFixed(5));
+        var sales_tax = $("#retail_price_exclude").val() * $("#sales_tax").val();
+        $("#markup").val(parseFloat(($("#retail_price_exclude").val() - $("#supply_price").val()) * 100 / $("#supply_price").val()).toFixed(2));
+        $("#sales_tax_calc").val(parseFloat(sales_tax).toFixed(2));
+        $("#sales_tax_calc_hidden").val(parseFloat(sales_tax).toFixed(5));
+      }
     });
 
     $(document).on("change", "#sales_tax", function(){

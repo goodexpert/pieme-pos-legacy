@@ -495,6 +495,7 @@ class SignupController extends AppController {
         $customer['merchant_id'] = $merchant_id;
         $customer['customer_group_id'] = $customer_group_id;
         $customer['customer_code'] = 'walkin';
+        $customer['name'] = 'Walkin';
 
         $this->MerchantCustomer->create();
         if (!$this->MerchantCustomer->save(array('MerchantCustomer' => $customer))) {
@@ -901,9 +902,9 @@ class SignupController extends AppController {
 
         // create a discount product
         $product['merchant_id'] = $merchant_id;
-        $product['name'] = 'Discount';
-        $product['handle'] = 'onzsa-discount';
-        $product['sku'] = 'onzsa-discount';
+        $product['name'] = 'Line Price';
+        $product['handle'] = 'onzsa-line-price';
+        $product['sku'] = 'onzsa-line-price';
         $product['supply_price'] = 0;
         $product['markup'] = 0;
         $product['price'] = 0;

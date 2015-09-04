@@ -1,0 +1,59 @@
+<div class="modal-header">
+  <button type="button" class="close" data-ng-click="cancel()" aria-hidden="true"></button>
+  <h4 class="modal-title">variants</h4>
+  <div>
+     <div class="options" data-ng-repeat="option in variantsOptions" >
+      <span>{{option.label}}</span>
+      <select name="variant-{{::option.label | lowercase}}" id="variant-{{::option.label | lowercase}}" ng-model="data.selectedOption">
+        <option data-ng-repeat="item in option.options">{{item}}</option>
+      </select>
+    </div>
+  </div>
+</div>
+<div class="modal-body modal-variant-body">
+  <div class="modal-variant-content">
+    <a class="btn icon-btn medium"
+        data-ng-repeat="variant in variants"
+        data-ng-click="selectItem(variant.product_id)"
+        data-ng-model="quickKey">
+      <img class="img-responsive"
+           data-ng-src="{{quickKey.image || '/img/no-image.png'}}" alt="{{variant.label}}">
+      <div class="caption">
+        <span>{{quickKey.label}}</span>
+        <span class="">{{variant.label}}</span>
+      </div>
+    </a>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="btn blue" type="button" ng-click="cancel()">Cancel</button>
+</div>
+
+<style>
+  .modal-content {
+    width: 528px;
+  }
+
+  .modal-variant-body {
+    height: 400px;
+    overflow-y: auto;
+  }
+
+  .modal-variant-content {
+    margin: 0 auto;
+    width: 498px;
+  }
+
+  .btn + .btn {
+    margin-left: 2 !important;
+  }
+
+  .variant-options{
+    margin: 10px 20px 5px 5px;
+  }
+
+  .options {
+    margin: 10px 20px 5px 5px;
+    display: inline-block;
+  }
+</style>

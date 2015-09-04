@@ -408,7 +408,7 @@ Page Footer
 @media (max-width: 767px) {
   /* 767px */
   .page-header.navbar {
-    background: #ea4b4b;
+    background: #f3c200;
     /* Top menu */
   }
   .page-header.navbar .top-menu .navbar-nav > li.dropdown > .dropdown-toggle:hover {

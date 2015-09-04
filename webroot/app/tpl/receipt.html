@@ -1,0 +1,94 @@
+<div class="clearfix"></div>
+<div class="receipt-parent col-md-12 col-xs-12 col-sm-12">
+  <div class="col-md-12 col-xs-12 col-sm-12">
+    <div class="close-popup">
+      <i class="glyphicon glyphicon-remove"></i>
+    </div>
+    <div class="receipt-pos">
+      <span class="receipt-pos-inner"></span>
+    </div>
+  </div>
+  <div id="receipt" class="receipt-content">
+    <div class="col-md-12 col-xs-12 col-sm-12 show-amount">
+      <div class="receipt-header">
+        <button type="button" class="pull-right btn btn-white print">
+          <div class="glyphicon glyphicon-print"></div>
+          &nbsp;Print
+        </button>
+        <h2>{{template.receipt_header}}</h2>
+      </div>
+      <div class="dashed-line-gr"></div>
+      <div class="receipt-body">
+        <div class="receipt-body-customer">
+          <span class="receipt-customer-name">customer name</span><br>
+          <span class="receupt-customer-region">New Zealand</span>
+        </div>
+        <h4 class="receipt-body-type">
+          {{template.label_invoice_title}}
+        </h4>
+        <div class="receipt-body-info">
+          {{template.label_invoice}}<span class="invoice-id">1111</span><br>
+          <span class="invoice-date">2015-03-10 15:23:49</span><br>
+          {{template.label_served_by}}  {{template.receipt_header}}
+        </div>
+        <div class="dashed-line-gr"></div>
+        <div class="col-md-12 col-xs-12 col-sm-12 col-omega col-alpha receipt-body-sales">
+          <table class="col-md-12 col-xs-12 col-sm-12 col-omega col-alpha receipt-product-table">
+            <tbody>
+            </tbody>
+          </table>
+          <div class="dashed-line-gr"></div>
+          <table class="col-md-12 col-xs-12 col-sm-12 col-omega col-alpha receipt-product-table-total">
+            <tr>
+              <th>{{template.label_sub_total}}</th>
+              <td class="total-sub-total receipt-subtotal pull-right">$10.00</td>
+            </tr>
+            <tr>
+              <th>{{template.label_tax}}</th>
+              <td class="total-tax receipt-tax pull-right">$10.00</td>
+            </tr>
+            <tr class="receipt_change">
+              <th>{{template.label_change}}</th>
+              <td class="total-change receipt-total pull-right"></td>
+            </tr>
+            <tr class="receipt_total">
+              <th>{{template.label_total}}</th>
+              <td class="total-amount receipt-total pull-right"></td>
+            </tr>
+            <tr class="receipt-merchant-only" style="text-align: center">
+              <br><br>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="receipt-bt">
+      {{template.receipt_footer}}
+    </div>
+  </div>
+</div>
+<style>
+  .receipt-parent {
+    position: absolute;
+    top: 40px;
+    z-index: 20000;
+    display: none;
+    margin-left:-195px;
+  }
+  .receipt-content{
+    background-color: white;
+  }
+  .search_result {
+    position: absolute;
+    z-index: 50;
+  }
+
+  .payment-display li ul li {
+    display: inline;
+  }
+
+  .payment-display .total_cost {
+    border-top: 1px solid white;
+  }
+</style>
+

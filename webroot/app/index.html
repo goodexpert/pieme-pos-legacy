@@ -2,9 +2,6 @@
 <!--[if IE 8]> <html lang="en" class="ie8 no-js" data-ng-app="OnzsaApp"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9 no-js" data-ng-app="OnzsaApp"> <![endif]-->
 <!--[if !IE]><!-->
-<!--
-<html lang="en" data-ng-app="OnzsaApp" manifest="/cache.appcache">
--->
 <html lang="en" data-ng-app="OnzsaApp">
 <!--<![endif]-->
   <!-- BEGIN HEAD -->
@@ -23,8 +20,8 @@
     <link href="/theme/metronic/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
     <link href="/theme/metronic/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
     <link href="/theme/metronic/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-    <link href="/theme/metronic/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
     <link href="/theme/metronic/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/theme/metronic/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
     <link href="/lib/angular-hotkeys/build/hotkeys.min.css" rel="stylesheet" type="text/css"/>
     <link href="/lib/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
     <link href="/lib/datatables/vendor/datatables-tabletools/css/dataTables.tableTools.css" rel="stylesheet" type="text/css">
@@ -55,9 +52,9 @@
     <link href="/theme/metronic/assets/admin/layout2/css/themes/default.css" rel="stylesheet" type="text/css" id="style_color">
     <link href="/theme/metronic/assets/admin/layout2/css/custom.css" rel="stylesheet" type="text/css"/>
     -->
-    <link href="styles/layout.css" rel="stylesheet" type="text/css"/>
-    <link href="styles/themes/yellow.css" rel="stylesheet" type="text/css"/>
-    <link href="styles/custom.css" rel="stylesheet" type="text/css"/>
+    <link href="/app/styles/layout.css" rel="stylesheet" type="text/css"/>
+    <link href="/app/styles/themes/yellow.css" rel="stylesheet" type="text/css"/>
+    <link href="/app/styles/custom.css" rel="stylesheet" type="text/css"/>
     <!-- END THEME STYLES -->
 
     <link rel="shortcut icon" href="favicon.ico"/>
@@ -71,7 +68,7 @@
     <!-- END PAGE SPINNER -->
 
     <!-- BEGIN HEADER -->
-    <div data-ng-include="'tpl/header.html'" data-ng-controller="HeaderController" class="page-header md-shadow-z-1-i navbar navbar-fixed-top">
+    <div data-ng-include="'/app/tpl/header.html'" data-ng-controller="HeaderController" class="page-header md-shadow-z-1-i navbar navbar-fixed-top">
     </div>
     <!-- END HEADER -->
 
@@ -81,7 +78,7 @@
     <div class="container">
       <div class="page-container">
         <!-- BEGIN SIDEBAR -->
-        <div data-ng-include="'tpl/sidebar.html'" data-ng-controller="SidebarController" class="page-sidebar-wrapper">
+        <div data-ng-include="'/app/tpl/sidebar.html'" data-ng-controller="SidebarController" class="page-sidebar-wrapper">
         </div>
         <!-- END SIDEBAR -->
         <div class="page-content-wrapper">
@@ -112,15 +109,14 @@
     <script src="/theme/metronic/assets/global/plugins/jquery-migrate.min.js" type="text/javascript"></script>
     <script src="/theme/metronic/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="/theme/metronic/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+    <script src="/theme/metronic/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
     <script src="/theme/metronic/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
     <script src="/theme/metronic/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
     <script src="/theme/metronic/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
     <script src="/theme/metronic/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
     <script src="/lib/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script src="/lib/datatables/vendor/datatables-scroller/js/dataTables.scroller.js"></script>
     <script src="/lib/datatables/vendor/datatables-tabletools/js/dataTables.tableTools.js"></script>
-    <!--
-    <script src="/theme/metronic/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
-    -->
     <!-- END CORE JQUERY PLUGINS -->
 
     <!-- BEGIN CORE ANGULARJS PLUGINS -->
@@ -129,6 +125,7 @@
     <script src="/lib/angular-aria/angular-aria.min.js" type="text/javascript"></script>
     <script src="/lib/angular-cookies/angular-cookies.min.js" type="text/javascript"></script>
     <script src="/lib/angular-datatables/dist/angular-datatables.min.js" type="text/javascript"></script>
+    <script src="/lib/angular-datatables/dist/plugins/bootstrap/angular-datatables.bootstrap.min.js" type="text/javascript"></script>
     <script src="/lib/angular-datatables/dist/plugins/tabletools/angular-datatables.tabletools.min.js"></script>
     <script src="/lib/angular-hotkeys/build/hotkeys.min.js" type="text/javascript"></script>
     <script src="/lib/angular-local-storage/dist/angular-local-storage.min.js" type="text/javascript"></script>
@@ -146,8 +143,7 @@
     <!-- END CORE ANGULARJS PLUGINS -->
 
     <!-- BEGIN APP LEVEL ANGULARJS SCRIPTS -->
-    <script src="scripts/app.js"></script>
-    <script src="scripts/services/registerservice.js"></script>
+    <script src="/app/scripts/app.js"></script>
     <!-- END APP LEVEL ANGULARJS SCRIPTS -->
 
     <!-- BEGIN PAGE LEVEL SCRIPTS -->
@@ -156,7 +152,7 @@
     <script src="/theme/metronic/assets/admin/layout2/scripts/layout.js" type="text/javascript"></script>
     <script src="/theme/metronic/assets/admin/layout2/scripts/demo.js" type="text/javascript"></script>
     -->
-    <script src="scripts/layout.js" type="text/javascript"></script>
+    <script src="/app/scripts/modules/layout.js" type="text/javascript"></script>
     <!-- END PAGE LEVEL SCRIPTS -->
 
     <script>

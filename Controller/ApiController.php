@@ -176,10 +176,12 @@ class ApiController extends AppController {
       $result = $this->MerchantPaymentType->find('all', [
         'conditions' => [
           'MerchantPaymentType.merchant_id' => $user['merchant_id'],
+          'MerchantPaymentType.is_active' => 1,
           'MerchantPaymentType.is_deleted' => 0
         ],
         'order' => [
-          'MerchantPaymentType.created'
+          'MerchantPaymentType.created',
+          'MerchantPaymentType.payment_type_id'
         ]
       ]);
 
@@ -246,6 +248,7 @@ class ApiController extends AppController {
           'MerchantReceiptTemplate.label_total',
           'MerchantReceiptTemplate.label_change',
           'MerchantReceiptTemplate.banner_image',
+          'ReceiptStyle.style_class',
           'MerchantRegisterOpen.id',
           'MerchantRegisterOpen.register_open_time',
           'MerchantRegisterOpen.register_close_time',
@@ -276,6 +279,14 @@ class ApiController extends AppController {
             ]
           ],
           [
+            'table' => 'receipt_styles',
+            'alias' => 'ReceiptStyle',
+            'type' => 'INNER',
+            'conditions' => [
+              'ReceiptStyle.id = MerchantReceiptTemplate.receipt_style_id'
+            ]
+          ],
+          [
             'table' => 'merchant_register_opens',
             'alias' => 'MerchantRegisterOpen',
             'type' => 'LEFT',
@@ -298,6 +309,7 @@ class ApiController extends AppController {
         $newArray['register_close_time'] = $array['MerchantRegisterOpen']['register_close_time'];
         $newArray['quick_keys_template'] = $array['MerchantQuickKey'];
         $newArray['receipt_template'] = $array['MerchantReceiptTemplate'];
+        $newArray['receipt_template']['receipt_style_class'] = $array['ReceiptStyle']['style_class'];
         return $newArray;
       });
       $this->serialize($response);

@@ -1,8 +1,6 @@
 <!-- PAY POPUP BOX -->
 <div class="modal-header">
-  <button data-ng-click="cancel()" type="button" class="pull-right confirm-close" data-dismiss="modal" aria-hidden="true">
-    <i class="glyphicon glyphicon-remove"></i>
-  </button>
+  <button type="button" class="close" data-ng-click="cancel()" aria-hidden="true"></button>
   <h4 class="modal-title">Select a payment method</h4>
 </div>
 
@@ -11,46 +9,46 @@
     <div class="col-md-6">
       <table class="table table-hover payment-table" id="table_payment">
         <thead>
-          <tr>
-            <th>TO PAY</th>
-            <th class="text-right" >{{registerSale.total_price_incl_tax | currency}}</th>
-          </tr>
-          <tr>
-            <th class=" text-left">TO TOTAL PAY</th>
-            <th class="text-right" >$<input class="pull-right" id ="set-pay-amount" value="{{toPayAmount | number:2 }}"></input></th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr class="payment-info"data-ng-repeat="payment in paymentInfo">
-            <td class=" text-left">{{payment.name}}</td>
-            <td class=" text-right">{{payment.amount | currency}}</td>
-          </tr>
-          </tbody>
-          <tfoot>
-          <tr>
-            <td class=" text-left">remains</td>
-            <td class=" text-right">{{remains | currency}}</td>
-          </tr>
-          <tr>
-            <td class=" text-left">TOTAL paid</td>
-            <!--<td class=" text-center">$ {{getTotal()}} divided {{example.text}}</td>-->
-            <td class=" text-right">{{registerSale.total_payment | currency}}</td>
-          </tr>
-          </tfoot>
-        </table>
-      </div>
-      <div class="col-md-6">
-        <div class="margin-top-20 col-lg-12 col-md-12 col-sm-12 col-omega col-alpha">
-          <div data-ng-repeat="payment in paymentTypes" >
-            <div class="col-md-4 payment_method" payment-id="{{payment.id}}" payment-type-id="{{payment.payment_type_id}}" payment-type="{{payment.name}}">
-              <div>
-                <a class="btn icon-btn medium">
-                  <img class="img-responsive payment" data-ng-src="{{payment.image}}" alt="{{payment.name}}">
-                  <div class="payment caption">
-                    <span>{{payment.name}}</span>
-                  </div>
-                </a>
-              </div>
+        <tr>
+          <th>TOTAL PAY</th>
+          <th class="total-price text-right">{{totalPayment | currency}}</th>
+        </tr>
+        <tr>
+          <th class="text-left">TO PAY</th>
+          <th class="text-right">
+            <div class="input-group pull-right" style="width: 220px;">
+              <span class="input-group-addon">$</span>
+              <input class="form-control text-right" style="padding: 8px 0 8px 8px;" data-ng-model="toPayment">
+            </div>
+          </th>
+        </tr>
+        </thead> <tbody> <tr class="payment-info"data-ng-repeat="payment in payments"> <td class="payment-name text-left">{{payment.name}}</td> <td class="payment-amount text-right">{{payment.amount | currency}}</td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+          <td class=" text-left">remains</td>
+          <td class="payment-remains text-right">{{remainPayment | currency}}</td>
+        </tr>
+        <tr>
+          <td class=" text-left">TOTAL paid</td>
+          <!--<td class=" text-center">$ {{getTotal()}} divided {{example.text}}</td>-->
+          <td class="payment-paid text-right">{{totalPaid | currency}}</td>
+        </tr>
+        </tfoot>
+      </table>
+    </div>
+    <div class="col-md-6">
+      <div class="margin-top-20 col-lg-12 col-md-12 col-sm-12 col-omega col-alpha">
+        <div data-ng-repeat="payment in paymentTypes" >
+          <div class="col-md-4 payment_method" data-ng-click="doPayment(payment)">
+            <div>
+              <a class="btn icon-btn medium">
+                <img class="img-responsive payment" data-ng-src="{{payment.image}}" alt="{{payment.name}}">
+                <div class="payment caption">
+                  <span>{{payment.name}}</span>
+                </div>
+              </a>
             </div>
           </div>
         </div>
@@ -60,22 +58,25 @@
 </div>
 
 <div class="modal-footer">
-  <div class="col-md-8">
-    <button type="button" class="confirm-close pull-left btn btn-primary" data-ng-click="cancel()" data-dismiss="modal">Cancel </button>
-    <button type="button" class="split-payment pull-left btn btn-primary" data-dismiss="modal">Split payment</button>
-    <label class="split-by hide pull-left ">
-      <input type="number" name="input" ng-model="example.text" ng-pattern="example.word" required ng-trim="false" placeholder="No. people" min="2" max="99">
-    </label>
+  <div class="pull-left">
+    <button class="btn btn-primary" type="button" data-ng-disabled="!isSelectedCustomer()" data-ng-click="onaccount()">On account </button>
+    <button class="btn btn-primary" type="button" data-ng-disabled="!isSelectedCustomer()" data-ng-click="layby()">Lay by</button>
+    <button class="btn btn-default purple split-toggle-button" data-ng-click="toggleSplitMode()">
+      <i class="fa fa-check" data-ng-show="isSplitMode()"></i> Split
+    </button>
   </div>
-  <div class=col-md-4">
-    <button type="button" class="btn btn-success onaccount-sale inactive" data-dismiss="modal">On account </button>
-    <button type="button" class="btn btn-success layby-sale inactive" data-dismiss="modal">Layby</button>
+  <button class="btn btn-primary" type="button" data-ng-click="cancel()">Cancel</button>
+  <div class="col-sm-4" data-ng-show="isSplitMode()">
+    <div class="input-group">
+      <input type="number" class="form-control" min="1" ng-model="totalPerson" ng-change="onChangePerson()">
+    </div>
+    <p class="help-block pull-left">Need to pay {{toPayment | currency}} per person.</p>
   </div>
 </div>
 <!-- PAY POPUP BOX END -->
 
 <!-- EFTPOS TRANSACTION BOX -->
-<div class="confirmation-modal modal fade in eftpos_status" tabindex="-1" role="dialog" aria-hidden="false" style="display: none;">
+<div class="confirmation-modal modal fade in eftpos_status" tabindex="-1" role="dialog" aria-hidden="false">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-body display-msg" style="text-align:center;"></div>
@@ -84,15 +85,6 @@
 </div>
 <!-- EFTPOS TRANSACTION BOX END -->
 
-<script src="app/scripts/dpsclient.js" type="text/javascript"></script>
-<script src="app/scripts/TransactionControl.js" type="text/javascript"></script>
-<!--<script src="app/scripts/payment.js" type="text/javascript"></script>-->
+<script src="/app/scripts/modules/dpsclient.js" type="text/javascript"></script>
 <script src="/js/jxon.js" type="text/javascript"></script>
-<script>
-  $(document).ready(function() {
-    $(".split-payment").on("click", function () {
-      $(".split-by").toggleClass('hide');
-      console.log("dd");
-    })
-  });
-</script>
+

@@ -1,3 +1,16 @@
 {
-  "registerSelectorTitle": "Select",
+  "title1": "Select"
+  "title12": "Select a register",
+  "title123": "Select a register",
+  "title1234": "Select a register",
+  "title12345": "Select a register",
+  "title123456": "Select a register",
+  "title1234567": "Select a register",
+  "title12345678": "Select a register",
+  "title123456789": "Select a register",
+  "title1234567890": "Select a register",
+  "title12345678901": "Select a register",
+  "title123456789012": "Select a register",
+  "title1234567890123": "Select a register",
+  "title12345678901234": "Select a register"
 }
