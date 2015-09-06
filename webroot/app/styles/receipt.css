@@ -1,0 +1,40 @@
+/*Receipt*/
+
+/** product View receipt **/
+.has-receipt-80 .receipt-content{
+  background-color: white;
+}
+.has-receipt-80 .search_result {
+  position: absolute;
+  z-index: 50;
+}
+.has-receipt-80 .receipt-content {
+  width : 100%;
+  display:none;
+}
+.has-receipt-80 .payment-display .total_cost {
+  border-top: 1px solid white;
+}
+.receipt-parent .show-amount{
+  padding:20px;
+}
+.has-receipt-80 .receipt-product-table-total tr:last-child{
+  border-top:1px solid #373737;
+}
+.has-receipt-80 .dashed-line-gr {
+  border-top: 1px dashed #E1E1E1;
+  display: inline-block;
+  width: 100%;
+}
+.has-receipt-80 .receipt_total {
+  border-top: 1px solid #373737;
+}
+.has-receipt-80 .receipt-footer{
+  text-align:center;
+}
+.has-receipt-80 .receipt-product-table-total{
+  width:100%;
+}
+.has-receipt-80 .receipt-product-table{
+  width:100%;
+}

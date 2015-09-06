@@ -623,51 +623,133 @@ angular.module('OnzsaApp.register', [])
         });
     }
 
+    sharedService.syncData = function() {
+      debug('Register: syncData');
+      _syncData();
+    };
+
+    function _getSyncRS() {
+      var defer = $q.defer();
+      var sucRS;
+      //TODO: get sync time
+      var syncTime = 1441345000.0; // _getUnixTimestamp() - 1000; // "1441345831.0"
+      var data = {
+        'sync':'date',
+        'sale_date': syncTime
+      }
+      sucRS = function(rsRS) {
+        defer.resolve(rsRS);
+      }
+      ds.getRegisterSales(data, sucRS);
+      return defer.promise;
+    }
+
+    function _getSyncRSI(saleID, index) {
+      var defer = $q.defer();
+      var sucRSI, data;
+      var response = [];
+      data = {
+        'sale_id':saleID
+      };
+      sucRSI = function(rsRSI) {
+        response.data = rsRSI;
+        response.index = index;
+        defer.resolve(response);
+      }
+      ds.getRegisterSaleItems(data, sucRSI);
+      return defer.promise;
+    }
+
+    function _getSyncRSP(saleID, index) {
+      var defer = $q.defer();
+      var sucRSP, data;
+      var response = [];
+      data = {
+        'sale_id':saleID
+      };
+      sucRSP = function(rsRSP) {
+        response.data = rsRSP;
+        response.index = index;
+        defer.resolve(response);
+      }
+      ds.getRegisterSalePayments(data, sucRSP);
+      return defer.promise;
+    }
+
     //
     // Sync local data to server
     //
     function _syncData() {
-      var dataRS = [];
-      var dataRSI = [];
-      var dataRSP = [];
+      var data = {};
       debug("[SYNC] Start");
-      // get RegisterSales
-      var sucRS = function(tr, rs) {
-        debug("[SYNC] RegisterSales : %o", rs);
-        dataRS = rs;
-      }
-      ds.getRegisterSales(null, sucRS);
 
-      // get RegisterSaleItems
-      var sucRSI = function(tr, rs) {
-        debug("[SYNC] RegisterSaleItems : %o", rs);
-        dataRSI = rs;
-      }
-      ds.getRegisterSaleItems(null, sucRSI);
+      _getSyncRS()
+        .then(function(RS) {
+          var defer = $q.defer();
+          data = RS;
 
-      // get RegisterSalePayments
-      var sucRSP = function(tr, rs) {
-        debug("[SYNC] RegisterSalePayments : %o", rs);
-        dataRSP = rs;
-      }
-      ds.getRegisterSalePayments(null, sucRSP);
+          for (var i=0; i<RS.length; i++) {
+            var rsID = RS[i].id;
 
-      $.ajax({
-        url: "//localhost",
-        type: "POST",
-        data: {
-          ResisterSales: dataRS,
-          ResisterSaleItems: dataRSI,
-          ResisterSalePayments: dataRSP,
-        },
-        success: function(result) {
-          if(result.success) {
-            debug(result);
-          } else {
-            debug(result);
+            _getSyncRSI(rsID, i)
+              .then(function(response) {
+                if (response.data.length > 0) {
+                  data[response.index]['items'] = response.data;
+                }
+              });
+
+            _getSyncRSP(rsID.id, i)
+              .then(function(response) {
+                if (response.data.length > 0) {
+                  data[response.index]['payments'] = response.data;
+                }
+              });
           }
-        }
-      });
+          defer.resolve(RS);
+          return defer.promise;
+        })
+        .then(function(RS) {
+          //console.debug("@@@ result : %o", (RS));
+
+          $http.post('/api/upload_register_sales.json', {syncData: data})
+            .then(function(response) {
+            }, function(response) {
+            });
+          /*
+          $.ajax({
+            url: "//localhost",
+            type: "POST",
+            data: {
+              syncData: data,
+            },
+            success: function(result) {
+              console.debug("[SYNC] result : %o", result);
+              var now = _getUnixTimestamp();
+              if(result.success) {
+                for (var idx in data) {
+                  var syncData = {
+                    'id': data[idx].id,
+                    'sync_status': 'sync_success',
+                    'sync_date': now
+                  }
+                  ds.changeRegisterSales(syncData);
+                }
+
+              } else {
+                debug("[SYNC] sync failed");
+                for (var idx in data) {
+                  var syncData = {
+                    'id': data[idx].id,
+                    'sync_status': 'sync_fail',
+                    'sync_date': now
+                  }
+                  ds.changeRegisterSales(syncData);
+                }
+              }
+            }
+          });
+          */
+        });
     }
 
     // --------------------------

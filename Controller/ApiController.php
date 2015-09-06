@@ -1,6 +1,7 @@
 <?php
 
 App::uses('AppController', 'Controller');
+App::uses('CakeTime', 'Utility');
 
 class ApiController extends AppController {
 
@@ -529,13 +530,9 @@ class ApiController extends AppController {
  */
     public function get_quick_keys() {
       $this->request->onlyAllow('get');
-      $response = [];
-      $user = $this->Auth->user();
 
       $register_id = $this->get('register_id');
-      if (empty($register_id)) {
-        $register_id = '55cfd1ed-4594-4e0f-8f76-14d84cf3b98e';
-      }
+      $user = $this->Auth->user();
 
       $this->loadModel('MerchantQuickKey');
 
@@ -564,8 +561,106 @@ class ApiController extends AppController {
         ]
       ]);
 
+      $response = [];
       if (!empty($quickKey)) {
         $response = json_decode($quickKey['MerchantQuickKey']['key_layouts'], true);
+      }
+
+      $this->serialize($response);
+    }
+
+/**
+ * Retreive register sales and items for openning register by register_id
+ *
+ * @return array
+ */
+    public function get_register_sales() {
+      $this->request->onlyAllow('get');
+
+      $register_id = $this->get('register_id');
+      $sync_date = $this->get('sync_date');
+      $user = $this->Auth->user();
+
+      $this->loadModel('RegisterSale');
+
+      $this->RegisterSale->bindModel([
+        'hasMany' => [
+          'RegisterSaleItem' => [
+            'classModel' => 'RegisterSaleItem',
+            'foreignKey' => 'sale_id',
+            'conditions' => [
+              'RegisterSaleItem.sale_id = RegisterSale.id'
+            ]
+          ],
+          'RegisterSalePayment' => [
+            'classModel' => 'RegisterSalePayment',
+            'foreignKey' => 'sale_id',
+            'conditions' => [
+              'RegisterSalePayment.sale_id = RegisterSale.id'
+            ]
+          ]
+        ]
+      ]);
+
+      $sales = $this->RegisterSale->find('all', [
+        'conditions' => [
+          'RegisterSale.register_id' => $register_id
+        ]
+      ]);
+
+      $response = Hash::map($sales, "{n}", function($array) {
+        $newArray = $array['RegisterSale'];
+        return $newArray;
+      });
+
+      $this->RegisterSale->unbindModel([
+        'hasMany' => [ 'RegisterSaleItem', 'RegisterSalePayment' ]
+      ]);
+
+      $this->serialize($response);
+    }
+
+/**
+ * Update register sales by register_id
+ *
+ * @return array
+ */
+    public function upload_register_sales() {
+      $this->request->onlyAllow('post');
+
+      $data = $this->request->data;
+      $user = $this->Auth->user();
+
+      $this->loadModel('RegisterSale');
+      $this->loadModel('RegisterSaleItem');
+      $this->loadModel('RegisterSalePayment');
+
+      $dataSource = $this->RegisterSale->getDataSource();
+      $response = [];
+      $response['ids'] = [];
+
+      foreach ($data['syncData'] as $sale) {
+        $dataSource->begin();
+
+        try {
+          $sale['sale_date'] = $sale['sale_date'] * 1000 
+          $sale['sale_date'] = gmdate("Y-m-d\TH:i:s\Z", $sale['sale_date'] * 1000);
+          $this->RegisterSale->create();
+          $this->RegisterSale->save($sale);
+
+          if (is_array($sale['items'])) {
+            $this->RegisterSaleItem->saveMany($sale['items']);
+          }
+
+          if (is_array($sale['payments'])) {
+            $this->RegisterSalePayment->saveMany($sale['payments']);
+          }
+
+          $dataSource->commit();
+          $response['ids'][] = $this->RegisterSale->id;
+        } catch (Exception $e) {
+          $dataSource->rollback();
+        }
       }
 
       $this->serialize($response);
