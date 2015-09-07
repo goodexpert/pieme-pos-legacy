@@ -139,7 +139,20 @@ angular.module('OnzsaApp.register', [])
 
     sharedService.getRegisterSaleTotal = function() {
       debug('Register: retrieve register sale total');
-      return registerSale;
+      return angular.copy(registerSale);
+    };
+
+    sharedService.saveRegisterSaleTotal = function(registerSaleTotal) {
+      debug('Register: save register sale total');
+      // not apply receipt_number & sequence , it's controlled in service
+      registerSale.line_discount_type   = registerSaleTotal.line_discount_type;
+      registerSale.line_discount        = registerSaleTotal.line_discount;
+      registerSale.total_cost           = registerSaleTotal.total_cost;
+      registerSale.total_price          = registerSaleTotal.total_price;
+      registerSale.total_price_incl_tax = registerSaleTotal.total_price_incl_tax;
+      registerSale.total_discount       = registerSaleTotal.total_discount;
+      registerSale.total_tax            = registerSaleTotal.total_tax;
+      registerSale.total_payment        = registerSaleTotal.total_payment;
     };
 
     sharedService.getCurrentSaleItems = function() {
@@ -150,6 +163,11 @@ angular.module('OnzsaApp.register', [])
     sharedService.getQuickKeyLayout = function() {
       debug('Register: retrieve quick key layout');
       return quickKeyLayout;
+    };
+
+    sharedService.getRegisterPaymentTypes = function() {
+      debug('Register: retrieve register payment types');
+      return _getRegisterPaymentTypes();
     };
 
     sharedService.addLineItem = function(saleItem) {
@@ -270,7 +288,7 @@ angular.module('OnzsaApp.register', [])
                 _additionRegisterSaleTotal(saleItem);
 
                 // Save to RegisterSaleItems : status_open
-                _updateRegisterSaleItems(saleItem, saleID, "sale_items_status_valid");
+                _updateRegisterSaleItems(saleItem, saleID, "sale_item_status_valid");
               }
 
               // Change(Update) RegisterSale
@@ -403,7 +421,7 @@ angular.module('OnzsaApp.register', [])
       }
     }
 
-    sharedService.getCustomerInfo = function(infoArray) {
+    sharedService.getCustomerInfo = function() {
       debug('Register: getCustomerInfo');
       var infoArray = {};
       infoArray.id                = customerInfo.id;
@@ -686,70 +704,70 @@ angular.module('OnzsaApp.register', [])
       _getSyncRS()
         .then(function(RS) {
           var defer = $q.defer();
-          data = RS;
-
+          var promise = [];
+          data = (RS);
           for (var i=0; i<RS.length; i++) {
             var rsID = RS[i].id;
 
-            _getSyncRSI(rsID, i)
+            promise.push( _getSyncRSI(rsID, i)
               .then(function(response) {
                 if (response.data.length > 0) {
-                  data[response.index]['items'] = response.data;
+                  //console.debug("@@@ response.data length : %d ", response.data.length);
+                  data[response.index]['items'] = (response.data);
                 }
-              });
+              })
+            );
 
-            _getSyncRSP(rsID.id, i)
+            promise.push( _getSyncRSP(rsID, i)
               .then(function(response) {
                 if (response.data.length > 0) {
-                  data[response.index]['payments'] = response.data;
+                  //console.debug("@@@ response.data2 length : %d ", response.data.length);
+                  data[response.index]['payments'] = (response.data);
                 }
-              });
+              })
+            );
           }
-          defer.resolve(RS);
+          $q.all(promise).then(function() { defer.resolve(data)} );
           return defer.promise;
         })
         .then(function(RS) {
-          //console.debug("@@@ result : %o", (RS));
+          debug("[SYNC] sync request >>>>>>>>>>");
+          debug(RS);
 
-          $http.post('/api/upload_register_sales.json', {syncData: data})
-            .then(function(response) {
-            }, function(response) {
-            });
-          /*
           $.ajax({
-            url: "//localhost",
+            url: "/api/upload_register_sales.json",
             type: "POST",
             data: {
-              syncData: data,
+              syncData: RS,
             },
-            success: function(result) {
-              console.debug("[SYNC] result : %o", result);
+            success: function (result) {
+              debug("[SYNC] sync success response <<<<<<<<<<");
+              debug(result);
               var now = _getUnixTimestamp();
-              if(result.success) {
-                for (var idx in data) {
-                  var syncData = {
-                    'id': data[idx].id,
-                    'sync_status': 'sync_success',
-                    'sync_date': now
-                  }
-                  ds.changeRegisterSales(syncData);
+              for (var idx in result.ids) {
+                var syncData = {
+                  'id': result.ids[idx],
+                  'sync_status': 'sync_success',
+                  'sync_date': now
                 }
-
-              } else {
-                debug("[SYNC] sync failed");
-                for (var idx in data) {
-                  var syncData = {
-                    'id': data[idx].id,
-                    'sync_status': 'sync_fail',
-                    'sync_date': now
-                  }
-                  ds.changeRegisterSales(syncData);
-                }
+                ds.changeRegisterSales(syncData);
               }
             }
           });
-          */
         });
+    }
+
+    // --------------------------
+    // Get Payment Types
+    // --------------------------
+    function _getRegisterPaymentTypes() {
+      debug("Register: get payment types");
+      var defer = $q.defer();
+      var suc = function(resultArray) {
+        defer.resolve(resultArray);
+      }
+      ds.getRegisterPaymentTypes(suc);
+      return defer.promise;
     }
 
     // --------------------------
@@ -1227,8 +1245,8 @@ angular.module('OnzsaApp.register', [])
         'user_id': config.user_id,
         'user_name': config.user_name,
         'customer_id': customer_id,
-        'customer_code': customer_code,   
-        'customer_name': customer_name, 
+        'customer_code': customer_code,
+        'customer_name': customer_name,
         'xero_invoice_id': null,
         'receipt_number': registerSale.receipt_number,
         'status': status,

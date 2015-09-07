@@ -715,7 +715,7 @@ Datastore_sqlite = function () {
      *  line_discount_type INTEGER,
      *  note TEXT,
      *  sale_date TEXT,
-     *  sync_status TEXT,
+     *  sync_status TEXT,     // sync_wait | sync_success
      *  sync_date TEXT)
      */
 
@@ -843,12 +843,48 @@ Datastore_sqlite = function () {
     getRegisterSales: function (data, suc, err) {
       var t = this, condition = [], queryString = "SELECT * FROM RegisterSales";
 
+      //console.debug(" %o", data);
       if (data != null) {
-        if (data.id != null) { condition.push(data.id); queryString += " WHERE id = ?"; }
+        if (data.id != null) {
+          condition.push(data.id);
+          queryString += " WHERE id = ?";
+        }
         if (data.status != null) {
-          if (condition.length == 0) { queryString += " WHERE "; } else { queryString += " AND "; }
-          if (data.status == 'all') { queryString += " status != 'sale_status_voided'"; }
-          else { condition.push(data.status); queryString += " status = ?"; }
+          if (condition.length == 0) {
+            queryString += " WHERE ";
+          } else {
+            queryString += " AND ";
+          }
+          if (data.status == 'all') {
+            queryString += " status != 'sale_status_voided'";
+          }
+          else {
+            condition.push(data.status);
+            queryString += " status = ?";
+          }
+        }
+
+        //TODO: sync_status condition
+        if (data.sync == 'sync') {
+          if (data.sale_date != null) {
+            if (condition.length == 0) {
+              queryString += " WHERE ";
+            } else {
+              queryString += " AND ";
+            }
+            queryString += " sync_status <> sync_success";
+          }
+        } else if (data.sync == 'date') {
+          //console.debug("@@@@");
+          if (data.sale_date != null) {
+            if (condition.length == 0) {
+              queryString += " WHERE ";
+            } else {
+              queryString += " AND ";
+            }
+            condition.push(data.sale_date);
+            queryString += " (sale_date is not null and sale_date > ?)";
+          }
         }
       }
 
@@ -1066,6 +1102,7 @@ Datastore_sqlite = function () {
         suc(resultSet);
       };
       t._doDSTransaction(function (tr) {
+        //console.debug("@@@ get payment sql : %s, input : %o", sqlString, input);
         t._executeDSSql(tr, sqlString, input, success, err);
       });
     },
