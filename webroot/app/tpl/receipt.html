@@ -15,33 +15,42 @@
           {{template.label_invoice_title}}
         </h4>
         <div class="receipt-body-info">
-          {{template.label_invoice}}<span class="invoice-id">1111</span><br>
-          <span class="invoice-date">2015-03-10 15:23:49</span><br>
+          {{template.label_invoice}}<span class="invoice-id">{{receipt.invoice_number}}</span><br>
+          <span class="invoice-date">{{receipt.date}}</span><br>
           {{template.label_served_by}}  {{template.receipt_header}}
         </div>
         <div class="dashed-line-gr"></div>
         <div class="receipt-body-sales">
           <table class="receipt-product-table">
             <tbody>
+            <tr class="split_receipt_attr" data-ng-repeat = "sales in receipt.sale_items">
+              <td>{{sales.quantity}}</td>
+              <td>{{sales.name}}</td>
+              <td class="pull-right">{{sales.sale_price |currency}}</td>
+            </tr>
             </tbody>
           </table>
           <div class="dashed-line-gr"></div>
           <table class="receipt-product-table-total">
             <tr>
               <th>{{template.label_sub_total}}</th>
-              <td class="total-sub-total receipt-subtotal pull-right">$10.00</td>
+              <td class="total-sub-total receipt-subtotal pull-right">{{receipt.paid |currency}}</td>
             </tr>
             <tr>
               <th>{{template.label_tax}}</th>
-              <td class="total-tax receipt-tax pull-right">$10.00</td>
+              <td class="total-tax receipt-tax pull-right">{{receipt.tax |currency}}</td>
             </tr>
             <tr class="receipt_change">
               <th>{{template.label_change}}</th>
               <td class="total-change receipt-total pull-right"></td>
             </tr>
+            <tr class="split_receipt_attr" data-ng-repeat = "payment in receipt.payments">
+              <td>{{payment.name}}</td>
+              <td class="pull-right">{{payment.amount}}</td>
+            </tr>
             <tr class="receipt_total">
               <th>{{template.label_total}}</th>
-              <td class="total-amount receipt-total pull-right"></td>
+              <td class="total-amount receipt-total pull-right">{{receipt.paid | currency}}</td>
             </tr>
             <tr class="receipt-merchant-only" style="text-align: center">
               <br><br>

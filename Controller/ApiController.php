@@ -643,23 +643,33 @@ class ApiController extends AppController {
         $dataSource->begin();
 
         try {
-          $sale['sale_date'] = $sale['sale_date'] * 1000 
-          $sale['sale_date'] = gmdate("Y-m-d\TH:i:s\Z", $sale['sale_date'] * 1000);
+          if (isset($sale['sale_date']) && !empty($sale['sale_date'])) {
+            $sale['sale_date'] = date("Y-m-d H:i:s", (int)$sale['sale_date']);
+          }
+
           $this->RegisterSale->create();
           $this->RegisterSale->save($sale);
 
-          if (is_array($sale['items'])) {
+          if (isset($sale['items']) && is_array($sale['items'])) {
             $this->RegisterSaleItem->saveMany($sale['items']);
           }
 
-          if (is_array($sale['payments'])) {
-            $this->RegisterSalePayment->saveMany($sale['payments']);
+          if (isset($sale['payments']) && is_array($sale['payments'])) {
+            $payments = $sale['payments'];
+
+            foreach ($payments as &$payment) {
+              if (isset($payment['payment_date']) && !empty($payment['payment_date'])) {
+                $payment['payment_date'] = date("Y-m-d H:i:s", $payment['payment_date']);
+              }
+            }
+            $this->RegisterSalePayment->saveMany($payments);
           }
 
           $dataSource->commit();
           $response['ids'][] = $this->RegisterSale->id;
         } catch (Exception $e) {
           $dataSource->rollback();
+          $response['error'] = $e->getMessage();
         }
       }
 

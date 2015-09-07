@@ -9,7 +9,7 @@
  */
 angular.module('OnzsaApp', [])
 
-.controller('RegisterController', function($rootScope, $scope, $state, $stateParams, $location, $http, $modal, $q, $filter, $compile, locale, LocalStorage, Register, DTOptionsBuilder, DTColumnDefBuilder, DTColumnBuilder, DTInstances) {
+.controller('RegisterController', function($rootScope, $scope, $state, $stateParams, $location, $http, $modal, $q, $timeout, $filter, $compile, locale, LocalStorage, Register, DTOptionsBuilder, DTColumnDefBuilder, DTColumnBuilder, DTInstances) {
   $scope.$on('$viewContentLoaded', function() {
     // initialize core components
     Metronic.initAjax();
@@ -120,7 +120,7 @@ angular.module('OnzsaApp', [])
     datumTokenizer: function(d) { return d.tokens; },
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     remote: '/api/search_customer.json?query=%QUERY'
-  }); 
+  });
   customer.initialize();
 
   var customerTypeHead = $('#customer_code').typeahead(null, {
@@ -138,8 +138,8 @@ angular.module('OnzsaApp', [])
         '  <span class="balance">{{balance}}</span>',
         '</a>',
       ].join(''))
-    }   
-  }); 
+    }
+  });
 
   customerTypeHead.on('typeahead:selected', function(evt, data){
     Register.setCustomerInfo(data);
@@ -148,12 +148,12 @@ angular.module('OnzsaApp', [])
     });
   });
 
-  // Defines customer search callback 
+  // Defines customer search callback
   $scope.isSelectedCustomer = function() {
     return Register.isSelectedCustomer();
   };
 
-  // Defines quick keys callback 
+  // Defines quick keys callback
   $scope.isTabActive = function(position) {
     return 0 == position ? "active" : "";
   };
@@ -169,7 +169,7 @@ angular.module('OnzsaApp', [])
     }
   };
 
-  // Defines sale items callback 
+  // Defines sale items callback
   $scope.removeItem = function(sequence) {
     debug("do removeItem %o", sequence);
     debug(vm.dtInstance);
@@ -179,7 +179,7 @@ angular.module('OnzsaApp', [])
   $scope.setPrice = function(sequence) {
     var params = {
       numpadMode : 'discount',
-      saleItem   : Register.getRegisterSaleItemBySequence(sequence) 
+      saleItem   : Register.getRegisterSaleItemBySequence(sequence)
     };
     openNumpad(params);
   };
@@ -187,7 +187,7 @@ angular.module('OnzsaApp', [])
   $scope.setQuantity = function(sequence) {
     var params = {
       numpadMode : 'quantity',
-      saleItem   : Register.getRegisterSaleItemBySequence(sequence) 
+      saleItem   : Register.getRegisterSaleItemBySequence(sequence)
     };
     openNumpad(params);
   };
@@ -223,19 +223,12 @@ angular.module('OnzsaApp', [])
   };
 
   $scope.printReceipt = function() {
-    $scope.printDiv = function(divName) {
-      var printContents = document.getElementById(divName).innerHTML;
-      var popupWin = window.open('', '_blank', 'width=1200,height=1200');
-      popupWin.document.open()
-      popupWin.document.write('<html><head><link rel="stylesheet" type="text/css" href="style.css" /></head><body onload="window.print()">' + printContents + '</html>');
-      popupWin.document.close();
-    }
-    $scope.printDiv('receipt');
-    debug('printReceipt');
+
   };
 
   $scope.doRefund = function() {
     debug('doRefund');
+    Register.syncData();
   };
 
   $scope.doDiscount = function() {
@@ -461,7 +454,6 @@ angular.module('OnzsaApp', [])
   function openPayment(data) {
     var modalPaymentInstance = $modal.open({
       templateUrl: '/app/tpl/payment.html',
-      //controller: 'PaymentController',
       controller: 'PaymentCtrl',
       backdrop: 'static',
       keyboard: false,
@@ -478,6 +470,7 @@ angular.module('OnzsaApp', [])
     //
     modalPaymentInstance.result.then(function(result) {
       debug("Payment result : " + result.status);
+      $scope.receipt = result.receipt;
 
       switch (result.status) {
         case 'done' :
@@ -490,6 +483,10 @@ angular.module('OnzsaApp', [])
           Register.onAccountSale();
           break;
       }
+
+      $timeout(function() {
+        print();
+      });
     });
   };
 
@@ -577,7 +574,7 @@ angular.module('OnzsaApp', [])
 
 })
 
-.controller('NumpadCtrl', function($rootScope, $scope, $modalInstance, $timeout, Register, params) {
+.controller('NumpadCtrl', function($rootScope, $scope, $modalInstance, Register, params) {
   $scope.discountType = 0;
   $scope.number = '';
   $scope.numpad_visible = 1;
@@ -838,7 +835,7 @@ angular.module('OnzsaApp', [])
   }
 })
 
-.controller('PaymentCtrl', function($rootScope, $scope, $http, $modalInstance, LocalStorage, Register) {
+.controller('PaymentCtrl', function($rootScope, $scope, $http, $modalInstance, $timeout, LocalStorage, Register) {
   $modalInstance.opened.then(function() {
     // initialize core components
     Metronic.initAjax();
@@ -910,7 +907,7 @@ angular.module('OnzsaApp', [])
     if (null != $scope.register.invoice_suffix) {
       $scope.invoiceNumber += $scope.register.invoice_suffix;
     }
-
+    $scope.receipt = [];
     $scope.payments = [];
     $scope.totalTax = registerTotal.total_tax;
     $scope.totalPaid = 0.0;
@@ -920,6 +917,7 @@ angular.module('OnzsaApp', [])
     $scope.paidPerson = 0;
     $scope.toPayment = parseFloat(($scope.remainPayment / ($scope.totalPerson - $scope.paidPerson)).toFixed(2));
     $scope.splitMode = 0;
+    $scope.change = 0;
 
     // define alias for local Datastore
     $scope.ds = Datastore_sqlite;
@@ -1009,6 +1007,8 @@ angular.module('OnzsaApp', [])
     var result = {};
     result.status = status;
     result.payments = $scope.payments;
+    result.receipt = $scope.receipt;
+    print_receipt();
     $modalInstance.close(result);
   }
 
@@ -1041,31 +1041,16 @@ angular.module('OnzsaApp', [])
     }
   }
 
-  function print_receipt(payment_name, paying, paymentInfo, saleItems, reciept_number, saleDate) {
-    var now = new Date(Date.now());
-    $(".fade").hide();
-    console.debug("paymentinfo %o", paymentInfo);
-    $scope.payinfo.status = "done";
-    $modalInstance.close($scope.payinfo);
-    $(".receipt-product-table").children("tbody").text('');
-
-    for(var idx= 0; idx < saleItems.length; idx ++){
-      $(".receipt-product-table").children("tbody").append('<tr class="split_receipt_attr"><td>'+saleItems[idx].quantity+'</td><td>' + saleItems[idx].name + '</td><td class="pull-right">$' + (saleItems[idx].sale_price + saleItems[idx].tax).toFixed(2) + '</td></tr>');
-    };
-
-    for(var idx= 0; idx < paymentInfo.length; idx ++){
-        $('<tr class="split_receipt_attr"><td>' + paymentInfo[idx].name + '</td><td class="pull-right">$' + paymentInfo[idx].amount + '</td></tr>').insertBefore('.receipt_total');
-    };
-
-    $(".invoice-id").text(reciept_number);
-    $(".receipt-customer-name").text($("#customer-result-name").text());
-    $(".total-change").text('$'+$scope.change.toFixed(2));
-    $(".total-amount").text('$'+$scope.totalPaid.toFixed(2));
-    $(".total-sub-total").text('$'+$scope.totalPaid.toFixed(2));
-    $(".receipt-tax").text('$'+$scope.totalTax.toFixed(2));
-    $(".invoice-date").text((new Date()).fulldate());
-    $(".receipt-parent").show('blind');
-    $(".modal-backdrop").show();
+  function print_receipt() {
+    $scope.receipt['change'] = parseFloat($scope.change).toFixed(2);
+    $scope.receipt['tax'] = parseFloat($scope.totalTax).toFixed(2);
+    $scope.receipt['paid'] = parseFloat($scope.totalPaid).toFixed(2);
+    $scope.receipt['change'] = $scope.change;
+    $scope.receipt['date'] = (new Date().format('dd-MMM-yyyy HH:mm'));
+    $scope.receipt['invoice_number'] = $scope.invoiceNumber;
+    $scope.receipt['sale_items'] = $scope.saleItems;
+    $scope.receipt['payments'] = $scope.payments;
+    $scope.receipt['customer_name'] = $scope.customerName;
   }
 
 });
