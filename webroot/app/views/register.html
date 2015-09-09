@@ -188,6 +188,20 @@
                   id="tab_pane_{{group.position}}">
                 <a class="btn icon-btn {{viewMode}}"
                     data-ng-repeat="quickKey in group.pages[0].keys | filter:search"
+                    data-ng-click="addSellItem(quickKey)"
+                    data-ng-model="quickKey">
+                  <img class="img-responsive"
+                    data-ng-src="{{quickKey.image || '/img/no-image.png'}}" alt="{{quickKey.label}}">
+                  <div class="caption">
+                    <span>{{quickKey.label}}</span>
+                  </div>
+                  <span class="badge badge-danger">
+                    sale
+                  </span>
+                </a>
+                <!--
+                <a class="btn icon-btn {{viewMode}}"
+                    data-ng-repeat="quickKey in group.pages[0].keys | filter:search"
                     data-ng-click="{{quickKey.position == 0 ? '' : 'addSellItem(quickKey)'}}"
                     data-ng-model="quickKey"
                     popover-template="{{quickKey.position != 0 ? '' : '\'myPopoverTemplate.html\''}}"
@@ -201,6 +215,7 @@
                     sale
                   </span>
                 </a>
+                -->
               </div>
             </div>
             <ul class="nav nav-tabs">
