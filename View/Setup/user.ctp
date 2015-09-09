@@ -180,7 +180,7 @@ $AuthUser = $this->Session->read('Auth.User');
                     <dd class="col-md-8">
                       <?php
                       echo $this->Form->input('user_type_id', [
-                          'id' => 'merchant_user_type_id',
+                          'id' => 'merchant_user_type_id_modal',
                           'name' => 'MerchantUser[user_type_id]',
                           'type' => 'select',
                           'div' => false,
@@ -193,7 +193,7 @@ $AuthUser = $this->Session->read('Auth.User');
                     <dd class="col-md-8">
                       <?php
                       echo $this->Form->input('outlet_id', [
-                          'id' => 'merchant_user_outlet_id',
+                          'id' => 'merchant_user_outlet_id_modal',
                           'name' => 'MerchantUser[outlet_id]',
                           'type' => 'select',
                           'div' => false,
@@ -402,12 +402,12 @@ $AuthUser = $this->Session->read('Auth.User');
           url: '/users/add.json',
           type: 'POST',
           data: {
-            user_type_id: $("#merchant_user_type_id").val(),
+            user_type_id: $("#merchant_user_type_id_modal").val(),
             username: $("#merchant_user_username").val(),
             password: $("#merchant_user_password").val(),
             display_name: $("#merchant_user_display_name").val(),
             email: $("#merchant_user_email").val(),
-            outlet_id: $("#merchant_user_outlet_id").val()
+            outlet_id: $("#merchant_user_outlet_id_modal").val()
           },
           success: function (result) {
             if (result.success) {
