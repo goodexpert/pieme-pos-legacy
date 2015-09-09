@@ -8,106 +8,67 @@
     padding: 0;
 }
 </style>
+<link href="/css/dataTable.css" rel="stylesheet" type="text/css"/>
 <div class="clearfix"></div>
-<div class="container">
-    <div id="notify"></div>
-    <!-- BEGIN SIDEBAR -->
-    <div class="page-sidebar-wrapper">
-        <!-- BEGIN HORIZONTAL RESPONSIVE MENU -->
-        <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
-        <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-        <div class="page-sidebar navbar-collapse collapse">
-            <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
-                <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element -->
-                <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
-                <li class="sidebar-search-wrapper">
-                    <!-- BEGIN RESPONSIVE QUICK SEARCH FORM -->
-                    <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box -->
-                    <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-                    <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
-                        <a href="javascript:;" class="remove">
-                        <i class="icon-close"></i>
-                        </a>
-                        <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search...">
-                            <span class="input-group-btn">
-                            <button class="btn submit"><i class="icon-magnifier"></i></button>
-                            </span>
-                        </div>
-                    </form>
-                    <!-- END RESPONSIVE QUICK SEARCH FORM -->
-                </li>
-                <li>
-                    <a href="/">Sell</a>
-                </li>
-                <li>
-                    <a href="history">History</a>
-                </li>
-                <li class="active">
-                    <a href="history">Product<span class="selected"></span></a>
-                </li>
-            </ul>
-        </div>
-        <!-- END HORIZONTAL RESPONSIVE MENU -->
+
+<div id="notify"></div>
+<!-- BEGIN CONTENT -->
+
+<div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+  <div class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
+    <h2>
+      Inventory Count
+    </h2>
+    <h5>Create, schedule and complete counts to keep track of your inventory.</h5>
+  </div>
+  <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
+    <a href="/stock_takes/create">
+      <button id="" class="btn btn-white pull-right" style="color:black">
+        <div class="glyphicon glyphicon-plus"></div>
+        &nbsp;
+        New inventory count
+      </button>
+    </a>
+  </div>
+</div>
+<div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
+  <div class="summary-container">
+    <div class="summary">
+      <a class="summary-tab active" id="summary-tab-due">Due</a>
+      <a class="summary-tab" id="summary-tab-upcoming">Upcoming</a>
+      <a class="summary-tab" id="summary-tab-completed">Complted</a>
+      <a class="summary-tab" id="summary-tab-cancelled">Cancelled</a>
     </div>
-    <!-- END SIDEBAR -->
-    <!-- BEGIN CONTENT -->
-    <div class="page-content-wrapper">
-        <div class="page-content">
-            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                <div class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
-                    <h2>
-                        Inventory Count
-                    </h2>
-                    <h5>Create, schedule and complete counts to keep track of your inventory.</h5>
-                </div>
-                <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
-                    <a href="/stock_takes/create">
-                        <button id="" class="btn btn-white pull-right" style="color:black">
-                            <div class="glyphicon glyphicon-plus"></div>&nbsp;
-                            New inventory count
-                        </button>
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-                <div class="summary-container">
-                    <div class="summary">
-                        <a class="summary-tab active" id="summary-tab-due">Due</a>
-                        <a class="summary-tab" id="summary-tab-upcoming">Upcoming</a>
-                        <a class="summary-tab" id="summary-tab-completed">Complted</a>
-                        <a class="summary-tab" id="summary-tab-cancelled">Cancelled</a>
-                    </div>
-                </div>
-                <div class="stocktake-landing-list stocktakes-list">
-                    <table class="table-bordered dataTable" id="inventory-table">
-                        <colgroup>
-                            <col width="5%">
-                            <col width="55%">
-                            <col width="20%">
-                            <col width="20%">
-                        </colgroup>
-                        <thead>
-                            <tr role="row">
-                                <th>
-                                <?php
-                                    echo $this->Form->checkbox('select-all', [
-                                        'id' => 'select-all',
-                                        'class' => 'checkbox select-all',
-                                        'div' => false,
-                                        'label' => false,
-                                        'hiddenField' => false,
-                                        'onclick' => 'toggleSelectAll(this)'
-                                    ]);
-                                 ?>
-                                </th>
-                                <th class="table-cell-count">INVENTORY COUNT</th>
-                                <th>OUTLET</th>
-                                <th>COUNT</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        <!--
+  </div>
+  <div class="stocktake-landing-list stocktakes-list">
+    <table class="table-bordered dataTable" id="inventory-table">
+      <colgroup>
+        <col width="5%">
+        <col width="55%">
+        <col width="20%">
+        <col width="20%">
+      </colgroup>
+      <thead>
+      <tr role="row">
+        <th>
+          <?php
+          echo $this->Form->checkbox('select-all', [
+              'id' => 'select-all',
+              'class' => 'checkbox select-all',
+              'div' => false,
+              'label' => false,
+              'hiddenField' => false,
+              'onclick' => 'toggleSelectAll(this)'
+          ]);
+          ?>
+        </th>
+        <th class="table-cell-count">INVENTORY COUNT</th>
+        <th>OUTLET</th>
+        <th>COUNT</th>
+      </tr>
+      </thead>
+      <tbody>
+      <!--
                         <?php if (count($data) > 0) : ?>
                             <?php foreach ($data as $item) : ?>
                                 <?php if ($item['order_status_id'] === 'stock_take_status_open') : ?>
@@ -117,19 +78,19 @@
                                 <?php endif; ?>
                                         <td>
                                         <?php
-                                            echo $this->Form->checkbox('select', [
-                                                'class' => 'checkbox select',
-                                                'div' => false,
-                                                'label' => false,
-                                                'hiddenField' => false,
-                                                'data-id' => $item['id'],
-                                                'onclick' => 'toggleSelectItem()'
-                                            ]);
-                                         ?>
+        echo $this->Form->checkbox('select', [
+            'class' => 'checkbox select',
+            'div' => false,
+            'label' => false,
+            'hiddenField' => false,
+            'data-id' => $item['id'],
+            'onclick' => 'toggleSelectItem()'
+        ]);
+        ?>
                                         </td>
                                         <td>
                                             <?php echo $item['name']; ?>
-                                        <?php if ( $item['order_status_id'] === 'stock_take_status_progressed' ) : ?>
+                                        <?php if ($item['order_status_id'] === 'stock_take_status_progressed') : ?>
                                             <span class="text-bg-blue">In progress</span>
                                         <?php endif; ?>
                                         </td>
@@ -144,86 +105,80 @@
                         <?php endif; ?>
                         </tbody>
                         -->
-                    </table>
-                    <!--
-                    <div class="footer">
-                        If you're experiencing problems with your product data, <a onclick="resyncData();">resync data</a> to load it again.
-                    </div>
-                    -->
-                </div>
-                <div class="stocktakes-no-list text-center" style="display:none;">
-                    <div class="margin-top-20"><img src="/img/no-stock.png"></div>
-                    <h4 class="margin-bottom-20">You have no upcoming inventory counts</h4>
-                    <a href="/stock_takes/create">
-                        <button id="" class="btn btn-white" style="color:black">
-                            <div class="glyphicon glyphicon-plus"></div>&nbsp;
-                        New inventory count</button>
-                    </a>
-                    <h5 class="margin-top-30">If you're experiencing problems with your product data, <a>resync data</a> to load it again.</h5>
-                </div>
-            </div>
-        </div>
+    </table>
+    <!--
+    <div class="footer">
+        If you're experiencing problems with your product data, <a onclick="resyncData();">resync data</a> to load it again.
     </div>
-    <!-- END CONTENT -->
-    <div class="hidden-data">
-        <input type="hidden" id="hidden-data" value='<?php echo json_encode($data); ?>' />
-    </div>
+    -->
+  </div>
+  <div class="stocktakes-no-list text-center" style="display:none;">
+    <div class="margin-top-20"><img src="/img/no-stock.png"></div>
+    <h4 class="margin-bottom-20">You have no upcoming inventory counts</h4>
+    <a href="/stock_takes/create">
+      <button id="" class="btn btn-white" style="color:black">
+        <div class="glyphicon glyphicon-plus"></div>
+        &nbsp;
+        New inventory count
+      </button>
+    </a>
+    <h5 class="margin-top-30">If you're experiencing problems with your product data, <a>resync data</a> to load it
+      again.</h5>
+  </div>
 </div>
+
+<!-- END CONTENT -->
+<div class="hidden-data">
+  <input type="hidden" id="hidden-data" value='<?php echo json_encode($data); ?>'/>
+</div>
+
 <!-- END CONTAINER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
-<!--[if lt IE 9]>
-<script src="/theme/onzsa/assets/global/plugins/respond.min.js"></script>
-<script src="/theme/onzsa/assets/global/plugins/excanvas.min.js"></script> 
-<![endif]-->
-<script src="/theme/onzsa/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
-<!-- IMPORTANT! Load jquery-ui-1.10.3.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
-<script src="/theme/onzsa/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+<?php echo $this->element('script-jquery'); ?>
+<?php echo $this->element('script-angularjs'); ?>
 <!-- END CORE PLUGINS -->
 <!-- BEGIN PAGE LEVEL PLUGINS -->
-<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/jquery.vmap.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.russia.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.world.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.europe.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.germany.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.usa.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/data/jquery.vmap.sampledata.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/flot/jquery.flot.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/flot/jquery.flot.resize.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/flot/jquery.flot.categories.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/jquery.pulsate.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/bootstrap-daterangepicker/moment.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/jquery.vmap.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.russia.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.world.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.europe.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.germany.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.usa.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/data/jquery.vmap.sampledata.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/flot/jquery.flot.min.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/flot/jquery.flot.resize.min.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/flot/jquery.flot.categories.min.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery.pulsate.min.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/bootstrap-daterangepicker/moment.min.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.js"></script>
 <!-- IMPORTANT! fullcalendar depends on jquery-ui-1.10.3.custom.min.js for drag & drop support -->
-<script src="/theme/onzsa/assets/global/plugins/fullcalendar/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/jquery-easypiechart/jquery.easypiechart.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/jquery.sparkline.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/gritter/js/jquery.gritter.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/plugins/fullcalendar/fullcalendar/fullcalendar.min.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery-easypiechart/jquery.easypiechart.min.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/jquery.sparkline.min.js"></script>
+<script src="/theme/onzsa/assets/global/plugins/gritter/js/jquery.gritter.js"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
-<script src="/theme/onzsa/assets/global/scripts/metronic.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
-<script src="/js/dataTable.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/global/scripts/metronic.js"></script>
+<script src="/theme/onzsa/assets/admin/layout/scripts/layout.js"></script>
+<script src="/theme/onzsa/assets/admin/pages/scripts/index.js"></script>
+<script src="/theme/onzsa/assets/admin/pages/scripts/tasks.js"></script>
+<script src="/js/dataTable.js"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
+<!-- BEGIN COMMON INIT -->
+<?php echo $this->element('common-init'); ?>
+<!-- END COMMON INIT -->
 <script>
 var stockTakes = JSON.parse($("#hidden-data").val());
 var selectedTab = 'due';
 
-jQuery(document).ready(function() {    
-    Metronic.init(); // init metronic core componets
-    Layout.init(); // init layout
-    Index.init();
+jQuery(document).ready(function(){
+  documentInit();
+});
 
+function documentInit() {
+  // common init function
+    commonInit();
     $("body").find(".hidden-data").remove();
     updateTabContents();
 
@@ -252,7 +207,7 @@ jQuery(document).ready(function() {
     $(document).on("click", ".clickable", function(e) {
         window.document.location = $(this).data("href");
     });
-});
+};
 
 function addDeleteDropBox(title) {
     var appendString = '';

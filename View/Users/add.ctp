@@ -1,67 +1,9 @@
-<style>
-.line-box-stitle {
-    padding: 8px 20px;
-}
-.help-block {
-    padding-left: 14px;
-}
-.variant_add {
-    float: left;
-    padding-top: 12px;
-    margin-left: 29px;
-    font-size: 12px;
-    color: blue;
-    text-decoration: underline;
-}
-.variant_max {
-    float: left;
-    padding-top: 12px;
-    margin-left: 29px;
-    font-size: 12px;
-}
-.variant_add:hover {
-    cursor: pointer;
-}
-</style>
 <link href="/css/dropzone.css" rel="stylesheet" type="text/css"/>
 <link href="/css/loader.css" rel="stylesheet" type="text/css"/>
-<div class="clearfix"></div>
-<div class="container">
-    <div id="loader-wrapper" style="display:none">
+    <div id="loader-wrapper" style="display:block">
         <div id="loader"></div>
     </div>
   <div id="notify"></div>
-  <!-- BEGIN SIDEBAR -->
-  <div class="page-sidebar-wrapper"> 
-    <!-- BEGIN HORIZONTAL RESPONSIVE MENU --> 
-    <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing --> 
-    <!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-    <div class="page-sidebar navbar-collapse collapse">
-      <ul class="page-sidebar-menu" data-slide-speed="200" data-auto-scroll="true">
-        <!-- DOC: To remove the search box from the sidebar you just need to completely remove the below "sidebar-search-wrapper" LI element --> 
-        <!-- DOC: This is mobile version of the horizontal menu. The desktop version is defined(duplicated) in the header above -->
-        <li class="sidebar-search-wrapper"> 
-          <!-- BEGIN RESPONSIVE QUICK SEARCH FORM --> 
-          <!-- DOC: Apply "sidebar-search-bordered" class the below search form to have bordered search box --> 
-          <!-- DOC: Apply "sidebar-search-bordered sidebar-search-solid" class the below search form to have bordered & solid search box -->
-          <form class="sidebar-search sidebar-search-bordered" action="extra_search.html" method="POST">
-            <a href="javascript:;" class="remove"> <i class="icon-close"></i> </a>
-            <div class="input-group">
-              <input type="text" class="form-control" placeholder="Search...">
-              <span class="input-group-btn">
-              <button class="btn submit"><i class="icon-magnifier"></i></button>
-              </span> </div>
-          </form>
-          <!-- END RESPONSIVE QUICK SEARCH FORM --> 
-        </li>
-        <li> <a href="index"> Sell </a> </li>
-        <li> <a href="history"> History </a> </li>
-        <li class="active"> <a href="history"> Product <span class="selected"></span> </a> </li>
-      </ul>
-    </div>
-    <!-- END HORIZONTAL RESPONSIVE MENU --> 
-  </div>
-  <!-- END SIDEBAR --> 
   <!-- BEGIN CONTENT -->
   <div class="page-content-wrapper">
     <div class="page-content">

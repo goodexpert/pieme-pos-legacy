@@ -474,13 +474,13 @@ angular.module('OnzsaApp', [])
 
       switch (result.status) {
         case 'done' :
-          Register.donePaymentSale();
+          Register.donePaymentSale(result.registerTotal, result.payments);
           break;
         case 'layby' :
-          Register.laybySale();
+          Register.laybySale(result.registerTotal, result.payments);
           break;
         case 'onaccount' :
-          Register.onAccountSale();
+          Register.onAccountSale(result.registerTotal, result.payments);
           break;
       }
 
@@ -841,7 +841,7 @@ angular.module('OnzsaApp', [])
     Metronic.initAjax();
   });
 
-  var registerTotal;
+  $scope.registerTotal = {};
 
   // initialize payment modal
   init();
@@ -889,7 +889,7 @@ angular.module('OnzsaApp', [])
 
   function init() {
     var registerSale = Register.getRegisterSaleTotal();
-    registerTotal = registerSale;
+    $scope.registerTotal = registerSale;
     debug(registerSale);
 
     // initialize payment variables
@@ -909,7 +909,7 @@ angular.module('OnzsaApp', [])
     }
     $scope.receipt = [];
     $scope.payments = [];
-    $scope.totalTax = registerTotal.total_tax;
+    $scope.totalTax = $scope.registerTotal.total_tax;
     $scope.totalPaid = 0.0;
     $scope.totalPayment = registerSale.total_price_incl_tax;
     $scope.totalPerson  = 1;
@@ -924,38 +924,43 @@ angular.module('OnzsaApp', [])
 
     // Get Payment Type from Local DB
     $scope.paymentTypes = [];
-    $scope.ds.getRegisterPaymentTypes(function(rs) {
-      if (rs.length > 0) {
-        for (var idx=0; idx < rs.length; idx++) {
-          $scope.paymentTypes.push(rs[idx]);
-        }
-        console.table($scope.paymentTypes);
-      } else {
-        debug("PAYMENT: [WARNING] Not found payment types.");
-      }
-
-      // Display reload
-      $scope.$apply();
-    });
+    Register.getRegisterPaymentTypes()
+      .then(function(paymentTypes) {
+        $scope.paymentTypes = paymentTypes;
+      });
+    //$scope.ds.getRegisterPaymentTypes(function(rs) {
+    //  if (rs.length > 0) {
+    //    for (var idx=0; idx < rs.length; idx++) {
+    //      $scope.paymentTypes.push(rs[idx]);
+    //    }
+    //    console.table($scope.paymentTypes);
+    //  } else {
+    //    debug("PAYMENT: [WARNING] Not found payment types.");
+    //  }
+    //
+    //  // Display reload
+    //  $scope.$apply();
+    //});
 
     $scope.saleItems = [];
     if ($scope.sale_id != null) {
-      var data = {
-        'sale_id': $scope.sale_id
-      };
-      $scope.ds.getRegisterSaleItems(data, function (rs) {
-        //console.debug(rs);
-        if (rs.length > 0) {
-          for (var idx = 0; idx < rs.length; idx++) {
-            var item = rs[idx];
-            $scope.saleItems.unshift(item);
-          }
-        } else {
-          debug("PAYMENT: [WARNING] Not found register sale payments.");
-        }
-        // Display reload
-        console.debug("saleItems : %o" , $scope.saleItems);
-      });
+      //var data = {
+      //  'sale_id': $scope.sale_id
+      //};
+      //$scope.ds.getRegisterSaleItems(data, function (rs) {
+      //  //console.debug(rs);
+      //  if (rs.length > 0) {
+      //    for (var idx = 0; idx < rs.length; idx++) {
+      //      var item = rs[idx];
+      //      $scope.saleItems.unshift(item);
+      //    }
+      //  } else {
+      //    debug("PAYMENT: [WARNING] Not found register sale payments.");
+      //  }
+      //  // Display reload
+      //  console.debug("saleItems : %o" , $scope.saleItems);
+      //});
+      $scope.saleItems = Register.getCurrentSaleItems();
     }
   }
 
@@ -1007,6 +1012,7 @@ angular.module('OnzsaApp', [])
     var result = {};
     result.status = status;
     result.payments = $scope.payments;
+    result.registerTotal = $scope.registerTotal;
     result.receipt = $scope.receipt;
     print_receipt();
     $modalInstance.close(result);
@@ -1014,7 +1020,7 @@ angular.module('OnzsaApp', [])
 
   function savePayment(payment) {
     $scope.payments.push(payment);
-    $scope.ds.saveRegisterSalePayments(payment);
+    //$scope.ds.saveRegisterSalePayments(payment);
   }
 
   function updatePayment(payment, amount) {
@@ -1026,6 +1032,7 @@ angular.module('OnzsaApp', [])
     // update payment display.
     $scope.totalPaid += amount;
     $scope.remainPayment -= amount;
+    $scope.registerTotal.total_payment = parseFloat($scope.totalPaid);
 
     if ($scope.splitMode == 1 && ($scope.totalPerson - $scope.paidPerson) > 0) {
       $scope.paidPerson++;

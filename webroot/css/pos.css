@@ -338,17 +338,17 @@ div.radio, div.checker {
     margin: 0 !important;
 }
 /** BLOCK SETTING **/
-#content , .page-container {
-    width: 1280px; position: relative;
-    margin: 0 auto;
-}
+/*#content , .page-container {*/
+    /*width: 1280px; position: relative;*/
+    /*margin: 0 auto;*/
+/*}*/
 
 @media(max-width:1280px) {
-    #content , .page-container {
-    width: 100%; position: relative;
-    margin: 0 auto;
-    padding: 0 10px;
-    }
+    /*#content , .page-container {*/
+    /*width: 100%; position: relative;*/
+    /*margin: 0 auto;*/
+    /*padding: 0 10px;*/
+    /*}*/
 }
 #sell-index {
     padding: 0;

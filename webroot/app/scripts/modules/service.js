@@ -87,8 +87,10 @@ angular.module('OnzsaApp.register', [])
       debug('Register: close sale');
     };
 
-    sharedService.donePaymentSale = function() {
+    sharedService.donePaymentSale = function(registerSaleTotal, payments) {
       debug('Register: payment done sale');
+      _updateRegisterSaleTotal(registerSaleTotal);
+      _saveRegisterSalePayment(payments);
 
       // get RegisterSales
       var saleID = LocalStorage.getSaleID();
@@ -113,13 +115,17 @@ angular.module('OnzsaApp.register', [])
       ds.getRegisterSales(condition, suc);
     };
 
-    sharedService.onAccountSale = function() {
+    sharedService.onAccountSale = function(registerSaleTotal, payments) {
       debug('Register: on account sale');
+      _updateRegisterSaleTotal(registerSaleTotal);
+      _saveRegisterSalePayment(payments);
       _endRegisterSale("sale_status_onaccount")
     };
 
-    sharedService.laybySale = function() {
+    sharedService.laybySale = function(registerSaleTotal, payments) {
       debug('Register: layby sale');
+      _updateRegisterSaleTotal(registerSaleTotal);
+      _saveRegisterSalePayment(payments);
       _endRegisterSale("sale_status_layby")
     };
 
@@ -140,19 +146,6 @@ angular.module('OnzsaApp.register', [])
     sharedService.getRegisterSaleTotal = function() {
       debug('Register: retrieve register sale total');
       return angular.copy(registerSale);
-    };
-
-    sharedService.saveRegisterSaleTotal = function(registerSaleTotal) {
-      debug('Register: save register sale total');
-      // not apply receipt_number & sequence , it's controlled in service
-      registerSale.line_discount_type   = registerSaleTotal.line_discount_type;
-      registerSale.line_discount        = registerSaleTotal.line_discount;
-      registerSale.total_cost           = registerSaleTotal.total_cost;
-      registerSale.total_price          = registerSaleTotal.total_price;
-      registerSale.total_price_incl_tax = registerSaleTotal.total_price_incl_tax;
-      registerSale.total_discount       = registerSaleTotal.total_discount;
-      registerSale.total_tax            = registerSaleTotal.total_tax;
-      registerSale.total_payment        = registerSaleTotal.total_payment;
     };
 
     sharedService.getCurrentSaleItems = function() {
@@ -781,18 +774,28 @@ angular.module('OnzsaApp.register', [])
       var savedMerchantID = $cookies.get('onzsa.merchant_id');
       var savedUserID = $cookies.get('onzsa.user_id');
 
+      console.group("@ Merchant & User ID CHECK");
+      console.debug(" save merchantID : %s", savedMerchantID);
+      console.debug(" get  merchantID : %s", userInfo["merchant_id"]);
+      console.debug(" save userID     : %s", savedUserID);
+      console.debug(" get  userID     : %s", userInfo["id"]);
+      console.groupEnd();
+
       // Check merchant and user ID
       if (savedMerchantID != userInfo["merchant_id"] || savedUserID != userInfo["id"]) {
-        debug("INIT: diffrent merchant id or user id");
+        console.debug("INIT: diffrent merchant id or user id");
         // Save ID to cookie
-        $cookies.put('onzsa.merchant_id', userInfo["merchant_id"]);
-        $cookies.put('onzsa.user_id', userInfo["id"]);
+        var now = new Date();
+        var expireDate = new Date(now.getFullYear(), now.getMonth()+1, now.getDate());
+        $cookies.put('onzsa.merchant_id', userInfo["merchant_id"], {expires:expireDate});
+        $cookies.put('onzsa.user_id', userInfo["id"], {expires:expireDate});
 
         debug("INIT: checking for the init of the Web SQL Database");
         ds.dropAllLocalDataStore();
         ds.initLocalDataStore();
+      } else {
+        console.debug("INIT: both id same");
       }
-      debug("INIT: both id same");
       deferred.resolve();
       return deferred.promise;
     }
@@ -1225,6 +1228,21 @@ angular.module('OnzsaApp.register', [])
     };
 
     // --------------------------
+    // Update RegisterSales
+    // --------------------------
+    function _updateRegisterSaleTotal(registerSaleTotal) {
+      // not apply receipt_number & sequence , it's controlled in service
+      registerSale.line_discount_type   = registerSaleTotal.line_discount_type;
+      registerSale.line_discount        = registerSaleTotal.line_discount;
+      registerSale.total_cost           = registerSaleTotal.total_cost;
+      registerSale.total_price          = registerSaleTotal.total_price;
+      registerSale.total_price_incl_tax = registerSaleTotal.total_price_incl_tax;
+      registerSale.total_discount       = registerSaleTotal.total_discount;
+      registerSale.total_tax            = registerSaleTotal.total_tax;
+      registerSale.total_payment        = registerSaleTotal.total_payment;
+    };
+
+    // --------------------------
     // Save RegisterSales
     // --------------------------
     function _saveRegisterSales(saleID, status) {
@@ -1289,6 +1307,16 @@ angular.module('OnzsaApp.register', [])
         data['sale_date'] = _getUnixTimestamp();
       }
       ds.changeRegisterSales(data, suc);
+    };
+
+    // --------------------------
+    // Save Register Sale Payments
+    // --------------------------
+    function _saveRegisterSalePayment(payments) {
+      for (var idx in payments) {
+        var payment = payments[idx];
+        ds.saveRegisterSalePayments(payment);
+      }
     };
 
     // --------------------------
@@ -1441,12 +1469,12 @@ angular.module('OnzsaApp.register', [])
 
         debug("Register: end register sale");
         $rootScope.$broadcast('sale.ended');
+
+        // make new register saleID
+        _newRegisterSale();
       }
       // change RegisterSales status
       _updateRegisterSale(saleID, status, suc);
-
-      // make new register saleID
-      _newRegisterSale();
     }
 
     // --------------------------
