@@ -471,7 +471,8 @@ angular.module('OnzsaApp', [])
     modalPaymentInstance.result.then(function(result) {
       debug("Payment result : " + result.status);
       $scope.receipt = result.receipt;
-
+      $scope.receipt.status = result.status;
+      console.debug('payment %o', $scope.receipt);
       switch (result.status) {
         case 'done' :
           Register.donePaymentSale(result.registerTotal, result.payments);
@@ -483,10 +484,11 @@ angular.module('OnzsaApp', [])
           Register.onAccountSale(result.registerTotal, result.payments);
           break;
       }
-
-      $timeout(function() {
-        print();
-      });
+      if(result.status != 'cancel'){
+        $timeout(function() {
+          print();
+        });
+      }
     });
   };
 
@@ -782,7 +784,6 @@ angular.module('OnzsaApp', [])
 
 .controller('RegisterSelectorController', function($rootScope, $scope, $modalInstance, $window, Register, locale, items) {
   $scope.items = items;
-
   $scope.cancel = function() {
     $modalInstance.dismiss('cancel');
     $window.location.href = '/dashboard';
@@ -790,6 +791,26 @@ angular.module('OnzsaApp', [])
 
   $scope.selectItem = function(selectedItem) {
     $modalInstance.close(selectedItem);
+  };
+
+})
+
+.controller('ChangeCtrl', function($rootScope, $scope, $modalInstance, $window,locale, items, payments) {
+  $scope.items = items;
+  $scope.payments = payments;
+
+  var result = {
+    "status": "cancel",
+    "amount": $scope.items,
+    "payment": $scope.payments
+  };
+
+  $scope.cancel = function() {
+    $modalInstance.close(result);
+  };
+  $scope.confirm = function() {
+    result.status = "ok";
+    $modalInstance.close(result);
   };
 
 })
@@ -805,7 +826,7 @@ angular.module('OnzsaApp', [])
 
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
- };
+  };
 
   $scope.selectItem = function(product_id) {
     debug('dismiss modal : ' + product_id);
@@ -835,7 +856,7 @@ angular.module('OnzsaApp', [])
   }
 })
 
-.controller('PaymentCtrl', function($rootScope, $scope, $http, $modalInstance, $timeout, LocalStorage, Register) {
+.controller('PaymentCtrl', function($rootScope, $scope, $http, $modalInstance, LocalStorage,$timeout, Register, $modal, items) {
   $modalInstance.opened.then(function() {
     // initialize core components
     Metronic.initAjax();
@@ -847,13 +868,18 @@ angular.module('OnzsaApp', [])
   init();
 
   $scope.cancel = function() {
-    endPayment('cancel');
+    if($scope.totalPaid == 0 ||$scope.totalPaid == null ) {
+      endPayment('cancel');
+    }else{
+      paymentClose();
+    }
   };
 
   $scope.layby = function() {
     if (!Register.isSelectedCustomer()) {
       alert("Customer not selected");
     } else {
+      print_receipt()
       endPayment('layby');
     }
   };
@@ -862,6 +888,7 @@ angular.module('OnzsaApp', [])
     if (!Register.isSelectedCustomer()) {
       alert("Customer not selected");
     } else {
+      print_receipt()
       endPayment('onaccount');
     }
   };
@@ -918,7 +945,7 @@ angular.module('OnzsaApp', [])
     $scope.toPayment = parseFloat(($scope.remainPayment / ($scope.totalPerson - $scope.paidPerson)).toFixed(2));
     $scope.splitMode = 0;
     $scope.change = 0;
-
+    $scope.customerInfo = Register.getCustomerInfo();
     // define alias for local Datastore
     $scope.ds = Datastore_sqlite;
 
@@ -928,39 +955,10 @@ angular.module('OnzsaApp', [])
       .then(function(paymentTypes) {
         $scope.paymentTypes = paymentTypes;
       });
-    //$scope.ds.getRegisterPaymentTypes(function(rs) {
-    //  if (rs.length > 0) {
-    //    for (var idx=0; idx < rs.length; idx++) {
-    //      $scope.paymentTypes.push(rs[idx]);
-    //    }
-    //    console.table($scope.paymentTypes);
-    //  } else {
-    //    debug("PAYMENT: [WARNING] Not found payment types.");
-    //  }
-    //
-    //  // Display reload
-    //  $scope.$apply();
-    //});
 
     $scope.saleItems = [];
     if ($scope.sale_id != null) {
-      //var data = {
-      //  'sale_id': $scope.sale_id
-      //};
-      //$scope.ds.getRegisterSaleItems(data, function (rs) {
-      //  //console.debug(rs);
-      //  if (rs.length > 0) {
-      //    for (var idx = 0; idx < rs.length; idx++) {
-      //      var item = rs[idx];
-      //      $scope.saleItems.unshift(item);
-      //    }
-      //  } else {
-      //    debug("PAYMENT: [WARNING] Not found register sale payments.");
-      //  }
-      //  // Display reload
-      //  console.debug("saleItems : %o" , $scope.saleItems);
-      //});
-      $scope.saleItems = Register.getCurrentSaleItems();
+     $scope.saleItems = Register.getCurrentSaleItems();
     }
   }
 
@@ -1008,16 +1006,45 @@ angular.module('OnzsaApp', [])
     });
   }
 
+  function issueChange(amount, payment){
+    var modalIssueInstance = $modal.open({
+      templateUrl: '/app/tpl/change.html',
+      controller: 'ChangeCtrl',
+      backdrop: 'static',
+      keyboard: false,
+      size: 'sm',
+      resolve: {
+        items: function() {
+          return amount;
+        },
+        payments: function(){
+          return payment;
+        }
+      }
+
+  });
+    modalIssueInstance.result.then(function(result) {
+      console.debug('result %o', result);
+      if (result.status == "ok") {
+        var newPayment = Register.createNewPayment(result.payment.id, result.payment.payment_type_id, result.payment.name, -result.amount);
+        // TODO: payment save
+        savePayment(newPayment);
+        endPayment('done');
+      } else {
+        // change = 0
+        $scope.change = 0 ;
+      }
+    });
+  }
+
   function endPayment(status) {
     var result = {};
     result.status = status;
     result.payments = $scope.payments;
     result.registerTotal = $scope.registerTotal;
     result.receipt = $scope.receipt;
-    print_receipt();
     $modalInstance.close(result);
   }
-
   function savePayment(payment) {
     $scope.payments.push(payment);
     //$scope.ds.saveRegisterSalePayments(payment);
@@ -1044,7 +1071,18 @@ angular.module('OnzsaApp', [])
       if (remain != 0) {
         $scope.change = -1 * ($scope.remainPayment);
       }
-      endPayment('done');
+      print_receipt();
+      if($scope.change > 0 ){
+        issueChange($scope.change, payment);
+        if($scope.change == 0){
+          endPayment('done');
+        }
+      }
+      else
+      {
+        endPayment('done');
+      }
+
     }
   }
 
@@ -1052,14 +1090,36 @@ angular.module('OnzsaApp', [])
     $scope.receipt['change'] = parseFloat($scope.change).toFixed(2);
     $scope.receipt['tax'] = parseFloat($scope.totalTax).toFixed(2);
     $scope.receipt['paid'] = parseFloat($scope.totalPaid).toFixed(2);
+    $scope.receipt['total'] = parseFloat($scope.totalPayment).toFixed(2);
+    $scope.receipt['sub_total'] = parseFloat($scope.registerTotal.total_cost).toFixed(2);
+    //$scope.receipt['sub_total'] = parseFloat($scope.totalPayment - $scope.totalTax).toFixed(2);
     $scope.receipt['change'] = $scope.change;
     $scope.receipt['date'] = (new Date().format('dd-MMM-yyyy HH:mm'));
     $scope.receipt['invoice_number'] = $scope.invoiceNumber;
     $scope.receipt['sale_items'] = $scope.saleItems;
     $scope.receipt['payments'] = $scope.payments;
-    $scope.receipt['customer_name'] = $scope.customerName;
+    if(parseFloat($scope.remainPayment).toFixed(2) < 0.09 ) {
+      $scope.receipt['to_pay'] =0
+    }else{
+      $scope.receipt['to_pay'] = parseFloat($scope.remainPayment).toFixed(2);
+    }
+    $scope.receipt['customer_name'] = $scope.customerInfo.name;
+    console.debug('scope.receipt %o', $scope.receipt);
   }
-
+      function paymentClose(data){
+        var modalInstance = $modal.open({
+          templateUrl: '/app/tpl/payment-close.html',
+          controller: 'PaymentCtrl',
+          backdrop: 'static',
+          keyboard: false,
+          size: 'sm',
+          resolve: {
+            items: function() {
+              return data;
+            }
+          }
+        });
+      }
 });
 
 angular.module("template/popup/register.html", []).run(["$templateCache", function($templateCache) {

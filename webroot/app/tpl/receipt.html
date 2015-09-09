@@ -8,7 +8,7 @@
       <div class="dashed-line-gr"></div>
       <div class="receipt-body">
         <div class="receipt-body-customer">
-          <span class="receipt-customer-name">customer name</span><br>
+          <span class="receipt-customer-name">{{receipt.customer_name}}</span><br>
           <span class="receupt-customer-region">New Zealand</span>
         </div>
         <h4 class="receipt-body-type">
@@ -24,8 +24,9 @@
           <table class="receipt-product-table">
             <tbody>
             <tr class="split_receipt_attr" data-ng-repeat = "sales in receipt.sale_items">
-              <td>{{sales.quantity}}</td>
               <td>{{sales.name}}</td>
+              <td>{{sales.quantity}}</td>
+              <td>@{{sales.sale_price}}</td>
               <td class="pull-right">{{sales.sale_price |currency}}</td>
             </tr>
             </tbody>
@@ -34,23 +35,27 @@
           <table class="receipt-product-table-total">
             <tr>
               <th>{{template.label_sub_total}}</th>
-              <td class="total-sub-total receipt-subtotal pull-right">{{receipt.paid |currency}}</td>
+              <td class="total-sub-total receipt-subtotal pull-right">{{receipt.sub_total |currency}}</td>
             </tr>
             <tr>
               <th>{{template.label_tax}}</th>
               <td class="total-tax receipt-tax pull-right">{{receipt.tax |currency}}</td>
             </tr>
+            <tr class="receipt_total" ng-if="receipt.paid">
+              <th>{{template.label_total}}</th>
+              <td class="total-amount receipt-total pull-right">{{receipt.total | currency}}</td>
+            </tr>
+            <tr class="split_receipt_attr" data-ng-repeat = "payment in receipt.payments" ng-if="payment.amount > 0">
+              <td>{{payment.name}}</td>
+              <td class="pull-right"> {{payment.amount | currency}}</td>
+            </tr>
             <tr class="receipt_change">
               <th>{{template.label_change}}</th>
-              <td class="total-change receipt-total pull-right"></td>
-            </tr>
-            <tr class="split_receipt_attr" data-ng-repeat = "payment in receipt.payments">
-              <td>{{payment.name}}</td>
-              <td class="pull-right">{{payment.amount}}</td>
+              <td class="total-change receipt-total pull-right red" style="color : red;">{{receipt.change | currency}}</td>
             </tr>
             <tr class="receipt_total">
-              <th>{{template.label_total}}</th>
-              <td class="total-amount receipt-total pull-right">{{receipt.paid | currency}}</td>
+              <th>{{template.label_to_pay}}</th>
+              <td class="total-amount receipt-total pull-right" >{{receipt.to_pay | currency}}</td>
             </tr>
             <tr class="receipt-merchant-only" style="text-align: center">
               <br><br>
