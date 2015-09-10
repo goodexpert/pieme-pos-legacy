@@ -66,7 +66,7 @@ class SetupController extends AppController {
 
             $this->serialize($result);
         } else if ($this->request->is('get')){
-            
+
             $this->Merchant->recursive = 2;
 
             $merchant = $this->Merchant->find('first', array(
@@ -98,16 +98,16 @@ class SetupController extends AppController {
         $this->loadModel('MerchantQuickKey');
         $this->loadModel('MerchantReceiptTemplate');
         $this->loadModel('MerchantOutlet');
-    
+
         $user = $this->Auth->user();
-        
+
         $receipt_templates = $this->MerchantReceiptTemplate->find('all', array(
             'conditions' => array(
                 'MerchantReceiptTemplate.merchant_id' => $user['merchant_id']
             )
         ));
         $this->set("receipt_templates",$receipt_templates);
-        
+
         $this->MerchantRegister->bindModel(array(
             'belongsTo' => array(
                 'MerchantQuickKey' => array(
@@ -116,7 +116,7 @@ class SetupController extends AppController {
                 )
             )
         ));
-        
+
         $this->MerchantRegister->bindModel(array(
             'belongsTo' => array(
                 'MerchantReceiptTemplate' => array(
@@ -134,7 +134,7 @@ class SetupController extends AppController {
                 )
             ),
         ));
-        
+
         $this->MerchantOutlet->recursive = 2;
 
         $outlets = $this->MerchantOutlet->find('all', array(
@@ -197,7 +197,7 @@ class SetupController extends AppController {
         $this->loadModel('MerchantQuickKey');
         $this->loadModel('MerchantOutlet');
         $this->loadModel('MerchantRegister');
-        
+
         $user = $this->Auth->user();
 
         $items = $this->MerchantQuickKey->find('all', array(
@@ -206,7 +206,7 @@ class SetupController extends AppController {
             )
         ));
         $this->set("items",$items);
-        
+
         $this->MerchantOutlet->bindModel(array(
             'hasMany' => array(
                 'MerchantRegister' => array(
@@ -215,7 +215,7 @@ class SetupController extends AppController {
                 )
             )
         ));
-        
+
         $outlets = $this->MerchantOutlet->find('all', array(
             'conditions' => array(
                 'MerchantOutlet.merchant_id' => $user['merchant_id']
@@ -305,7 +305,9 @@ class SetupController extends AppController {
         }
         */
 
-        $users = $this->_getUsers($user['merchant_id']);
+        $filter = $this->get('merchant_user');
+
+        $users = $this->_getUsers($user['merchant_id'], $filter);
         $this->set('users', $users);
 
         $user_types = $this->_getUserTypes($user['merchant_id']);
@@ -318,6 +320,7 @@ class SetupController extends AppController {
             // get the list of retail's outlets
             $outlets = $this->_getOutletByRetailerId($user['retailer_id']);
         }
+        $this->set('filter', $filter);
         $this->set('outlets', $outlets);
     }
 
@@ -573,13 +576,25 @@ class SetupController extends AppController {
  * @param string merchant id
  * @return array the list
  */
-    protected function _getUsers($merchant_id) {
+    protected function _getUsers($merchant_id, $filter ) {
         $this->loadModel('MerchantUser');
         $conditions = [];
 
         $conditions[] = [
             'MerchantUser.merchant_id' => $merchant_id
         ];
+
+        if(isset($filter['user_type_id']) && !empty($filter['user_type_id'])) {
+          $conditions = array_merge($conditions, array(
+              'MerchantUser.user_type_id' => $filter['user_type_id']
+          ));
+        }
+
+        if (isset($filter['outlet_id']) && !empty($filter['outlet_id'])) {
+          $conditions = array_merge($conditions, array(
+              'MerchantUser.outlet_id' => $filter['outlet_id']
+          ));
+        }
 
         $this->MerchantUser->bindModel([
             'belongsTo' => [

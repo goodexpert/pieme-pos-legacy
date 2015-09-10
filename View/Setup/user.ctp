@@ -21,7 +21,7 @@ $AuthUser = $this->Session->read('Auth.User');
   </div>
 </div>
 <!-- FILTER -->
-<form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box" action="/product" method="get">
+<form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box" action="/setup/user" method="get">
   <div class="col-md-4 col-xs-4 col-sm-4">
     <dl>
       <dt>Account Type</dt>
@@ -34,7 +34,8 @@ $AuthUser = $this->Session->read('Auth.User');
             'div' => false,
             'label' => false,
             'empty' => '',
-            'options' => $user_types
+            'options' => $user_types,
+            'default' => $filter['user_type_id']
         ]);
         ?>
       </dd>
@@ -52,14 +53,15 @@ $AuthUser = $this->Session->read('Auth.User');
             'div' => false,
             'label' => false,
             'empty' => '',
-            'options' => $outlets
+            'options' => $outlets,
+            'default' => $filter['outlet_id']
         ]);
         ?>
       </dd>
     </dl>
   </div>
   <div class="col-md-12 col-xs-12 col-sm-12">
-    <button class="btn btn-primary filter pull-right">Update</button>
+    <button type="submit" class="btn btn-primary filter pull-right">Update</button>
   </div>
 </form>
 <table id="historyTable" class="table table-striped table-bordered dataTable">
