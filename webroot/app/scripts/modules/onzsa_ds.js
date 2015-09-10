@@ -865,17 +865,7 @@ Datastore_sqlite = function () {
         }
 
         //TODO: sync_status condition
-        if (data.sync == 'sync') {
-          if (data.sale_date != null) {
-            if (condition.length == 0) {
-              queryString += " WHERE ";
-            } else {
-              queryString += " AND ";
-            }
-            queryString += " sync_status <> sync_success";
-          }
-        } else if (data.sync == 'date') {
-          //console.debug("@@@@");
+        if (data.sync == 'date') {
           if (data.sale_date != null) {
             if (condition.length == 0) {
               queryString += " WHERE ";
@@ -883,7 +873,7 @@ Datastore_sqlite = function () {
               queryString += " AND ";
             }
             condition.push(data.sale_date);
-            queryString += " (sale_date is not null and sale_date > ?)";
+            queryString += " sale_date is not null and sale_date > ? and sync_status <> 'sync_success'";
           }
         }
       }

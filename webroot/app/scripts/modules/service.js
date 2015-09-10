@@ -11,8 +11,9 @@ angular.module('OnzsaApp.register', [])
 
 .constant('registerConfig', {
   debug: true,
-  statusCheckInterval: 5000,
-  syncCheckInterval: 5000,
+  statusCheckInterval:       5000,   // 5sec
+  syncSaleDataInterval:     60000,   // 1min
+  syncUpdateDataInterval:  300000,   // 5min
 })
 
 .factory('Register', [
@@ -31,6 +32,8 @@ angular.module('OnzsaApp.register', [])
     var quickKeyLayout = [];
     var onlineStatus = 'offline';
     var statusCheckInterval = registerConfig.statusCheckInterval;
+    var syncSaleDataInterval = registerConfig.syncSaleDataInterval;
+    var syncUpdateDataInterval = registerConfig.syncUpdateDataInterval;
     var saleItems = [];
     var registerSale = {
       'receipt_number': 1,
@@ -451,7 +454,7 @@ angular.module('OnzsaApp.register', [])
       var saleID = LocalStorage.getSaleID();
 
       //TODO: del end of debug
-      console.group("@ Line Discount");
+      console.groupCollapsed("@ Line Discount");
       console.group("@ old value");
       console.debug("@ total_price_incl_tax : %f", registerSale.total_price_incl_tax);
       console.debug("@ total_discount       : %f", registerSale.total_discount);
@@ -483,7 +486,7 @@ angular.module('OnzsaApp.register', [])
       _saveRegisterSales(saleID, "sale_status_open");
 
       //TODO: del end of debug
-      console.group("@ New value");
+      console.groupCollapsed("@ New value");
       console.debug("@ total_price_incl_tax : %f", registerSale.total_price_incl_tax);
       console.debug("@ total_discount       : %f", registerSale.total_discount);
       console.debug("@ line_discount        : %f", registerSale.line_discount);
@@ -500,6 +503,8 @@ angular.module('OnzsaApp.register', [])
     function _bootstrapSystem() {
       debug("Register: do bootstrapSystem");
       $interval(_updateNetworkConnectivity, statusCheckInterval);
+      $interval(_syncSaleData, syncSaleDataInterval);
+      $interval(_syncUpdateData, syncUpdateDataInterval);
 
       return _checkNetworkConnectivity()
         .then(function(response) {
@@ -634,10 +639,26 @@ angular.module('OnzsaApp.register', [])
         });
     }
 
-    sharedService.syncData = function() {
-      debug('Register: syncData');
-      _syncData();
-    };
+    //
+    // Update PaymentTypes, Products, Taxes
+    //
+    function _syncUpdateData() {
+      if (_isOnline() == 'offline') {
+        debug("[SYNC DATA] Respite sync (offline)");
+        return;
+      }
+      debug("[SYNC DATA] sync start ");
+      _receiveProducts()
+      .then(function () {
+        return _receivePaymentTypes();
+      })
+      .then(function () {
+        return _receiveTaxes();
+      })
+      .then(function () {
+        debug("[SYNC DATA] sync completed");
+      });
+    }
 
     function _getSyncRS() {
       var defer = $q.defer();
@@ -690,12 +711,16 @@ angular.module('OnzsaApp.register', [])
     //
     // Sync local data to server
     //
-    function _syncData() {
+    function _syncSaleData() {
       var data = {};
-      debug("[SYNC] Start");
+      if (_isOnline() == 'offline') {
+        debug("[SYNC SALE] Respite sync (offline)");
+        return;
+      }
 
       _getSyncRS()
         .then(function(RS) {
+          //console.debug("[SYNC SALE] RS count : %d", RS.length);
           var defer = $q.defer();
           var promise = [];
           data = (RS);
@@ -704,8 +729,8 @@ angular.module('OnzsaApp.register', [])
 
             promise.push( _getSyncRSI(rsID, i)
               .then(function(response) {
+                //console.debug("[SYNC SALE] RSI count : %d", response.length);
                 if (response.data.length > 0) {
-                  //console.debug("@@@ response.data length : %d ", response.data.length);
                   data[response.index]['items'] = (response.data);
                 }
               })
@@ -713,8 +738,8 @@ angular.module('OnzsaApp.register', [])
 
             promise.push( _getSyncRSP(rsID, i)
               .then(function(response) {
+                //console.debug("[SYNC SALE] RSP count : %d", response.length);
                 if (response.data.length > 0) {
-                  //console.debug("@@@ response.data2 length : %d ", response.data.length);
                   data[response.index]['payments'] = (response.data);
                 }
               })
@@ -724,29 +749,33 @@ angular.module('OnzsaApp.register', [])
           return defer.promise;
         })
         .then(function(RS) {
-          debug("[SYNC] sync request >>>>>>>>>>");
-          debug(RS);
+          if (RS.length > 0) {
+            debug("[SYNC SALE] sync request >>>>>>>>>>");
+            debug(RS);
 
-          $.ajax({
-            url: "/api/upload_register_sales.json",
-            type: "POST",
-            data: {
-              syncData: RS,
-            },
-            success: function (result) {
-              debug("[SYNC] sync success response <<<<<<<<<<");
-              debug(result);
-              var now = _getUnixTimestamp();
-              for (var idx in result.ids) {
-                var syncData = {
-                  'id': result.ids[idx],
-                  'sync_status': 'sync_success',
-                  'sync_date': now
+            $.ajax({
+              url: "/api/upload_register_sales.json",
+              type: "POST",
+              data: {
+                syncData: RS,
+              },
+              success: function (result) {
+                debug("[SYNC SALE] sync success response <<<<<<<<<<");
+                debug(result);
+                var now = _getUnixTimestamp();
+                for (var idx in result.ids) {
+                  var syncData = {
+                    'id': result.ids[idx],
+                    'sync_status': 'sync_success',
+                    'sync_date': now
+                  }
+                  ds.changeRegisterSales(syncData);
                 }
-                ds.changeRegisterSales(syncData);
               }
-            }
-          });
+            });
+          } else {
+            debug("[SYNC SALE] already done.");
+          }
         });
     }
 
@@ -774,7 +803,7 @@ angular.module('OnzsaApp.register', [])
       var savedMerchantID = $cookies.get('onzsa.merchant_id');
       var savedUserID = $cookies.get('onzsa.user_id');
 
-      console.group("@ Merchant & User ID CHECK");
+      console.groupCollapsed("@ Merchant & User ID CHECK");
       console.debug(" save merchantID : %s", savedMerchantID);
       console.debug(" get  merchantID : %s", userInfo["merchant_id"]);
       console.debug(" save userID     : %s", savedUserID);
@@ -877,8 +906,9 @@ angular.module('OnzsaApp.register', [])
       debug("REFRESH: products");
       debug("REQUEST: products >>>>>>>>>>>>>>>>>>>>>");
 
+      var lastSyncTime = LocalStorage.getDataSyncTime("products");
       var deferred = $q.defer();
-      $http.get('/api/products.json')
+      $http.get('/api/products.json?st='+lastSyncTime)
           .then(function (response) {
             debug("REQUEST: products, success handler");
 
@@ -888,6 +918,9 @@ angular.module('OnzsaApp.register', [])
               ds.saveProducts(null, response.data);
               debug("REQUEST: products : %o", response.data);
             }
+            var now = _getUnixTimestamp();
+            LocalStorage.saveDataSyncTime("products", now);
+
             deferred.resolve();
           }, function (response) {
             debug("REQUEST: products, error handler");
@@ -903,8 +936,9 @@ angular.module('OnzsaApp.register', [])
       debug("REFRESH: payment_types");
       debug("REQUEST: payment_types >>>>>>>>>>>>>>>>>>>>>");
 
+      var lastSyncTime = LocalStorage.getDataSyncTime("payment_types");
       var deferred = $q.defer();
-      $http.get('/api/payment_types.json')
+      $http.get('/api/payment_types.json?st='+lastSyncTime)
           .then(function (response) {
             debug("REQUEST: payment_types, success handler");
 
@@ -914,6 +948,9 @@ angular.module('OnzsaApp.register', [])
               ds.saveRegisterPaymentTypes(response.data);
               debug("REQUEST: payment_types : %o", response.data);
             }
+            var now = _getUnixTimestamp();
+            LocalStorage.saveDataSyncTime("payment_types", now);
+
             deferred.resolve();
           }, function (response) {
             debug("REQUEST: payment_types, error handler");
@@ -929,8 +966,9 @@ angular.module('OnzsaApp.register', [])
       debug("REFRESH: taxes");
       debug("REQUEST: taxes >>>>>>>>>>>>>>>>>>>>>");
 
+      var lastSyncTime = LocalStorage.getDataSyncTime("taxes");
       var deferred = $q.defer();
-      $http.get('/api/taxes.json')
+      $http.get('/api/taxes.json?st='+lastSyncTime)
           .then(function (response) {
             debug("REQUEST: taxes, success handler");
 
@@ -940,6 +978,9 @@ angular.module('OnzsaApp.register', [])
               debug("REQUEST: taxes : %o", response.data);
               ds.saveTaxes(response.data);
             }
+            var now = _getUnixTimestamp();
+            LocalStorage.saveDataSyncTime("taxes", now);
+
             deferred.resolve();
           }, function (response) {
             debug("REQUEST: taxes, error handler");
