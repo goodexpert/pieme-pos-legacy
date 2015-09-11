@@ -89,6 +89,7 @@
         <!-- BEGIN ACTUAL CONTENT -->
         <?php echo $this->fetch('content'); ?>
         <!-- END ACTUAL CONTENT -->
+        <div class="clearfix"></div>
       </div>
     </div>
   </div>

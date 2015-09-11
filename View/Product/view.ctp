@@ -1,3 +1,4 @@
+<link href="/css/dataTable.css" rel="stylesheet" type="text/css">
 <div class="clearfix"></div>
     <div id="notify"></div>
     <!-- BEGIN CONTENT -->

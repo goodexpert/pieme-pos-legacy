@@ -20,7 +20,7 @@
 
 <!-- FILTER -->
 <form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box" action="/reports/sales/sales_by_day" method="get">
-    <div class="col-md-4 col-xs-6 col-sm-6">
+    <div class="col-md-6 col-xs-6 col-sm-6">
         <dl>
             <dt>Date from</dt>
             <dd>
@@ -31,7 +31,7 @@
             </dd>
         </dl>
     </div>
-    <div class="col-md-4 col-xs-6 col-sm-6">
+    <div class="col-md-6 col-xs-6 col-sm-6">
         <dl>
             <dt>Date to</dt>
             <dd>

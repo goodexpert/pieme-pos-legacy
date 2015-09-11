@@ -130,7 +130,6 @@
 <!-- END CORE PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <script src="/theme/onzsa/assets/global/scripts/metronic.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/admin/pages/scripts/index.js"></script>
 <script src="/theme/onzsa/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
 <script src="/theme/onzsa/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
 <script src="/theme/onzsa/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>

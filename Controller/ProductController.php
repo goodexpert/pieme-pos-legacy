@@ -233,9 +233,10 @@ class ProductController extends AppController {
                 $data = $this->request->data;
                 $data['merchant_id'] = $user['merchant_id'];
 
-                if($this->MerchantProduct->find(count, array( 'conditions' => array('id' => $data['id']))) > 0){
-                  return;
-                }
+                // Added 2015.08.28 (Git changeset : 0611ad8)
+                //if($this->MerchantProduct->find('count', array( 'conditions' => array('id' => $data['id']))) > 0){
+                //  return;
+                //}
 
                 if (isset($data['parent_id']) && empty($data['parent_id'])) {
                     unset($data['parent_id']);
@@ -557,6 +558,8 @@ class ProductController extends AppController {
                 if ($filename = $this->_uploadFile($id)) {
                     $data['image'] = $filename;
                     $data['image_large'] = $filename;
+                } else {
+                    unset($data['image']);
                 }
 
                 $this->MerchantProduct->id = $id;
@@ -883,7 +886,7 @@ class ProductController extends AppController {
             ),
         ));
         $this->set("variants", $variants);
-        
+
     }
 
     public function view($id) {

@@ -157,15 +157,17 @@
           </div>
           <div class="col-md-6 col-xs-6 col-sm-6 margin-top-20">
               <dl class="form-group">
+
+
                 <dt class="col-md-4">Images</dt>
                 <dd class="col-md-8">
-                    <input name="file" type="file">
+                  <input name="file" type="file">
 <!--
-                    <div class="dropzone" id="drop-file">
-                      <div class="fallback">
-                        <input name="file" type="file">
-                      </div>
+                  <div class="dropzone" id="drop-file">
+                    <div class="fallback">
+                      <input name="file" type="file">
                     </div>
+                  </div>
 -->
                 </dd>
               </dl>
@@ -833,7 +835,7 @@ function documentInit() {
       formData.append('composite', JSON.stringify(composite));
 
       $.ajax({
-        url: window.location + '.json',
+        url: '//' + window.location.hostname + window.location.pathname + '.json',
         type: "POST",
         cache: false,
         contentType: false,

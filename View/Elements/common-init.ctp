@@ -1,3 +1,6 @@
+<script src="/theme/onzsa/assets/global/scripts/metronic.js"></script>
+<script src="/theme/onzsa/assets/admin/pages/scripts/index.js"></script>
+
 <script>
 function commonInit() {
   Metronic.init(); // Run metronic theme
