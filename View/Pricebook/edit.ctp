@@ -295,7 +295,7 @@
         entry = {};
       });
       $.ajax({
-        url: location.href + '.json',
+        url: location.pathname + '.json',
         type: 'POST',
         data: {
           name: $("#price_book_name").val(),

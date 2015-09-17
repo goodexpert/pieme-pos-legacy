@@ -300,7 +300,11 @@ function documentInit() {
       },
       success: function (result) {
         if (result.success) {
-          window.location.href = "/pricebook/view?r=" + result.price_book_id;
+            if(result.price_book_id) {
+              window.location.href = "/pricebook/view?r=" + result.price_book_id;
+            }else{
+              alert("please enter price book name");
+            }
         } else {
           console.log(result.message);
         }

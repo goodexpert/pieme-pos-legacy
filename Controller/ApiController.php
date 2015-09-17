@@ -365,6 +365,7 @@ class ApiController extends AppController {
           'OR' => [
             'MerchantCustomer.name like' => '%' . $query . '%',
             'MerchantCustomer.customer_code like' => '%' . $query . '%',
+            'MerchantCustomer.id' =>  $query,
           ]
         ]
       ]);

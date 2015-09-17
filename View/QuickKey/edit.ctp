@@ -348,6 +348,8 @@ function documentInit() {
                 key.product_id = data.id;
                 key.parent = data.parent;
                 key.selections = data.selections;
+                key.image = data.image;
+                key.image_large = data.image_large;
                 if (data.parent == true) {
                   key.options = data.options;
                   key.variants = data.variants;
@@ -370,6 +372,8 @@ function documentInit() {
             key.sku = ui.item.sku;
             key.product_id = product.id;
             key.parent = false;
+            key.image = product.image;
+            key.image_large = product.image_large;
 
             quick_keys["quick_keys"]["groups"][currentGroupNo]["pages"][currentPageNo]["keys"].push(key);
             initQuickKeys();
@@ -425,7 +429,7 @@ function documentInit() {
         var key_layouts = JSON.stringify(quick_keys);
 
         $.ajax({
-            url: location.href+'.json',
+            url: location.pathname+'.json',
             type: "POST",
             data: {
                 name: $("#layout_name").val(),

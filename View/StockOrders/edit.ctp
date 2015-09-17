@@ -39,6 +39,7 @@
         $stock_order_items = $data['MerchantStockOrderItem'];
     }
  ?>
+<link type="text/css" rel="stylesheet" href="/theme/onzsa/assets/global/plugins/jquery-ui-themes-1.11.0/themes/smoothness/jquery-ui.css"/>
 <div class="clearfix"></div>
 <div id="notify"></div>
 <!-- BEGIN CONTENT -->
@@ -237,6 +238,7 @@
 <script src="/theme/onzsa/assets/global/plugins/bootstrap-daterangepicker/moment.min.js"></script>
 <script src="/theme/onzsa/assets/global/plugins/bootstrap-daterangepicker/daterangepicker.js"></script>
 <!-- IMPORTANT! fullcalendar depends on jquery-ui-1.10.3.custom.min.js for drag & drop support -->
+
 <script src="/theme/onzsa/assets/global/plugins/fullcalendar/fullcalendar/fullcalendar.min.js"></script>
 <script src="/theme/onzsa/assets/global/plugins/jquery-easypiechart/jquery.easypiechart.min.js"></script>
 <script src="/theme/onzsa/assets/global/plugins/jquery.sparkline.min.js"></script>
@@ -353,7 +355,7 @@ function documentInit() {
         $("#save-send").val(1);
         $("#stock_order_item_form").submit();
     });
-});
+}
 
 function addProduct(product_id, quantity, name, product_uom, supply_price, stock_type, subitems, in_stock) {
     var stockOrderItem = null;

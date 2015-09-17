@@ -101,13 +101,13 @@ angular.module('OnzsaApp.storage', [])
     debug("saving data sync table: " + table + " / time: " + time);
     switch (table) {
       case 'payment_types':
-        localStorageService.set('payment_types_sync_time', time);
+        localStorageService.set('synced_payment_types', time);
         break;
       case 'products':
-        localStorageService.set('products_sync_time', time);
+        localStorageService.set('synced_products', time);
         break;
       case 'taxes':
-        localStorageService.set('taxes_sync_time', time);
+        localStorageService.set('synced_taxes', time);
         break;
     }
   };
@@ -116,11 +116,11 @@ angular.module('OnzsaApp.storage', [])
     debug("get data sync table: " + table);
     switch (table) {
       case 'payment_types':
-        return localStorageService.set('payment_types_sync_time');
+        return localStorageService.set('synced_payment_types');
       case 'products':
-        return localStorageService.set('products_sync_time');
+        return localStorageService.set('synced_products');
       case 'taxes':
-        return localStorageService.set('taxes_sync_time');
+        return localStorageService.set('synced_taxes');
     }
   };
 

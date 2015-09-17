@@ -48,24 +48,24 @@
                     <?php echo $order_name . ' (' . $order_status_name . ')'; ?>
                 </h2>
                 <div class="pull-right col-md-6 col-xs-6 col-sm-6 col-alpha col-omega margin-top-20">
-                    <button class="btn btn-white pull-right btn-right">
+                    <button class="btn btn-primary pull-right btn-right">
                         <div class="glyphicon glyphicon-export"></div>&nbsp;
                         Export CSV
                     </button>
                 <?php if (in_array($order_status, array('stock_order_status_open'))) : ?>
-                    <button class="btn btn-white pull-right btn-right">
+                    <button class="btn btn-primary pull-right btn-right">
                         <div class="glyphicon glyphicon-import"></div>&nbsp;
                         Import CSV
                     </button>
                 <?php endif; ?>
                 <?php if (!in_array($order_status, array('stock_order_status_cancelled', 'stock_order_status_closed', 'stock_order_status_rejected'))) : ?>
-                    <a href="/stock_orders/<?php echo $order_id; ?>/editDetails" class="btn btn-white pull-right btn-center">
+                    <a href="/stock_orders/<?php echo $order_id; ?>/editDetails" class="btn btn-primary pull-right btn-center">
                         <div class="glyphicon glyphicon-edit"></div>&nbsp;
                         Edit Details
                     </a>
                 <?php endif; ?>
                 <?php if (in_array($order_status, array('stock_order_status_open'))) : ?>
-                    <a href="/stock_orders/<?php echo $order_id; ?>/edit" class="btn btn-white pull-right btn-left">
+                    <a href="/stock_orders/<?php echo $order_id; ?>/edit" class="btn btn-primary pull-right btn-left">
                         <div class="glyphicon glyphicon-edit"></div>&nbsp;
                         Edit Products
                     </a>

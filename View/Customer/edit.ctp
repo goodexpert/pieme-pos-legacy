@@ -324,7 +324,7 @@
 
     if ($(".incorrect").length == 0) {
       $.ajax({
-        url: location.href + '.json',
+        url: location.pathname + '.json',
         type: 'POST',
         data: {
           company_name: $(".company_name").val(),

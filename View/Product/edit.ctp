@@ -1,8 +1,8 @@
-
+<link href="/css/dataTable.css" rel="stylesheet" type="text/css">
 <link href="/css/dropzone.css" rel="stylesheet" type="text/css"/>
+<link href="/webroot/css/dataTable.css" rel="stylesheet" type="text/css"/>
 <link href="/css/loader.css" rel="stylesheet" type="text/css"/>
 <link rel="stylesheet" type="text/css" href="/theme/onzsa/assets/global/plugins/select2/select2.css"/>
-
 <div class="clearfix"></div>
     <div id="loader-wrapper" style="display:none">
         <div id="loader"></div>

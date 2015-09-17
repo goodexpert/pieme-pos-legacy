@@ -155,7 +155,7 @@
 
     $("#delete").click(function () {
       $.ajax({
-        url: location.href + '/delete.json',
+        url: location.pathname + '/delete.json',
         type: 'POST',
         data: {
           request: 'delete'
