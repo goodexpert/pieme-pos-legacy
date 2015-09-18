@@ -473,6 +473,11 @@ class StockOrdersController extends AppController {
             try {
                 $data = $this->request->data;
 
+                if ($data['save-receive'] == 1) {
+                    $this->MerchantStockOrder->id = $data['MerchantStockOrder']['id'];
+                    $this->MerchantStockOrder->saveField('order_status_id', 'stock_order_status_received');
+                }
+
                 if (!empty($data['items']) && is_array($data['items'])) {
                     $this->MerchantStockOrderItem->saveMany($data['items']);
                 }
