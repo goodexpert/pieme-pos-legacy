@@ -87,7 +87,7 @@ angular.module('OnzsaApp.storage', [])
     localStorageService.set('register_sale_id', saleID);
   };
 
-  var getSaleID = function(saleID) {
+  var getSaleID = function() {
     debug("get register sale id");
     return localStorageService.get('register_sale_id');
   };
@@ -95,6 +95,33 @@ angular.module('OnzsaApp.storage', [])
   var clearSaleID = function() {
     debug("remove register sale id");
     localStorageService.remove('register_sale_id');
+  };
+
+  var saveDataSyncTime = function(table, time) {
+    debug("saving data sync table: " + table + " / time: " + time);
+    switch (table) {
+      case 'payment_types':
+        localStorageService.set('synced_payment_types', time);
+        break;
+      case 'products':
+        localStorageService.set('synced_products', time);
+        break;
+      case 'taxes':
+        localStorageService.set('synced_taxes', time);
+        break;
+    }
+  };
+
+  var getDataSyncTime = function(table) {
+    debug("get data sync table: " + table);
+    switch (table) {
+      case 'payment_types':
+        return localStorageService.set('synced_payment_types');
+      case 'products':
+        return localStorageService.set('synced_products');
+      case 'taxes':
+        return localStorageService.set('synced_taxes');
+    }
   };
 
   return {
@@ -106,6 +133,8 @@ angular.module('OnzsaApp.storage', [])
     saveSaleID: saveSaleID,
     getSaleID: getSaleID,
     clearSaleID: clearSaleID,
+    saveDataSyncTime: saveDataSyncTime,
+    getDataSyncTime: getDataSyncTime,
   };
 }]);
 

@@ -116,7 +116,7 @@
 </div>
 <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
     <button class="btn btn-primary btn-wide save pull-right">Save</button>
-    <button class="btn btn-default btn-wide pull-right margin-right-10">Cancel</button>
+    <button class="btn btn-default btn-wide cancel pull-right margin-right-10">Cancel</button>
 </div>
 <!-- END CONTENT -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
@@ -185,6 +185,10 @@ function documentInit() {
         } else {
             $("#merchant_code_section").hide();
         }
+    });
+
+    $(document).on("click", ".cancel", function(){
+        location.reload();
     });
 
     $(document).on("click", ".save", function(){

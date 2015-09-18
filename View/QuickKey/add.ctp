@@ -1,3 +1,6 @@
+<link type="text/css" rel="stylesheet" href="/theme/onzsa/assets/global/plugins/jquery-ui-themes-1.11.0/themes/smoothness/jquery-ui.css"/>
+
+
 <div class="clearfix"></div>
     <div id="notify"></div>
     <!-- BEGIN CONTENT -->
@@ -103,9 +106,6 @@
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
 <script src="/theme/onzsa/assets/global/scripts/metronic.js" ></script>
-<script src="/theme/onzsa/assets/admin/layout/scripts/layout.js" ></script>
-<script src="/theme/onzsa/assets/admin/pages/scripts/index.js" ></script>
-<script src="/theme/onzsa/assets/admin/pages/scripts/tasks.js" ></script>
 <script src="/js/notify.js" ></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <!-- BEGIN COMMON INIT -->
@@ -280,9 +280,6 @@
 
   function documentInit() {
     // common init function
-    Metronic.init();  // init metronic core componets
-    Layout.init();    // init layout
-    Index.init();
     loadQuickKeysData();
 
     $( "#sortable" ).sortable({
@@ -349,11 +346,12 @@
                 key.product_id = data.id;
                 key.parent = data.parent;
                 key.selections = data.selections;
+                key.image = data.image;
+                key.image_large = data.image_large;
                 if (data.parent == true) {
                   key.options = data.options;
                   key.variants = data.variants;
                 }
-
                 quick_keys["quick_keys"]["groups"][currentGroupNo]["pages"][currentPageNo]["keys"].push(key);
                 initQuickKeys();
                 setQuickKeys();
@@ -371,6 +369,8 @@
             key.sku = ui.item.sku;
             key.product_id = product.id;
             key.parent = false;
+            key.image = product.image;
+            key.image_large = product.image_large;
 
             quick_keys["quick_keys"]["groups"][currentGroupNo]["pages"][currentPageNo]["keys"].push(key);
             initQuickKeys();

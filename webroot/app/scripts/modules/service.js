@@ -11,8 +11,9 @@ angular.module('OnzsaApp.register', [])
 
 .constant('registerConfig', {
   debug: true,
-  statusCheckInterval: 5000,
-  syncCheckInterval: 5000,
+  statusCheckInterval:       5000,   // 5sec
+  syncSaleDataInterval:     60000,   // 1min
+  syncUpdateDataInterval:  300000,   // 5min
 })
 
 .factory('Register', [
@@ -31,6 +32,8 @@ angular.module('OnzsaApp.register', [])
     var quickKeyLayout = [];
     var onlineStatus = 'offline';
     var statusCheckInterval = registerConfig.statusCheckInterval;
+    var syncSaleDataInterval = registerConfig.syncSaleDataInterval;
+    var syncUpdateDataInterval = registerConfig.syncUpdateDataInterval;
     var saleItems = [];
     var registerSale = {
       'receipt_number': 1,
@@ -243,19 +246,36 @@ angular.module('OnzsaApp.register', [])
           var config = LocalStorage.getConfig();
           var outlet_id = config.outlet_id;
           var customer_group_id = config.default_customer_group_id;
+          if (_isSelectedCustomer()) {
+            customer_group_id = customerInfo.customer_group_id;
+          }
 
           _getPriceBook(function (rs) {
 
             //TODO: del end of debug
             console.groupCollapsed("# PriceBook (%s) : size %d", product_id, rs.length);
+            console.group("# Query conditions");
+            console.debug("# product_id        : %s", product_id);
+            console.debug("# outlet_id         : %s", outlet_id);
+            console.debug("# productQty        : %d", productQty);
+            console.debug("# customer_group_id : %s", customer_group_id);
+            console.groupEnd();
             for(var idx=0; idx<rs.length; idx++) {
               console.group("# PriceBook(%d) %o", idx, rs[idx]);
               console.debug("# id       : %s", rs[idx].id);
+              console.debug("# P_id     : %s", rs[idx].product_id);
+              console.debug("# O_id     : %s", rs[idx].outlet_id);
+              console.debug("# C_G_id   : %s", rs[idx].customer_group_id);
               console.debug("# price    : %f", rs[idx].price);
               console.debug("# tax      : %f", rs[idx].tax);
               console.debug("# discount : %f", rs[idx].discount);
               console.debug("# pr_inc_t : %f", rs[idx].price_include_tax);
               console.debug("# isDef    : %d", rs[idx].is_default);
+              console.debug("# from     : %s", rs[idx].valid_from);
+              console.debug("# to       : %s", rs[idx].valid_to);
+              console.debug("# min      : %d", rs[idx].min_units);
+              console.debug("# max      : %d", rs[idx].max_units);
+              console.debug("# created  : %s", rs[idx].price_book_created);
               console.groupEnd();
             }
             console.groupEnd();
@@ -328,55 +348,16 @@ angular.module('OnzsaApp.register', [])
 
     sharedService.updateSaleItem = function(newItem) {
       debug('Register: update sale item');
-
-      var config = LocalStorage.getConfig();
-      var outlet_id = config.outlet_id;
-      var customer_group_id = config.default_customer_group_id;
-      var saleID = LocalStorage.getSaleID();
-      var discProcId = config.discount_product_id;
-
-      var idx = _getSaleItemIndexBySequence(newItem.sequence);
-      var oldItem = saleItems[idx];
-      var suc;
-
-      if (oldItem.quantity != newItem.quantity) {
-        suc = function (rs) {
-          if (rs.length > 0) {
-            var priceBook = rs[0];
-
-            _subtractionRegisterSaleTotal(oldItem);
-            _additionRegisterSaleTotal(newItem);
-            saleItems[idx] = newItem;
-            _updateRegisterSaleItems(newItem, saleID, newItem.status);
-
-            // Finished add process
-            $rootScope.$broadcast('saleItems.updated');
-          }
-        }
-      } else {
-        suc = function (rs) {
-          if (rs.length > 0) {
-            var priceBook = rs[0];
-
-            if (discProcId != oldItem.product_id) {
-              _recalcSellItem(oldItem, newItem, priceBook);
-            }
-            _subtractionRegisterSaleTotal(oldItem);
-            _additionRegisterSaleTotal(newItem);
-            saleItems[idx] = newItem;
-            _updateRegisterSaleItems(newItem, saleID, newItem.status);
-
-            // Finished add process
-            $rootScope.$broadcast('saleItems.updated');
-          }
-        }
-      }
-      _getPriceBook(suc, newItem.product_id, outlet_id, newItem.quantity, customer_group_id);  //Get PriceBook
+      _updateSaleItem(newItem)
+      .then(function(){
+        // Finished add process
+        $rootScope.$broadcast('saleItems.updated');
+      });
     };
 
     sharedService.reloadRegisterSale = function(saleId) {
       debug('Register: reload register sale');
-      return angular.copy(_reloadRegisterSale(saleId));
+      return angular.copy(_reloadSale(saleId));
     };
 
     sharedService.getRegisterSaleItems = function(saleID, status, suc, err) {
@@ -402,32 +383,30 @@ angular.module('OnzsaApp.register', [])
       _updateLineDiscount(discount, type);
     }
 
-    sharedService.setCustomerInfo = function(infoArray) {
+    sharedService.setCustomerInfo = function(info) {
       debug('Register: setCustomerInfo');
-      if (infoArray != null) {
-        if (infoArray.id != null)                 customerInfo.id = infoArray.id;
-        if (infoArray.customer_group_id != null)  customerInfo.customer_group_id = infoArray.customer_group_id;
-        if (infoArray.customer_code != null)      customerInfo.customer_code = infoArray.customer_code;
-        if (infoArray.name != null)               customerInfo.name = infoArray.name;
-        if (infoArray.balance != null)            customerInfo.balance = infoArray.balance;
-        if (infoArray.loyalty_balance != null)    customerInfo.loyalty_balance = infoArray.loyalty_balance;
-      }
+      _setCustomerInfo(info);
+    }
+
+    sharedService.clearCustomerInfo = function() {
+      debug('Register: clearCustomerInfo');
+      _setCustomerInfo(null);
     }
 
     sharedService.getCustomerInfo = function() {
       debug('Register: getCustomerInfo');
-      var infoArray = {};
-      infoArray.id                = customerInfo.id;
-      infoArray.customer_group_id = customerInfo.customer_group_id;
-      infoArray.customer_code     = customerInfo.customer_code;
-      infoArray.name              = customerInfo.name;
-      infoArray.balance           = customerInfo.balance;
-      infoArray.loyalty_balance   = customerInfo.loyalty_balance;
-      return infoArray;
+      var info = {};
+      info.id                = customerInfo.id;
+      info.customer_group_id = customerInfo.customer_group_id;
+      info.customer_code     = customerInfo.customer_code;
+      info.name              = customerInfo.name;
+      info.balance           = customerInfo.balance;
+      info.loyalty_balance   = customerInfo.loyalty_balance;
+      return info;
     }
 
     sharedService.isSelectedCustomer = function() {
-      return (customerInfo.id != null && customerInfo.name != null && customerInfo.customer_code != null);
+      return _isSelectedCustomer();
     }
 
     sharedService.createNewPayment = function(paymentId, paymentTypeId, paymentName, amount) {
@@ -451,7 +430,7 @@ angular.module('OnzsaApp.register', [])
       var saleID = LocalStorage.getSaleID();
 
       //TODO: del end of debug
-      console.group("@ Line Discount");
+      console.groupCollapsed("@ Line Discount");
       console.group("@ old value");
       console.debug("@ total_price_incl_tax : %f", registerSale.total_price_incl_tax);
       console.debug("@ total_discount       : %f", registerSale.total_discount);
@@ -483,7 +462,7 @@ angular.module('OnzsaApp.register', [])
       _saveRegisterSales(saleID, "sale_status_open");
 
       //TODO: del end of debug
-      console.group("@ New value");
+      console.groupCollapsed("@ New value");
       console.debug("@ total_price_incl_tax : %f", registerSale.total_price_incl_tax);
       console.debug("@ total_discount       : %f", registerSale.total_discount);
       console.debug("@ line_discount        : %f", registerSale.line_discount);
@@ -500,6 +479,8 @@ angular.module('OnzsaApp.register', [])
     function _bootstrapSystem() {
       debug("Register: do bootstrapSystem");
       $interval(_updateNetworkConnectivity, statusCheckInterval);
+      $interval(_syncSaleData, syncSaleDataInterval);
+      $interval(_syncUpdateData, syncUpdateDataInterval);
 
       return _checkNetworkConnectivity()
         .then(function(response) {
@@ -555,7 +536,7 @@ angular.module('OnzsaApp.register', [])
         var result = [];
 
         _newRegisterSale();
-        _reloadRegisterSale();
+        _reloadSale();
 
         result["status"] = "initialized";
         deferred.resolve(result);
@@ -594,7 +575,7 @@ angular.module('OnzsaApp.register', [])
         return deferred.promise;
       }
       _newRegisterSale();
-      _reloadRegisterSale();
+      _reloadSale();
 
       result["status"] = "initialized";
       deferred.resolve(result);
@@ -634,10 +615,26 @@ angular.module('OnzsaApp.register', [])
         });
     }
 
-    sharedService.syncData = function() {
-      debug('Register: syncData');
-      _syncData();
-    };
+    //
+    // Update PaymentTypes, Products, Taxes
+    //
+    function _syncUpdateData() {
+      if (_isOnline() == 'offline') {
+        debug("[SYNC DATA] Respite sync (offline)");
+        return;
+      }
+      debug("[SYNC DATA] sync start ");
+      _receiveProducts()
+      .then(function () {
+        return _receivePaymentTypes();
+      })
+      .then(function () {
+        return _receiveTaxes();
+      })
+      .then(function () {
+        debug("[SYNC DATA] sync completed");
+      });
+    }
 
     function _getSyncRS() {
       var defer = $q.defer();
@@ -690,12 +687,16 @@ angular.module('OnzsaApp.register', [])
     //
     // Sync local data to server
     //
-    function _syncData() {
+    function _syncSaleData() {
       var data = {};
-      debug("[SYNC] Start");
+      if (_isOnline() == 'offline') {
+        debug("[SYNC SALE] Respite sync (offline)");
+        return;
+      }
 
       _getSyncRS()
         .then(function(RS) {
+          //console.debug("[SYNC SALE] RS count : %d", RS.length);
           var defer = $q.defer();
           var promise = [];
           data = (RS);
@@ -704,8 +705,8 @@ angular.module('OnzsaApp.register', [])
 
             promise.push( _getSyncRSI(rsID, i)
               .then(function(response) {
+                //console.debug("[SYNC SALE] RSI count : %d", response.length);
                 if (response.data.length > 0) {
-                  //console.debug("@@@ response.data length : %d ", response.data.length);
                   data[response.index]['items'] = (response.data);
                 }
               })
@@ -713,8 +714,8 @@ angular.module('OnzsaApp.register', [])
 
             promise.push( _getSyncRSP(rsID, i)
               .then(function(response) {
+                //console.debug("[SYNC SALE] RSP count : %d", response.length);
                 if (response.data.length > 0) {
-                  //console.debug("@@@ response.data2 length : %d ", response.data.length);
                   data[response.index]['payments'] = (response.data);
                 }
               })
@@ -724,37 +725,120 @@ angular.module('OnzsaApp.register', [])
           return defer.promise;
         })
         .then(function(RS) {
-          debug("[SYNC] sync request >>>>>>>>>>");
-          debug(RS);
+          if (RS.length > 0) {
+            debug("[SYNC SALE] sync request >>>>>>>>>>");
+            debug(RS);
 
-          $.ajax({
-            url: "/api/upload_register_sales.json",
-            type: "POST",
-            data: {
-              syncData: RS,
-            },
-            success: function (result) {
-              debug("[SYNC] sync success response <<<<<<<<<<");
-              debug(result);
-              var now = _getUnixTimestamp();
-              for (var idx in result.ids) {
-                var syncData = {
-                  'id': result.ids[idx],
-                  'sync_status': 'sync_success',
-                  'sync_date': now
+            $.ajax({
+              url: "/api/upload_register_sales.json",
+              type: "POST",
+              data: {
+                syncData: RS,
+              },
+              success: function (result) {
+                debug("[SYNC SALE] sync success response <<<<<<<<<<");
+                debug(result);
+                var now = _getUnixTimestamp();
+                for (var idx in result.ids) {
+                  var syncData = {
+                    'id': result.ids[idx],
+                    'sync_status': 'sync_success',
+                    'sync_date': now
+                  }
+                  ds.changeRegisterSales(syncData);
                 }
-                ds.changeRegisterSales(syncData);
               }
-            }
-          });
+            });
+          } else {
+            debug("[SYNC SALE] already done.");
+          }
         });
+    }
+
+    // --------------------------
+    // Update register sale item price
+    // --------------------------
+    function _updateSaleItem(newItem) {
+      var defer = $q.defer();
+      var config = LocalStorage.getConfig();
+      var outlet_id = config.outlet_id;
+      var customer_group_id = config.default_customer_group_id;
+      if (_isSelectedCustomer()) {
+        customer_group_id = customerInfo.customer_group_id;
+      }
+
+      var saleID = LocalStorage.getSaleID();
+      var discProcId = config.discount_product_id;
+
+      var idx = _getSaleItemIndexBySequence(newItem.sequence);
+      var oldItem = saleItems[idx];
+      var suc = function (rs) {
+        if (rs.length > 0) {
+          var priceBook = rs[0];
+
+          if (discProcId != oldItem.product_id) {
+            _recalcSellItem(oldItem, newItem, priceBook);
+          }
+          _subtractionRegisterSaleTotal(oldItem);
+          _additionRegisterSaleTotal(newItem);
+          saleItems[idx] = newItem;
+          _updateRegisterSaleItems(newItem, saleID, newItem.status);
+        }
+        defer.resolve(saleItems[idx]);
+      }
+      _getPriceBook(suc, newItem.product_id, outlet_id, newItem.quantity, customer_group_id);  //Get PriceBook
+      return defer.promise;
+    }
+
+    // --------------------------
+    // Reflection customer information to saleItems
+    // --------------------------
+    function _reflectionCustomerInfo() {
+      var defer = $q.defer();
+      var promise = [];
+
+      for (var idx in saleItems) {
+        var saleItem = angular.copy(saleItems[idx]);
+        promise.push(_updateSaleItem(saleItem));
+      }
+
+      $q.all(promise).then(function() {
+        defer.resolve();
+      });
+
+      return defer.promise;
+    }
+
+    // --------------------------
+    // Set or Clear customer information
+    // --------------------------
+    function _setCustomerInfo(info) {
+      if (info != null) {
+        if (info.id != null)                 customerInfo.id = info.id;
+        if (info.customer_group_id != null)  customerInfo.customer_group_id = info.customer_group_id;
+        if (info.customer_code != null)      customerInfo.customer_code = info.customer_code;
+        if (info.name != null)               customerInfo.name = info.name;
+        if (info.balance != null)            customerInfo.balance = info.balance;
+        if (info.loyalty_balance != null)    customerInfo.loyalty_balance = info.loyalty_balance;
+
+        _reflectionCustomerInfo()
+        .then(function() {
+          $rootScope.$broadcast('saleItems.updated');
+        });
+      } else {
+        customerInfo.id = null;
+        customerInfo.customer_group_id = null;
+        customerInfo.customer_code = null;
+        customerInfo.name = null;
+        customerInfo.balance = 0;
+        customerInfo.loyalty_balance = 0;
+      }
     }
 
     // --------------------------
     // Get Payment Types
     // --------------------------
     function _getRegisterPaymentTypes() {
-      debug("Register: get payment types");
       var defer = $q.defer();
       var suc = function(resultArray) {
         defer.resolve(resultArray);
@@ -774,7 +858,7 @@ angular.module('OnzsaApp.register', [])
       var savedMerchantID = $cookies.get('onzsa.merchant_id');
       var savedUserID = $cookies.get('onzsa.user_id');
 
-      console.group("@ Merchant & User ID CHECK");
+      console.groupCollapsed("@ Merchant & User ID CHECK");
       console.debug(" save merchantID : %s", savedMerchantID);
       console.debug(" get  merchantID : %s", userInfo["merchant_id"]);
       console.debug(" save userID     : %s", savedUserID);
@@ -877,8 +961,9 @@ angular.module('OnzsaApp.register', [])
       debug("REFRESH: products");
       debug("REQUEST: products >>>>>>>>>>>>>>>>>>>>>");
 
+      var lastSyncTime = LocalStorage.getDataSyncTime("products");
       var deferred = $q.defer();
-      $http.get('/api/products.json')
+      $http.get('/api/products.json?st='+lastSyncTime)
           .then(function (response) {
             debug("REQUEST: products, success handler");
 
@@ -888,6 +973,9 @@ angular.module('OnzsaApp.register', [])
               ds.saveProducts(null, response.data);
               debug("REQUEST: products : %o", response.data);
             }
+            var now = _getUnixTimestamp();
+            LocalStorage.saveDataSyncTime("products", now);
+
             deferred.resolve();
           }, function (response) {
             debug("REQUEST: products, error handler");
@@ -903,8 +991,9 @@ angular.module('OnzsaApp.register', [])
       debug("REFRESH: payment_types");
       debug("REQUEST: payment_types >>>>>>>>>>>>>>>>>>>>>");
 
+      var lastSyncTime = LocalStorage.getDataSyncTime("payment_types");
       var deferred = $q.defer();
-      $http.get('/api/payment_types.json')
+      $http.get('/api/payment_types.json?st='+lastSyncTime)
           .then(function (response) {
             debug("REQUEST: payment_types, success handler");
 
@@ -914,6 +1003,9 @@ angular.module('OnzsaApp.register', [])
               ds.saveRegisterPaymentTypes(response.data);
               debug("REQUEST: payment_types : %o", response.data);
             }
+            var now = _getUnixTimestamp();
+            LocalStorage.saveDataSyncTime("payment_types", now);
+
             deferred.resolve();
           }, function (response) {
             debug("REQUEST: payment_types, error handler");
@@ -929,8 +1021,9 @@ angular.module('OnzsaApp.register', [])
       debug("REFRESH: taxes");
       debug("REQUEST: taxes >>>>>>>>>>>>>>>>>>>>>");
 
+      var lastSyncTime = LocalStorage.getDataSyncTime("taxes");
       var deferred = $q.defer();
-      $http.get('/api/taxes.json')
+      $http.get('/api/taxes.json?st='+lastSyncTime)
           .then(function (response) {
             debug("REQUEST: taxes, success handler");
 
@@ -940,6 +1033,9 @@ angular.module('OnzsaApp.register', [])
               debug("REQUEST: taxes : %o", response.data);
               ds.saveTaxes(response.data);
             }
+            var now = _getUnixTimestamp();
+            LocalStorage.saveDataSyncTime("taxes", now);
+
             deferred.resolve();
           }, function (response) {
             debug("REQUEST: taxes, error handler");
@@ -1208,11 +1304,13 @@ angular.module('OnzsaApp.register', [])
     // get price book
     // --------------------------
     function _getPriceBook(callback, productId, outletId, productQty, customerGroupId) {
+      var config = LocalStorage.getConfig();
       var searchInfo = {
         'productId': productId,
         'outletId': outletId,
         'pqty': productQty,
-        'customergroupId': customerGroupId
+        'customerGroupId': customerGroupId,
+        'defCustomerGroupId': config.default_customer_group_id
       }
       ds.getPriceBook(callback, searchInfo);
     };
@@ -1242,19 +1340,27 @@ angular.module('OnzsaApp.register', [])
       registerSale.total_payment        = registerSaleTotal.total_payment;
     };
 
+
+    // --------------------------
+    // Check for selected customer information
+    // --------------------------
+    function _isSelectedCustomer() {
+      return (customerInfo.id != null && customerInfo.name != null && customerInfo.customer_code != null);
+    }
+
     // --------------------------
     // Save RegisterSales
     // --------------------------
     function _saveRegisterSales(saleID, status) {
       var config = LocalStorage.getConfig();
-      var customer_id = customerInfo.id;
-      var customer_code = customerInfo.customer_code;
-      var customer_name = customerInfo.name;
+      var customer_id = config.default_customer_id;
+      var customer_code = "walkin";
+      var customer_name = "Walkin";
 
-      if (customer_id == null) {
-        customer_id = config.default_customer_id;
-        customer_code = "walkin";
-        customer_name = "Walkin";
+      if (_isSelectedCustomer()) {
+        customer_id = customerInfo.id;
+        customer_code = customerInfo.customer_code;
+        customer_name = customerInfo.name;
       }
 
       var data = {
@@ -1278,7 +1384,7 @@ angular.module('OnzsaApp.register', [])
         'line_discount_type': registerSale.line_discount_type,
         'note': null,
         'sale_date': null,
-        'sync_status': "sync_wait",     //TODO: sync_status
+        'sync_status': "sync_wait",
         'sync_date': null
       }
 
@@ -1293,6 +1399,9 @@ angular.module('OnzsaApp.register', [])
     function _updateRegisterSale(saleID, status, suc) {
       var data = {
         'id': saleID,
+        'customer_id': customerInfo.id,
+        'customer_code': customerInfo.customer_code,
+        'customer_name': customerInfo.name,
         'total_cost': registerSale.total_cost,
         'total_price': registerSale.total_price,
         'total_price_incl_tax': registerSale.total_price_incl_tax,
@@ -1467,6 +1576,9 @@ angular.module('OnzsaApp.register', [])
         // clear RegisterSaleID
         LocalStorage.clearSaleID();
 
+        // clear customer info
+        _setCustomerInfo(null);
+
         debug("Register: end register sale");
         $rootScope.$broadcast('sale.ended');
 
@@ -1475,6 +1587,103 @@ angular.module('OnzsaApp.register', [])
       }
       // change RegisterSales status
       _updateRegisterSale(saleID, status, suc);
+    }
+
+    // --------------------------
+    // reload Customer Information from server
+    // --------------------------
+    function _reloadCustomerInfo(customerID) {
+      debug("Register: reload Customer Information : " + customerID);
+
+      var defer = $q.defer();
+      var config = LocalStorage.getConfig();
+      if (config.default_customer_id != customerID) {
+        $http.get('/api/search_customer.json?query=' + customerID)
+        .then(function (response) {
+          if (response.data != null) {
+            var info = response.data[0];
+            customerInfo.id = info.id;
+            customerInfo.customer_group_id = info.customer_group_id;
+            customerInfo.customer_code = info.customer_code;
+            customerInfo.name = info.name;
+            customerInfo.balance = info.balance;
+            customerInfo.loyalty_balance = info.loyalty_balance;
+          }
+          defer.resolve();
+        }, function (response) {
+          defer.reject(response);
+        });
+      } else {
+        defer.resolve();
+      }
+      return defer.promise;
+    }
+
+    // --------------------------
+    // reload register sale items from local DB
+    // --------------------------
+    function _reloadRegisterSaleItmes(saleID) {
+      var deferred = $q.defer();
+      var sucItems = function(rs) {
+        debug("Register: reload find registerSaleItems count : " + rs.length);
+        if (rs.length > 0) {
+          _clearSellItems();
+
+          for (var idx=0; idx<rs.length; idx++) {
+            var item = rs[idx];
+            var saleItem = {};
+            saleItem.id = item.id;
+            saleItem.product_id = item.product_id;
+            saleItem.name = item.name;
+            saleItem.supply_price = item.supply_price;
+            saleItem.price = item.price;
+            saleItem.sale_price = item.sale_price;
+            saleItem.tax = item.tax;
+            saleItem.tax_rate = item.tax_rate;
+            saleItem.discount = item.discount;
+            saleItem.quantity = item.quantity;
+            saleItem.loyalty_value = item.loyalty_value;
+            saleItem.sequence = item.sequence;
+            saleItem.status = item.status;
+            saleItems.unshift(saleItem);
+
+            //get max sequence number
+            if (registerSale.sequence <= saleItem.sequence) {
+              registerSale.sequence = saleItem.sequence + 1;
+            }
+          }
+          debug("Register: reloaded registerSaleItems : " + saleItems);
+        }
+        deferred.resolve();
+      }
+      ds.getRegisterSaleItems({'sale_id':saleID}, sucItems);
+      return deferred.promise;
+    }
+
+    // --------------------------
+    // reload register sale from local DB
+    // --------------------------
+    function _reloadRegisterSale(saleID) {
+      var defer = $q.defer();
+      var sucSales = function(rs) {
+        debug("Register: reload find registerSale count : " + rs.length);
+        if (rs.length > 0) {
+          var sale = rs[0];
+          registerSale.receipt_number = sale['receipt_number'];
+          registerSale.total_cost = sale['total_cost'];
+          registerSale.total_price = sale['total_price'];
+          registerSale.total_price_incl_tax = sale['total_price_incl_tax'];
+          registerSale.total_discount = sale['total_discount'];
+          registerSale.total_tax = sale['total_tax'];
+          registerSale.total_payment = sale['total_payment'];
+          registerSale.line_discount = sale['line_discount'];
+          registerSale.line_discount_type = sale['line_discount_type'];
+          debug("Register: reloaded registerSale : " + registerSale);
+        }
+        defer.resolve(sale['customer_id']);
+      }
+      ds.getRegisterSales({'id':saleID}, sucSales);
+      return defer.promise;
     }
 
     // --------------------------
@@ -1493,9 +1702,9 @@ angular.module('OnzsaApp.register', [])
     }
 
     // --------------------------
-    // Make new Register Sale
+    // reload Register Sale
     // --------------------------
-    function _reloadRegisterSale(receivedSaleID) {
+    function _reloadSale(receivedSaleID) {
       var saleID = receivedSaleID;
       if (saleID == null) {
         saleID = LocalStorage.getSaleID();
@@ -1505,61 +1714,17 @@ angular.module('OnzsaApp.register', [])
       } else {
         LocalStorage.saveSaleID(receivedSaleID);
       }
-      var sucSales = function(rs) {
-        debug("Register: reload find registerSale count : %d", rs.length);
-        if (rs.length > 0) {
-          if (rs.length > 0) {
-            var sale = rs[0];
-            registerSale.receipt_number = sale['receipt_number'];
-            registerSale.total_cost = sale['total_cost'];
-            registerSale.total_price = sale['total_price'];
-            registerSale.total_price_incl_tax = sale['total_price_incl_tax'];
-            registerSale.total_discount = sale['total_discount'];
-            registerSale.total_tax = sale['total_tax'];
-            registerSale.total_payment = sale['total_payment'];
-            registerSale.line_discount = sale['line_discount'];
-            registerSale.line_discount_type = sale['line_discount_type'];
-            debug("Register: reloaded registerSale : %o", registerSale);
 
-            var sucItems = function(rs) {
-              debug("Register: reload find registerSaleItems count : %d", rs.length);
-              if (rs.length > 0) {
-                _clearSellItems();
-
-                for (var idx=0; idx<rs.length; idx++) {
-                  var item = rs[idx];
-                  var saleItem = {};
-                  saleItem.id = item.id;
-                  saleItem.product_id = item.product_id;
-                  saleItem.name = item.name;
-                  saleItem.supply_price = item.supply_price;
-                  saleItem.price = item.price;
-                  saleItem.sale_price = item.sale_price;
-                  saleItem.tax = item.tax;
-                  saleItem.tax_rate = item.tax_rate;
-                  saleItem.discount = item.discount;
-                  saleItem.quantity = item.quantity;
-                  saleItem.loyalty_value = item.loyalty_value;
-                  saleItem.sequence = item.sequence;
-                  saleItem.status = item.status;
-                  saleItems.unshift(saleItem);
-
-                  //get max sequence number
-                  if (registerSale.sequence <= saleItem.sequence) {
-                    registerSale.sequence = saleItem.sequence + 1;
-                  }
-                }
-                debug("Register: reloaded registerSaleItems : %o", saleItems);
-                $rootScope.$broadcast('sale.reloaded');
-              }
-            }
-            debug("Register: reload registerSaleItems sale id : %s", saleID);
-            ds.getRegisterSaleItems({'sale_id':saleID}, sucItems);
-          }
-        }
-      }
-      debug("Register: reload registerSale : %s", saleID);
-      ds.getRegisterSales({'id':saleID}, sucSales);
+      _reloadRegisterSale(saleID)
+      .then(function(customerID){
+        return _reloadCustomerInfo(customerID);
+      })
+      .then(function() {
+        return _reloadRegisterSaleItmes(saleID)
+      })
+      .then(function(){
+        $rootScope.$broadcast('sale.reloaded');
+      });
     }
 
     //TODO: Get UUID for RegisterSaleItem

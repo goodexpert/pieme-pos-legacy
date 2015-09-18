@@ -159,9 +159,9 @@
 <script src="/theme/onzsa/assets/global/plugins/gritter/js/jquery.gritter.js"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
-<script src="/theme/onzsa/assets/global/scripts/metronic.js"></script>
-<script src="/theme/onzsa/assets/admin/layout/scripts/layout.js"></script>
-<script src="/theme/onzsa/assets/admin/pages/scripts/index.js"></script>
+
+
+
 <script src="/theme/onzsa/assets/admin/pages/scripts/tasks.js"></script>
 <script src="/js/notify.js"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
@@ -177,7 +177,8 @@
     // common init function
     commonInit();
     $(".cancel").click(function () {
-      parent.history.back();
+//      history.back();
+      javascript:history.go(-2);return false;
     });
 
     $(".save").click(function () {

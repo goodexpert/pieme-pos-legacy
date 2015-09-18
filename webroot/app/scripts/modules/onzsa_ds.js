@@ -627,7 +627,7 @@ Datastore_sqlite = function () {
       queryString = "SELECT * FROM PriceBookEntry WHERE" +
           " product_id = ? " +
           " and (outlet_id = ? or outlet_id is NULL) " +
-          " and (customer_group_id = ? or customer_group_id is NULL) " +
+          " and (customer_group_id = ? or customer_group_id = ?) " +
           " and ((valid_from <= ? and valid_to >= ?) or (valid_from <= ? and valid_to is NULL) or (valid_from is NULL and valid_to is NULL)) " +
           " and ((min_units <= ? and max_units >= ?) or (min_units is NULL and max_units is NULL))" +
           "order by price_book_created desc";
@@ -639,8 +639,13 @@ Datastore_sqlite = function () {
       } else {
         searchValue.push(null);
       }
-      if (productInfo.customergroupId !== null) {
-        searchValue.push(productInfo.customergroupId);
+      if (productInfo.customerGroupId !== null) {
+        searchValue.push(productInfo.customerGroupId);
+      } else {
+        searchValue.push(null);
+      }
+      if (productInfo.defCustomerGroupId !== null) {
+        searchValue.push(productInfo.defCustomerGroupId);
       } else {
         searchValue.push(null);
       }
@@ -663,7 +668,7 @@ Datastore_sqlite = function () {
       t = function (t, a) {
         var rs = a.rows, i = 0;
         var resultSet = [];
-        console.debug("GetPriceBook: rs.length: %d", rs.length);
+        //console.debug("GetPriceBook: rs.length: %d", rs.length);
         for (i = 0; i < rs.length; i++) {
           resultSet.push(rs.item(i));
         }
@@ -757,6 +762,21 @@ Datastore_sqlite = function () {
     changeRegisterSales: function (data, suc, err) {
       var t = this, condition = [], sqlParamString = "";
 
+      if (data.customer_id != null) {
+        condition.push(data.customer_id);
+        if (sqlParamString != "") sqlParamString += ",";
+        sqlParamString += " customer_id = ?";
+      }
+      if (data.customer_name != null) {
+        condition.push(data.customer_name);
+        if (sqlParamString != "") sqlParamString += ",";
+        sqlParamString += " customer_name = ?";
+      }
+      if (data.customer_code != null) {
+        condition.push(data.customer_code);
+        if (sqlParamString != "") sqlParamString += ",";
+        sqlParamString += " customer_code = ?";
+      }
       if (data.status != null) {
         condition.push(data.status);
         if (sqlParamString != "") sqlParamString += ",";
@@ -865,17 +885,7 @@ Datastore_sqlite = function () {
         }
 
         //TODO: sync_status condition
-        if (data.sync == 'sync') {
-          if (data.sale_date != null) {
-            if (condition.length == 0) {
-              queryString += " WHERE ";
-            } else {
-              queryString += " AND ";
-            }
-            queryString += " sync_status <> sync_success";
-          }
-        } else if (data.sync == 'date') {
-          //console.debug("@@@@");
+        if (data.sync == 'date') {
           if (data.sale_date != null) {
             if (condition.length == 0) {
               queryString += " WHERE ";
@@ -883,7 +893,7 @@ Datastore_sqlite = function () {
               queryString += " AND ";
             }
             condition.push(data.sale_date);
-            queryString += " (sale_date is not null and sale_date > ?)";
+            queryString += " sale_date is not null and sale_date > ? and sync_status <> 'sync_success'";
           }
         }
       }

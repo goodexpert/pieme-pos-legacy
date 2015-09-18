@@ -121,23 +121,12 @@ th small {
   margin-bottom: 20px;
   padding: 10px 15px;
 }
-.line-box {
-  padding: 0;
-}
 
 .stocktake-landing-list{
   background-color:inherit;
 }
 
 
-.order-product-header {
-  background: #eee;
-  margin-bottom: 20px;
-  padding: 10px 15px;
-}
-.line-box {
-  padding: 0;
-}
 .inventory-view-no-list {
   padding: 100px 0;
   text-align: center;

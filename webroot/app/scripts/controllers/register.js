@@ -148,6 +148,15 @@ angular.module('OnzsaApp', [])
     });
   });
 
+  $scope.clearCustomerInfo = function() {
+    debug("do clearCustomerInfo()");
+    Register.clearCustomerInfo();
+    $scope.$apply(function() {
+      $scope.customer = null;
+      $("#customer_code").val('');
+    });
+  };
+
   // Defines customer search callback
   $scope.isSelectedCustomer = function() {
     return Register.isSelectedCustomer();
@@ -437,8 +446,12 @@ angular.module('OnzsaApp', [])
   }
 
   function reloadedSale() {
-    debug("do refreshSale");
+    debug("do reloadedSale");
     refreshSaleItems();
+    if (Register.isSelectedCustomer()) {
+      $scope.customer = Register.getCustomerInfo();
+      console.debug("@@@ $scope.customer :%o", $scope.customer);
+    }
   }
 
   function refreshSale() {
@@ -449,6 +462,9 @@ angular.module('OnzsaApp', [])
     } else {
       refreshSaleItems();
     }
+
+    $scope.customer = null;
+    $("#customer_code").val('');
   }
 
   function openPayment(data) {

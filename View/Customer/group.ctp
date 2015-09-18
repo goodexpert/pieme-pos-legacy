@@ -105,8 +105,8 @@
 <script src="/theme/onzsa/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js"></script>
 <!-- END PAGE LEVEL PLUGINS -->
 <!-- BEGIN PAGE LEVEL SCRIPTS -->
-<script src="/theme/onzsa/assets/global/scripts/metronic.js"></script>
-<script src="/theme/onzsa/assets/admin/layout/scripts/layout.js"></script>
+
+
 <script src="/theme/onzsa/assets/admin/layout/scripts/quick-sidebar.js"></script>
 <script src="/js/dataTable.js"></script>
 <!-- END PAGE LEVEL SCRIPTS -->

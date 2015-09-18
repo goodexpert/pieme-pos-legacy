@@ -47,18 +47,17 @@
             <dt>Compare to the last</dt>
             <dd>
                 <select name="period">
-                    <option value="1">1 Period</option>
-                    <?php for ($i = 0; $i <= 12; $i++) { ?>
-                        <option value="<?php echo $i; ?>" <?php if (isset($_GET['period']) && $_GET['period'] == $i) {
-                            echo "selected";
-                        } ?>><?php echo $i; ?> Periods
+                    <?php for ($i = 1; $i <= 12; $i++) { ?>
+                        <option value="<?php echo $i; ?>"
+                          <?php if (isset($_GET['period']) && $_GET['period'] == $i) { echo "selected";} ?>>
+                          <?php echo $i; ?> <?php if ($i == 1) { echo 'Period'; } else { echo 'Periods'; } ?>
                         </option>
                     <?php } ?>
                 </select>
             </dd>
         </dl>
     </div>
-    <div class="col-md-12 col-xs-12 col-sm-12">
+    <div class="col-md-12 col-xs-6 col-sm-6">
         <button type="submit" class="btn btn-primary filter pull-right">Update</button>
     </div>
 </form>

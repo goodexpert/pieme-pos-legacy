@@ -1,8 +1,10 @@
+<script src="/theme/onzsa/assets/global/scripts/metronic.js"></script>
+<script src="/theme/onzsa/assets/admin/pages/scripts/index.js"></script>
+
 <script>
 function commonInit() {
   Metronic.init(); // Run metronic theme
   Index.init();
-  Metronic.setAssetsPath('/theme/metronic/assets/'); // Set the assets folder path
 
   window.onpopstate = function (event) {
     console.log("location: " + location.pathname + ", state: " + JSON.stringify(event));

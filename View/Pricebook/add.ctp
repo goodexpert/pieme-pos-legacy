@@ -48,8 +48,10 @@
         </dd>
         <dt>Type</dt>
         <dd class="price_book_type">
-          <input type="button" class="btn btn-white btn-left individual col-md-6 active" value="individual">
-          <input type="button" class="btn btn-white btn-right general col-md-6" value="general">
+          <div class="btn-group col-md-12">
+            <input type="button" class="btn btn-white btn-left individual col-md-6 active" value="individual">
+            <input type="button" class="btn btn-white btn-right general col-md-6" value="general">
+          </div>
         </dd>
       </dl>
     </div>
@@ -215,6 +217,7 @@ function documentInit() {
     $(this).blur();
     price_book_type = 'general';
   });
+
   $(".individual").click(function () {
     $(".price_book_general").hide();
     $(".general").removeClass("active");
@@ -297,7 +300,11 @@ function documentInit() {
       },
       success: function (result) {
         if (result.success) {
-          window.location.href = "/pricebook/view?r=" + result.price_book_id;
+            if(result.price_book_id) {
+              window.location.href = "/pricebook/view?r=" + result.price_book_id;
+            }else{
+              alert("please enter price book name");
+            }
         } else {
           console.log(result.message);
         }

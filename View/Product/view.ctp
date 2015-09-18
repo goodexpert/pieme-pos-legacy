@@ -1,3 +1,4 @@
+<link href="/css/dataTable.css" rel="stylesheet" type="text/css">
 <div class="clearfix"></div>
     <div id="notify"></div>
     <!-- BEGIN CONTENT -->
@@ -248,7 +249,7 @@
              </div>
         </form>
         <!-- filter end-->
-    <table id="transactionTable" class="table dataTable">
+    <table id="transactionTable" class="table-bordered dataTable">
         <thead>
             <tr>
                 <th>Date</th>
