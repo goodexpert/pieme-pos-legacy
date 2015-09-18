@@ -449,14 +449,15 @@ function documentInit() {
     $(".delete").click(function() {
         var quick_key_id = location.pathname.split("/")[2];
         $.ajax({
-            url: "/QuickKey/delete.json",
+            url: 'delete.json',
             type: "POST",
             data: {
+                request: 'delete',
                 id: quick_key_id
             },
             success: function(result) {
                 if(result.success) {
-                    window.location.href = "/setup/quick_keys";
+                  window.location.href = "/setup/quick_keys";
                 } else {
                     console.log(result);
                 }

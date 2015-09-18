@@ -443,6 +443,25 @@
 
     });
 
+    $(".delete").click(function() {
+      var quick_key_id = location.pathname.split("/")[2];
+      console.log(quick_key_id);
+      $.ajax({
+        url: "/QuickKey/delete.json",
+        type: "POST",
+        data: {
+          id: quick_key_id
+        },
+        success: function(result) {
+          if(result.success) {
+            window.location.href = "/setup/quick_keys";
+          } else {
+            console.log(result);
+          }
+        }
+      });
+    });
+
     /* SAVE TRIGGER END */
 
     /**
