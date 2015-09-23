@@ -113,7 +113,26 @@ class QuickKeyController extends AppController {
         $keys = $this->MerchantQuickKey->findById($id);
         $this->set("keys",$keys);
     }
-    
+
+  public function delete($id) {
+    if($this->request->is('post')) {
+      $result = array(
+          'success' => false
+      );
+      try {
+        $data = $this->request->data;
+        if(isset($data['request']) && $data['request'] == 'delete') {
+          $this->MerchantQuickKey->delete($id);
+          $result['success'] = true;
+        }
+      } catch (Exception $e) {
+        $result['message'] = $e->getMessage();
+      }
+      $this->serialize($result);
+      return;
+    }
+  }
+
     public function assign(){
         $this->loadModel('MerchantRegister');
         $user = $this->Auth->user();
