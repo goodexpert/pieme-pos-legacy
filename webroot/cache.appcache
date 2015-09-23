@@ -1,37 +1,51 @@
 CACHE MANIFEST
-
+# Version : 2015.09.24 - 003
 # Explicit section
 CACHE:
 //fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&amp;subset=all
-/theme/metronic/assets/global/plugins/font-awesome/css/font-awesome.min.css
-/theme/metronic/assets/global/plugins/simple-line-icons/simple-line-icons.min.css
-/theme/metronic/assets/global/plugins/bootstrap/css/bootstrap.min.css
+
+/theme/metronic/assets/admin/pages/css/tasks.css
 /theme/metronic/assets/global/css/components-md.css
 /theme/metronic/assets/global/css/plugins-md.css
+/theme/metronic/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css
+/theme/metronic/assets/global/plugins/bootstrap/css/bootstrap.min.css
+/theme/metronic/assets/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css
+/theme/metronic/assets/global/plugins/datatables/extensions/Scroller/css/dataTables.scroller.min.css
+/theme/metronic/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css
+/theme/metronic/assets/global/plugins/font-awesome/css/font-awesome.min.css
 /theme/metronic/assets/global/plugins/morris/morris.css
 /theme/metronic/assets/global/plugins/select2/select2.css
-/theme/metronic/assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.css
-/theme/metronic/assets/global/plugins/datatables/extensions/Scroller/css/dataTables.scroller.min.css
-/theme/metronic/assets/global/plugins/datatables/extensions/ColReorder/css/dataTables.colReorder.min.css
-/theme/metronic/assets/admin/pages/css/tasks.css
+/theme/metronic/assets/global/plugins/simple-line-icons/simple-line-icons.min.css
+/theme/metronic/assets/global/plugins/typeahead/typeahead.css
+/theme/metronic/assets/global/plugins/uniform/css/uniform.default.css
+
+/lib/angular-hotkeys/build/hotkeys.min.css
+/lib/angular-datatables/dist/plugins/bootstrap/datatables.bootstrap.min.css
+/lib/datatables/vendor/datatables-tabletools/css/dataTables.tableTools.css
+/lib/datatables/media/css/jquery.dataTables.min.css
 
 //www.google-analytics.com/analytics.js
-/theme/metronic/assets/global/plugins/jquery.min.js
+
+/theme/metronic/assets/admin/pages/scripts/tasks.js
+/theme/metronic/assets/global/plugins/excanvas.min.js
 /theme/metronic/assets/global/plugins/jquery-migrate.min.js
-/theme/metronic/assets/global/plugins/bootstrap/js/bootstrap.min.js
-/theme/metronic/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js
-/theme/metronic/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js
 /theme/metronic/assets/global/plugins/jquery.blockui.min.js
 /theme/metronic/assets/global/plugins/jquery.cokie.min.js
-/theme/metronic/assets/global/plugins/uniform/jquery.uniform.min.js
-/theme/metronic/assets/global/scripts/metronic.js
-/theme/metronic/assets/admin/layout2/scripts/layout.js
+/theme/metronic/assets/global/plugins/jquery.min.js
+/theme/metronic/assets/global/plugins/jquery.sparkline.min.js
+#/theme/metronic/assets/global/plugins/respond.min.js
+/theme/metronic/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js
+/theme/metronic/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js
+/theme/metronic/assets/global/plugins/bootstrap/js/bootstrap.min.js
+/theme/metronic/assets/global/plugins/datatables/all.min.js
+/theme/metronic/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js
 /theme/metronic/assets/global/plugins/morris/morris.min.js
 /theme/metronic/assets/global/plugins/morris/raphael-min.js
-/theme/metronic/assets/global/plugins/jquery.sparkline.min.js
 /theme/metronic/assets/global/plugins/select2/select2.min.js
-/theme/metronic/assets/global/plugins/datatables/all.min.js
-/theme/metronic/assets/admin/pages/scripts/tasks.js
+/theme/metronic/assets/global/plugins/typeahead/handlebars.min.js
+/theme/metronic/assets/global/plugins/typeahead/typeahead.bundle.min.js
+/theme/metronic/assets/global/plugins/uniform/jquery.uniform.min.js
+/theme/metronic/assets/global/scripts/metronic.js
 
 /lib/angular/angular.js
 /lib/angular/angular.min.js
@@ -39,9 +53,23 @@ CACHE:
 /lib/angular-animate/angular-animate.min.js
 /lib/angular-aria/angular-aria.js
 /lib/angular-aria/angular-aria.min.js
-/lib/angular-bootstrap/ui-bootstrap-tpls.min.js
 /lib/angular-cookies/angular-cookies.js
 /lib/angular-cookies/angular-cookies.min.js
+#/lib/angular-bootstrap/ui-bootstrap-tpls.js
+#/lib/angular-bootstrap/ui-bootstrap-tpls.min.js
+#/lib/angular-bootstrap/ui-bootstrap.js
+#/lib/angular-bootstrap/ui-bootstrap.min.js
+/lib/angular-datatables/dist/angular-datatables.min.js
+/lib/angular-datatables/dist/plugins/bootstrap/angular-datatables.bootstrap.min.js
+/lib/angular-datatables/dist/plugins/colreorder/angular-datatables.colreorder.min.js
+/lib/angular-datatables/dist/plugins/columnfilter/angular-datatables.columnfilter.min.js
+/lib/angular-datatables/dist/plugins/fixedcolumns/angular-datatables.fixedcolumns.min.js
+/lib/angular-datatables/dist/plugins/fixedheader/angular-datatables.fixedheader.min.js
+/lib/angular-datatables/dist/plugins/scroller/angular-datatables.scroller.min.js
+/lib/angular-datatables/dist/plugins/tabletools/angular-datatables.tabletools.min.js
+/lib/angular-hotkeys/build/hotkeys.min.js
+/lib/angular-local-storage/dist/angular-local-storage.min.js
+/lib/angular-localization/angular-localization.min.js
 /lib/angular-messages/angular-messages.js
 /lib/angular-messages/angular-messages.min.js
 /lib/angular-resource/angular-resource.js
@@ -53,26 +81,61 @@ CACHE:
 /lib/angular-touch/angular-touch.js
 /lib/angular-touch/angular-touch.min.js
 /lib/angular-ui-router/release/angular-ui-router.min.js
+/lib/angular-useragent-parser/release/angular-useragent-parser.min.js
+/lib/angular-virtual-keyboard/release/angular-virtual-keyboard.min.js
+/lib/datatables/media/js/jquery.dataTables.min.js
+/lib/datatables/vendor/datatables-scroller/js/dataTables.scroller.js
+/lib/datatables/vendor/datatables-tabletools/js/dataTables.tableTools.js
 /lib/oclazyload/dist/ocLazyLoad.min.js
+/lib/ui-bootstrap-custom-build/ui-bootstrap-custom-tpls-0.13.3.js
+
 
 # Offline Application
 /app/
-/app/index.html
-/app/scripts/app.js
-/app/scripts/controllers/SellController.js
-/app/scripts/keypad.js
-/app/scripts/table-advanced.js
-/app/styles/themes/yellow.css
+
 /app/styles/custom.css
 /app/styles/layout.css
+/app/styles/receipt.css
 /app/styles/register.css
-/app/styles/keypad-numeric.css
+/app/styles/themes/yellow.css
+
+/app/scripts/app.js
+/app/scripts/controllers/register.js
+/app/scripts/controllers/payment.js
+/app/scripts/modules/dpsclient.js
+/app/scripts/modules/layout.js
+/app/scripts/modules/onzsa_ds.js
+/app/scripts/modules/service.js
+/app/scripts/modules/storage.js
+
+/app/index.html
 /app/tpl/header.html
-/app/views/sell-screen.html
+/app/tpl/sidebar.html
+/app/tpl/change.html
+/app/tpl/numpad.html
+/app/tpl/openRegister.html
+/app/tpl/payment.html
+/app/tpl/receipt.html
+/app/tpl/splash.html
+/app/tpl/variants.html
+/app/views/register.html
+
+# Offline Images
+/app/images/logo-default.png
+/app/images/onzsa_bg.png
+/app/images/sidebar-toggler-inverse.png
+/app/images/sidebar-toggler.png
+/app/images/payment/icon-01.png
+/app/images/payment/icon-02.png
+/app/images/payment/icon-03.png
+/app/images/payment/icon-04.png
+/app/images/payment/icon-05.png
+/app/images/payment/icon-06.png
+/theme/metronic/assets/admin/layout2/img/avatar.png
 
 # Fallback section
 FALLBACK:
-/ /app/index.html
+/app/index.html
 
 # Use from network if available
 NETWORK:
