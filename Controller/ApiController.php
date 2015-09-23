@@ -677,4 +677,132 @@ class ApiController extends AppController {
       $this->serialize($response);
     }
 
+
+  /**
+   * Close register sales
+   */
+  public function close_register() {
+    $this->request->onlyAllow('post');
+    $user = $this->Auth->user();
+
+    $this->loadModel('MerchantRegisterOpen');
+
+    $result = array(
+        'success' => false
+    );
+    try {
+      $data = $this->request->data;
+      $opens = $this->MerchantRegisterOpen->find('first', array(
+          'conditions' => [
+              'MerchantRegisterOpen.id' => $data['openId']
+          ]
+      ));
+
+      $opens['MerchantRegisterOpen']['register_close_time'] = date("Y-m-d H:i:s");
+      $this->MerchantRegisterOpen->save($opens['MerchantRegisterOpen']);
+
+      $result['success'] = true;
+    } catch (Exception $e) {
+      $result['message'] = $e->getMessage();
+    }
+    $this->serialize($result);
+    return;
+  }
+
+  /**
+   * Check register sales opened
+   *
+   * @return boolean
+   */
+  public function is_opened_register() {
+    $this->request->onlyAllow('get');
+    $user = $this->Auth->user();
+
+    $this->loadModel('MerchantRegisterOpen');
+
+    $result = array(
+        'success' => false
+    );
+    try {
+      $register_id = $this->get('register_id');
+
+      $opens = $this->MerchantRegisterOpen->find('all', array(
+        'conditions' => array(
+          'MerchantRegisterOpen.register_id' => $register_id,
+          'MerchantRegisterOpen.register_close_time' => ''
+        )
+      ));
+      if (count($opens) > 0) {
+        $result['opened'] = true;
+      } else {
+        $result['opened'] = false;
+      }
+      $result['success'] = true;
+    } catch (Exception $e) {
+      $result['message'] = $e->getMessage();
+    }
+    $this->serialize($result);
+    return;
+  }
+
+  /**
+   *  Open register sales
+   */
+  public function open_register() {
+    $this->request->onlyAllow('post');
+    $user = $this->Auth->user();
+
+    $this->loadModel('MerchantRegister');
+    $this->loadModel('MerchantRegisterOpen');
+
+    $result = array(
+        'success' => false
+    );
+    try {
+      $data = $this->request->data;
+      $registerOpen = $this->MerchantRegisterOpen->find('all',array(
+          'conditions' => array(
+              'MerchantRegisterOpen.register_id' => $data['register_id'],
+              'MerchantRegisterOpen.register_close_time' => ''
+          )
+      ));
+      $sequence = $this->MerchantRegisterOpen->find('count',array(
+          'conditions' => array(
+              'MerchantRegisterOpen.register_id' => $data['register_id'],
+          )
+      ));
+      $register = $this->MerchantRegister->find('first',array(
+          'conditions' => array(
+              'MerchantRegister.id' => $data['register_id'],
+          )
+      ));
+
+      if(count($registerOpen) == 0){
+        $register['MerchantRegister']['register_open_count_sequence'] = $sequence + 1;
+        $this->MerchantRegister->save($register['MerchantRegister']);
+
+        $this->MerchantRegisterOpen->create();
+        $open->MerchantRegisterOpen['register_id'] = $data['register_id'];
+        $open->MerchantRegisterOpen['register_open_count_sequence'] = $sequence + 1;
+        $open->MerchantRegisterOpen['register_open_time'] = date('Y-m-d H:i:s');
+        $this->MerchantRegisterOpen->save($open);
+
+        $opened = $this->MerchantRegisterOpen->find('first',array(
+          'conditions' => array(
+            'MerchantRegisterOpen.id' => $this->MerchantRegisterOpen->id
+          )
+        ));
+
+        $result['opened'] = $opened['MerchantRegisterOpen'];
+        $result['success'] = true;
+      } else {
+        $result['$registerOpen'] = $registerOpen;
+      }
+
+    } catch (Exception $e) {
+      $result['message'] = $e->getMessage();
+    }
+    $this->serialize($result);
+    return;
+  }
 }

@@ -44,7 +44,7 @@ angular.module('OnzsaApp.register', [])
       'total_price_incl_tax': 0.0,  // retail_price(price + tax)
       'total_discount': 0.0,
       'total_tax': 0.0,             // price * tax_rate
-      'total_payment': 0.0,         // Paid
+      'total_payment': 0.0,         // Paid amount
       'sequence': 0
     };
     var customerInfo = {
@@ -69,17 +69,14 @@ angular.module('OnzsaApp.register', [])
       return _isOnline();
     }
 
-    sharedService.openRegister = function() {
+    sharedService.openRegister = function(register) {
       debug('Register: open existing or new register');
+      return _openRegister(register);
     };
 
     sharedService.closeRegister = function() {
       debug('Register: close register');
-    };
-
-    sharedService.switchRegister = function(register) {
-      debug('Register: switch register');
-      return _switchRegister(register);
+      _closeRegister(LocalStorage.getRegister());
     };
 
     sharedService.openSale = function() {
@@ -288,7 +285,7 @@ angular.module('OnzsaApp.register', [])
                 saleItem = _addSellItem(product_id, saleProduct, priceBook);
 
                 //STEP 3.3. Recalcurate to registerSale structure
-                _additionRegisterSaleTotal(saleItem);
+                _recalcurateRegisterSaleTotal();
 
                 // Save to RegisterSaleItems : status_open
                 _saveRegisterSaleItems([saleItem], saleID);
@@ -296,9 +293,8 @@ angular.module('OnzsaApp.register', [])
               //STEP 3.2.
               else {
                 //STEP 3.3. Recalcurate to registerSale structure
-                _subtractionRegisterSaleTotal(lastestSaleItem);
                 saleItem = _additionSellItemQty(lastestSaleItem, saleProduct, priceBook, productQty);
-                _additionRegisterSaleTotal(saleItem);
+                _recalcurateRegisterSaleTotal();
 
                 // Save to RegisterSaleItems : status_open
                 _updateRegisterSaleItems(saleItem, saleID, "sale_item_status_valid");
@@ -329,12 +325,12 @@ angular.module('OnzsaApp.register', [])
       // Delete Sale Item from List
       _deleteSaleItemBySequence(sequence);
 
-      // Recalcurate Total
-      _subtractionRegisterSaleTotal(saleItem);
-
       // Delete from RegisterSaleItems
       var saleID = LocalStorage.getSaleID();
       _deleteRegisterSaleItem(saleItem, saleID);
+
+      // Recalcurate Total
+      _recalcurateRegisterSaleTotal();
 
       // If list to be empty, Delete RegisterSale
       if (saleItems.length == 0) {
@@ -375,9 +371,9 @@ angular.module('OnzsaApp.register', [])
 
     sharedService.switchRegister = function(register) {
       debug('Register: switchRegister');
-      return _subBootstrapSystem(register);
+      return _checkOpenedRegister(register);
     };
-
+    
     sharedService.updateLineDiscount = function(discount, type) {
       debug('Register: updateLineDiscount');
       _updateLineDiscount(discount, type);
@@ -423,6 +419,17 @@ angular.module('OnzsaApp.register', [])
       payment.payment_date = _getUnixTimestamp();
       return payment;
     }
+
+
+    sharedService.getRegisterSalesByRegisterID = function(register_id, sale_date) {
+      debug('Register: retrieve Register sales by Register ID');
+      return _getRegisterSalesByRegisterID(register_id, _getUnixTimestamp(new Date(sale_date)));
+    };
+
+    sharedService.getRegisterSalePayments = function(saleID, index) {
+      debug('Register: retrieve Register sales by Register ID');
+      return _getRegisterSalePayments(saleID, index);
+    };
 
     function _updateLineDiscount(discount, type) {
       debug('Register: updateLineDiscount');
@@ -504,18 +511,42 @@ angular.module('OnzsaApp.register', [])
         })
 
         .then(function(result){
-            if (result.status == "selected") {
-              return _subBootstrapSystem(result.register);
-            } else if (result.status == "waitRegister") {
-              var deferred = $q.defer();
-              deferred.resolve(result);
-              return deferred.promise;
-            }
+          if (result.status == "selected") {
+            return _checkOpenedRegister(result.register);
+          } else if (result.status == "waitRegister") {
+            var deferred = $q.defer();
+            deferred.resolve(result);
+            return deferred.promise;
+          }
         }
         , function(response) {
           onlineStatus = 'offline';
           return _instantBootstrapSystem();
         });
+    }
+
+    // --------------------------
+    // bootstrapSystem - Register open check routine
+    // --------------------------
+    function _checkOpenedRegister(register) {
+      //console.debug("Register: do checking register open");
+
+      return _isOpenedRegister(register)
+      .then(function(result){
+        if (result.opened == true) {
+          return _subBootstrapSystem(result.data);
+        } else {
+          var deferred = $q.defer();
+          deferred.resolve(result);
+          return deferred.promise;
+        }
+      }
+      , function(response) {
+        debug(response);
+        onlineStatus = 'offline';
+        return _instantBootstrapSystem();
+      });
+
     }
 
     // --------------------------
@@ -1127,6 +1158,87 @@ angular.module('OnzsaApp.register', [])
     }
 
     // --------------------------
+    // Open Register
+    // --------------------------
+    function _openRegister(register) {
+      //debug("REQUEST:  open register  >>>>>>>>>>>>>>>>>>>>>");
+
+      $http.post('/api/open_register.json', {'register_id':register.id})
+      .then(function (response) {
+        debug("REQUEST: open register, success handler");
+
+        if (response.data.success == true) {
+          // update new register open
+          var opened = response.data.opened;
+          register.register_open_sequence_id = opened.id;
+          register.register_open_time = opened.register_open_time;
+          register.register_close_time = '';
+          register.register_open_count_sequence = opened.register_open_count_sequence;
+
+          return _subBootstrapSystem(register);
+        } else {
+          onlineStatus = 'offline';
+          return _instantBootstrapSystem();
+        }
+      }
+      , function(response) {
+        onlineStatus = 'offline';
+        return _instantBootstrapSystem();
+      });
+    }
+
+
+    // --------------------------
+    // Close Register
+    // --------------------------
+    function _closeRegister(register) {
+      //console.debug("Do close register (id): %s (%s)", register.id, register.register_open_sequence_id);
+      $.ajax({
+        url: '/api/close_register.json',
+        type: 'POST',
+        data: {
+          openId: register.register_open_sequence_id
+        },
+        success: function(result) {
+          if(result.success) {
+            window.location.href = "/users/logout";
+          } else {
+            console.log(result);
+          }
+        }
+      });
+    }
+
+    // --------------------------
+    // Check opened Register
+    // --------------------------
+    function _isOpenedRegister(register) {
+      //debug("REQUEST: check opened register  >>>>>>>>>>>>>>>>>>>>>");
+      //console.debug("is open register : %s", register.id);
+
+      var deferred = $q.defer();
+      var result = [];
+      $http.get('/api/is_opened_register.json?register_id=' + register.id)
+      .then(function (response) {
+        debug("REQUEST: check opened register, success handler");
+
+        if (response.data.success == true) {
+          debug(" Status opne register : %s", response.data.opened);
+          result['status'] = "openRegister";
+          result['data'] = register;
+          result['opened'] = response.data.opened;
+          deferred.resolve(result);
+        } else {
+          deferred.reject(response);
+        }
+      }, function (response) {
+        debug("REQUEST: signed user information, error handler");
+        deferred.reject(response);
+      });
+      return deferred.promise;
+    }
+
+    // --------------------------
     // Receive Session User Information
     // --------------------------
     function _receiveSessionUser() {
@@ -1301,6 +1413,35 @@ angular.module('OnzsaApp.register', [])
     }
 
     // --------------------------
+    // recalcurate registerSale structure
+    // --------------------------
+    function _recalcurateRegisterSaleTotal() {
+
+      registerSale.total_cost = 0;
+      registerSale.total_price = 0;
+      registerSale.total_price_incl_tax = 0;
+      registerSale.total_discount = 0;
+      registerSale.total_tax = 0;
+
+      for (var idx in saleItems) {
+        var saleItem = saleItems[idx];
+
+        registerSale.total_cost += saleItem.supply_price * saleItem.quantity;
+        registerSale.total_price += saleItem.price * saleItem.quantity;
+        registerSale.total_price_incl_tax += (saleItem.sale_price + saleItem.tax) * saleItem.quantity;
+        registerSale.total_discount += saleItem.discount * saleItem.quantity;
+        registerSale.total_tax += saleItem.tax * saleItem.quantity;
+      }
+
+      var discountValue = registerSale.line_discount;
+      if (registerSale.line_discount_type == 0) { // percent
+        discountValue = registerSale.total_price_incl_tax / (1 - discountValue / 100) - registerSale.total_price_incl_tax;
+      }
+      registerSale.total_discount += discountValue;
+      registerSale.total_price_incl_tax -= discountValue;
+    }
+
+    // --------------------------
     // get price book
     // --------------------------
     function _getPriceBook(callback, productId, outletId, productQty, customerGroupId) {
@@ -1347,6 +1488,26 @@ angular.module('OnzsaApp.register', [])
     function _isSelectedCustomer() {
       return (customerInfo.id != null && customerInfo.name != null && customerInfo.customer_code != null);
     }
+
+
+    // --------------------------
+    // Get RegisterSales by Register ID
+    // --------------------------
+    function _getRegisterSalesByRegisterID(register_id, sale_date) {
+      var defer = $q.defer();
+      var sucRS;
+
+      var data = {
+        'register_id':register_id,
+        'sale_date': sale_date
+      }
+      sucRS = function(rsRS) {
+        defer.resolve(rsRS);
+      }
+      ds.getRegisterSales(data, sucRS);
+      return defer.promise;
+    }
+
 
     // --------------------------
     // Save RegisterSales
@@ -1416,6 +1577,25 @@ angular.module('OnzsaApp.register', [])
         data['sale_date'] = _getUnixTimestamp();
       }
       ds.changeRegisterSales(data, suc);
+    };
+
+    // --------------------------
+    // Get Register Sale Payments
+    // --------------------------
+    function _getRegisterSalePayments(saleID, index) {
+      var defer = $q.defer();
+      var sucRSP, data;
+      var response = [];
+      data = {
+        'sale_id':saleID
+      };
+      sucRSP = function(rsRSP) {
+        response.data = rsRSP;
+        response.index = index;
+        defer.resolve(response);
+      }
+      ds.getRegisterSalePayments(data, sucRSP);
+      return defer.promise;
     };
 
     // --------------------------
@@ -1735,9 +1915,14 @@ angular.module('OnzsaApp.register', [])
       });
     }
 
-    function _getUnixTimestamp() {
-      return Math.floor(new Date().getTime() / 1000);
+    function _getUnixTimestamp(date) {
+      if (date == null) {
+        return Math.floor(new Date().getTime() / 1000);
+      } else {
+        return Math.floor(date.getTime() / 1000);
+      }
     }
+
 
     return sharedService;
   }]);

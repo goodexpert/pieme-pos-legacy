@@ -9,7 +9,7 @@
  */
 angular.module('OnzsaApp', [])
 
-.controller('RegisterController', function($rootScope, $scope, $state, $stateParams, $location, $http, $modal, $q, $timeout, $filter, $compile, locale, LocalStorage, Register, DTOptionsBuilder, DTColumnDefBuilder, DTColumnBuilder, DTInstances) {
+.controller('RegisterController', function($rootScope, $scope, $state, $stateParams,hotkeys, $location, $http, $modal, $q, $timeout, $filter, $compile, locale, LocalStorage, Register, DTOptionsBuilder, DTColumnDefBuilder, DTColumnBuilder, DTInstances) {
   $scope.$on('$viewContentLoaded', function() {
     // initialize core components
     Metronic.initAjax();
@@ -25,6 +25,9 @@ angular.module('OnzsaApp', [])
       if (response.status == "waitRegister") {
         debug('register open selector');
         openRegisterSelector(response.data);
+      } else if (response.status == "openRegister") {
+        debug('register open check');
+        openRegister(response.data);
       } else if (response.status == "initialized") {
         debug('register initialized');
         $rootScope.config = LocalStorage.getConfig();
@@ -47,6 +50,23 @@ angular.module('OnzsaApp', [])
   $scope.$on('sale.reloaded', reloadedSale);
   $scope.$on('register.ready', preparedRegister);
   $scope.$on('register.failed', preparedRegister);
+
+
+  hotkeys.add({
+    combo: 'f6',
+    description: 'make a payment',
+    callback: function() {
+      $scope.doPayment();
+    }
+  });
+
+  hotkeys.add({
+    combo: 'esc',
+    description: 'Void all sales',
+    callback: function() {
+      $scope.voidSale();
+    }
+  });
 
   // initialize the sale items table
   var vm = this;
@@ -287,76 +307,91 @@ angular.module('OnzsaApp', [])
   $scope.functions = {
     'fn_void_sale' : {
       id      : 'fn_void_sale',
+      class   : 'red-thunderbird',
       name    : 'Void',
       callback: $scope.voidSale
     },
     'fn_do_discount' : {
       id      : 'fn_do_discount',
+      class   : 'blue-hoki',
       name    : 'Discount',
       callback: $scope.doDiscount
     },
     'fn_do_line_price' : {
       id      : 'fn_do_line_price',
+      class   : 'green-haze',
       name    : 'Line Price',
       callback: $scope.doLinePrice
     },
     'fn_do_parking' : {
       id      : 'fn_do_parking',
+      class   : '',
       name    : 'Save',
       callback: $scope.doParking
     },
     'fn_do_payment' : {
       id      : 'fn_do_payment',
+      class   : 'blue',
       name    : 'Payment',
       callback: $scope.doPayment
     },
     'fn_do_refund' : {
       id      : 'fn_do_refund',
+      class   : 'yellow-gold',
       name    : 'Refund',
       callback: $scope.doRefund
     },
     'fn_do_recall' : {
       id      : 'fn_do_recall',
+      class   : '',
       name    : 'Recall Sales',
       callback: $scope.viewRecall
     },
     'fn_view_history' : {
       id      : 'fn_view_history',
+      class   : '',
       name    : 'Sales History',
       callback: $scope.viewHistory
     },
     'fn_view_daily_report' : {
       id      : 'fn_view_daily_report',
+      class   : '',
       name    : 'Daily Snapshot',
       callback: $scope.viewDailyReport
     },
     'fn_close_register' : {
       id      : 'fn_close_register',
+      class   : 'red',
       name    : 'End of Day',
       callback: $scope.closeRegister
     },
     'fn_print_receipt' : {
       id      : 'fn_print_receipt',
+      class   : '',
       name    : 'Print Receipt',
       callback: $scope.printReceipt
     },
     'fn_open_cash_drawer' : {
       id      : 'fn_open_cash_drawer',
+      class   : '',
       name    : 'No Sale',
       callback: $scope.openCashDrawer
     },
     'fn_do_setup' : {
       id      : 'fn_do_setup',
+      class   : '',
       name    : 'Setup',
       callback: $scope.doSetup
     },
     'fn_do_logout' : {
       id      : 'fn_do_logout',
+      class   : '',
       name    : 'Logout',
       callback: $scope.doLogout
     },
     'fn_do_nothing' : {
       id      : 'fn_do_nothing',
+      class   : '',
       name    : '',
       callback: function() {}
     }
@@ -523,7 +558,12 @@ angular.module('OnzsaApp', [])
     });
 
     modalInstance.result.then(function(selectedItem) {
-      Register.switchRegister(selectedItem);
+      Register.switchRegister(selectedItem)
+      .then(function(result) {
+        if (result.status == "openRegister") {
+          Register.openRegister(result.data);
+        }
+      });
     });
   }
 
@@ -580,12 +620,48 @@ angular.module('OnzsaApp', [])
     });
   }
 
+
+  function openRegister(register) {
+    var modalInstance = $modal.open({
+      templateUrl: '/app/tpl/openRegister.html',
+      controller: 'OpenRegisterController',
+      backdrop: 'static',
+      keyboard: false,
+      size: 'md',
+      resolve: {
+        items: function() {
+          return register;
+        }
+      }
+    });
+
+    modalInstance.result.then(function(register) {
+      Register.openRegister(register);
+    });
+  }
+
+
   function openSplash() {
     var modalInstance = $modal.open({
       templateUrl: '/app/tpl/splash.html',
       controller: 'SplashController'
     });
   }
+
+})
+
+.controller('OpenRegisterController', function($rootScope, $scope, $modalInstance, $window, Register, locale, items) {
+  $scope.register = items;
+
+  $scope.cancel = function() {
+    $modalInstance.dismiss('cancel');
+    $window.location.href = '/users/logout';
+  };
+
+  $scope.confirm = function() {
+    $modalInstance.close($scope.register);
+  };
+
 })
 
 .controller('SplashController', function($rootScope, $scope, $modalInstance) {
@@ -1107,7 +1183,21 @@ angular.module('OnzsaApp', [])
     $scope.receipt['tax'] = parseFloat($scope.totalTax).toFixed(2);
     $scope.receipt['paid'] = parseFloat($scope.totalPaid).toFixed(2);
     $scope.receipt['total'] = parseFloat($scope.totalPayment).toFixed(2);
-    $scope.receipt['sub_total'] = parseFloat($scope.registerTotal.total_cost).toFixed(2);
+        //TODO: ????? ?? ??
+        $scope.receipt['sub_total'] = parseFloat($scope.registerTotal.total_price).toFixed(2);
+        $scope.receipt['total_discount'] = parseFloat($scope.registerTotal.total_discount).toFixed(2);
+        $scope.discountValue = $scope.registerTotal.line_discount;
+        if ($scope.registerTotal.line_discount_type == 0) { // percent
+          $scope.discountValue = $scope.registerTotal.total_price_incl_tax / (1 - $scope.discountValue / 100) - $scope.registerTotal.total_price_incl_tax;
+        }
+        for(var idx in $scope.saleItems) {
+          $scope.saleItems[idx]['item_price'] = $scope.saleItems[idx].price * $scope.saleItems[idx].quantity;
+        }
+        for(var idx in $scope.saleItems) {
+          $scope.saleItems[idx]['item_discount'] = $scope.saleItems[idx].discount * $scope.saleItems[idx].quantity;
+        }
+        $scope.receipt['sub_total1'] = $scope.registerTotal.line_discount;
+        $scope.receipt['line_discount'] =$scope.discountValue;
     //$scope.receipt['sub_total'] = parseFloat($scope.totalPayment - $scope.totalTax).toFixed(2);
     $scope.receipt['change'] = $scope.change;
     $scope.receipt['date'] = (new Date().format('dd-MMM-yyyy HH:mm'));

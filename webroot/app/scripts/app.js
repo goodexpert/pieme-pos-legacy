@@ -104,17 +104,77 @@ angular.module('OnzsaApp', [
 }])
 
 /* Setup App Main Controller */
-.controller('AppController', ['$scope', '$rootScope', 'hotkeys', function($scope, $rootScope, hotkeys) {
+.controller('AppController', ['$scope', '$rootScope', 'hotkeys','$state', function($scope, $rootScope, hotkeys ,$state) {
   $scope.$on('$viewContentLoaded', function() {
     Metronic.initComponents(); // init core components
     //Layout.init(); //  Init entire layout(header, footer, sidebar, etc) on page load if the partials included in server side instead of loading with ng-include directive 
   });
 
+  $scope.home = function() {
+    debug('go home');
+    if (window.location.pathname == '/dashboard') {
+      window.location.href = "/#/sales";
+    } else {
+      $state.go('sales');
+    }
+  };
+
+  $scope.close = function() {
+    debug('go close');
+    if (window.location.pathname == '/dashboard') {
+      window.location.href = "";
+      $state.go('close-register');
+    } else {
+      $state.go('close-register');
+    }
+  };
+  $scope.recall = function() {
+    debug('go recall');
+    if (window.location.pathname == '/dashboard') {
+      window.location.href = "/#/recall";
+    } else {
+      $state.go('recall');
+    }
+  };
+
+  $scope.dashboard = function() {
+    debug('go dashboard');
+    window.location.href = "/dashboard";
+    $state.go('');
+  };
+
+
+
   hotkeys.add({
-    combo: 'ctrl+h',
-    description: 'Display the highscores',
+    combo: 'f3',
+    description: 'Go to dashboard',
     callback: function() {
-      alert('ok');
+      $scope.dashboard();
+    }
+  });
+
+
+  hotkeys.add({
+    combo: 'f4',
+    description: 'Go to home',
+    callback: function() {
+      $scope.home();
+    }
+  });
+
+  hotkeys.add({
+    combo:'f7',
+    description: 'Go to Recall',
+    callback: function() {
+      $scope.recall();
+    }
+  });
+
+  hotkeys.add({
+    combo:'f8',
+    description: 'Go to Close-register',
+    callback: function() {
+      $scope.close();
     }
   });
 }])
@@ -127,10 +187,15 @@ angular.module('OnzsaApp', [
 }])
 
 /* Setup Layout Part - Sidebar */
-.controller('SidebarController', ['$scope', function($scope) {
+.controller('SidebarController', ['$scope','$state', function($scope, $state, $stateParams) {
   $scope.$on('$includeContentLoaded', function() {
     Layout.initSidebar(); // init sidebar
   });
+
+      $scope.home = function() {
+        debug('openCashDrawer');
+        $state.go('sales');
+      };
 }])
 
 /* Setup Rounting For All Pages */
@@ -308,7 +373,7 @@ angular.module('OnzsaApp', [
       url: "/close-register",
       views: {
         "lazyLoadView": {
-          controller: 'CloseRegisterController', // This view will use RecallController loaded below in the resolve
+          controller: 'CloseRegisterController', // This view will use CloseRegisterController loaded below in the resolve
           templateUrl: '/app/views/close-register.html'
         }
       },
@@ -359,7 +424,7 @@ angular.module('OnzsaApp', [
       url: "/daily-snapshot",
       views: {
         "lazyLoadView": {
-          controller: 'DailySnapshotController', // This view will use RecallController loaded below in the resolve
+          controller: 'DailySnapshotController', // This view will use DailySnapshotController loaded below in the resolve
           templateUrl: '/app/views/daily-snapshot.html'
         }
       },

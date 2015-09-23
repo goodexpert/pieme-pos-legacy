@@ -142,9 +142,9 @@
       <!-- REGISTER FUNCTION KEYS BEGIN -->
       <div class="portlet light bordered sell-screen" id="register_function_keys">
         <div class="portlet-body">
-          <button class="btn btn-function"
+          <button  class="btn btn-function" data-ng-class="function_key.class"
             data-ng-repeat="function_key in function_keys"
-            data-ng-click="function_key.callback()">
+            data-ng-click="function_key.callback()" data-ng-init="changeClassName">
             {{function_key.name}}
           </button>
         </div>

@@ -10,27 +10,27 @@ Datastore_sqlite = function () {
   var db = openDatabase('onzsadb', version.major + '.' + version.minor, 'onzsa database', volumes);
 
   return {
-    /** == List ==
-     [Inside]
-     [Test]
-     [Common]
-     [RegisterTaxRates]
-     [RegisterPaymentTypes]
-     [Products]
-     [Registers]
-     [PriceBookEntery]
-     [RegisterSales]
-     [RegisterSaleItems]
-     [RegisterSalePayments]
-     [ETC]
-     */
+    // == List ==
+    // [Inside]
+    // [Test]
+    // [Common]
+    // [RegisterTaxRates]
+    // [RegisterPaymentTypes]
+    // [Products]
+    // [Registers]
+    // [PriceBookEntery]
+    // [RegisterSales]
+    // [RegisterSaleItems]
+    // [RegisterSalePayments]
+    // [ETC]
+
     _logDBError: function (e) {
       var errorInfo = JSON.stringify(arguments);
       console.log("WebSQL Error: " + errorInfo + " " + arguments.error);
     },
-    /** -------------------
-     *  [Inside] _doDSTransaction
-     *  ------------------- */
+    // -------------------
+    //  [Inside] _doDSTransaction
+    // ------------------- 
     _doDSTransaction: function (exec, suc, err) {
       //console.log("[TRANS] START: "),
       //exec ? console.log(exec) : console.log("[TRANS] START: exec: null"),
@@ -52,9 +52,9 @@ Datastore_sqlite = function () {
         err(o)
       }
     },
-    /** -------------------
-     *  [Inside] _executeDSSql
-     *  ------------------- */
+    // -------------------
+    //  [Inside] _executeDSSql
+    // ------------------- 
     _executeDSSql: function (tr, sql, param, suc, err) {
       var continueCall, success, error;
       try {
@@ -94,18 +94,18 @@ Datastore_sqlite = function () {
       }
     },
 
-    /** -------------------
-     *  [Inside] _log
-     *  ------------------- */
+    // -------------------
+    //  [Inside] _log
+    // ------------------- 
     _log: function (funcName, logText, logData) {
 
       console.log("[ONZSA-DS] " + funcName + ": " + logText)
       if (logData != null && typeof(logData) == 'object') console.log(logData)
     },
 
-    /** -------------------
-     *  [Test] testCall
-     *  ------------------- */
+    // -------------------
+    //  [Test] testCall
+    // ------------------- 
     // 콜벡 처리 필요없는 여러개의 쿼리를 트랜젝션 처리 하는 예제
     // 중간에 쿼리가 실패하면 트랜젝션 처리 되어서 저장 않되고 실패한 쿼리의 에러가 호출된 후
     // 트랜젝션의 성공처리가 실행됨.
@@ -150,9 +150,9 @@ Datastore_sqlite = function () {
               }
           )
     },
-    /** -------------------
-     *  [Test] testCall2
-     *  ------------------- */
+    // -------------------
+    //  [Test] testCall2
+    // ------------------- 
     // 콜벡을 받아와서 각 쿼리에 세팅하면 각 쿼리의 성공여부에 따라서 콜러에게 전달 할 수 있다.
     // 각 쿼리의 성공/실패 함수에 변수 셋팅하도록 하면 전체 결과에 대해 판단 가능하다.
     // 트랜젝션은 성공 처리됨.
@@ -198,13 +198,13 @@ Datastore_sqlite = function () {
           )
     },
 
-    /** ------------------------------------------------------------------------------------------------------------ */
-    /** [Common] ------------------------------------------------------------------------------------------ [Common] */
-    /** ------------------------------------------------------------------------------------------------------------ */
+    // ------------------------------------------------------------------------------------------------------------ //
+    // [Common] ------------------------------------------------------------------------------------------ [Common] //
+    // ------------------------------------------------------------------------------------------------------------ //
 
-    /** -------------------
-     *  [Common] dropAllLocalDataStore
-     *  ------------------- */
+    // -------------------
+    //  [Common] dropAllLocalDataStore
+    // ------------------- 
     dropAllLocalDataStore: function () {
       var t = this, success, error;
       t._doDSTransaction(function (tr) {
@@ -259,9 +259,9 @@ Datastore_sqlite = function () {
       })
     },
 
-    /** -------------------
-     *  [Common] initLocalDataStore
-     *  ------------------- */
+    // -------------------
+    //  [Common] initLocalDataStore
+    // ------------------- 
     initLocalDataStore: function () {
       var t = this, success, error;
       t._doDSTransaction(function (tr) {
@@ -321,26 +321,26 @@ Datastore_sqlite = function () {
       })
     },
 
-    /** ------------------------------------------------------------------------------------------------------------ */
-    /** [Taxes] -------------------------------------------------------------------------------------------- [Taxes] */
-    /** ------------------------------------------------------------------------------------------------------------ */
-    /**
-     * CREATE TABLE IF NOT EXISTS Taxes
-     * ( id TEXT PRIMARY KEY ON CONFLICT REPLACE,
-     *  merchant_id TEXT,
-     *  name TEXT,
-     *  rate TEXT,
-     *  tax_type TEXT,
-     *  is_default TEXT,
-     *  is_deleted TEXT,
-     *  created TEXT,
-     *  modified TEXT,
-     *  deleted TEXT)
-     */
+    // ------------------------------------------------------------------------------------------------------------ //
+    // [Taxes] -------------------------------------------------------------------------------------------- [Taxes] //
+    // ------------------------------------------------------------------------------------------------------------ //
+    //
+    // CREATE TABLE IF NOT EXISTS Taxes
+    // ( id TEXT PRIMARY KEY ON CONFLICT REPLACE,
+    //  merchant_id TEXT,
+    //  name TEXT,
+    //  rate TEXT,
+    //  tax_type TEXT,
+    //  is_default TEXT,
+    //  is_deleted TEXT,
+    //  created TEXT,
+    //  modified TEXT,
+    //  deleted TEXT)
+     //
 
-    /** -------------------
-     *  [INIT] DROP & CREATE
-     *  ------------------- */
+    // -------------------
+    //  [INIT] DROP & CREATE
+    // ------------------- 
     initTaxes: function (tr) {
       var t = this;
       t._doDSTransaction(function (tr) {
@@ -349,9 +349,9 @@ Datastore_sqlite = function () {
       })
     },
 
-    /** -------------------
-     *  [SAVE] INSERT OR REPLACE
-     *  ------------------- */
+    // -------------------
+    //  [SAVE] INSERT OR REPLACE
+    // ------------------- 
     saveTaxes: function (dataArray, suc, err) {
       var t = this;
       try {
@@ -370,10 +370,10 @@ Datastore_sqlite = function () {
       }
     },
 
-    /** -------------------
-     *  [GET] SELECT
-     *  ------------------- */
-    getTaxes: function (suc, dataArray/* Not use */, err) {
+    // -------------------
+    //  [GET] SELECT
+    // ------------------- 
+    getTaxes: function (suc, dataArray /* Not use */, err) {
       var t = this,
           success = function (tr, result) {
             var rs = result.rows, i = 0;
@@ -389,27 +389,27 @@ Datastore_sqlite = function () {
       })
     },
 
-    /** ------------------------------------------------------------------------------------------------------------ */
-    /** [RegisterPaymentTypes] -------------------------------------------------------------- [RegisterPaymentTypes] */
-    /** ------------------------------------------------------------------------------------------------------------ */
-    /**
-     * CREATE TABLE IF NOT EXISTS RegisterPaymentTypes
-     * ( id TEXT PRIMARY KEY ON CONFLICT REPLACE,
-     *  merchant_id TEXT,
-     *  payment_type_id INTEGER,
-     *  name TEXT,
-     *  config TEXT,
-     *  account_code TEXT,
-     *  is_active TEXT,
-     *  is_deleted TEXT,
-     *  created TEXT,
-     *  modified TEXT,
-     *  deleted TEXT)
-     */
+    // ------------------------------------------------------------------------------------------------------------ //
+    // [RegisterPaymentTypes] -------------------------------------------------------------- [RegisterPaymentTypes] //
+    // ------------------------------------------------------------------------------------------------------------ //
+    //
+    // CREATE TABLE IF NOT EXISTS RegisterPaymentTypes
+    // ( id TEXT PRIMARY KEY ON CONFLICT REPLACE,
+    //  merchant_id TEXT,
+    //  payment_type_id INTEGER,
+    //  name TEXT,
+    //  config TEXT,
+    //  account_code TEXT,
+    //  is_active TEXT,
+    //  is_deleted TEXT,
+    //  created TEXT,
+    //  modified TEXT,
+    //  deleted TEXT)
+     //
 
-    /** -------------------
-     *  [INIT] DROP & CREATE
-     *  ------------------- */
+    // -------------------
+    //  [INIT] DROP & CREATE
+    // ------------------- 
     initPaymentTypes: function (tr) {
       var t = this;
       t._doDSTransaction(function (tr) {
@@ -418,9 +418,9 @@ Datastore_sqlite = function () {
       })
     },
 
-    /** -------------------
-     *  [SAVE] INSERT OR REPLACE
-     *  ------------------- */
+    // -------------------
+    //  [SAVE] INSERT OR REPLACE
+    // ------------------- 
     saveRegisterPaymentTypes: function (dataArray, suc, err) {
       var t = this;
       try {
@@ -439,10 +439,10 @@ Datastore_sqlite = function () {
       }
     },
 
-    /** -------------------
-     *  [GET] SELECT
-     *  ------------------- */
-    getRegisterPaymentTypes: function (suc, dataArray/* Not use */, err) {
+    // -------------------
+    //  [GET] SELECT
+    // ------------------- 
+    getRegisterPaymentTypes: function (suc, dataArray /* Not use */, err) {
       var t = this,
           success = function (tr, result) {
             var rs = result.rows, i = 0;
@@ -459,32 +459,32 @@ Datastore_sqlite = function () {
     },
 
 
-    /** ------------------------------------------------------------------------------------------------------------ */
-    /** [Products] -------------------------------------------------------------------------------------- [Products] */
-    /** ------------------------------------------------------------------------------------------------------------ */
-    /**
-     * CREATE TABLE IF NOT EXISTS Products (
-     * id TEXT PRIMARY KEY ON CONFLICT REPLACE,
-     * merchant_id TEXT,
-     * name TEXT,
-     * handle TEXT,
-     * description TEXT,
-     * brand_name TEXT,
-     * supplier_name TEXT,
-     * sku TEXT,
-     * supply_price REAL,
-     * price REAL,
-     * tax REAL,
-     * tax_name TEXT,
-     * tax_rate REAL,
-     * retail_price REAL,
-     * image TEXT,
-     * image_large TEXT)
-     */
+    // ------------------------------------------------------------------------------------------------------------ //
+    // [Products] -------------------------------------------------------------------------------------- [Products] //
+    // ------------------------------------------------------------------------------------------------------------ //
+    //
+    // CREATE TABLE IF NOT EXISTS Products (
+    // id TEXT PRIMARY KEY ON CONFLICT REPLACE,
+    // merchant_id TEXT,
+    // name TEXT,
+    // handle TEXT,
+    // description TEXT,
+    // brand_name TEXT,
+    // supplier_name TEXT,
+    // sku TEXT,
+    // supply_price REAL,
+    // price REAL,
+    // tax REAL,
+    // tax_name TEXT,
+    // tax_rate REAL,
+    // retail_price REAL,
+    // image TEXT,
+    // image_large TEXT)
+     //
 
-    /** -------------------
-     *  [INIT] DROP & CREATE
-     *  ------------------- */
+    // -------------------
+    //  [INIT] DROP & CREATE
+    // ------------------- 
     initProducts: function () {
       var e = this;
       e._doDSTransaction(function (t) {
@@ -510,9 +510,9 @@ Datastore_sqlite = function () {
       })
     },
 
-    /** -------------------
-     *  [GET] SELECT
-     *  ------------------- */
+    // -------------------
+    //  [GET] SELECT
+    // ------------------- 
     getProduct: function (successCallback, searchData) {
       var excuteCallback, t = this;
       var sqlQuery = "SELECT * FROM Products WHERE (id = ? or name like ? or sku like ? or name like ?)";
@@ -552,9 +552,9 @@ Datastore_sqlite = function () {
           )
     },
 
-    /** -------------------
-     *  [SAVE] INSERT OR REPLACE
-     *  ------------------- */
+    // -------------------
+    //  [SAVE] INSERT OR REPLACE
+    // ------------------- 
     saveProducts: function (successCallback, setData) {
       var t = this;
       var sqlQuery = "INSERT or REPLACE INTO Products (" +
@@ -592,18 +592,18 @@ Datastore_sqlite = function () {
       }
     },
 
-    /** ------------------------------------------------------------------------------------------------------------ */
-    /** [Registers] ------------------------------------------------------------------------------------ [Registers] */
-    /** ------------------------------------------------------------------------------------------------------------ */
+    // ------------------------------------------------------------------------------------------------------------ //
+    // [Registers] ------------------------------------------------------------------------------------ [Registers] //
+    // ------------------------------------------------------------------------------------------------------------ //
     //TODO: Registers
 
-    /** ------------------------------------------------------------------------------------------------------------ */
-    /** [PriceBookEntry] -------------------------------------------------------------------------- [PriceBookEntry] */
-    /** ------------------------------------------------------------------------------------------------------------ */
+    // ------------------------------------------------------------------------------------------------------------ //
+    // [PriceBookEntry] -------------------------------------------------------------------------- [PriceBookEntry] //
+    // ------------------------------------------------------------------------------------------------------------ //
 
-    /** -------------------
-     *  [INIT] DROP & CREATE
-     *  ------------------- */
+    // -------------------
+    //  [INIT] DROP & CREATE
+    // ------------------- 
     initPriceBook: function () {
       var e = this;
       //t._log("initPriceBook", "Start");
@@ -614,9 +614,9 @@ Datastore_sqlite = function () {
       })
     },
 
-    /** -------------------
-     *  [GET] SELECT
-     *  ------------------- */
+    // -------------------
+    //  [GET] SELECT
+    // ------------------- 
     getPriceBook: function (e, productInfo) {
 
       var t, a, n = this,
@@ -678,9 +678,9 @@ Datastore_sqlite = function () {
       })
     },
 
-    /** -------------------
-     *  [SAVE] INSERT OR REPLACE
-     *  ------------------- */
+    // -------------------
+    //  [SAVE] INSERT OR REPLACE
+    // ------------------- 
     savePriceBook: function (e, saveArray) {
       var i = saveArray;
       var n = this;
@@ -695,38 +695,38 @@ Datastore_sqlite = function () {
       }
     },
 
-    /** ------------------------------------------------------------------------------------------------------------ */
-    /** [RegisterSales] ---------------------------------------------------------------------------- [RegisterSales] */
-    /** ------------------------------------------------------------------------------------------------------------ */
-    /**
-     * CREATE TABLE IF NOT EXISTS RegisterSales
-     * ( id TEXT PRIMARY KEY ON CONFLICT REPLACE,
-     *  register_id TEXT,
-     *  user_id TEXT,
-     *  user_name TEXT,
-     *  customer_id TEXT,
-     *  customer_name TEXT,
-     *  customer_code TEXT,
-     *  xero_invoice_id TEXT,
-     *  receipt_number INTEGER,
-     *  status TEXT,
-     *  total_cost REAL,
-     *  total_price REAL,
-     *  total_price_incl_tax REAL,
-     *  total_discount REAL,
-     *  total_tax REAL,
-     *  total_payment REAL,
-     *  line_discount REAL,
-     *  line_discount_type INTEGER,
-     *  note TEXT,
-     *  sale_date TEXT,
-     *  sync_status TEXT,     // sync_wait | sync_success
-     *  sync_date TEXT)
-     */
+    // ------------------------------------------------------------------------------------------------------------ //
+    // [RegisterSales] ---------------------------------------------------------------------------- [RegisterSales] //
+    // ------------------------------------------------------------------------------------------------------------ //
+    //
+    // CREATE TABLE IF NOT EXISTS RegisterSales
+    // ( id TEXT PRIMARY KEY ON CONFLICT REPLACE,
+    //  register_id TEXT,
+    //  user_id TEXT,
+    //  user_name TEXT,
+    //  customer_id TEXT,
+    //  customer_name TEXT,
+    //  customer_code TEXT,
+    //  xero_invoice_id TEXT,
+    //  receipt_number INTEGER,
+    //  status TEXT,
+    //  total_cost REAL,                // supply_price
+    //  total_price REAL,               // price_exclude_tax (supply_price * markup)
+    //  total_price_incl_tax REAL,      // retail_price (price + tax)
+    //  total_discount REAL,
+    //  total_tax REAL,                 // price * tax_rate
+    //  total_payment REAL,             // Paid amount
+    //  line_discount REAL,             // line discount number
+    //  line_discount_type INTEGER,     // line discount type (0: percent, 1: currency)
+    //  note TEXT,
+    //  sale_date TEXT,
+    //  sync_status TEXT,               // sync_wait | sync_success
+    //  sync_date TEXT)
+     //
 
-    /** -------------------
-     *  [INIT] DROP & CREATE
-     *  ------------------- */
+    // -------------------
+    //  [INIT] DROP & CREATE
+    // ------------------- 
     initRegisterSales: function () {
       var e = this;
       e._doDSTransaction(function (t) {
@@ -735,9 +735,9 @@ Datastore_sqlite = function () {
       })
     },
 
-    /** -------------------
-     *  [SAVE] INSERT OR REPLACE
-     *  ------------------- */
+    // -------------------
+    //  [SAVE] INSERT OR REPLACE
+    // ------------------- 
     saveRegisterSales: function (suc, saveArray, err) {
       var i = [];
       var n = this;
@@ -756,9 +756,9 @@ Datastore_sqlite = function () {
       }
     },
 
-    /** -------------------
-     *  [CHANGE] UPDATE
-     *  ------------------- */
+    // -------------------
+    //  [CHANGE] UPDATE
+    // ------------------- 
     changeRegisterSales: function (data, suc, err) {
       var t = this, condition = [], sqlParamString = "";
 
@@ -847,9 +847,9 @@ Datastore_sqlite = function () {
     },
 
 
-    /** -------------------
-     *  [DEL] DELETE
-     *  ------------------- */
+    // -------------------
+    //  [DEL] DELETE
+    // ------------------- 
     deleteRegisterSales: function (data, suc, err) {
       var t = this, condition = data.id;
       t._doDSTransaction(function (tr) {
@@ -857,9 +857,9 @@ Datastore_sqlite = function () {
       });
     },
 
-    /** -------------------
-     *  [GET] SELECT
-     *  ------------------- */
+    // -------------------
+    //  [GET] SELECT
+    // ------------------- 
     getRegisterSales: function (data, suc, err) {
       var t = this, condition = [], queryString = "SELECT * FROM RegisterSales";
 
@@ -884,7 +884,15 @@ Datastore_sqlite = function () {
           }
         }
 
-        //TODO: sync_status condition
+        if (data.register_id != null) {
+          queryString = _connectionQuery(queryString, " register_id = ?", condition, data.register_id);
+
+          if (data.sale_date != null) {
+            queryString = _connectionQuery(queryString, " sale_date >= ?", condition, data.sale_date);
+          }
+        }
+        //var strToday = (new Date()).format("yyyy-MM-dd");
+
         if (data.sync == 'date') {
           if (data.sale_date != null) {
             if (condition.length == 0) {
@@ -912,28 +920,28 @@ Datastore_sqlite = function () {
       })
     },
 
-    /** ------------------------------------------------------------------------------------------------------------ */
-    /** [RegisterSaleItems] -------------------------------------------------------------------- [RegisterSaleItems] */
-    /** ------------------------------------------------------------------------------------------------------------ */
-    /** CREATE TABLE IF NOT EXISTS RegisterSaleItems (
-     * id TEXT PRIMARY KEY ON CONFLICT REPLACE,
-     * sale_id TEXT,
-     * product_id TEXT,
-     * name TEXT,
-     * quantity REAL,
-     * supply_price REAL,
-     * price REAL,
-     * sale_price REAL,
-     * tax REAL,
-     * tax_rate REAL,
-     * discount REAL,
-     * loyalty_value  REAL,
-     * sequence INTEGER,
-     * status TEXT ) */
+    // ------------------------------------------------------------------------------------------------------------ //
+    // [RegisterSaleItems] -------------------------------------------------------------------- [RegisterSaleItems] //
+    // ------------------------------------------------------------------------------------------------------------ //
+    // CREATE TABLE IF NOT EXISTS RegisterSaleItems (
+    // id TEXT PRIMARY KEY ON CONFLICT REPLACE,
+    // sale_id TEXT,
+    // product_id TEXT,
+    // name TEXT,
+    // quantity REAL,
+    // supply_price REAL,
+    // price REAL,
+    // sale_price REAL,
+    // tax REAL,
+    // tax_rate REAL,
+    // discount REAL,
+    // loyalty_value  REAL,
+    // sequence INTEGER,
+    // status TEXT ) //
 
-    /** -------------------
-     *  [INIT] DROP & CREATE
-     *  ------------------- */
+    // -------------------
+    //  [INIT] DROP & CREATE
+    // ------------------- 
     initRegisterSaleItems: function () {
       var e = this;
       e._doDSTransaction(function (t) {
@@ -943,9 +951,9 @@ Datastore_sqlite = function () {
     },
 
 
-    /** -------------------
-     *  [DEL] DELETE
-     *  ------------------- */
+    // -------------------
+    //  [DEL] DELETE
+    // ------------------- 
     deleteRegisterSaleItems: function (delInfo, suc, err) {
       var t = this, condition = [], sqlQuery = "DELETE from RegisterSaleItems WHERE sale_id = ? ";
       condition.push(delInfo.sale_id);
@@ -965,9 +973,9 @@ Datastore_sqlite = function () {
     },
 
 
-    /** -------------------
-     *  [SAVE] INSERT OR REPLACE
-     *  ------------------- */
+    // -------------------
+    //  [SAVE] INSERT OR REPLACE
+    // ------------------- 
     saveRegisterSaleItems: function (e, saveArray) {
       var i = [];
       var n = this;
@@ -991,9 +999,9 @@ Datastore_sqlite = function () {
       }
     },
 
-    /** -------------------
-     *  [GET] SELECT
-     *  ------------------- */
+    // -------------------
+    //  [GET] SELECT
+    // ------------------- 
     getRegisterSaleItems: function (data, suc, err) {
 
       var t = this, searchValue, success,
@@ -1026,9 +1034,9 @@ Datastore_sqlite = function () {
       })
     },
 
-    /** -------------------
-     *  [UPDATE] SELECT & UPDATE
-     *  ------------------- */
+    // -------------------
+    //  [UPDATE] SELECT & UPDATE
+    // ------------------- 
     updateRegisterSaleItems: function (data, suc, err) {
       var t = this;
       var queryString = "SELECT * FROM RegisterSaleItems WHERE sale_id = ? and product_id = ? and sequence = ?";
@@ -1053,14 +1061,23 @@ Datastore_sqlite = function () {
         t._logDBError(ex.message);
       }
     },
-    /** ------------------------------------------------------------------------------------------------------------ */
-    /** [RegisterSalePayments] -------------------------------------------------------------- [RegisterSalePayments] */
-    /** ------------------------------------------------------------------------------------------------------------ */
-
-    /** -------------------
-     *  [INIT] DROP & CREATE
-     *  ------------------- */
-    initRegisterSalePayment: function (tr) {
+    // ------------------------------------------------------------------------------------------------------------ //
+    // [RegisterSalePayments] -------------------------------------------------------------- [RegisterSalePayments] //
+    // ------------------------------------------------------------------------------------------------------------ //
+    // CREATE TABLE IF NOT EXISTS RegisterSalePayments (
+    // id TEXT PRIMARY KEY ON CONFLICT REPLACE, 
+    // sale_id TEXT, 
+    // register_id TEXT,      
+    // payment_type_id INTEGER, 
+    // merchant_payment_type_id TEXT, 
+    // amount REAL, 
+    // payment_date TEXT)
+    
+    
+    // -------------------
+    //  [INIT] DROP & CREATE
+    // ------------------- 
+    initRegisterSalePayments: function (tr) {
       var t = this;
       t._doDSTransaction(function (tr) {
         t._executeDSSql(tr, "DROP TABLE IF EXISTS RegisterSalePayments", []);
@@ -1070,9 +1087,9 @@ Datastore_sqlite = function () {
       })
     },
 
-    /** -------------------
-     *  [SAVE] INSERT OR REPLACE
-     *  ------------------- */
+    // -------------------
+    //  [SAVE] INSERT OR REPLACE
+    // ------------------- 
     saveRegisterSalePayments: function (data, suc, err) {
       var t = this, input = [data.id, data.sale_id, data.register_id, data.payment_type_id, data.merchant_payment_type_id, data.amount, data.payment_date];
       t._doDSTransaction(function (tr) {
@@ -1082,9 +1099,9 @@ Datastore_sqlite = function () {
       });
     },
 
-    /** -------------------
-     *  [DEL] DELETE
-     *  ------------------- */
+    // -------------------
+    //  [DEL] DELETE
+    // ------------------- 
     deleteRegisterSalePayments: function (data, suc, err) {
       var t = this, condition = [data.sale_id];
       //console.log(condition),
@@ -1093,9 +1110,9 @@ Datastore_sqlite = function () {
       });
     },
 
-    /** -------------------
-     *  [GET] SELECT
-     *  ------------------- */
+    // -------------------
+    //  [GET] SELECT
+    // ------------------- 
     getRegisterSalePayments: function (data, suc, err) {
       var t = this, input = [], success,
           sqlString = "SELECT * FROM RegisterSalePayments";
@@ -1118,9 +1135,9 @@ Datastore_sqlite = function () {
     },
 
 
-    /** ------------------------------------------------------------------------------------------------------------ */
-    /** [ETC] ------------------------------------------------------------------------------------------------ [ETC] */
-    /** ------------------------------------------------------------------------------------------------------------ */
+    // ------------------------------------------------------------------------------------------------------------ //
+    // [ETC] ------------------------------------------------------------------------------------------------ [ETC] //
+    // ------------------------------------------------------------------------------------------------------------ //
 
     saveRegisterAll: function (callBack, salesArray, salesItems) {
       var self = this;
@@ -1151,11 +1168,25 @@ Datastore_sqlite = function () {
       } catch (ex) {
         self._logDBError(ex.message);
       }
-    },
-
-
+    }
   }
 }();
+
+
+var _connectionQuery = function(queryString, addString, condition, addCondition) {
+  if (condition.length == 0) {
+    queryString += " WHERE ";
+  } else {
+    queryString += " AND ";
+  }
+  if (addString != null) {
+    queryString += addString;
+  }
+  if (addCondition != null) {
+    condition.push(addCondition);
+  }
+  return queryString;
+}
 
 var debug = function (s) {
   console.log(s);
