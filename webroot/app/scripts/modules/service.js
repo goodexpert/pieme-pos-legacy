@@ -167,10 +167,9 @@ angular.module('OnzsaApp.register', [])
       debug('Register: add line item');
 
       var saleID = _newRegisterSale();
-      _additionRegisterSaleTotal(saleItem);
-
       saleItem.sequence = registerSale.sequence++;
       saleItems.unshift(saleItem);
+      _recalcurateRegisterSaleTotal();
 
       _saveRegisterSaleItems([saleItem], saleID);
       _updateRegisterSale(saleID);
@@ -375,7 +374,7 @@ angular.module('OnzsaApp.register', [])
       debug('Register: switchRegister');
       return _checkOpenedRegister(register);
     };
-    
+
     sharedService.updateLineDiscount = function(discount, type) {
       debug('Register: updateLineDiscount');
       _updateLineDiscount(discount, type);
@@ -448,30 +447,33 @@ angular.module('OnzsaApp.register', [])
       console.groupEnd("");
 
       // restore old value
-      discountValue = registerSale.line_discount;
-      if (registerSale.line_discount_type == 0) { // percent
-        discountValue = registerSale.total_price_incl_tax / (1 - discountValue / 100) - registerSale.total_price_incl_tax;
-      }
-      registerSale.total_price_incl_tax += discountValue;
-      registerSale.total_discount -= discountValue;
-
-      // apply new value
-      discountValue = discount;
-      if (type == 0) { // percent
-        discountValue = registerSale.total_price_incl_tax * discount / 100;
-      }
-      registerSale.total_price_incl_tax -= discountValue;
-      registerSale.total_discount += discountValue;
+      //discountValue = registerSale.line_discount;
+      //if (registerSale.line_discount_type == 0) { // percent
+      //  discountValue = registerSale.total_price_incl_tax / (1 - discountValue / 100) - registerSale.total_price_incl_tax;
+      //}
+      //registerSale.total_price_incl_tax += discountValue;
+      //registerSale.total_discount -= discountValue;
 
       // save value
       registerSale.line_discount = discount;
       registerSale.line_discount_type = type;
 
+      _recalcurateRegisterSaleTotal();
+
+      // apply new value
+      //discountValue = discount;
+      //if (type == 0) { // percent
+      //  discountValue = registerSale.total_price_incl_tax * discount / 100;
+      //}
+      //registerSale.total_price_incl_tax -= discountValue;
+      //registerSale.total_discount += discountValue;
+
+
       // saver register sales
       _saveRegisterSales(saleID, "sale_status_open");
 
       //TODO: del end of debug
-      console.groupCollapsed("@ New value");
+      console.group("@ New value");
       console.debug("@ total_price_incl_tax : %f", registerSale.total_price_incl_tax);
       console.debug("@ total_discount       : %f", registerSale.total_discount);
       console.debug("@ line_discount        : %f", registerSale.line_discount);
@@ -812,9 +814,8 @@ angular.module('OnzsaApp.register', [])
           if (discProcId != oldItem.product_id) {
             _recalcSellItem(oldItem, newItem, priceBook);
           }
-          _subtractionRegisterSaleTotal(oldItem);
-          _additionRegisterSaleTotal(newItem);
           saleItems[idx] = newItem;
+          _recalcurateRegisterSaleTotal();
           _updateRegisterSaleItems(newItem, saleID, newItem.status);
         }
         defer.resolve(saleItems[idx]);
@@ -1379,28 +1380,6 @@ angular.module('OnzsaApp.register', [])
     }
 
     // --------------------------
-    // addition to registerSale structure using saleItem
-    // --------------------------
-    function _additionRegisterSaleTotal(saleItem) {
-      registerSale.total_cost += saleItem.supply_price * saleItem.quantity;
-      registerSale.total_price += saleItem.price * saleItem.quantity;
-      registerSale.total_price_incl_tax += (saleItem.sale_price + saleItem.tax) * saleItem.quantity;
-      registerSale.total_discount += saleItem.discount * saleItem.quantity;
-      registerSale.total_tax += saleItem.tax * saleItem.quantity;
-    }
-
-    // --------------------------
-    // subtraction to registerSale structure using saleItem
-    // --------------------------
-    function _subtractionRegisterSaleTotal(saleItem) {
-      registerSale.total_cost -= saleItem.supply_price * saleItem.quantity;
-      registerSale.total_price -= saleItem.price * saleItem.quantity;
-      registerSale.total_price_incl_tax -= (saleItem.sale_price + saleItem.tax) * saleItem.quantity;
-      registerSale.total_discount -= saleItem.discount * saleItem.quantity;
-      registerSale.total_tax -= saleItem.tax * saleItem.quantity;
-    }
-
-    // --------------------------
     // clear registerSale structure
     // --------------------------
     function _clearRegisterSaleTotal() {
@@ -1435,12 +1414,14 @@ angular.module('OnzsaApp.register', [])
         registerSale.total_tax += saleItem.tax * saleItem.quantity;
       }
 
-      var discountValue = registerSale.line_discount;
-      if (registerSale.line_discount_type == 0) { // percent
-        discountValue = registerSale.total_price_incl_tax / (1 - discountValue / 100) - registerSale.total_price_incl_tax;
+      if (registerSale.line_discount != 0) {
+        var discountValue = registerSale.line_discount;
+        if (registerSale.line_discount_type == 0) { // percent
+          discountValue = registerSale.total_price_incl_tax * (discountValue / 100);
+        }
+        registerSale.total_discount += discountValue;
+        registerSale.total_price_incl_tax -= discountValue;
       }
-      registerSale.total_discount += discountValue;
-      registerSale.total_price_incl_tax -= discountValue;
     }
 
     // --------------------------
