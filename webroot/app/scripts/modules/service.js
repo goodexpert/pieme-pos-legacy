@@ -185,11 +185,13 @@ angular.module('OnzsaApp.register', [])
       var config = LocalStorage.getConfig();
       var defDiscItemID = config.discount_product_id;
       if (defDiscItemID == null) {
-        return null;
+        defer.reject('discount_product_id is null');
+        return defer.promise
       }
       _getProduct(function(rs) {
         if (rs.length == 0) {
-          defer.reject('not found');
+          defer.reject('product not found');
+          return defer.promise
         }
         var product = rs[0];
         var uuid = _getUUID();

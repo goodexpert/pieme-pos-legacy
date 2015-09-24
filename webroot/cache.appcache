@@ -1,8 +1,12 @@
 CACHE MANIFEST
-# Version : 2015.09.24 - 003
+# Version : 2015.09.24 - 009
 # Explicit section
 CACHE:
 //fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&amp;subset=all
+/theme/onzsa/assets/global/plugins/font-awesome/fonts/fontawesome-webfont.woff
+/theme/metronic/assets/global/plugins/bootstrap/fonts/glyphicons-halflings-regular.woff
+/theme/metronic/assets/global/plugins/bootstrap/fonts/glyphicons-halflings-regular.woff2
+/theme/metronic/assets/global/plugins/simple-line-icons/fonts/Simple-Line-Icons.woff
 
 /theme/metronic/assets/admin/pages/css/tasks.css
 /theme/metronic/assets/global/css/components-md.css
