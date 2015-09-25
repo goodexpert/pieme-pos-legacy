@@ -188,6 +188,15 @@ class SetupController extends AppController {
         $this->set("taxes", $taxes);
     }
 
+    /**
+     * Resources function.
+     *
+     * @return void
+     */
+    public function resources() {
+        $this->redirect(array('controller' => 'Resources', 'action' => 'index'));
+    }
+
 /**
  * QuickKey setup function.
  *
