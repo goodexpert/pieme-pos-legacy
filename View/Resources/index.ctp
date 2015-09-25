@@ -14,7 +14,7 @@
         </button>
     </div>
 </div>
-<table id="resourceTable" class="table-bordered dataTable no-footer" role="grid" aria-describedby="brandTable_info">
+<table id="resourceTable" class="table-bordered">
     <colgroup>
         <col width="25%">
         <col width="25%">
@@ -29,20 +29,24 @@
         <th></th>
     </tr>
     </thead>
-    <?php foreach ($resources as $resource) : ?>
-        <tr>
-            <td class="resource_type_id"
-                style="display: none;"><?= $resource['MerchantResource']['resource_type_id']; ?></td>
-            <td class="resource_type_name"><?= $resource['MerchantResource']['resource_name']; ?></td>
-            <td class="name"><?= $resource['MerchantResource']['name']; ?></td>
-            <td class="user_field_1"><?= $resource['MerchantResource']['user_field_1']; ?></td>
-            <td>
-                <a href="javascript:;" class="edit-resource"
-                   data-id="<?= $resource['MerchantResource']['id']; ?>">Edit</a> |
-                <a href="javascript:;" class="delete-resource" data-id="<?= $resource['MerchantResource']['id']; ?>">Delete</a>
-            </td>
-        </tr>
-    <?php endforeach; ?>
+    <tbody>
+        <?php foreach ($resources as $resource) : ?>
+
+            <tr>
+                <td class="resource_type_name">
+                    <input class="resource_type_id" type="hidden" value="<?= $resource['MerchantResource']['resource_type_id']; ?>">
+                    <?= $resource['MerchantResource']['resource_name']; ?>
+                </td>
+                <td class="name"><?= $resource['MerchantResource']['name']; ?></td>
+                <td class="user_field_1"><?= $resource['MerchantResource']['user_field_1']; ?></td>
+                <td>
+                    <a href="javascript:;" class="edit-resource"
+                       data-id="<?= $resource['MerchantResource']['id']; ?>">Edit</a> |
+                    <a href="javascript:;" class="delete-resource" data-id="<?= $resource['MerchantResource']['id']; ?>">Delete</a>
+                </td>
+            </tr>
+
+        <?php endforeach; ?>
     </tbody>
 </table>
 <!-- END CONTENT -->
@@ -94,11 +98,10 @@ function documentInit() {
     // common init function
     commonInit();
     
-    $("#typeTable").DataTable({
+    $("#resourceTable").DataTable({
         searching: false
     });
-
-    $("#typeTable_length").hide();
+    $("#resourceTable_length").hide();
 
     $(".add-resource").confirm({
         title:'Input New Resource',
