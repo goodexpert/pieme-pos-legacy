@@ -496,21 +496,27 @@ angular.module('OnzsaApp.register', [])
       return _checkNetworkConnectivity()
         .then(function(response) {
           onlineStatus = 'online';
+          sleep(1000);
           return _receiveSessionUser()
         })
         .then(function(userInfo){
+          sleep(1000);
           return _checkInitDatastore(userInfo);
         })
         .then(function(){
+          sleep(1000);
           return _receiveProducts();
         })
         .then(function(){
+          sleep(1000);
           return _receivePaymentTypes();
         })
         .then(function(){
+          sleep(1000);
           return _receiveTaxes();
         })
         .then(function(){
+          sleep(1000);
           return _checkRegisterID();
         })
 
@@ -534,6 +540,8 @@ angular.module('OnzsaApp.register', [])
     // --------------------------
     function _checkOpenedRegister(register) {
       //console.debug("Register: do checking register open");
+      //$rootScope.loadingMessage = "Check open status for register.";
+      $rootScope.$broadcast('loading.progress', {msg:'Check open status for register.'});
 
       return _isOpenedRegister(register)
       .then(function(result){
@@ -589,6 +597,9 @@ angular.module('OnzsaApp.register', [])
     // --------------------------
     function _instantBootstrapSystem() {
       debug("Register: do instant BootstrapSystem");
+      //$rootScope.loadingMessage = "Setup offline mode.";
+      $rootScope.$broadcast('loading.progress', {msg:'Setup offline mode.'});
+
       var deferred = $q.defer();
       var result = [];
 
@@ -629,7 +640,7 @@ angular.module('OnzsaApp.register', [])
 
     function _checkNetworkConnectivity() {
       //debug("REQUEST: ping...");
-
+      //$rootScope.loadingMessage = "Check Network Connectivity.";
       if (window.navigator.onLine == true) {  //TODO: check for mobile
         return $http.get('/api/ping.json');
       } else {
@@ -886,7 +897,15 @@ angular.module('OnzsaApp.register', [])
     // --------------------------
     function _checkInitDatastore(userInfo) {
       debug("INIT: check merchant id or user id");
+      //$rootScope.loadingMessage = "Check Datastore.";
+      $rootScope.$broadcast('loading.progress', {msg:'Check Datastore'});
+
       var deferred = $q.defer();
+      if (userInfo == null) {
+        debug("INIT: userInfo is null");
+        deferred.reject('userInfo is null');
+        return deferred.promise;
+      }
 
       // Get saved ID from Cookie
       var savedMerchantID = $cookies.get('onzsa.merchant_id');
@@ -941,6 +960,8 @@ angular.module('OnzsaApp.register', [])
 
       debug("REFRESH: registers");
       debug("REQUEST: registers >>>>>>>>>>>>>>>>>>>>>");
+      //$rootScope.loadingMessage = "Check register ID.";
+      $rootScope.$broadcast('loading.progress', {msg:'Check register ID.'});
 
       $http.get('/api/registers.json')
         .then(function (response) {
@@ -994,6 +1015,8 @@ angular.module('OnzsaApp.register', [])
     function _receiveProducts() {
       debug("REFRESH: products");
       debug("REQUEST: products >>>>>>>>>>>>>>>>>>>>>");
+      //$rootScope.loadingMessage = "Receive products information.";
+      $rootScope.$broadcast('loading.progress', {msg:'Receive products information.'});
 
       var lastSyncTime = LocalStorage.getDataSyncTime("products");
       var deferred = $q.defer();
@@ -1024,6 +1047,8 @@ angular.module('OnzsaApp.register', [])
     function _receivePaymentTypes() {
       debug("REFRESH: payment_types");
       debug("REQUEST: payment_types >>>>>>>>>>>>>>>>>>>>>");
+      //$rootScope.loadingMessage = "Receive payment types information.";
+      $rootScope.$broadcast('loading.progress', {msg:'Receive payment types information.'});
 
       var lastSyncTime = LocalStorage.getDataSyncTime("payment_types");
       var deferred = $q.defer();
@@ -1054,6 +1079,9 @@ angular.module('OnzsaApp.register', [])
     function _receiveTaxes() {
       debug("REFRESH: taxes");
       debug("REQUEST: taxes >>>>>>>>>>>>>>>>>>>>>");
+      //$rootScope.loadingMessage = "Receive taxes information.";
+      $rootScope.$broadcast('loading.progress', {msg:'Receive taxes information.'});
+
 
       var lastSyncTime = LocalStorage.getDataSyncTime("taxes");
       var deferred = $q.defer();
@@ -1084,6 +1112,8 @@ angular.module('OnzsaApp.register', [])
     function _receivePriceBooks(register_id) {
       debug("REFRESH: price books");
       debug("REQUEST: price books >>>>>>>>>>>>>>>>>>>>>");
+      //$rootScope.loadingMessage = "Receive price books information.";
+      $rootScope.$broadcast('loading.progress', {msg:'Receive price books information.'});
 
       var deferred = $q.defer();
       $http.get('/api/get_price_books.json?register_id=' + register_id)
@@ -1112,6 +1142,8 @@ angular.module('OnzsaApp.register', [])
     function _receiveConfig() {
       debug("REFRESH: config");
       debug("REQUEST: config >>>>>>>>>>>>>>>>>>>>>");
+      //$rootScope.loadingMessage = "Receive register config information.";
+      $rootScope.$broadcast('loading.progress', {msg:'Receive register config information.'});
 
       var deferred = $q.defer();
       $http.get('/api/config.json')
@@ -1139,8 +1171,8 @@ angular.module('OnzsaApp.register', [])
     function _switchRegister(register) {
       debug("*** Switching register");
       debug("LOOKUP: Existing register from datastore – %o", register);
-      //debug("SAVE: Prepare register " + t.id);
-      //debug("OPEN: register – " + r);
+      //$rootScope.loadingMessage = "Save register information.";
+      $rootScope.$broadcast('loading.progress', {msg:'Save register information.'});
 
       var deferred = $q.defer();
 
@@ -1165,6 +1197,8 @@ angular.module('OnzsaApp.register', [])
     // --------------------------
     function _openRegister(register) {
       //debug("REQUEST:  open register  >>>>>>>>>>>>>>>>>>>>>");
+      //$rootScope.loadingMessage = "Change status to open for sale.";
+      $rootScope.$broadcast('loading.progress', {msg:'Change status to open for sale.'});
 
       $http.post('/api/open_register.json', {'register_id':register.id})
       .then(function (response) {
@@ -1204,7 +1238,7 @@ angular.module('OnzsaApp.register', [])
         },
         success: function(result) {
           if(result.success) {
-            window.location.href = "/users/logout";
+            window.location.href = "/dashboard";
           } else {
             console.log(result);
           }
@@ -1247,6 +1281,8 @@ angular.module('OnzsaApp.register', [])
     function _receiveSessionUser() {
       //debug("REFRESH: signed user information");
       //debug("REQUEST: signed user information  >>>>>>>>>>>>>>>>>>>>>");
+      //$rootScope.loadingMessage = "Receive Session User Information.";
+      $rootScope.$broadcast('loading.progress', {msg:'Receive Session User Information.'});
 
       var deferred = $q.defer();
       $http.get('/api/check_user_session.json')
@@ -1868,6 +1904,9 @@ angular.module('OnzsaApp.register', [])
     // reload Register Sale
     // --------------------------
     function _reloadSale(receivedSaleID) {
+      //$rootScope.loadingMessage = "Reloading sales information.";
+      $rootScope.$broadcast('loading.progress', {msg:'Reloading sales information.'});
+
       var saleID = receivedSaleID;
       if (saleID == null) {
         saleID = LocalStorage.getSaleID();
@@ -1906,6 +1945,16 @@ angular.module('OnzsaApp.register', [])
       }
     }
 
+    function sleep(num) {
+      var now = new Date();
+      var stop = now.getTime() + num;
+      while (true) {
+        now = new Date();
+        if (now.getTime() > stop) {
+          return;
+        }
+      }
+    }
 
     return sharedService;
   }]);

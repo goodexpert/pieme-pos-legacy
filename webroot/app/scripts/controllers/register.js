@@ -18,10 +18,13 @@ angular.module('OnzsaApp', [])
   // set sidebar closed and body solid layout mode
   //$rootScope.settings.layout.pageSidebarClosed = false;
   //openSplash();
+  $rootScope.loadingInstance = null;
 
   // initialize the register service
+  openLoading();
   Register.init()
     .then(function(response) {
+      closeLoading();
       if (response.status == "waitRegister") {
         debug('register open selector');
         openRegisterSelector(response.data);
@@ -34,6 +37,8 @@ angular.module('OnzsaApp', [])
       }
     }, function(response) {
       debug('register initialize failed');
+      closeLoading();
+      $window.location.href = '/dashboard';
     });
 
   if ($stateParams["saleId"] != null) {
@@ -50,7 +55,8 @@ angular.module('OnzsaApp', [])
   $scope.$on('sale.reloaded', reloadedSale);
   $scope.$on('register.ready', preparedRegister);
   $scope.$on('register.failed', preparedRegister);
-
+  $scope.$on('loading.open', openLoading);
+  $scope.$on('loading.close', closeLoading);
 
   hotkeys.add({
     combo: 'f6',
@@ -224,6 +230,7 @@ angular.module('OnzsaApp', [])
   // Defines callback functions
   $scope.doLogout = function() {
     debug('doLogout');
+    window.location.href = "/signin/logout";
   };
 
   $scope.doSetup = function() {
@@ -445,6 +452,7 @@ angular.module('OnzsaApp', [])
   };
 
   function preparedRegister(result) {
+    closeLoading();
     $rootScope.config = LocalStorage.getConfig();
 
     if ('register.ready' == result.name) {
@@ -558,12 +566,16 @@ angular.module('OnzsaApp', [])
     });
 
     modalInstance.result.then(function(selectedItem) {
+      openLoading();
       Register.switchRegister(selectedItem)
       .then(function(result) {
+        closeLoading();
         if (result.status == "openRegister") {
-          Register.openRegister(result.data);
+          openLoading();
+          Register.openRegister(result.data)
+          .then(function(){closeLoading();}),function(){closeLoading();};
         }
-      });
+      }),function(){closeLoading();};
     });
   }
 
@@ -636,8 +648,48 @@ angular.module('OnzsaApp', [])
     });
 
     modalInstance.result.then(function(register) {
-      Register.openRegister(register);
+      openLoading();
+      Register.openRegister(register)
+      .then(function(){closeLoading();}),function(){closeLoading();};
     });
+  }
+
+  function openLoading() {
+    $rootScope.loadingInstance = $modal.open({
+      templateUrl: '/app/tpl/loading.html',
+      controller: 'LoadingController',
+      backdrop: 'static',
+      keyboard: false,
+      size: 'md',
+      resolve: {
+        items: function() {
+          return null;
+        }
+      }
+    });
+
+    //$rootScope.loadingInstance.opened.then(function() {
+    //  openCheck();
+    //});
+    //
+    //function openCheck() {
+    //  //if ($layerPopupObj.length == 0) {
+    //  //  $timeout(openCheck(), 1000);
+    //  //}
+    //  $timeout ( function(){
+    //    console.log(angular.element(".modal-dialog"));
+    //  },0);
+    //  var $layerPopupObj = $('.modal-dialog');
+    //  //var left = ( $(window).scrollLeft() + ($(window).width() - $layerPopupObj.width()) / 2 );
+    //  var top = ( $(window).scrollTop() + ($(window).height() - $layerPopupObj.height()) / 2 ) - 50;
+    //  $layerPopupObj.css({'left': left, 'top': top});
+    //  //$layerPopupObj.css({'left': left, 'top': top, 'position': 'absolute'});
+    //  //$('body').css('position', 'relative').append($layerPopupObj);
+    //}
+  }
+
+  function closeLoading() {
+    $rootScope.loadingInstance.close();
   }
 
 
@@ -655,13 +707,32 @@ angular.module('OnzsaApp', [])
 
   $scope.cancel = function() {
     $modalInstance.dismiss('cancel');
-    $window.location.href = '/users/logout';
+    $window.location.href = '/dashboard';
   };
 
   $scope.confirm = function() {
     $modalInstance.close($scope.register);
   };
+})
 
+
+.controller('LoadingController', function($rootScope, $scope, $modalInstance, $window, Register, locale, items) {
+  $scope.discription = 'Loading Data...';
+
+  $scope.$on('loading.progress', progressLoading);
+
+  function progressLoading(event, args) {
+    $scope.discription = args.msg;
+  }
+
+  function init() {
+
+    var $layerPopupObj = $('.modal-dialog');
+    var left = ( $(window).scrollLeft() + ($(window).width() - $layerPopupObj.width()) / 2 );
+    var top = ( $(window).scrollTop() + ($(window).height() - $layerPopupObj.height()) / 2 );
+    $layerPopupObj.css({'left': left, 'top': top, 'position': 'absolute'});
+    $('body').css('position', 'relative').append($layerPopupObj);
+  }
 })
 
 .controller('SplashController', function($rootScope, $scope, $modalInstance) {
