@@ -137,12 +137,9 @@
                   <dd class="col-md-8">
                     <select id="product_uom">
                         <option></option>
-                        <?php foreach($uoms as $uom) { ?>
-                          <optgroup label="<?php echo $uom['ProductUomCategory']['name'];?>">
-                              <?php foreach($uom['ProductUom'] as $unit) { ?>
-                                  <option value="<?php echo $unit['id'];?>" <?php if(isset($_GET['parent_id']) && $parent['MerchantProduct']['product_uom'] == $unit['id']){echo "selected";}?>><?php echo $unit['name'].' ('.$unit['symbol'].')';?></option>
-                              <?php }
-                        } ?>
+                      <?php foreach($uoms as $uom) {?>
+                        <option value="<?php echo $uom['ProductUom']['id'];?>"><?php echo $uom['ProductUom']['name'].' ('.$uom['ProductUom']['symbol'].')';?></option>
+                      <?php }?>
                     </select>
                   </dd>
                 </dl>
@@ -917,4 +914,4 @@ function documentInit() {
   });
 };
 </script> 
-<!-- END JAVASCRIPTS --> 
+<!-- END JAVASCRIPTS -->

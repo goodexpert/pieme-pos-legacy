@@ -130,12 +130,9 @@
                 <dd class="col-md-9">
                   <select id="product_uom">
                       <option selected></option>
-                      <?php foreach($uoms as $uom) { ?>
-                        <optgroup label="<?php echo $uom['ProductUomCategory']['name'];?>">
-                            <?php foreach($uom['ProductUom'] as $unit) { ?>
-                                <option value="<?php echo $unit['id'];?>"><?php echo $unit['name'].' ('.$unit['symbol'].')';?></option>
-                            <?php }
-                      } ?>
+                    <?php foreach($uoms as $uom) {?>
+                        <option value="<?php echo $uom['ProductUom']['id'];?>"><?php echo $uom['ProductUom']['name'].' ('.$uom['ProductUom']['symbol'].')';?></option>
+                  <?php }?>
                   </select>
                 </dd>
               </dl>

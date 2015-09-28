@@ -1,3 +1,5 @@
+<link type="text/css" rel="stylesheet" href="/theme/onzsa/assets/global/plugins/jquery-ui-themes-1.11.0/themes/smoothness/jquery-ui.css"/>
+
 <div class="clearfix"></div>
     <div id="notify"></div>
     <!-- BEGIN CONTENT -->

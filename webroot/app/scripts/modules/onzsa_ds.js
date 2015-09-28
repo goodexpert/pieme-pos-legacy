@@ -103,101 +103,6 @@ Datastore_sqlite = function () {
       if (logData != null && typeof(logData) == 'object') console.log(logData)
     },
 
-    // -------------------
-    //  [Test] testCall
-    // ------------------- 
-    // 콜벡 처리 필요없는 여러개의 쿼리를 트랜젝션 처리 하는 예제
-    // 중간에 쿼리가 실패하면 트랜젝션 처리 되어서 저장 않되고 실패한 쿼리의 에러가 호출된 후
-    // 트랜젝션의 성공처리가 실행됨.
-    testCall: function (e) {
-      console.log("[TEST] START: "),
-          e ? console.log(e) : console.log("[TEST] START: e: null");
-      var t = this;
-      console.log("[TEST] BEFORE TRANSACTION: "),
-          t._doDSTransaction(
-              function (tr) {
-                console.log("[TEST] BEFORE EXECUTE: "), tr ? console.log(tr) : console.log("[TEST] BEFORE EXECUTE: tr: null")
-                t._executeDSSql(tr, "DROP TABLE IF EXISTS TEST1", []),
-                    t._executeDSSql(tr, "DROP TABLE IF EXISTS TEST2", []),
-                    t._executeDSSql(tr, "DROP TABLE IF EXISTS TEST3", []),
-                    t._executeDSSql(tr, "DROP TABLE IF EXISTS TEST4", []),
-                    t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS TEST1 (id TEXT PRIMARY KEY ON CONFLICT REPLACE, name TEXT)", [], function () {
-                      console.log("[TEST] TRANS EXEC TEST1: SUCCESS")
-                    }, function () {
-                      console.log("[TEST] TRANS EXEC TEST1: ERROR")
-                    }),
-                    t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS TEST2 (id TEXT PRIMARY KEY ON CONFLICT REPLACE, name TEXT)", [], function () {
-                      console.log("[TEST] TRANS EXEC TEST2: SUCCESS")
-                    }, function () {
-                      console.log("[TEST] TRANS EXEC TEST2: ERROR")
-                    }),
-                    t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS TEST3 (id TEXT PRIMARY KEY ON CONFLICT REPLACE, name TEXT)", [], function () {
-                      console.log("[TEST] TRANS EXEC TEST3: SUCCESS")
-                    }, function () {
-                      console.log("[TEST] TRANS EXEC TEST3: ERROR")
-                    }),
-                    t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS TEST4 (id TEXT PRIMARY KEY ON CONFLICT REPLACE, name TEXT)", [], function () {
-                      console.log("[TEST] TRANS EXEC TEST4: SUCCESS")
-                    }, function () {
-                      console.log("[TEST] TRANS EXEC TEST4: ERROR")
-                    })
-              },
-              function () {
-                console.log("[TEST] TRANS: SUCCESS")
-              },
-              function () {
-                console.log("[TEST] TRANS: ERROR")
-              }
-          )
-    },
-    // -------------------
-    //  [Test] testCall2
-    // ------------------- 
-    // 콜벡을 받아와서 각 쿼리에 세팅하면 각 쿼리의 성공여부에 따라서 콜러에게 전달 할 수 있다.
-    // 각 쿼리의 성공/실패 함수에 변수 셋팅하도록 하면 전체 결과에 대해 판단 가능하다.
-    // 트랜젝션은 성공 처리됨.
-    testCall2: function (callback) {
-      console.log("[TEST] START: "),
-          callback ? console.log(callback) : console.log("[TEST] START: callback: null");
-      var t = this, f1 = false, f2 = false, f3 = false, f4 = false;
-      console.log("[TEST] BEFORE TRANSACTION: "),
-          t._doDSTransaction(
-              function (tr) {
-                console.log("[TEST] BEFORE EXECUTE: "), tr ? console.log(tr) : console.log("[TEST] BEFORE EXECUTE: tr: null")
-                t._executeDSSql(tr, "CREATE1 TABLE IF NOT EXISTS TEST1 (id TEXT PRIMARY KEY ON CONFLICT REPLACE, name TEXT)", [], function () {
-                  callback("[TEST] CALL-BACK1 OK"), f1 = true
-                }, function () {
-                  callback("[TEST] CALL-BACK1 NG")
-                })
-                t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS TEST2 (id TEXT PRIMARY KEY ON CONFLICT REPLACE, name TEXT)", [], function () {
-                  callback("[TEST] CALL-BACK2 OK"), f2 = true
-                }, function () {
-                  callback("[TEST] CALL-BACK2 NG")
-                })
-                t._executeDSSql(tr, "CREATE1 TABLE IF NOT EXISTS TEST3 (id TEXT PRIMARY KEY ON CONFLICT REPLACE, name TEXT)", [], function () {
-                  callback("[TEST] CALL-BACK3 OK"), f3 = true
-                }, function () {
-                  callback("[TEST] CALL-BACK3 NG")
-                })
-                t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS TEST4 (id TEXT PRIMARY KEY ON CONFLICT REPLACE, name TEXT)", [], function () {
-                  callback("[TEST] CALL-BACK4 OK"), f4 = true
-                }, function () {
-                  callback("[TEST] CALL-BACK4 NG")
-                })
-              },
-              function () {
-                console.log("[TEST] TRANS: SUCCESS"),
-                    console.log("Sub Query F1 success: " + f1),
-                    console.log("Sub Query F2 success: " + f2),
-                    console.log("Sub Query F3 success: " + f3),
-                    console.log("Sub Query F4 success: " + f4)
-              },
-              function () {
-                console.log("[TEST] TRANS: ERROR")
-              }
-          )
-    },
-
     // ------------------------------------------------------------------------------------------------------------ //
     // [Common] ------------------------------------------------------------------------------------------ [Common] //
     // ------------------------------------------------------------------------------------------------------------ //
@@ -282,7 +187,7 @@ Datastore_sqlite = function () {
         })
 
         // Products
-        t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS Products (id TEXT PRIMARY KEY ON CONFLICT REPLACE, merchant_id TEXT, name TEXT, handle TEXT, description TEXT, brand_name TEXT, supplier_name TEXT, sku TEXT, supply_price REAL, price REAL, tax REAL, tax_name TEXT, tax_rate REAL, retail_price REAL, image TEXT, image_large TEXT)", [], function () {
+        t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS Products (id TEXT PRIMARY KEY ON CONFLICT REPLACE, merchant_id TEXT, name TEXT, handle TEXT, description TEXT, brand_name TEXT, supplier_name TEXT, sku TEXT, supply_price REAL, price REAL, product_uom TEXT, tax REAL, tax_name TEXT, tax_rate REAL, retail_price REAL, image TEXT, image_large TEXT)", [], function () {
           t._log("initLocalDataStore", "Products : Success")
         }, function (e) {
           t._log("initLocalDataStore", "Products : Error : " + e)
@@ -305,7 +210,7 @@ Datastore_sqlite = function () {
         });
 
         // RegisterSaleItems
-        t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS RegisterSaleItems ( id TEXT PRIMARY KEY ON CONFLICT REPLACE, sale_id TEXT, product_id TEXT, name TEXT, quantity REAL, supply_price REAL, price REAL, sale_price REAL, tax REAL, tax_rate REAL, discount REAL, loyalty_value  REAL, sequence INTEGER, status TEXT)", [], function () {
+        t._executeDSSql(tr, "CREATE TABLE IF NOT EXISTS RegisterSaleItems ( id TEXT PRIMARY KEY ON CONFLICT REPLACE, sale_id TEXT, product_id TEXT, name TEXT, quantity REAL, product_uom TEXT, supply_price REAL, price REAL, sale_price REAL, tax REAL, tax_rate REAL, discount REAL, loyalty_value  REAL, sequence INTEGER, status TEXT)", [], function () {
           t._log("initLocalDataStore", "RegisterSaleItems : Success")
         }, function (e) {
           t._log("initLocalDataStore", "RegisterSaleItems : Error : " + e)
@@ -474,6 +379,7 @@ Datastore_sqlite = function () {
     // sku TEXT,
     // supply_price REAL,
     // price REAL,
+    // product_uom TEXT,
     // tax REAL,
     // tax_name TEXT,
     // tax_rate REAL,
@@ -500,6 +406,7 @@ Datastore_sqlite = function () {
             ", sku TEXT" +
             ", supply_price REAL" +
             ", price REAL" +
+            ", product_uom TEXT" +
             ", tax REAL" +
             ", tax_name TEXT" +
             ", tax_rate REAL" +
@@ -559,18 +466,18 @@ Datastore_sqlite = function () {
       var t = this;
       var sqlQuery = "INSERT or REPLACE INTO Products (" +
           "  id, merchant_id, name, handle, description, brand_name, supplier_name, sku" +
-          ", supply_price, price, tax, tax_name, tax_rate, retail_price" +
+          ", supply_price, price, product_uom, tax, tax_name, tax_rate, retail_price" +
           ", image, image_large" +
           ") values (" +
           "  ?, ?, ?, ?, ?, ?, ?, ?" +
-          ", ?, ?, ?, ?, ?, ?" +
+          ", ?, ?, ?, ?, ?, ?, ?" +
           ", ?, ?" +
           ")";
       var setValues = [], i = 0;
       for (i = 0; i < setData.length; i++) {
         var data = [
           setData[i].id, setData[i].merchant_id, setData[i].name, setData[i].handle, setData[i].description, setData[i].brand_name, setData[i].supplier_name, setData[i].sku,
-          setData[i].supply_price, setData[i].price, setData[i].tax, setData[i].tax_name, setData[i].tax_rate, setData[i].price_include_tax,
+          setData[i].supply_price, setData[i].price, setData[i].product_uom, setData[i].tax, setData[i].tax_name, setData[i].tax_rate, setData[i].price_include_tax,
           setData[i].image, setData[i].image_large
         ];
         setValues.push(data);
@@ -929,6 +836,7 @@ Datastore_sqlite = function () {
     // product_id TEXT,
     // name TEXT,
     // quantity REAL,
+    // product_uom TEXT,
     // supply_price REAL,
     // price REAL,
     // sale_price REAL,
@@ -946,7 +854,7 @@ Datastore_sqlite = function () {
       var e = this;
       e._doDSTransaction(function (t) {
         e._executeDSSql(t, "DROP TABLE IF EXISTS RegisterSaleItems", []);
-        e._executeDSSql(t, "CREATE TABLE IF NOT EXISTS RegisterSaleItems ( id TEXT PRIMARY KEY ON CONFLICT REPLACE, sale_id TEXT, product_id TEXT, name TEXT, quantity REAL, supply_price REAL, price REAL, sale_price REAL, tax REAL, tax_rate REAL, discount REAL, loyalty_value  REAL, sequence INTEGER, status TEXT)")
+        e._executeDSSql(t, "CREATE TABLE IF NOT EXISTS RegisterSaleItems ( id TEXT PRIMARY KEY ON CONFLICT REPLACE, sale_id TEXT, product_id TEXT, name TEXT, quantity REAL, product_uom TEXT, supply_price REAL, price REAL, sale_price REAL, tax REAL, tax_rate REAL, discount REAL, loyalty_value  REAL, sequence INTEGER, status TEXT)")
       })
     },
 
@@ -983,7 +891,7 @@ Datastore_sqlite = function () {
 
       for (var k = 0; k < saveArray.length; k++) {
         i = saveArray[k];
-        inputValues.push([i.id, i.sale_id, i.product_id, i.name, i.quantity, i.supply_price, i.price, i.sale_price, i.tax, i.tax_rate, i.discount, i.loyalty_value, i.sequence, i.status]);
+        inputValues.push([i.id, i.sale_id, i.product_id, i.name, i.quantity, i.product_uom, i.supply_price, i.price, i.sale_price, i.tax, i.tax_rate, i.discount, i.loyalty_value, i.sequence, i.status]);
       }
 
       try {
@@ -991,7 +899,7 @@ Datastore_sqlite = function () {
           for (var j = 0; j < inputValues.length; j++) {
             var inputValue = inputValues[j];
             //console.debug("@@@ save sale items : %o", inputValue);
-            n._executeDSSql(e, "INSERT or replace INTO RegisterSaleItems (id, sale_id, product_id, name, quantity, supply_price, price, sale_price, tax, tax_rate, discount, loyalty_value, sequence, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputValue);
+            n._executeDSSql(e, "INSERT or replace INTO RegisterSaleItems (id, sale_id, product_id, name, quantity, product_uom, supply_price, price, sale_price, tax, tax_rate, discount, loyalty_value, sequence, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", inputValue);
           }
         });
       } catch (ex) {

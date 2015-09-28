@@ -401,6 +401,7 @@ class ApiController extends AppController {
           'MerchantProduct.sku',
           'MerchantProduct.supply_price',
           'MerchantProduct.price',
+          'MerchantProduct.product_uom',
           'MerchantProduct.tax',
           'MerchantProduct.price_include_tax',
           'MerchantProductBrand.name',

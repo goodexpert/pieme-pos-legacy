@@ -404,19 +404,15 @@ class ProductController extends AppController {
             }
         }
         $this->loadModel("ProductUom");
-        $this->loadModel("ProductUomCategory");
-        
-        $this->ProductUomCategory->bindModel(array(
-            'hasMany' => array(
-                'ProductUom' => array(
-                    'className' => 'ProductUom',
-                    'foreignKey' => 'category_id'
+
+        $uoms = $this->ProductUom->find('all',array(
+                'conditions' =>array(
+                    'ProductUom.is_active = 1'
                 )
             )
-        ));
-        
-        $uoms = $this->ProductUomCategory->find('all');
+        );
         $this->set('uoms',$uoms);
+
         
         $this->loadModel("MerchantOutlet");
         $outlets = $this->MerchantOutlet->find('all', array(
@@ -763,18 +759,23 @@ class ProductController extends AppController {
             }
         }
         
-        $this->loadModel("productUom");
+        $this->loadModel("ProductUom");
         $this->loadModel("ProductUomCategory");
         
-        $this->ProductUomCategory->bindModel(array(
-            'hasMany' => array(
-                'ProductUom' => array(
-                    'className' => 'ProductUom',
-                    'foreignKey' => 'category_id'
-                )
+//        $this->ProductUomCategory->bindModel(array(
+//            'hasMany' => array(
+//                'ProductUom' => array(
+//                    'className' => 'ProductUom',
+//                    'foreignKey' => 'category_id'
+//                )
+//            )
+//        ));
+        $uoms = $this->ProductUom->find('all',array(
+          'conditions' =>array(
+            'ProductUom.is_active = 1'
             )
-        ));
-        $uoms = $this->ProductUomCategory->find('all');
+          )
+        );
         $this->set('uoms',$uoms);
         
         $categories = $this->MerchantProductTag->find('all', array(

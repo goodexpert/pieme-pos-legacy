@@ -38,7 +38,7 @@ angular.module('OnzsaApp', [])
     }, function(response) {
       debug('register initialize failed');
       closeLoading();
-      $window.location.href = '/dashboard';
+      window.location.href = '/dashboard';
     });
 
   if ($stateParams["saleId"] != null) {

@@ -11,7 +11,7 @@
                     </span>
                     <div class="quick-key-btn" >
                         <button class="btn btn-primary cancel">Cancel</button>
-                        <button class="btn btn-primary delete">Delete Layout</button>
+<!--                        <button class="btn btn-primary delete">Delete Layout</button>-->
                         <button class="btn btn-success save">Save Layout</button>
                     </div>
                 </div>
@@ -426,7 +426,7 @@
       var key_layouts = JSON.stringify(quick_keys);
 
       $.ajax({
-        url: location.href+'.json',
+        url: location.pathname+'.json',
         type: "POST",
         data: {
           name: $("#layout_name").val(),
@@ -443,24 +443,24 @@
 
     });
 
-    $(".delete").click(function() {
-      var quick_key_id = location.pathname.split("/")[2];
-      console.log(quick_key_id);
-      $.ajax({
-        url: "/QuickKey/delete.json",
-        type: "POST",
-        data: {
-          id: quick_key_id
-        },
-        success: function(result) {
-          if(result.success) {
-            window.location.href = "/setup/quick_keys";
-          } else {
-            console.log(result);
-          }
-        }
-      });
-    });
+//    $(".delete").click(function() {
+//      var quick_key_id = location.pathname.split("/")[2];
+//      console.log(quick_key_id);
+//      $.ajax({
+//        url: "/QuickKey/delete.json",
+//        type: "POST",
+//        data: {
+//          id: quick_key_id
+//        },
+//        success: function(result) {
+//          if(result.success) {
+//            window.location.href = "/setup/quick_keys";
+//          } else {
+//            console.log(result);
+//          }
+//        }
+//      });
+//    });
 
     /* SAVE TRIGGER END */
 
