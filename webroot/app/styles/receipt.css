@@ -3,6 +3,7 @@
 /** product View receipt **/
 .has-receipt-80 .receipt-content{
   background-color: white;
+  font-size: 11px;
 }
 .has-receipt-80 .search_result {
   position: absolute;

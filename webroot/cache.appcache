@@ -1,6 +1,6 @@
 CACHE MANIFEST
-# Today Reload : 039
-# Version : 2015.09.24
+# Today Reload : 047
+# Version : 2015.09.29
 # Explicit section
 CACHE:
 //fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&amp;subset=all
@@ -136,6 +136,11 @@ CACHE:
 /app/images/payment/icon-04.png
 /app/images/payment/icon-05.png
 /app/images/payment/icon-06.png
+/app/images/payment/type-001.png
+/app/images/payment/type-002.png
+/app/images/payment/type-003.png
+/app/images/payment/type-004.png
+/app/images/payment/type-106.png
 /theme/metronic/assets/admin/layout2/img/avatar.png
 
 # Fallback section

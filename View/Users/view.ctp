@@ -118,7 +118,7 @@ $AuthUser = $this->Session->read('Auth.User');
     </div>
   </div>
   <div class="col-md-12 col-xs-12 col-sm-12 margin-top-20">
-    <table id="historyTable" class="table table-striped table-bordered dataTable">
+    <table id="historyTable" class="table-bordered">
       <thead>
       <tr>
         <th class="hisID">ID</th>
@@ -207,6 +207,12 @@ $AuthUser = $this->Session->read('Auth.User');
     commonInit();
     $("#Date_from").datepicker();
     $("#Date_to").datepicker();
+
+    $('#historyTable').DataTable({
+      searching: false
+    });
+
+    $('#historyTable_length').hide();
   });
 
   google.load('visualization', '1.1', {packages: ['corechart', 'bar']});

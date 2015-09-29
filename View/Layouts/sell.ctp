@@ -3,9 +3,9 @@
 <!--[if IE 9]> <html lang="en" class="ie9 no-js" data-ng-app="OnzsaApp"> <![endif]-->
 <!--[if !IE]><!-- >
 <!--
-<html lang="en" data-ng-app="OnzsaApp">
--->
 <html lang="en" data-ng-app="OnzsaApp" manifest="/cache.appcache">
+-->
+<html lang="en" data-ng-app="OnzsaApp">
 <!--<![endif]-->
   <!-- BEGIN HEAD -->
   <head>

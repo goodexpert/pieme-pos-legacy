@@ -1,0 +1,18 @@
+<div class="modal-header">
+  <button type="button" class="close" data-ng-click="cancel()" aria-hidden="true"></button>
+  <h4 class="modal-title">Add a note</h4>
+</div>
+<div class="modal-body">
+  <textarea id="note" class="form-control" maxlength="2000" rows="5"
+            placeholder="Please note for sale." value="{{result.note}}" style="margin-top: 0px; margin-bottom: 0px; height: 99px; resize:vertical;"></textarea>
+</div>
+<div class="modal-footer">
+  <button class="btn gray" type="button" ng-click="skip()">Skip</button>
+  <button class="btn blue" type="button" ng-click="confirm()">Save Note</button>
+</div>
+
+<style>
+  .modal-content {
+    margin: 230px auto auto auto;
+  }
+</style>

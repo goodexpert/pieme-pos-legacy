@@ -744,6 +744,11 @@ Datastore_sqlite = function () {
         if (sqlParamString != "") sqlParamString += ",";
         sqlParamString += " sync_date = ?";
       }
+      if (data.note != null) {
+        condition.push(data.note);
+        if (sqlParamString != "") sqlParamString += ",";
+        sqlParamString += " note = ?";
+      }
       if (data.id != null) {
         condition.push(data.id);
         sqlParamString = "UPDATE RegisterSales SET " + sqlParamString + " WHERE id = ?";
