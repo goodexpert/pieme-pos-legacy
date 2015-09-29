@@ -106,9 +106,9 @@ class SigninController extends AppController {
         $domain = explode(".", $_SERVER['HTTP_HOST']);
 
         if (in_array($domain[0], ['localhost', 'secure'])) {
-          $domain = 'master';
+            $domain = 'master';
         } else {
-          $domain = $domain[0];
+            $domain = $domain[0];
         }
 
         $merchant = $this->_getMerchantByDomain($this->Auth->subdomain);
