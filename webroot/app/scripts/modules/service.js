@@ -1551,7 +1551,7 @@ angular.module('OnzsaApp.register', [])
       'total_payment': registerSale.total_payment,
       'line_discount': registerSale.line_discount,
       'line_discount_type': registerSale.line_discount_type,
-      'note': null,
+      'note': '',
       'sale_date': null,
       'sync_status': "sync_wait",
       'sync_date': null

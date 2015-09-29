@@ -84,7 +84,12 @@ angular.module('OnzsaApp', [])
       .withClass('dt-left dt-text-eclipse')
       .withOption('width', '91px')
       .renderWith(function(data, type, full) {
-        return '<div class="test" style="width:90px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">'+ data + '</div>';
+        console.debug(data);
+        if (data != null) {
+          return '<div class="test" style="width:90px; text-overflow:ellipsis; overflow:hidden; white-space:nowrap;">' + data + '</div>';
+        } else {
+          return '';
+        }
       }),
     DTColumnBuilder
       .newColumn('')
