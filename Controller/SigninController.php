@@ -53,93 +53,6 @@ class SigninController extends AppController {
     public function index() {
         if ($this->request->is('post')) {
             $this->_login();
-            /*
-            $data = $this->request->data;
-            $errors = array();
-
-            if (isset($data['MerchantUser']['domain_prefix'])) {
-                $domain_prefix = trim($data['MerchantUser']['domain_prefix']);
-
-                if (empty($domain_prefix) || strlen($domain_prefix) < 5) {
-                    $errors['domain_prefix'] = 'Your address must be at least 5 characters.';
-                } elseif (!$this->Auth->isExistDomain($domain_prefix)) {
-                    $errors['domain_prefix'] = 'does not exist';
-                } else {
-                    $this->Auth->setLoginDomain($domain_prefix);
-                }
-            }
-
-            if (isset($data['MerchantUser']['username']) &&
-                empty($data['MerchantUser']['username'])) {
-                $errors['username'] = 'An email address or username is required.';
-            }
-
-            if (isset($data['MerchantUser']['password']) &&
-                empty($data['MerchantUser']['password'])) {
-                $errors['password'] = 'A password is required.';
-            }
-
-            if (!empty($errors)) {
-                $this->set('errors', $errors);
-            } elseif ($this->Auth->login()) {
-                $user = $this->Auth->user();
-
-                $conditions = array(
-                    'MerchantOutlet.id = MerchantRegister.outlet_id',
-                    'MerchantOutlet.merchant_id' => $user['merchant_id']
-                );
-
-                if (isset($user['outlet_id'])) {
-                    $conditions = array_merge($conditions, array(
-                        'MerchantOutlet.id' => $user['outlet_id']
-                    ));
-                }
-
-                $registers = $this->MerchantRegister->find('all', array(
-                    'fields' => array(
-                        'MerchantRegister.*',
-                        'MerchantOutlet.*'
-                    ),
-                    'joins' => array(
-                        array(
-                            'table' => 'merchant_outlets',
-                            'alias' => 'MerchantOutlet',
-                            'type' => 'INNER',
-                            'conditions' => $conditions
-                        )
-                    )
-                ));
-
-                $plan = $this->Plan->findById($user['Merchant']['plan_id']);
-                $this->Session->write('Auth.User.Merchant.Plan', $plan['Plan']);
-
-                if (count($registers) == 1) {
-                    $register = $registers[0];
-                    $this->Session->write('Auth.User.MerchantRegister', $register['MerchantRegister']);
-                    $this->Session->write('Auth.User.MerchantOutlet', $register['MerchantOutlet']);
-                    //$_SESSION["Auth"]["User"]["outlet_id"] = $register['MerchantOutlet']['id'];
-                }
-                $_SESSION["Auth"]["User"]["RegisterCount"] = count($registers);
-
-                $this->MerchantUser->id = $user['id'];
-                $user['last_ip_address'] = $_SERVER['REMOTE_ADDR'];
-                $user['last_logged'] = date("Y-m-d H:i:s");
-                $this->MerchantUser->save($user);
-                
-                if(!empty($user['retailer_id'])) {
-                    $_SESSION["Auth"]["User"]["MerchantRetailer"] = $this->MerchantRetailer->findById($user['retailer_id']);
-                }
-
-                $_SESSION["Auth"]["User"]["Subscriber"] = $this->Subscriber->findById($user['Merchant']['subscriber_id']);
-                $_SESSION["Auth"]["User"]["Loyalty"] = $this->MerchantLoyalty->findByMerchantId($user['merchant_id']);
-
-                // Create a cookie variable
-                $this->Cookie->write('session_id', rand());
-                return $this->redirect($this->Auth->redirect(), 301, false);
-            } else {
-                $this->Session->setFlash(__('Invalid username or password, try again'));
-            }
-             */
         }
     }
 
@@ -189,34 +102,32 @@ class SigninController extends AppController {
  * @return void
  */
     public function pinpad() {
-        if (empty($this->Auth->subdomain)) {
-            return $this->redirect('/signin', 301, false);
-        }
+      $this->request->allowMethod(['get', 'post']);
+      $domain = explode(".", $_SERVER['HTTP_HOST']);
 
-        $merchant = $this->_getMerchantByDomain($this->Auth->subdomain);
-        if (!$merchant || $merchant['allow_use_pincode'] != 1) {
-            return $this->redirect('/signin', 301, false);
-        }
+      if ($domain[0] !== 'localhost') {
+          $merchant = $this->_getMerchantByDomain($this->Auth->subdomain);
+          if (!$merchant || $merchant['allow_use_pincode'] != 1) {
+              return $this->redirect('/signin', 301, false);
+          }
+      }
 
-        $outlet_id = $this->get('outlet_id');
-        $username = $this->get('username');
+      if ($this->request->is('post')) {
+          $this->_pincode();
+      }
 
-        if ($this->request->is('post')) {
-            $this->_login();
-        }
-
-        $outlets = $this->_getOutletByMerchantId($merchant['id']);
-        $this->set('outlets', $outlets);
-
-        $users = $this->_getUsersByOutlet($merchant['id'], $outlet_id);
-        $this->set('users', $users);
-
-        $this->set('outlet_id', $outlet_id);
-        $this->set('username', $username);
+      if (empty($this->request->data)) {
+          $domain = explode(".", $_SERVER['HTTP_HOST']);
+          if ($domain[0] === 'localhost') {
+              $this->request->data['MerchantUser']['domain_prefix'] = 'master';
+          } else {
+              $this->request->data['MerchantUser']['domain_prefix'] = $domain[0];
+          }
+      }
     }
 
 /**
- * Log a user in.
+ * Log a user using standard options.
  *
  * @return void
  */
@@ -244,6 +155,83 @@ class SigninController extends AppController {
         if (isset($data['MerchantUser']['password']) &&
             empty($data['MerchantUser']['password'])) {
             $errors['password'] = __('A password is required.');
+        }
+
+        if (empty($errors)) {
+            if ($this->Auth->login()) {
+                $user = $this->Auth->user();
+
+                if (!empty($user['allow_ip_address']) && $user['allow_ip_address'] !== $_SERVER['REMOTE_ADDR']) {
+                    $this->Auth->logout();
+                    $this->Session->setFlash(__('Not allowed ip address.'));
+                } else {
+                    if (!empty($user['retailer_id'])) {
+                        $retailer = $this->_getRetailerById($user['retailer_id']);
+                        $this->Session->write('Auth.User.MerchantRetailer', $retailer);
+                        $plan_id = $retailer['plan_id'];
+                    } else {
+                        $plan_id = $user['Merchant']['plan_id'];
+                    }
+                    $this->Session->write('Auth.User.Addons', $this->_getAddOns($user['merchant_id'], $user['retailer_id']));
+
+                    $plan = $this->Plan->findById($plan_id);
+                    $this->Session->write('Auth.User.Plan', $plan['Plan']);
+
+                    $subscriber = $this->Subscriber->findById($user['Merchant']['subscriber_id']);
+                    $this->Session->write('Auth.User.Subscriber', $subscriber['Subscriber']);
+
+                    $loyalty = $this->MerchantLoyalty->findByMerchantId($user['merchant_id']);
+                    $this->Session->write('Auth.User.Loyalty', $loyalty['MerchantLoyalty']);
+
+                    $registers = $this->_getRegisterByOutletId($user['merchant_id'], $user['outlet_id']);
+                    if (count($registers) == 1) {
+                        $outlet = $registers[0]['MerchantOutlet'];
+                        unset($registers[0]['MerchantOutlet']);
+
+                        $this->Session->write('Auth.User.MerchantOutlet', $outlet);
+                        $this->Session->write('Auth.User.MerchantRegister', $registers[0]);
+                        $this->Session->write('Auth.User.current_outlet_id', $outlet['id']);
+                    }
+                    $this->Session->write('Auth.User.register_counts', count($registers));
+
+                    // Create a cookie variable
+                    $this->Cookie->write('session_id', rand());
+                    $this->_updateLastLogin($user['id']);
+
+                    return $this->redirect($this->Auth->redirect(), 301, false);
+                }
+            } else {
+                $this->Session->setFlash(__('Invalid username or password, try again'));
+            }
+        } else {
+            $this->set('errors', $errors);
+        }
+    }
+
+/**
+ * Log a user using pincode.
+ *
+ * @return void
+ */
+    protected function _pincode() {
+        $data = $this->request->data;
+        $errors = array();
+
+        if (isset($data['MerchantUser']['domain_prefix'])) {
+            $domain_prefix = trim($data['MerchantUser']['domain_prefix']);
+
+            if (empty($domain_prefix) || strlen($domain_prefix) < 5) {
+                $errors['domain_prefix'] = __('Your address must be at least 5 characters.');
+            } elseif (!$this->Auth->isExistDomain($domain_prefix)) {
+                $errors['domain_prefix'] = __('does not exist');
+            } else {
+                $this->Auth->setLoginDomain($domain_prefix);
+            }
+        }
+
+        if (isset($data['MerchantUser']['pincode']) &&
+            empty($data['MerchantUser']['pincode'])) {
+            $errors['pincode'] = __('A pincode is required.');
         }
 
         if (empty($errors)) {

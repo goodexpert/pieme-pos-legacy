@@ -1,10 +1,12 @@
 CACHE MANIFEST
 /
 
-http://fonts.gstatic.com/s/opensans/v10/yYRnAC2KygoXnEC8IdU0gQLUuEpTyoUstqEm5AMlJo4.ttf
-http://fonts.gstatic.com/s/opensans/v10/DXI1ORHCpsQm3Vp6mXoaTcDdSZkkecOE1hvV7ZHvhyU.ttf
-http://fonts.gstatic.com/s/opensans/v10/MTP_ySUJH_bn48VBG8sNSsDdSZkkecOE1hvV7ZHvhyU.ttf
-http://fonts.gstatic.com/s/opensans/v10/k3k702ZOKiLJc3WVjuplzMDdSZkkecOE1hvV7ZHvhyU.ttf
+//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all
+
+//fonts.gstatic.com/s/opensans/v10/yYRnAC2KygoXnEC8IdU0gQLUuEpTyoUstqEm5AMlJo4.ttf
+//fonts.gstatic.com/s/opensans/v10/DXI1ORHCpsQm3Vp6mXoaTcDdSZkkecOE1hvV7ZHvhyU.ttf
+//fonts.gstatic.com/s/opensans/v10/MTP_ySUJH_bn48VBG8sNSsDdSZkkecOE1hvV7ZHvhyU.ttf
+//fonts.gstatic.com/s/opensans/v10/k3k702ZOKiLJc3WVjuplzMDdSZkkecOE1hvV7ZHvhyU.ttf
 
 /assets/global/plugins/font-awesome/fonts/fontawesome-webfont.ttf?v=4.1.0
 /assets/global/plugins/font-awesome/fonts/fontawesome-webfont.woff?v=4.1.0
@@ -87,7 +89,6 @@ http://fonts.gstatic.com/s/opensans/v10/k3k702ZOKiLJc3WVjuplzMDdSZkkecOE1hvV7ZHv
 /css/jquery.keypad.css
 /css/pos.css
 /css/dropzone.css
-http://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=all
 
 NETWORK:
 *

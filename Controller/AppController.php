@@ -51,6 +51,13 @@ class AppController extends Controller {
                         'hashType' => 'sha256'
                     ),
                     'userModel' => 'MerchantUser'
+                ),
+                'Pincode' => array(
+                    'passwordHasher' => array(
+                        'className' => 'Simple',
+                        'hashType' => 'sha256'
+                    ),
+                    'userModel' => 'MerchantUser'
                 )
             )
         ),

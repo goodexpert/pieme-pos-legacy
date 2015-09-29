@@ -3,49 +3,31 @@
     <div class="page-content-wrapper">
         <div class="page-content col-xs-12 col-alpha col-omega">
             <div class="col-xs-12 signin-pin-content">
-                <div class="col-xs-6">
-                <?php
-                    echo $this->Form->create('MerchantUser', array(
-                        'id' => 'pinpad_form',
-                        'type' => 'get'
-                    ));
-                    echo $this->Form->input('outlet_id', array(
-                        'id' => 'outlet_id',
-                        'type' => 'select',
-                        'div' => false,
-                        'label' => false,
-                        'options' => $outlets,
-                        'selected' => $outlet_id,
-                        'empty' => 'Select an outlet',
-                        'onchange' => 'this.form.submit()'
-                    ));
-                    echo $this->Form->end();
-                 ?>
-                </div>
-                <div class="col-xs-6">
                 <?php
                     echo $this->Form->create('MerchantUser', array(
                         'id' => 'login_form',
+                        'type' => 'POST'
+                    ));
+                    echo $this->Form->input('domain_prefix', array(
+                        'id' => 'domain_prefix',
+                        'type' => 'hidden',
+                        'div' => false,
+                        'label' => false
                     ));
                     echo $this->Form->input('username', array(
                         'id' => 'username',
-                        'type' => 'select',
+                        'type' => 'hidden',
                         'div' => false,
-                        'label' => false,
-                        'options' => $users,
-                        'selected' => $username,
-                        'empty' => 'Select an username'
+                        'label' => false
                     ));
-                    echo $this->Form->input('password', array(
-                        'id' => 'password',
-                        'type' => 'password',
-                        'style' => 'display:none',
+                    echo $this->Form->input('pincode', array(
+                        'id' => 'pincode',
+                        'type' => 'hidden',
                         'div' => false,
                         'label' => false
                     ));
                     echo $this->Form->end();
                  ?>
-                </div>
                 <div class="help-block with-errors"><?php echo $this->Session->flash(); ?></div>
                 <ul class="col-xs-12 numpad-enter">
                     <h2 class="text-center"><strong>CLICK THE PASSWORD</strong></h2>
@@ -130,9 +112,6 @@ jQuery(document).ready(function() {
     });
 
     $(".pin-enter").click(function(e) {
-        if ($("#username").val() == '')
-            return;
-
         if (pinidx < 4)
             return;
 
@@ -141,7 +120,8 @@ jQuery(document).ready(function() {
             pinNumber += pincode[i];
         }
 
-        $("#password").val(pinNumber);
+        $("#pincode").val(pinNumber);
+        $("#username").val($("#domain_prefix").val() + '_' + pinNumber);
         $("#login_form").submit();
     });
 });

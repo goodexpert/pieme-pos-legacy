@@ -290,16 +290,19 @@ class AuthComponent extends Component {
 	public function startup(Controller $controller) {
 		$methods = array_flip(array_map('strtolower', $controller->methods));
 		$action = strtolower($controller->request->params['action']);
+		$domain = explode(".", $_SERVER['HTTP_HOST']);
 
-		$names = explode(".", $_SERVER['HTTP_HOST']);
-		if (count($names) == 2) {
+		if (count($domain) == 2) {
 			header('Location: http://www.onzsa.com' . $_SERVER['REQUEST_URI']);
-		} elseif ($_SERVER['HTTP_HOST'] !== 'localhost' && !is_numeric($names[0])) {
-			$this->subdomain = $names[0];
-			if (!$this->isExistDomain($this->subdomain)) {
+		} elseif ($_SERVER['HTTP_HOST'] === 'localhost') {
+			$domain = $domain[0];
+		} elseif (is_numeric($domain[0])) {
+			throw new NotFoundException();
+		} else {
+			$domain = $domain[0];
+			if (!$this->isExistDomain($domain)) {
 				throw new NotFoundException();
 			}
-			$this->setLoginDomain($this->subdomain);
 		}
 
 		$isMissingAction = (
@@ -315,7 +318,7 @@ class AuthComponent extends Component {
 			return false;
 		}
 
-		/*
+/*
 		if ($this->_isAllowed($controller)) {
 			return true;
 		}
@@ -323,11 +326,31 @@ class AuthComponent extends Component {
 		if (!$this->_getUser()) {
 			return $this->_unauthenticated($controller);
 		}
-		 */
+*/
 
 		$isAllowed = $this->_isAllowed($controller);
 		$isLogined = $this->_getUser();
 
+		if ($isLogined) {
+			$user = $this->user();
+			$domain_prefix = $user['Merchant']['domain_prefix'];
+
+			if ($domain !== 'localhost' && ($domain !== $domain_prefix || $domain === 'secure')) {
+				if ($domain !== 'secure') {
+					$this->logout();
+				}
+
+				$redirect_url = 'https://' . $domain. '.onzsa.com';
+			  return $controller->redirect($redirect_url, 301, true);
+			} elseif ($isAllowed) {
+			  return $controller->redirect('/', 301, true);
+			}
+		} elseif ($isAllowed) {
+			return true;
+		} else {
+			return $this->_unauthenticated($controller);
+		}
+/*
 		if ($isAllowed && !$isLogined) {
 			return true;
 		} elseif (!$isAllowed && !$isLogined) {
@@ -357,6 +380,10 @@ class AuthComponent extends Component {
 
 		if (!empty($this->subdomain) && $this->subdomain === 'secure') {
 			$controller->redirect('https://' . $domain_prefix . '.onzsa.com' . $_SERVER['REQUEST_URI']);
+		}
+*/
+		if ($this->_isLoginAction($controller) && $domain !== 'localhost') {
+			$this->setLoginDomain($domain);
 		}
 
 		if ($this->_isLoginAction($controller) ||
