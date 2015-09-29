@@ -180,6 +180,9 @@ class UsersController extends AppController {
                     'alias' => 'MerchantOutlet',
                     'type' => 'INNER',
                    )
+            ),
+            'conditions' => array(
+              'MerchantUser.id' => $id
             )
         ));
 

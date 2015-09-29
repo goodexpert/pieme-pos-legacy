@@ -244,7 +244,7 @@ angular.module('OnzsaApp', [])
 
   $scope.doParking = function() {
     debug('doParking');
-    Register.parkSale();
+    openAddNote($scope.registerSale.note);
   };
 
   $scope.doPayment = function() {
@@ -632,6 +632,28 @@ angular.module('OnzsaApp', [])
     });
   }
 
+  function openAddNote(note) {
+    var modalInstance = $modal.open({
+      templateUrl: '/app/tpl/note.html',
+      controller: 'AddNoteController',
+      backdrop: 'static',
+      keyboard: false,
+      size: 'sm',
+      resolve: {
+        items: function() {
+          return note;
+        }
+      }
+    });
+
+    modalInstance.result.then(function(result) {
+      if (result.status == 'skip') {
+        Register.parkSale();
+      } else if (result.status == 'save') {
+        Register.parkSale(result.note);
+      }
+    });
+  }
 
   function openRegister(register) {
     var modalInstance = $modal.open({
@@ -667,25 +689,6 @@ angular.module('OnzsaApp', [])
         }
       }
     });
-
-    //$rootScope.loadingInstance.opened.then(function() {
-    //  openCheck();
-    //});
-    //
-    //function openCheck() {
-    //  //if ($layerPopupObj.length == 0) {
-    //  //  $timeout(openCheck(), 1000);
-    //  //}
-    //  $timeout ( function(){
-    //    console.log(angular.element(".modal-dialog"));
-    //  },0);
-    //  var $layerPopupObj = $('.modal-dialog');
-    //  //var left = ( $(window).scrollLeft() + ($(window).width() - $layerPopupObj.width()) / 2 );
-    //  var top = ( $(window).scrollTop() + ($(window).height() - $layerPopupObj.height()) / 2 ) - 50;
-    //  $layerPopupObj.css({'left': left, 'top': top});
-    //  //$layerPopupObj.css({'left': left, 'top': top, 'position': 'absolute'});
-    //  //$('body').css('position', 'relative').append($layerPopupObj);
-    //}
   }
 
   function closeLoading() {
@@ -700,6 +703,27 @@ angular.module('OnzsaApp', [])
     });
   }
 
+})
+
+.controller('AddNoteController', function($rootScope, $scope, $modalInstance, $window, Register, locale, items) {
+  $scope.result = {};
+  $scope.result.note = items;
+  $scope.result.status = '';
+
+  $scope.skip = function() {
+    $scope.result.status = 'skip';
+    $modalInstance.close($scope.result);
+  };
+
+  $scope.confirm = function() {
+    $scope.result.status = 'save';
+    $scope.result.note = $('#note').val();
+    $modalInstance.close($scope.result);
+  };
+
+  $scope.cancel = function() {
+    $modalInstance.dismiss('cancel');
+  };
 })
 
 .controller('OpenRegisterController', function($rootScope, $scope, $modalInstance, $window, Register, locale, items) {
@@ -1116,7 +1140,20 @@ angular.module('OnzsaApp', [])
     $scope.paymentTypes = [];
     Register.getRegisterPaymentTypes()
       .then(function(paymentTypes) {
-        $scope.paymentTypes = paymentTypes;
+        $scope.paymentTypes = paymentTypes
+
+        for (var idx in $scope.paymentTypes) {
+
+          var paymentTypeId = $scope.paymentTypes[idx].payment_type_id;
+          if (1 == paymentTypeId)          { $scope.paymentTypes[idx].image = "/app/images/payment/type-001.png";
+          } else if (2 == paymentTypeId)   { $scope.paymentTypes[idx].image = "/app/images/payment/type-002.png";
+          } else if (3 == paymentTypeId)   { $scope.paymentTypes[idx].image = "/app/images/payment/type-003.png";
+          } else if (4 == paymentTypeId)   { $scope.paymentTypes[idx].image = "/app/images/payment/type-004.png";
+          } else if (101 == paymentTypeId) { $scope.paymentTypes[idx].image = "/app/images/payment/type-004.png"; //type-101.png
+          } else if (106 == paymentTypeId) { $scope.paymentTypes[idx].image = "/app/images/payment/type-106.png";
+          } else if (107 == paymentTypeId) { $scope.paymentTypes[idx].image = "/app/images/payment/type-003.png"; //type-107.png
+          }
+        }
       });
 
     $scope.saleItems = [];

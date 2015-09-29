@@ -145,7 +145,7 @@
 <!-- END COMMON INIT -->
 <script>
 
-  jQuery(document).ready(function () { {
+  jQuery(document).ready(function (){
     documentInit();
   });
 
@@ -154,7 +154,7 @@
       commonInit();
     $("#submit").click(function () {
       $.ajax({
-        url: location.href + '.json',
+        url: location.pathname + '.json',
         type: 'POST',
         data: {
           user_type_id: $("#merchant_user_type_id").val(),
@@ -176,6 +176,6 @@
         }
       });
     });
-  });
+  }
 </script>
 <!-- END JAVASCRIPTS --> 

@@ -64,7 +64,7 @@ $AuthUser = $this->Session->read('Auth.User');
     <button type="submit" class="btn btn-primary filter pull-right">Update</button>
   </div>
 </form>
-<table id="historyTable" class="table table-striped table-bordered dataTable">
+<table id="historyTable" class="table-bordered">
   <colgroup>
     <col width="5%">
     <col width="17%">
@@ -144,14 +144,15 @@ $AuthUser = $this->Session->read('Auth.User');
                     <dt class="col-md-4">Id</dt>
                     <dd class="col-md-8">
                       <?php if ($AuthUser['Merchant']['allow_use_pincode'] === "1"): ?>
-                        <input type="text" name="MerchantUser[username]" id="merchant_user_username"
+                        <input type="text" name="MerchantUser[password]" id="merchant_user_password"
                                placeholder="Enter 4 digit "></input>
+                        <span id="merchant_user_username" hidden> <?php echo $AuthUser['Merchant']['domain_prefix']?>_</span>
                       <?php else: ?>
                         <input type="text" name="MerchantUser[username]" id="merchant_user_username"
                                placeholder="username@onzsa.com"></input>
                       <?php endif; ?>
                       <div class="help-block with-errors"></div>
-                    </dd>
+                    </>
                     <?php if ($AuthUser['Merchant']['allow_use_pincode'] === "0"): ?>
                       <dt class="col-md-4">Password</dt>
                       <dd class="col-md-8">
@@ -204,6 +205,10 @@ $AuthUser = $this->Session->read('Auth.User');
                           'options' => $outlets
                       ]);
                       ?>
+                    </dd>
+                    <dt class="col-md-4"> Allowed Ip</dt>
+                    <dd class ="col-md-8">
+                      <input type="text" class="form-control" name="MerchantUser[allow_ip_address]" id="merchant_allow_ip"/>
                     </dd>
                   </dl>
                 </div>
@@ -270,6 +275,12 @@ $AuthUser = $this->Session->read('Auth.User');
         commonInit();
         formValidation();
         $(".modal-backdrop").hide();
+
+        $('#historyTable').DataTable({
+          searching: false
+        });
+
+        $('#historyTable_length').hide();
       };
 
       $(".confirm-close").click(function () {
@@ -404,7 +415,7 @@ $AuthUser = $this->Session->read('Auth.User');
           type: 'POST',
           data: {
             user_type_id: $("#merchant_user_type_id_modal").val(),
-            username: $("#merchant_user_username").val(),
+            username: $("#merchant_user_username").text()+$("#merchant_user_password").val(),
             password: $("#merchant_user_password").val(),
             display_name: $("#merchant_user_display_name").val(),
             email: $("#merchant_user_email").val(),
