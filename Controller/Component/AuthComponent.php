@@ -338,6 +338,8 @@ class AuthComponent extends Component {
 			if ($domain !== 'localhost' && ($domain !== $domain_prefix || $domain === 'secure')) {
 				if ($domain !== 'secure') {
 					$this->logout();
+				} else {
+					$domain = $domain_prefix;
 				}
 
 				$redirect_url = 'https://' . $domain. '.onzsa.com';
