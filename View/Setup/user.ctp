@@ -146,7 +146,7 @@ $AuthUser = $this->Session->read('Auth.User');
                       <?php if ($AuthUser['Merchant']['allow_use_pincode'] === "1"): ?>
                         <input type="text" name="MerchantUser[password]" id="merchant_user_password"
                                placeholder="Enter 4 digit "></input>
-                        <span id="merchant_user_username" hidden> <?php echo $AuthUser['Merchant']['domain_prefix']?>_</span>
+                        <span id="merchant_user_username" hidden><?php echo $AuthUser['Merchant']['domain_prefix']?>_</span>
                       <?php else: ?>
                         <input type="text" name="MerchantUser[username]" id="merchant_user_username"
                                placeholder="username@onzsa.com"></input>
