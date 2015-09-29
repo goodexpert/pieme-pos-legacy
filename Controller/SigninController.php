@@ -121,7 +121,7 @@ class SigninController extends AppController {
         }
 
         if (empty($this->request->data)) {
-            $this->request->data['MerchantUser']['domain_prefix'] = $domain[0];
+            $this->request->data['MerchantUser']['domain_prefix'] = $domain;
         }
     }
 
