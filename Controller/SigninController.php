@@ -102,28 +102,27 @@ class SigninController extends AppController {
  * @return void
  */
     public function pinpad() {
-      $this->request->allowMethod(['get', 'post']);
-      $domain = explode(".", $_SERVER['HTTP_HOST']);
+        $this->request->allowMethod(['get', 'post']);
+        $domain = explode(".", $_SERVER['HTTP_HOST']);
 
-      if ($domain[0] !== 'localhost') {
-          $merchant = $this->_getMerchantByDomain($this->Auth->subdomain);
-          if (!$merchant || $merchant['allow_use_pincode'] != 1) {
-              return $this->redirect('/signin', 301, false);
-          }
-      }
+        if (in_array($domain[0], ['localhost', 'secure'])) {
+          $domain = 'master';
+        } else {
+          $domain = $domain[0];
+        }
 
-      if ($this->request->is('post')) {
-          $this->_pincode();
-      }
+        $merchant = $this->_getMerchantByDomain($this->Auth->subdomain);
+        if (!$merchant || $merchant['allow_use_pincode'] != 1) {
+            return $this->redirect('/signin', 301, false);
+        }
 
-      if (empty($this->request->data)) {
-          $domain = explode(".", $_SERVER['HTTP_HOST']);
-          if ($domain[0] === 'localhost') {
-              $this->request->data['MerchantUser']['domain_prefix'] = 'master';
-          } else {
-              $this->request->data['MerchantUser']['domain_prefix'] = $domain[0];
-          }
-      }
+        if ($this->request->is('post')) {
+            $this->_pincode();
+        }
+
+        if (empty($this->request->data)) {
+            $this->request->data['MerchantUser']['domain_prefix'] = $domain[0];
+        }
     }
 
 /**
