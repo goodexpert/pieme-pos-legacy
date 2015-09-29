@@ -111,7 +111,7 @@ class SigninController extends AppController {
             $domain = $domain[0];
         }
 
-        $merchant = $this->_getMerchantByDomain($this->Auth->subdomain);
+        $merchant = $this->_getMerchantByDomain($domain);
         if (!$merchant || $merchant['allow_use_pincode'] != 1) {
             return $this->redirect('/signin', 301, false);
         }
