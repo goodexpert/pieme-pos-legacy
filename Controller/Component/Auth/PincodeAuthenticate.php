@@ -70,7 +70,7 @@ class PincodeAuthenticate extends BaseAuthenticate {
 		list(, $model) = pluginSplit($userModel);
 
 		$fields = $this->settings['fields'];
-    $fields['password'] = 'pincode';
+		$fields['password'] = 'pincode';
 		if (!$this->_checkFields($request, $model, $fields)) {
 			return false;
 		}
@@ -78,51 +78,6 @@ class PincodeAuthenticate extends BaseAuthenticate {
 			$request->data[$model][$fields['username']],
 			$request->data[$model][$fields['password']]
 		);
-	}
-
-	protected function _findUser($username, $password = null) {
-		$userModel = $this->settings['userModel'];
-		list(, $model) = pluginSplit($userModel);
-		$fields = $this->settings['fields'];
-
-		if (is_array($username)) {
-			$conditions = $username;
-		} else {
-			$conditions = array(
-				$model . '.' . $fields['username'] => $username
-			);
-		}
-
-		if (!empty($this->settings['scope'])) {
-			$conditions = array_merge($conditions, $this->settings['scope']);
-		}
-
-		$userFields = $this->settings['userFields'];
-		if ($password !== null && $userFields !== null) {
-			$userFields[] = $model . '.' . $fields['password'];
-		}
-
-		$result = ClassRegistry::init($userModel)->find('first', array(
-			'conditions' => $conditions,
-			'recursive' => $this->settings['recursive'],
-			'fields' => $userFields,
-			'contain' => $this->settings['contain'],
-		));
-		if (empty($result[$model])) {
-			$this->passwordHasher()->hash($password);
-			return false;
-		}
-
-		$user = $result[$model];
-		if ($password !== null) {
-			if (!$this->passwordHasher()->check($password, $user[$fields['password']])) {
-				return false;
-			}
-			unset($user[$fields['password']]);
-		}
-
-		unset($result[$model]);
-		return array_merge($user, $result);
 	}
 
 }
