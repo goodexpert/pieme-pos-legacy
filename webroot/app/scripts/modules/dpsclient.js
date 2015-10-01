@@ -31,10 +31,10 @@ DpsClient.prototype.connect = function (callback) {
   var self = this;
 
   // Host we are connecting to
-  var url = 'wss://' + self.config.hostname + ':' + self.config.portNumber;
+  var url = 'wss://' + self.config.hostname + ':' + self.config.portNumber + '/dps-gateway';
   var wsCtor = window['MozWebSocket'] ? MozWebSocket : WebSocket;
 
-  self.socket = new wsCtor(url, 'dps-gateway');
+  self.socket = new wsCtor(url);
   self.connected = false;
 
   self.socket.onopen = function () {
