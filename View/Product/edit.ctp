@@ -519,18 +519,18 @@ function documentInit() {
 
   $(document).on("keyup", "#supply_price", function (key) {
     var code = key.keyCode || key.which;
-    var clean = $(this).val().replace(/[^\d\.]/g, '');
+    var clean = $(this).val().replace(/[^\d\.-]/g, '');
     $(this).val(clean);
-    if (code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8") {
+    if (code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8" || code == "109") {
       $("#markup").val(($("#retail_price_exclude").val() - $(this).val()) / ($(this).val()) * 100);
     }
   });
 
   $(document).on("keyup", "#markup", function (key) {
     var code = key.keyCode || key.which;
-    var clean = $(this).val().replace(/[^\d\.]/g, '');
+    var clean = $(this).val().replace(/[^\d\.-]/g, '');
     $(this).val(clean);
-    if (code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8") {
+    if (code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8" || code == "109") {
       var retail_exclude = parseFloat($("#supply_price").val()) * ($(this).val() / 100) + parseFloat($("#supply_price").val());
       $("#retail_price_exclude").val(retail_exclude.toFixed(2));
       $("#retail_price_include").val(parseFloat(retail_exclude * $("#sales_tax").val() + retail_exclude).toFixed(2));
@@ -540,9 +540,9 @@ function documentInit() {
 
   $(document).on("keyup", "#retail_price_exclude", function (key) {
     var code = key.keyCode || key.which;
-    var clean = $(this).val().replace(/[^\d\.]/g, '');
+    var clean = $(this).val().replace(/[^\d\.-]/g, '');
     $(this).val(clean);
-    if (code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8") {
+    if (code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8" || code == "109") {
       var sales_tax = $(this).val() * $("#sales_tax").val();
       $("#markup").val(parseFloat(($("#retail_price_exclude").val() - $("#supply_price").val()) * 100 / $("#supply_price").val()).toFixed(2));
       $("#sales_tax_calc").val(parseFloat(sales_tax).toFixed(2));
@@ -554,9 +554,9 @@ function documentInit() {
 
   $(document).on("keyup", "#retail_price_include", function (key) {
     var code = key.keyCode || key.which;
-    var clean = $(this).val().replace(/[^\d\.]/g, '');
+    var clean = $(this).val().replace(/[^\d\.-]/g, '');
     $(this).val(clean);
-    if (code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8") {
+    if (code >= "48" && code <= "57" || code >= "96" && code <= "105" || code == "8" || code == "109") {
       var calcValue = parseFloat($("#sales_tax").val());
       console.log(calcValue);
       $("#retail_price_exclude").val(parseFloat($(this).val() / (1 + parseFloat($("#sales_tax").val()))).toFixed(2));

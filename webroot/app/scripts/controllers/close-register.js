@@ -9,7 +9,7 @@
  */
 angular.module('OnzsaApp', [])
 
-.controller('CloseRegisterController', function($rootScope, $scope, $state, $http, $modal, $q, locale, LocalStorage, Register, DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder) {
+.controller('CloseRegisterController', function($rootScope,$timeout, $scope, $state, $http, $modal, $q, locale, LocalStorage, Register, DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder) {
 
   $scope.$on('$viewContentLoaded', function() {
     // initialize core components
@@ -221,18 +221,19 @@ angular.module('OnzsaApp', [])
     });
   }
 
-  $(".close-register").click(function(){
-    Register.closeRegister()
-    .then(function(closeTime) {
-      console.debug(closeTime);
+  $(".close-register-btn").click(function(){
+    Register.closeRegister().then(function(closeTime) {
+      $scope.register.close_time = closeTime;
+      if (closeTime != null) {
+        $timeout(function () {
+          print();
+        });
+      }
       //window.location.href = "/dashboard";
+
     }, function(){
       //todo something
     });
-  });
-
-  $(".print").click(function(){
-    $(".to_print").jqprint();
   });
 
 });

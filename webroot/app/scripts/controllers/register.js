@@ -259,7 +259,7 @@ angular.module('OnzsaApp', [])
   };
 
   $scope.printReceipt = function() {
-
+    print();
   };
 
   $scope.doRefund = function() {
@@ -409,16 +409,16 @@ angular.module('OnzsaApp', [])
     angular.extend({position: 1}, $scope.functions['fn_do_discount']),
     angular.extend({position: 2}, $scope.functions['fn_do_line_price']),
     angular.extend({position: 3}, $scope.functions['fn_do_payment']),
-    angular.extend({position: 4}, $scope.functions['fn_do_refund']),
-    angular.extend({position: 5}, $scope.functions['fn_do_parking']),
-    angular.extend({position: 6}, $scope.functions['fn_do_recall']),
-    angular.extend({position: 7}, $scope.functions['fn_view_history']),
-    angular.extend({position: 8}, $scope.functions['fn_view_daily_report']),
-    angular.extend({position: 9}, $scope.functions['fn_close_register']),
-    angular.extend({position: 10}, $scope.functions['fn_open_cash_drawer']),
-    angular.extend({position: 11}, $scope.functions['fn_do_setup']),
-    angular.extend({position: 12}, $scope.functions['fn_do_logout']),
-    angular.extend({position: 13}, $scope.functions['fn_do_nothing']),
+    angular.extend({position: 4}, $scope.functions['fn_print_receipt']),
+    angular.extend({position: 5}, $scope.functions['fn_do_refund']),
+    angular.extend({position: 6}, $scope.functions['fn_do_parking']),
+    angular.extend({position: 7}, $scope.functions['fn_do_recall']),
+    angular.extend({position: 8}, $scope.functions['fn_view_history']),
+    angular.extend({position: 9}, $scope.functions['fn_view_daily_report']),
+    angular.extend({position: 10}, $scope.functions['fn_close_register']),
+    angular.extend({position: 11}, $scope.functions['fn_open_cash_drawer']),
+    angular.extend({position: 12}, $scope.functions['fn_do_setup']),
+    angular.extend({position: 13}, $scope.functions['fn_do_logout']),
     angular.extend({position: 14}, $scope.functions['fn_do_nothing'])
   ];
 
@@ -543,7 +543,8 @@ angular.module('OnzsaApp', [])
           Register.onAccountSale(result.registerTotal, result.payments);
           break;
       }
-      if(result.status != 'cancel'){
+      var printStatus = LocalStorage.getRegister().print_receipt;
+      if(result.status != 'cancel' || printStatus == 1){
         $timeout(function() {
           print();
         });

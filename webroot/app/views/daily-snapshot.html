@@ -1,8 +1,6 @@
-<div data-ng-controller="DailySnapshotController as dailyCtrl">
-
+<div class="daily-snapshot" data-ng-controller="DailySnapshotController as dailyCtrl">
   <link href="/css/dataTable.css" rel="stylesheet" type="text/css">
   <div class="portlet light bordered">
-
     <div class="page-content-wrapper" style="margin-top: 30px;">
       <div id="daily-snapshot-wrapper" class="line-box">
         <div class="col-md-12 col-sm-12 col-xs-12 col-omega col-alpha to_print">
@@ -66,7 +64,7 @@
                 <th></th>
                 <th class="text-right">{{register.total_payments | currency}}</th>
               </tr>
-              <tr data-ng-repeat="sale in register.sales">
+              <tr data-ng-repeat="sale in re  gister.sales">
                 <td></td>
                 <td>{{sale.name}}</td>
                 <td class="text-right">{{sale.total_payments | currency}}</td>
@@ -208,3 +206,8 @@
     <div class="clearfix"></div>
   </div>
 </div>
+
+<style>
+
+
+</style>

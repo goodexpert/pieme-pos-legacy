@@ -9,7 +9,12 @@
   body {
     background-color: #fff !important;
   }
-
+  .daily-snapshot{
+    display:none;
+  }
+  .close-register{
+    display:none;
+  }
   .page-bar {
     display: none;
   }
