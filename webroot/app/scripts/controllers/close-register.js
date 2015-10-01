@@ -222,7 +222,13 @@ angular.module('OnzsaApp', [])
   }
 
   $(".close-register").click(function(){
-    Register.closeRegister();
+    Register.closeRegister()
+    .then(function(closeTime) {
+      console.debug(closeTime);
+      //window.location.href = "/dashboard";
+    }, function(){
+      //todo something
+    });
   });
 
   $(".print").click(function(){

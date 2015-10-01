@@ -77,7 +77,7 @@ angular.module('OnzsaApp.register', [])
 
   sharedService.closeRegister = function() {
     debug('Register: close register');
-    _closeRegister(LocalStorage.getRegister());
+    return _closeRegister(LocalStorage.getRegister());
   };
 
   sharedService.openSale = function() {
@@ -467,27 +467,21 @@ angular.module('OnzsaApp.register', [])
     return _checkNetworkConnectivity()
         .then(function(response) {
           onlineStatus = 'online';
-          sleep(1000);
           return _receiveSessionUser()
         })
         .then(function(userInfo){
-          sleep(1000);
           return _checkInitDatastore(userInfo);
         })
         .then(function(){
-          sleep(1000);
           return _receiveProducts();
         })
         .then(function(){
-          sleep(1000);
           return _receivePaymentTypes();
         })
         .then(function(){
-          sleep(1000);
           return _receiveTaxes();
         })
         .then(function(){
-          sleep(1000);
           return _checkRegisterID();
         })
 
@@ -611,7 +605,6 @@ angular.module('OnzsaApp.register', [])
 
   function _checkNetworkConnectivity() {
     //debug("REQUEST: ping...");
-    //$rootScope.loadingMessage = "Check Network Connectivity.";
     if (window.navigator.onLine == true) {  //TODO: check for mobile
       return $http.get('/api/ping.json');
     } else {
@@ -986,7 +979,6 @@ angular.module('OnzsaApp.register', [])
   function _receiveProducts() {
     debug("REFRESH: products");
     debug("REQUEST: products >>>>>>>>>>>>>>>>>>>>>");
-    //$rootScope.loadingMessage = "Receive products information.";
     $rootScope.$broadcast('loading.progress', {msg:'Receive products information.'});
 
     var lastSyncTime = LocalStorage.getDataSyncTime("products");
@@ -1018,7 +1010,6 @@ angular.module('OnzsaApp.register', [])
   function _receivePaymentTypes() {
     debug("REFRESH: payment_types");
     debug("REQUEST: payment_types >>>>>>>>>>>>>>>>>>>>>");
-    //$rootScope.loadingMessage = "Receive payment types information.";
     $rootScope.$broadcast('loading.progress', {msg:'Receive payment types information.'});
 
     var lastSyncTime = LocalStorage.getDataSyncTime("payment_types");
@@ -1050,7 +1041,6 @@ angular.module('OnzsaApp.register', [])
   function _receiveTaxes() {
     debug("REFRESH: taxes");
     debug("REQUEST: taxes >>>>>>>>>>>>>>>>>>>>>");
-    //$rootScope.loadingMessage = "Receive taxes information.";
     $rootScope.$broadcast('loading.progress', {msg:'Receive taxes information.'});
 
 
@@ -1083,7 +1073,6 @@ angular.module('OnzsaApp.register', [])
   function _receivePriceBooks(register_id) {
     debug("REFRESH: price books");
     debug("REQUEST: price books >>>>>>>>>>>>>>>>>>>>>");
-    //$rootScope.loadingMessage = "Receive price books information.";
     $rootScope.$broadcast('loading.progress', {msg:'Receive price books information.'});
 
     var deferred = $q.defer();
@@ -1113,7 +1102,6 @@ angular.module('OnzsaApp.register', [])
   function _receiveConfig() {
     debug("REFRESH: config");
     debug("REQUEST: config >>>>>>>>>>>>>>>>>>>>>");
-    //$rootScope.loadingMessage = "Receive register config information.";
     $rootScope.$broadcast('loading.progress', {msg:'Receive register config information.'});
 
     var deferred = $q.defer();
@@ -1142,7 +1130,6 @@ angular.module('OnzsaApp.register', [])
   function _switchRegister(register) {
     debug("*** Switching register");
     debug("LOOKUP: Existing register from datastore – %o", register);
-    //$rootScope.loadingMessage = "Save register information.";
     $rootScope.$broadcast('loading.progress', {msg:'Save register information.'});
 
     var deferred = $q.defer();
@@ -1168,7 +1155,6 @@ angular.module('OnzsaApp.register', [])
   // --------------------------
   function _openRegister(register) {
     //debug("REQUEST:  open register  >>>>>>>>>>>>>>>>>>>>>");
-    //$rootScope.loadingMessage = "Change status to open for sale.";
     $rootScope.$broadcast('loading.progress', {msg:'Change status to open for sale.'});
 
     $http.post('/api/open_register.json', {'register_id':register.id})
@@ -1201,20 +1187,20 @@ angular.module('OnzsaApp.register', [])
   // --------------------------
   function _closeRegister(register) {
     //console.debug("Do close register (id): %s (%s)", register.id, register.register_open_sequence_id);
-    $.ajax({
-      url: '/api/close_register.json',
-      type: 'POST',
-      data: {
-        openId: register.register_open_sequence_id
-      },
-      success: function(result) {
-        if(result.success) {
-          window.location.href = "/dashboard";
-        } else {
-          console.log(result);
-        }
+    var defer = $q.defer();
+    $http.post('/api/close_register.json', {'openId': register.register_open_sequence_id})
+    .then(function (response) {
+      if (response.data.success == true) {
+        defer.resolve(response.data.close_time);
+        //window.location.href = "/dashboard";
+      } else {
+        defer.reject();
+        console.log(result);
       }
-    });
+    }, function() {
+      defer.reject()
+    });;
+    return defer.promise;
   }
 
   // --------------------------
@@ -1252,7 +1238,6 @@ angular.module('OnzsaApp.register', [])
   function _receiveSessionUser() {
     //debug("REFRESH: signed user information");
     //debug("REQUEST: signed user information  >>>>>>>>>>>>>>>>>>>>>");
-    //$rootScope.loadingMessage = "Receive Session User Information.";
     $rootScope.$broadcast('loading.progress', {msg:'Receive Session User Information.'});
 
     var deferred = $q.defer();
@@ -1300,10 +1285,10 @@ angular.module('OnzsaApp.register', [])
     item.tax_rate = saleProduct.tax_rate;
     item.product_uom = saleProduct.product_uom;
 
-    var excPrice = priceBook.price + (priceBook.price * saleProduct.tax_rate) - priceBook.discount;
-    item.sale_price = excPrice                        / (1 + saleProduct.tax_rate);
-    item.tax        = excPrice * saleProduct.tax_rate / (1 + saleProduct.tax_rate);
-    item.loyalty_value = priceBook.loyalty_value;
+    var excPrice       = _roundEx(priceBook.price + (priceBook.price * saleProduct.tax_rate) - priceBook.discount, 5);
+    item.sale_price    = _roundEx(excPrice                        / (1 + saleProduct.tax_rate), 5);
+    item.tax           = _roundEx(excPrice * saleProduct.tax_rate / (1 + saleProduct.tax_rate), 5);
+    item.loyalty_value = _roundEx(priceBook.loyalty_value, 5);
     item.sequence = registerSale.sequence++;
     item.status = "sale_item_status_valid";
 
@@ -1322,7 +1307,7 @@ angular.module('OnzsaApp.register', [])
             if (datas) {
               console.debug("@@@ scale data : %o" , datas);
               var jsonData = JSON.parse(datas.data);
-              item.quantity = parseFloat(jsonData.weight);
+              item.quantity = _roundEx(jsonData.weight, 5);
 
               saleItems.unshift(item);
               debug("Add Sell Item : %o", item);
@@ -1354,9 +1339,9 @@ angular.module('OnzsaApp.register', [])
     if (oldItem.price != newItem.price) {
       price = newItem.price;
     }
-    var excPrice = price + (price * newItem.tax_rate) - discount;
-    newItem.sale_price = excPrice                    / (1 + newItem.tax_rate);
-    newItem.tax        = excPrice * newItem.tax_rate / (1 + newItem.tax_rate);
+    var excPrice       = _roundEx(price + (price * newItem.tax_rate) - discount, 5);
+    newItem.sale_price = _roundEx(excPrice                    / (1 + newItem.tax_rate), 5);
+    newItem.tax        = _roundEx(excPrice * newItem.tax_rate / (1 + newItem.tax_rate), 5);
 
     //TODO: delete debug
     console.groupCollapsed("@ Price Calcuration");
@@ -1384,9 +1369,9 @@ angular.module('OnzsaApp.register', [])
     lastestSaleItem.discount = priceBook.discount;
     lastestSaleItem.price = priceBook.price;
     lastestSaleItem.tax_rate = saleProduct.tax_rate;
-    var excPrice = priceBook.price + (priceBook.price * saleProduct.tax_rate) - priceBook.discount;
-    lastestSaleItem.sale_price = excPrice                        / (1 + saleProduct.tax_rate);
-    lastestSaleItem.tax        = excPrice * saleProduct.tax_rate / (1 + saleProduct.tax_rate);
+    var excPrice               = _roundEx(priceBook.price + (priceBook.price * saleProduct.tax_rate) - priceBook.discount, 5);
+    lastestSaleItem.sale_price = _roundEx(excPrice                        / (1 + saleProduct.tax_rate), 5);
+    lastestSaleItem.tax        = _roundEx(excPrice * saleProduct.tax_rate / (1 + saleProduct.tax_rate), 5);
     debug("Add Quantity for Same Sell Item  to : %o", lastestSaleItem);
 
     //TODO: delete debug
@@ -1432,20 +1417,20 @@ angular.module('OnzsaApp.register', [])
     for (var idx in saleItems) {
       var saleItem = saleItems[idx];
 
-      registerSale.total_cost += saleItem.supply_price * saleItem.quantity;
-      registerSale.total_price += saleItem.price * saleItem.quantity;
-      registerSale.total_price_incl_tax += (saleItem.sale_price + saleItem.tax) * saleItem.quantity;
-      registerSale.total_discount += saleItem.discount * saleItem.quantity;
-      registerSale.total_tax += saleItem.tax * saleItem.quantity;
+      registerSale.total_cost           = _roundEx(registerSale.total_cost + saleItem.supply_price * saleItem.quantity, 5);
+      registerSale.total_price          = _roundEx(registerSale.total_price + saleItem.price * saleItem.quantity, 5);
+      registerSale.total_price_incl_tax = _roundEx(registerSale.total_price_incl_tax + (saleItem.sale_price + saleItem.tax) * saleItem.quantity, 5);
+      registerSale.total_discount       = _roundEx(registerSale.total_discount + saleItem.discount * saleItem.quantity, 5);
+      registerSale.total_tax            = _roundEx(registerSale.total_tax + saleItem.tax * saleItem.quantity, 5);
     }
 
     if (registerSale.line_discount != 0) {
       var discountValue = registerSale.line_discount;
       if (registerSale.line_discount_type == 0) { // percent
-        discountValue = registerSale.total_price_incl_tax * (discountValue / 100);
+        discountValue = _roundEx(registerSale.total_price_incl_tax * (discountValue / 100), 5);
       }
-      registerSale.total_discount += discountValue;
-      registerSale.total_price_incl_tax -= discountValue;
+      registerSale.total_discount       = _roundEx(registerSale.total_discount + discountValue, 5);
+      registerSale.total_price_incl_tax = _roundEx(registerSale.total_price_incl_tax - discountValue, 5);
     }
   }
 
@@ -1947,7 +1932,7 @@ angular.module('OnzsaApp.register', [])
     }
   }
 
-  function sleep(num) {
+  function _sleep(num) {
     var now = new Date();
     var stop = now.getTime() + num;
     while (true) {
@@ -1958,5 +1943,18 @@ angular.module('OnzsaApp.register', [])
     }
   }
 
-    return sharedService;
-  }]);
+  function _roundEx(value, bits) {
+
+    // Method 1
+    var position = Math.pow(10, bits);
+    return Math.round(value * position) / position;
+
+    // Method 2
+    //return Number(parseFloat(value).toFixed(bits));
+
+    //NOTES: Method 1 was faster then Method 2 (68%)
+    // (http://jsperf.com/roundex)
+  };
+
+  return sharedService;
+}]);

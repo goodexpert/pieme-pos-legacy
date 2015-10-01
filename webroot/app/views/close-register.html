@@ -95,7 +95,7 @@
                 <tr data-ng-repeat="payment in register.payments">
                   <td>{{payment.name}}</td>
                   <td class="text-right">{{payment.amount | currency}}</td>
-                  <td>$ <input type="text" data-ng-model="payment.amount" data-ng-value="amount"></td>
+                  <td>$ <input type="text" value="{{payment.amount | number:2}}"></td>
                 </tr>
               </tbody>
             </table>

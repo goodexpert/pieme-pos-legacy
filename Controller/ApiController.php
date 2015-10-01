@@ -699,10 +699,12 @@ class ApiController extends AppController {
           ]
       ));
 
-      $opens['MerchantRegisterOpen']['register_close_time'] = date("Y-m-d H:i:s");
+      $close_time = date("Y-m-d H:i:s");
+      $opens['MerchantRegisterOpen']['register_close_time'] = $close_time;
       $this->MerchantRegisterOpen->save($opens['MerchantRegisterOpen']);
 
       $result['success'] = true;
+      $result['close_time'] = $close_time;
     } catch (Exception $e) {
       $result['message'] = $e->getMessage();
     }

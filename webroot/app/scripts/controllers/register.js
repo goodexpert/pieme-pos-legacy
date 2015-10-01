@@ -959,6 +959,13 @@ angular.module('OnzsaApp', [])
     $modalInstance.close(result);
   };
 
+  $(document).on("keyup", ".numpad-content-wrap", function(key){
+    var code = key.keyCode || key.which;
+    if(code == "13"){
+      $scope.onReturn();
+    }
+  });
+
   function getNumber() {
     return $scope.number;
   }
