@@ -40,6 +40,7 @@ DpsClient.prototype.connect = function (callback) {
   self.socket.onopen = function () {
     console.log('connected!');
     self.connected = true;
+
   };
 
   self.socket.onclose = function () {
@@ -122,22 +123,22 @@ DpsClient.prototype.refund = function (txnRef, amount, callback) {
         if("PRESENT/INSERT" == text1) {
           $(".display-msg").empty();
           $(".display-msg").append('<p>' +a + '</p>');
-          $(".display-msg").append('<div><img style="width: 50%" class="payment-img" src ="images/payment/icon-01.png"></img></div>');
+          $(".display-msg").append('<div><img style="width: 30%" class="payment-img" src ="images/payment/icon-01.png"></img></div>');
         }
         else if("AWAITING ACCOUNT" == text1 ||"PROCESSING NOW" == text1 ||"AWAITING PIN" == text1){
           $(".display-msg").empty();
           $(".display-msg").append(text1 +' ' + text2 );
-          $(".display-msg").append('<div><img style="width: 50%" class="payment-img" src ="images/payment/icon-02.png"></img></div>');
+          $(".display-msg").append('<div><img style="width: 30%" class="payment-img" src ="images/payment/icon-02.png"></img></div>');
         }
         else if ("ACCEPTED" == text1 ||"SIG ACCEPTED" == text1 ) {
           $(".display-msg").empty();
           $(".display-msg").text(text1 +' '+ text2);
-          $(".display-msg").append('<div><img style="width: 50%" class="payment-img" src ="images/payment/icon-03.png"></img></div>');
+          $(".display-msg").append('<div><img style="width: 30%" class="payment-img" src ="images/payment/icon-03.png"></img></div>');
         }
         else if ("INCORRECT PIN" == text1) {
           $(".display-msg").empty();
           $(".display-msg").text(text1 +' '+ text2);
-          $(".display-msg").append('<div><img style="width: 50%" class="payment-img" src ="images/payment/icon-05.png"></img></div>');
+          $(".display-msg").append('<div><img style="width: 30%" class="payment-img" src ="images/payment/icon-05.png"></img></div>');
         }
 
         //IF transaction cancelled
@@ -167,7 +168,7 @@ DpsClient.prototype.refund = function (txnRef, amount, callback) {
         else if("SIG DECLINED" == text1 || "DECLINED" == text1 || "ACCOUNT ERROR" == text1){
           $(".display-msg").empty();
           $(".display-msg").append('<p>' +a + '</p>');
-          $(".display-msg").append('<div><img style="width: 50%" class="payment-img" src ="images/payment/icon-04.png"></img></div>');
+          $(".display-msg").append('<div><img style="width: 30%" class="payment-img" src ="images/payment/icon-04.png"></img></div>');
         }
 
       } else if ('ClearDisplay' == messageType) {
@@ -244,22 +245,22 @@ DpsClient.prototype.payment = function (txnRef, amount, callback) {
         if("PRESENT/INSERT" == text1) {
           $(".display-msg").empty();
           $(".display-msg").append('<p>' +a + '</p>');
-          $(".display-msg").append('<div><img style="width: 50%" class="payment-img" src ="images/payment/icon-01.png"></img></div>');
+          $(".display-msg").append('<div><img style="width: 30%" class="payment-img" src ="app/images/payment/icon-01.png"></img></div>');
         }
         else if("AWAITING ACCOUNT" == text1 ||"PROCESSING NOW" == text1 ||"AWAITING PIN" == text1){
           $(".display-msg").empty();
           $(".display-msg").append(text1 +' ' + text2 );
-          $(".display-msg").append('<div><img style="width: 50%" class="payment-img" src ="images/payment/icon-02.png"></img></div>');
+          $(".display-msg").append('<div><img style="width: 30%" class="payment-img" src ="app/images/payment/icon-02.png"></img></div>');
         }
         else if ("ACCEPTED" == text1 ||"SIG ACCEPTED" == text1 ) {
           $(".display-msg").empty();
           $(".display-msg").text(text1 +' '+ text2);
-          $(".display-msg").append('<div><img style="width: 50%" class="payment-img" src ="images/payment/icon-03.png"></img></div>');
+          $(".display-msg").append('<div><img style="width: 30%" class="payment-img" src ="app/images/payment/icon-03.png"></img></div>');
         }
         else if ("INCORRECT PIN" == text1) {
           $(".display-msg").empty();
           $(".display-msg").text(text1 +' '+ text2);
-          $(".display-msg").append('<div><img style="width: 50%" class="payment-img" src ="images/payment/icon-05.png"></img></div>');
+          $(".display-msg").append('<div><img style="width: 30%" class="payment-img" src ="app/images/payment/icon-05.png"></img></div>');
         }
 
         //IF transaction cancelled
@@ -271,12 +272,12 @@ DpsClient.prototype.payment = function (txnRef, amount, callback) {
         else if ("SIGNATURE REQD" == text1) {
           $(".display-msg").empty();
           $(".display-msg").text(text1 +' '+ text2);
-          $(".display-msg").append('<img src ="images/payment/icon-06.png"></img>');
+          $(".display-msg").append('<img src ="app/images/payment/icon-06.png"></img>');
 
         } else if ("SIGNATURE OK Y/N?" == text1) {
           $(".display-msg").empty();
           $(".display-msg").text(text1 +' '+ text2);
-          $(".display-msg").append('<img src ="images/payment/icon-06.png"></img>');
+          $(".display-msg").append('<img src ="app/images/payment/icon-06.png"></img>');
           $(".eftpos_status").find("button").remove();
           $(".eftpos_status").find(".modal-content").append('<button class="btn btn-success accept-sign">Yes</button><button class="btn btn-primary decline-sign">No</button>');
           $(".accept-sign").click(function(){
@@ -289,7 +290,7 @@ DpsClient.prototype.payment = function (txnRef, amount, callback) {
         else if("SIG DECLINED" == text1 || "DECLINED" == text1 || "ACCOUNT ERROR" == text1){
           $(".display-msg").empty();
           $(".display-msg").append('<p>' +a + '</p>');
-          $(".display-msg").append('<div><img style="width: 50%" class="payment-img" src ="images/payment/icon-04.png"></img></div>');
+          $(".display-msg").append('<div><img style="width: 30%" class="payment-img" src ="app/images/payment/icon-04.png"></img></div>');
         }
 
       } else if ('ClearDisplay' == messageType) {

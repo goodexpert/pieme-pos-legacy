@@ -544,7 +544,7 @@ angular.module('OnzsaApp', [])
           break;
       }
       var printStatus = LocalStorage.getRegister().print_receipt;
-      if(result.status != 'cancel' || printStatus == 1){
+      if(result.status != 'cancel' && printStatus == 1){
         $timeout(function() {
           print();
         });

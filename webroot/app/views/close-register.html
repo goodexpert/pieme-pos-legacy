@@ -237,22 +237,21 @@
         </div>
         <div class="dashed-line-gr"></div>
         <div class="receipt-body-sales">
-          <table class="receipt-close-table">
+          <table class="receipt-close-table col-md-12 col-sm-12 col-xs-12">
             <tbody>
             <tr class="split_receipt_attr">
               <td>Sales</td>
-              <td>{{register.total_sales | currency}}</td>
-
+              <td class="text-right">{{register.total_sales | currency}}</td>
             <tr>
               <td>discount</td>
               <td class="pull-right">{{register.total_discounts | currency}}</td>
             <tr>
             </tbody>
-            <div class="dashed-line-gr"></div>
+            <tr class="dashed-line-gr"></tr>
             <tbody>
             <tr class="split_receipt_attr">
               <td>Net Sales</td>
-              <td>{{register.total_sales | currency}}</td>
+              <td class="text-right">{{register.total_sales | currency}}</td>
             <tr>
               <td>Plus Tax (GST)</td>
               <td class="text-right">{{register.total_taxes | currency}}</td>
@@ -267,33 +266,27 @@
               <td class="text-right">{{register.total_payments | currency}}</td>
             <tr>
             </tbody>
-          </table>
-          <div class="dashed-line-gr"></div>
-          <div class="dashed-line-gr"></div>
-          <table class="receipt-product-table-total">
+            <tr class="dashed-line-gr"></tr>
+
+            <tbody class="receipt-product-table-total">
             <tr data-ng-repeat="payment in register.payments">
               <td>{{payment.name}}</td>
               <td class="text-right">{{payment.amount | currency}}</td>
             </tr>
-          </table>
-          <tbody data-ng-if="register.layby_sales.payments.length > 0">
-          <tr style="background:#eee;">
-            <th style="border:0;">Layby sale payments</th>
-            <th style="border:0;" colspan="5"></th>
+            <tr class="dashed-line-gr"></tr>
+          <tr>
+            <th> Daily Statistics</th>
           </tr>
-          <tr data-ng-repeat="payment in register.layby_sales.payments">
-            <td>{{payment.sale_date}}</td>
-            <td>{{payment.reciept_number}}</td>
-            <td>{{payment.user_name}}</td>
-            <td>{{payment.customer_name}}</td>
-            <td>{{payment.note}}</td>
+          <tr>
+            <th> Gross Sales</th>
             <td class="text-right">{{payment.amount | currency}}</td>
           </tr>
-          <tr style="background:#FFF7D6">
-            <th style="border:0; text-align:right;" colspan="5">Total new laybys</th>
-            <td class="text-right" style="border:0;">{{register.layby_sales.total_payments | currency}}</td>
+          <tr>
+            <th>Total payment count</th>
+            <td class="text-right">{{register.total_transactions}}</td>
           </tr>
           </tbody>
+          </table>
         </div>
       </div>
       <div class="receipt-footer">
