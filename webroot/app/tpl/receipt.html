@@ -26,7 +26,7 @@
             <tr class="split_receipt_attr">
               <td>{{sales.name}}</td>
               <td>{{sales.quantity}}</td>
-              <td>@{{sales.price}}</td>
+              <td>@{{sales.item_price_incl_tax | currency}}</td>
               <td class="pull-right">{{sales.item_price | currency}}</td>
               <tr ng-if="sales.item_discount">
                 <td>discount</td>
