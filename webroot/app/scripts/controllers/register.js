@@ -255,8 +255,8 @@ angular.module('OnzsaApp', [])
 
   $scope.openCashDrawer = function() {
     debug('openCashDrawer');
-    $state.go('test');
-  };
+    openCashDrawer();
+	};
 
   $scope.printReceipt = function() {
     print();
@@ -510,6 +510,17 @@ angular.module('OnzsaApp', [])
     $("#customer_code").val('');
   }
 
+  function openCashDrawer(){
+    var cashDrawerClient = new CashDrawerClient();
+ 
+    cashDrawerClient.connect(function (connected, error) {
+      if (connected) {
+        cashDrawerClient.doEnquiry(function (datas, error) {
+        });
+      }
+    });
+  }
+
   function openPayment(data) {
     var modalPaymentInstance = $modal.open({
       templateUrl: '/app/tpl/payment.html',
@@ -574,9 +585,15 @@ angular.module('OnzsaApp', [])
         if (result.status == "openRegister") {
           openLoading();
           Register.openRegister(result.data)
-          .then(function(){closeLoading();}),function(){closeLoading();};
+          .then(function(){
+            closeLoading();
+          }, function(){
+            closeLoading();
+          });
         }
-      }),function(){closeLoading();};
+      }, function(){
+        closeLoading();
+      });
     });
   }
 
@@ -673,7 +690,11 @@ angular.module('OnzsaApp', [])
     modalInstance.result.then(function(register) {
       openLoading();
       Register.openRegister(register)
-      .then(function(){closeLoading();}),function(){closeLoading();};
+      .then(function(){
+        closeLoading();
+      },function(){
+        closeLoading();
+      });
     });
   }
 
@@ -1178,6 +1199,15 @@ angular.module('OnzsaApp', [])
     if (1 == paymentTypeId) {
       // TODO: cash payment
       amount = parseFloat(amount).toFixed(1);
+      
+      var cashDrawerClient = new CashDrawerClient();
+      cashDrawerClient.connect(function (connected, error) {
+        if (connected) {
+          cashDrawerClient.doEnquiry(function (datas, error) {
+          });
+        }
+      });
+
     } else if (2 == paymentTypeId) {
       // TODO: cheque payment
     } else if (3 == paymentTypeId) {

@@ -1157,7 +1157,7 @@ angular.module('OnzsaApp.register', [])
     //debug("REQUEST:  open register  >>>>>>>>>>>>>>>>>>>>>");
     $rootScope.$broadcast('loading.progress', {msg:'Change status to open for sale.'});
 
-    $http.post('/api/open_register.json', {'register_id':register.id})
+    return $http.post('/api/open_register.json', {'register_id':register.id})
         .then(function (response) {
               debug("REQUEST: open register, success handler");
 
@@ -1195,7 +1195,6 @@ angular.module('OnzsaApp.register', [])
         //window.location.href = "/dashboard";
       } else {
         defer.reject();
-        console.log(result);
       }
     }, function() {
       defer.reject()
@@ -1307,7 +1306,8 @@ angular.module('OnzsaApp.register', [])
             if (datas) {
               console.debug("@@@ scale data : %o" , datas);
               var jsonData = JSON.parse(datas.data);
-              item.quantity = _roundEx(jsonData.weight, 5);
+              var weights = parseFloat(jsonData.weight);
+              item.quantity = _roundEx(weights, 5);
 
               saleItems.unshift(item);
               debug("Add Sell Item : %o", item);
@@ -1862,7 +1862,7 @@ angular.module('OnzsaApp.register', [])
         registerSale.line_discount_type = sale['line_discount_type'];
         debug("Register: reloaded registerSale : " + registerSale);
       }
-      if (sale['customer_id'] != null && sale['customer_id'] != '') {
+      if (typeof sale['customer_id'] != 'undefined' && sale['customer_id'] != null && sale['customer_id'] != '') {
         defer.resolve(sale['customer_id']);
       } else {
         defer.resolve();

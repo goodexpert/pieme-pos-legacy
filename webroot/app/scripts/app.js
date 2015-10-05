@@ -249,6 +249,7 @@ angular.module('OnzsaApp', [
               '/lib/angular-datatables/dist/plugins/tabletools/angular-datatables.tabletools.min.js',
 
               '/app/scripts/modules/scale-client.js',
+              '/app/scripts/modules/cashdrawer-client.js',
               '/app/scripts/modules/onzsa_ds.js',
               '/app/scripts/modules/service.js',
               '/app/scripts/modules/storage.js',

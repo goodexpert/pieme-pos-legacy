@@ -229,7 +229,7 @@ angular.module('OnzsaApp', [])
           print();
         });
       }
-      //window.location.href = "/dashboard";
+      window.location.href = "/dashboard";
 
     }, function(){
       //todo something
