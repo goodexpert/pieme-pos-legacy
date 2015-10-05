@@ -1337,7 +1337,8 @@ angular.module('OnzsaApp', [])
           $scope.discountValue = $scope.registerTotal.total_price_incl_tax / (1 - $scope.discountValue / 100) - $scope.registerTotal.total_price_incl_tax;
         }
         for(var idx in $scope.saleItems) {
-          $scope.saleItems[idx]['item_price'] = $scope.saleItems[idx].price * $scope.saleItems[idx].quantity;
+          $scope.saleItems[idx]['item_price_incl_tax'] = $scope.saleItems[idx].price + $scope.saleItems[idx].tax;
+          $scope.saleItems[idx]['item_price'] = $scope.saleItems[idx].item_price_incl_tax * $scope.saleItems[idx].quantity;
         }
         for(var idx in $scope.saleItems) {
           $scope.saleItems[idx]['item_discount'] = $scope.saleItems[idx].discount * $scope.saleItems[idx].quantity;
