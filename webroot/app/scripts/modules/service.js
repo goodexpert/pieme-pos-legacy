@@ -1848,8 +1848,9 @@ angular.module('OnzsaApp.register', [])
     var defer = $q.defer();
     var sucSales = function(rs) {
       debug("Register: reload find registerSale count : " + rs.length);
+      var sale = null;
       if (rs.length > 0) {
-        var sale = rs[0];
+        sale = rs[0];
         registerSale.note = sale['note'];
         registerSale.receipt_number = sale['receipt_number'];
         registerSale.total_cost = sale['total_cost'];
@@ -1862,7 +1863,7 @@ angular.module('OnzsaApp.register', [])
         registerSale.line_discount_type = sale['line_discount_type'];
         debug("Register: reloaded registerSale : " + registerSale);
       }
-      if (typeof sale['customer_id'] != 'undefined' && sale['customer_id'] != null && sale['customer_id'] != '') {
+      if (sale != null && typeof sale['customer_id'] != 'undefined') {
         defer.resolve(sale['customer_id']);
       } else {
         defer.resolve();

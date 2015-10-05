@@ -109,7 +109,7 @@ $AuthUser = $this->Session->read('Auth.User');
 <!-- USER ADD BOX -->
 <div class="confirmation-modal modal fade in customer_add" tabindex="-1" role="dialog" aria-hidden="false">
   <div class="vertical-alignment-helper">
-    <div class="modal-dialog vertical-align-center">
+    <div class="modal-dialog">
       <div class="modal-content add-user-container">
         <div class="form-horizontal">
           <form id="user-add-form" method="post">
