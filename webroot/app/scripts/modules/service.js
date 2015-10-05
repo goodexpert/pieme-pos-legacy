@@ -363,6 +363,35 @@ angular.module('OnzsaApp.register', [])
     }
 
     _getPriceBook(function (rs) {
+
+      //TODO: del end of debug
+      console.groupCollapsed("# PriceBook (%s) : size %d", saleProduct.id, rs.length);
+      console.group("# Query conditions");
+      console.debug("# product_id        : %s", saleProduct.id);
+      console.debug("# outlet_id         : %s", outlet_id);
+      console.debug("# productQty        : %d", productQty);
+      console.debug("# customer_group_id : %s", customer_group_id);
+      console.groupEnd();
+      for(var idx=0; idx<rs.length; idx++) {
+        console.group("# PriceBook(%d) %o", idx, rs[idx]);
+        console.debug("# id       : %s", rs[idx].id);
+        console.debug("# P_id     : %s", rs[idx].product_id);
+        console.debug("# O_id     : %s", rs[idx].outlet_id);
+        console.debug("# C_G_id   : %s", rs[idx].customer_group_id);
+        console.debug("# price    : %f", rs[idx].price);
+        console.debug("# tax      : %f", rs[idx].tax);
+        console.debug("# discount : %f", rs[idx].discount);
+        console.debug("# pr_inc_t : %f", rs[idx].price_include_tax);
+        console.debug("# isDef    : %d", rs[idx].is_default);
+        console.debug("# from     : %s", rs[idx].valid_from);
+        console.debug("# to       : %s", rs[idx].valid_to);
+        console.debug("# min      : %d", rs[idx].min_units);
+        console.debug("# max      : %d", rs[idx].max_units);
+        console.debug("# created  : %s", rs[idx].price_book_created);
+        console.groupEnd();
+      }
+      console.groupEnd();
+
       if (rs.length > 0) {
         priceBook = rs[0];
         if (saleProduct.product_uom == 'product_uom_ea' || saleProduct.product_uom == null) {
@@ -1296,6 +1325,18 @@ angular.module('OnzsaApp.register', [])
       saleItems.unshift(item);
       debug("Add Sell Item : %o", item);
 
+      //TODO: delete debug
+      console.groupCollapsed("@ Price Calcuration");
+      console.debug("@ supply_price   : %f  ", item.supply_price);
+      console.debug("@ mark           : %f%", (item.price - item.supply_price) * 100 / item.supply_price);
+      console.debug("@ price          : %f  ", item.price);
+      console.debug("@ discount       : %f  ", item.discount);
+      console.debug("@ price_incl_tax : %f  ", excPrice);
+      console.debug("@ tax_rate       : %f(%f%)  ", saleProduct.tax_rate, (item.tax * 100));
+      console.debug("@ sale_price     : %f  ", item.sale_price);
+      console.debug("@ tax            : %f  ", item.tax);
+      console.groupEnd();
+
       _addSaleItemSub(saleID, item)
 
     } else if (item.product_uom == 'product_uom_kg') {
@@ -1308,6 +1349,18 @@ angular.module('OnzsaApp.register', [])
               var jsonData = JSON.parse(datas.data);
               var weights = parseFloat(jsonData.weight);
               item.quantity = _roundEx(weights, 5);
+
+              //TODO: delete debug
+              console.groupCollapsed("@ Price Calcuration");
+              console.debug("@ supply_price   : %f  ", item.supply_price);
+              console.debug("@ mark           : %f%", (item.price - item.supply_price) * 100 / item.supply_price);
+              console.debug("@ price          : %f  ", item.price);
+              console.debug("@ discount       : %f  ", item.discount);
+              console.debug("@ price_incl_tax : %f  ", excPrice);
+              console.debug("@ tax_rate       : %f(%f%)  ", saleProduct.tax_rate, (item.tax * 100));
+              console.debug("@ sale_price     : %f  ", item.sale_price);
+              console.debug("@ tax            : %f  ", item.tax);
+              console.groupEnd();
 
               saleItems.unshift(item);
               debug("Add Sell Item : %o", item);
