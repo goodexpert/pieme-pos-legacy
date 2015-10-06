@@ -623,6 +623,7 @@ angular.module('OnzsaApp', [])
     var modalInstance = $modal.open({
       templateUrl: '/app/tpl/numpad.html',
       controller: 'NumpadCtrl',
+      windowClass: 'numpad-dialog',
       resolve: {
         params: function() {
           return params;
@@ -1118,6 +1119,7 @@ angular.module('OnzsaApp', [])
         var modalNumpadInstance = $modal.open({
           templateUrl: '/app/tpl/numpad.html',
           controller: 'NumpadCtrl',
+          windowClass: 'numpad-dialog',
           backdrop: 'static',
           size: 'sm',
           resolve: {
