@@ -225,8 +225,9 @@ angular.module('OnzsaApp', [])
         $state.go('close-register');
       });
 
-      $(".print").click(function(){
-        $(".to_print").jqprint();
+      $(".daily-snapshot-print").click(function(){
+        print();
+        console.log("dddd");
       });
 
     });
