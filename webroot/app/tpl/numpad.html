@@ -12,7 +12,7 @@
       <label ng-if="isLinePriceMode()" class="numpad-input-label" for="change_number_input">Line Price</label>
       <div class="input-group">
         <span class="input-group-btn">
-          <button class="btn btn-default" type="button" ng-model="numpad_visible" btn-checkbox btn-checkbox-true="1" btn-checkbox-false="0">
+          <button ng-if="!isCashChangeMode()" class="btn btn-default" type="button" ng-model="numpad_visible" btn-checkbox btn-checkbox-true="1" btn-checkbox-false="0">
             <i class="fa fa-keyboard-o"></i>
           </button>
         </span>
