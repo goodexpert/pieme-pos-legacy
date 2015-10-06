@@ -227,7 +227,6 @@ angular.module('OnzsaApp', [])
 
       $(".daily-snapshot-print").click(function(){
         print();
-        console.log("dddd");
       });
 
     });

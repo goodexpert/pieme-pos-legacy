@@ -257,11 +257,11 @@
             <div class="col-md-4 col-sm-4 col-xs-4 text-right">{{register.total_sales | currency}}</div>
           </div>
           <div class="row" data-ng-repeat="sale in register.sales">
-            <div class="col-md-8 col-sm-8 col-xs-8 text-right">{{sale.name}}</div>
+            <div class="col-md-8 col-sm-8 col-xs-8 ">&nbsp;&nbsp;&nbsp;{{sale.name}}</div>
             <div class="col-md-4 col-sm-4 col-xs-4 text-right">{{sale.total_sales | currency}}</div>
           </div>
           <div class="row">
-            <div class="col-md-8 col-sm-8 col-xs-8 text-right">Tax (GST)</div>
+            <div class="col-md-8 col-sm-8 col-xs-8 ">&nbsp;&nbsp;&nbsp;Tax (GST)</div>
             <div class="col-md-4 col-sm-4 col-xs-4 text-right">{{register.total_taxes | currency}}</div>
           </div>
           <div class="row">
@@ -273,7 +273,7 @@
             <div class="col-md-4 col-sm-4 col-xs-4 text-right">{{register.total_payments | currency}}</div>
           </div>
           <div class="row" data-ng-repeat="sale in register.sales">
-            <div class="col-md-8 col-sm-8 col-xs-8 text-right">{{sale.name}}</div>
+            <div class="col-md-8 col-sm-8 col-xs-8 " >&nbsp;&nbsp;&nbsp;{{sale.name}}</div>
             <div class="col-md-4 col-sm-4 col-xs-4 text-right">{{sale.total_payments | currency}}</div>
           </div>
           <div class="row">
@@ -376,6 +376,11 @@
           </div>
         </div>
 
+      </div>
+
+      <div class="foot-space text-center" style="padding: 30px;">
+        <p><br><p><br>
+        Print by onzsa.com
       </div>
 
     </div>
