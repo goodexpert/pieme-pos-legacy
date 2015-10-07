@@ -2,21 +2,21 @@
 
 /**
  * @ngdoc function
- * @name OnzsaApp.controller:RecallController
+ * @name OnzsaApp.controller:HistoryController
  *
  * @description
  * Controller of the OnzsaApp
  */
 angular.module('OnzsaApp', [])
 
-.controller('RecallController', function($rootScope, $scope, $state, $http, $modal, $q, $filter, locale, DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder) {
+.controller('HistoryController', function($rootScope, $scope, $state, $http, $modal, $q, $filter, locale, DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder) {
 
   $scope.$on('$viewContentLoaded', function() {   
     // initialize core components
     Metronic.initAjax();
   });
 
-  // initialize the recall sales table
+  // initialize the history sales table
   var vm = this;
   vm.dtOptions = DTOptionsBuilder
     .fromFnPromise(function() {
@@ -107,10 +107,12 @@ angular.module('OnzsaApp', [])
   function reloadData() {
     var defer = $q.defer();
     var data = [];
-
+    var today = (new Date()).format("yyyy-MM-dd") + " 00:00:00";
+    var todayTime = Math.floor(new Date(today).getTime() / 1000);
     var condition = {
       'id' : null,
-      'status' : "recall"
+      'status' : "history",
+      'sale_date' : todayTime
     };
 
     $scope.ds.getRegisterSales(condition, function(data) {
@@ -122,4 +124,5 @@ angular.module('OnzsaApp', [])
 
     return defer.promise;
   }
+
 });

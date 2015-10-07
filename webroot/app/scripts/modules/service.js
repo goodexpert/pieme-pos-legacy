@@ -924,7 +924,7 @@ angular.module('OnzsaApp.register', [])
       ds.dropAllLocalDataStore();
       ds.initLocalDataStore();
     } else {
-      console.debug("INIT: both id same");
+      debug("INIT: both id same");
     }
     deferred.resolve();
     return deferred.promise;
@@ -1020,7 +1020,12 @@ angular.module('OnzsaApp.register', [])
             debug("REQUEST: products, [WARNING] empty data]");
           } else {
             ds.saveProducts(null, response.data);
-            debug("REQUEST: products : %o", response.data);
+            console.debug("REQUEST: products : %o", response.data);   //TODO: for debug
+            for (var idx in response.data) {
+              if (typeof response.data[idx] == 'undefined' || response.data[idx].id == null || response.data[idx].id == 'undefined') {
+                console.error("@@@ ERROR : Find Undefined!!!");
+              }
+            }
           }
           var now = _getUnixTimestamp();
           LocalStorage.saveDataSyncTime("products", now);
@@ -1051,7 +1056,12 @@ angular.module('OnzsaApp.register', [])
             debug("REQUEST: payment_types, [WARNING] empty data]");
           } else {
             ds.saveRegisterPaymentTypes(response.data);
-            debug("REQUEST: payment_types : %o", response.data);
+            console.debug("REQUEST: payment_types : %o", response.data);   //TODO: for debug
+            for (var idx in response.data) {
+              if (typeof response.data[idx] == 'undefined' || response.data[idx].id == null || response.data[idx].id == 'undefined') {
+                console.error("@@@ ERROR : Find Undefined!!!");
+              }
+            }
           }
           var now = _getUnixTimestamp();
           LocalStorage.saveDataSyncTime("payment_types", now);
@@ -1082,8 +1092,13 @@ angular.module('OnzsaApp.register', [])
           if (response.data == null) {
             debug("REQUEST: taxes, [WARNING] empty data]");
           } else {
-            debug("REQUEST: taxes : %o", response.data);
             ds.saveTaxes(response.data);
+            console.debug("REQUEST: taxes : %o", response.data);   //TODO: for debug
+            for (var idx in response.data) {
+              if (typeof response.data[idx] == 'undefined' || response.data[idx].id == null || response.data[idx].id == 'undefined') {
+                console.error("@@@ ERROR : Find Undefined!!!");
+              }
+            }
           }
           var now = _getUnixTimestamp();
           LocalStorage.saveDataSyncTime("taxes", now);

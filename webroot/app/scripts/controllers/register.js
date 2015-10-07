@@ -298,7 +298,8 @@ angular.module('OnzsaApp', [])
 
   $scope.viewHistory = function() {
     debug('viewHistory');
-    window.location = "/history";
+    //window.location = "/history";
+    $state.go('history');
   };
 
   $scope.viewDailyReport = function() {
