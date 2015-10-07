@@ -177,11 +177,11 @@
         $.sessionTimeout({
             title: 'Session Timeout Notification',
             message: 'Your session is about to expire.',
-            keepAliveUrl: '/users/ping.json',
+            keepAliveUrl: '/api/ping.json',
             redirUrl: '/users/logout',
             logoutUrl: '/users/logout',
             warnAfter: 60000, //warn after 60 seconds
-            redirAfter: 62000, //redirect after 300 secons
+            redirAfter: 65000, //redirect after 300 secons
         });
       });
     </script>

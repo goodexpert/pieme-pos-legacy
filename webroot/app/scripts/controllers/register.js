@@ -21,7 +21,6 @@ angular.module('OnzsaApp', [])
   $rootScope.loadingInstance = null;
 
   // initialize the register service
-  sessionOut();
   openLoading();
   Register.init()
     .then(function(response) {
@@ -730,19 +729,6 @@ angular.module('OnzsaApp', [])
       controller: 'SplashController'
     });
   }
-
-  function sessionOut(){
-    // initialize session timeout settings
-    $.sessionTimeout({
-      title: 'Session Timeout Notification',
-      message: 'Your session is about to expire.',
-      keepAliveUrl: '/users/ping.json',
-      redirUrl: '/users/logout',
-      logoutUrl: '/users/logout',
-      warnAfter: 60000, //warn after 240 seconds
-      redirAfter: 60000, //redirect after 300 secons
-    });
-  };
 })
 
 .controller('AddNoteController', function($rootScope, $scope, $modalInstance, $window, Register, locale, items) {

@@ -237,7 +237,6 @@ angular.module('OnzsaApp', [
               '/theme/metronic/assets/global/plugins/jquery.sparkline.min.js',
               '/theme/metronic/assets/global/plugins/typeahead/handlebars.min.js',
               '/theme/metronic/assets/global/plugins/typeahead/typeahead.bundle.min.js',
-              '/theme/onzsa/assets/global/plugins/bootstrap-sessiontimeout/jquery.sessionTimeout.min.js',
               '/theme/metronic/assets/global/plugins/select2/select2.min.js',
               '/theme/metronic/assets/admin/pages/scripts/tasks.js',
 
