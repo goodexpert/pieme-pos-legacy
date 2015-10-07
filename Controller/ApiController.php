@@ -588,6 +588,16 @@ class ApiController extends AppController {
       $this->loadModel('RegisterSale');
 
       $this->RegisterSale->bindModel([
+        'belongsTo' => [
+            'MerchantCustomer' => [
+                'classModel' => 'MerchantCustomer',
+                'foreignKey' => 'customer_id',
+            ],
+            'MerchantUser' => [
+                'classModel' => 'MerchantUser',
+                'foreignKey' => 'user_id',
+            ]
+        ],
         'hasMany' => [
           'RegisterSaleItem' => [
             'classModel' => 'RegisterSaleItem',
@@ -622,13 +632,29 @@ class ApiController extends AppController {
         'conditions' => $conditions,
         'order' => [
           'RegisterSale.created' => 'ASC'
-        ]
+        ],
+        'recursive' => 2
       ]);
 
       $response = Hash::map($sales, "{n}", function($array) {
         $newArray = $array['RegisterSale'];
+        $newArray['user_name'] = $array['MerchantUser']['username'];
+        $newArray['customer_code'] = $array['MerchantCustomer']['customer_code'];
+        $newArray['customer_name'] = $array['MerchantCustomer']['name'];
+        $newArray['sync_date'] = CakeTime::toUnix($newArray['created']);
+        $newArray['sale_date'] = CakeTime::toUnix($newArray['sale_date']);
+        $newArray['sync_status'] = 'sync_success';
+        $newArray['total_payment'] = 0;
         $newArray['RegisterSaleItem'] = $array['RegisterSaleItem'];
-        $newArray['RegisterSalePayment'] = $array['RegisterSalePayment'];
+        $newArray['RegisterSalePayment'] = [];
+
+        foreach ($array['RegisterSalePayment'] as $item) {
+          $item['register_id'] = $newArray['register_id'];
+          $item['payment_type_id'] = $item['MerchantPaymentType']['payment_type_id'];
+          unset($item['MerchantPaymentType']);
+          $newArray['RegisterSalePayment'][] = $item;
+          $newArray['total_payment'] += $item['amount'];
+        }
         return $newArray;
       });
 

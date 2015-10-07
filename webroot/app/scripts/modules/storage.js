@@ -77,6 +77,18 @@ angular.module('OnzsaApp.storage', [])
     return localStorageService.get('register');
   };
 
+  var getInvoiceSeq = function() {
+    debug("get invoice sequence");
+    return localStorageService.get('register').invoice_sequence;
+  };
+
+  var setInvoiceSeq = function(seq) {
+    debug("set invoice sequence");
+    var register = localStorageService.get('register');
+    register.invoice_sequence = seq;
+    localStorageService.set('register', register);
+  };
+
   var getRegisterID = function() {
     debug("get register id");
     return localStorageService.get('register_id');
@@ -109,6 +121,9 @@ angular.module('OnzsaApp.storage', [])
       case 'taxes':
         localStorageService.set('synced_taxes', time);
         break;
+      case 'register_sales':
+        localStorageService.set('synced_register_sales', time);
+        break;
     }
   };
 
@@ -116,11 +131,13 @@ angular.module('OnzsaApp.storage', [])
     debug("get data sync table: " + table);
     switch (table) {
       case 'payment_types':
-        return localStorageService.set('synced_payment_types');
+        return localStorageService.get('synced_payment_types');
       case 'products':
-        return localStorageService.set('synced_products');
+        return localStorageService.get('synced_products');
       case 'taxes':
-        return localStorageService.set('synced_taxes');
+        return localStorageService.get('synced_taxes');
+      case 'register_sales':
+        return localStorageService.get('synced_register_sales');
     }
   };
 
@@ -128,6 +145,8 @@ angular.module('OnzsaApp.storage', [])
     getConfig: getConfig,
     saveConfig: saveConfig,
     getRegister: getRegister,
+    setInvoiceSeq: setInvoiceSeq,
+    getInvoiceSeq: getInvoiceSeq,
     getRegisterID: getRegisterID,
     saveRegister: saveRegister,
     saveSaleID: saveSaleID,

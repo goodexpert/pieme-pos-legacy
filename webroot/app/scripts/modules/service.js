@@ -204,6 +204,7 @@ angular.module('OnzsaApp.register', [])
       saleItem.sale_price = product.price;
       saleItem.tax = product.tax;
       saleItem.tax_rate = product.tax_rate;
+      saleItem.product_uom = "product_uom_ea";
       saleItem.discount = 0;
       saleItem.quantity = 1;
       saleItem.loyalty_value = 0;
@@ -493,6 +494,12 @@ angular.module('OnzsaApp.register', [])
     $interval(_syncSaleData, syncSaleDataInterval);
     $interval(_syncUpdateData, syncUpdateDataInterval);
 
+    //clear sync time
+    LocalStorage.saveDataSyncTime("payment_types", 0);
+    LocalStorage.saveDataSyncTime("products", 0);
+    LocalStorage.saveDataSyncTime("taxes", 0);
+    LocalStorage.saveDataSyncTime("register_sales", 0);
+
     return _checkNetworkConnectivity()
         .then(function(response) {
           onlineStatus = 'online';
@@ -560,13 +567,16 @@ angular.module('OnzsaApp.register', [])
   // --------------------------
   function _subBootstrapSystem(register) {
     debug("Register: do sub BootstrapSystem");
-
+    var register_id = register.id;
     return _switchRegister(register)
-        .then(function(regsterId){
-          return _receivePriceBooks(regsterId);
+        .then(function(){
+          return _receivePriceBooks(register_id);
         })
         .then(function(){
           return _receiveConfig();
+        })
+        .then(function () {
+          return _receiveRegisterSales(register_id);
         })
         .then(function() {
               var deferred = $q.defer();
@@ -921,7 +931,7 @@ angular.module('OnzsaApp.register', [])
       $cookies.put('onzsa.user_id', userInfo["id"], {expires:expireDate});
 
       debug("INIT: checking for the init of the Web SQL Database");
-      ds.dropAllLocalDataStore();
+      //ds.dropAllLocalDataStore(); //TODO:
       ds.initLocalDataStore();
     } else {
       debug("INIT: both id same");
@@ -1144,14 +1154,74 @@ angular.module('OnzsaApp.register', [])
           } else {
             LocalStorage.saveConfig(response.data);
             debug("REQUEST: config : %o", response.data);
+            deferred.resolve();
           }
-          deferred.resolve();
         }, function (response) {
           debug("REQUEST: config, error handler");
           deferred.reject(response);
         });
     return deferred.promise;
   }
+
+  // --------------------------
+  // Register Sales from server
+  // --------------------------
+  function _receiveRegisterSales(register_id) {
+    debug("REFRESH: register sales");
+    debug("REQUEST: register sales >>>>>>>>>>>>>>>>>>>>>");
+    $rootScope.$broadcast('loading.progress', {msg:'Receive register sales information.'});
+
+    var lastSyncTime = LocalStorage.getDataSyncTime("register_sales");
+    var deferred = $q.defer();
+    $http.get('/api/get_register_sales.json?st='+lastSyncTime+'&register_id='+register_id)
+        .then(function (response) {
+          debug("REQUEST: register sales, success handler");
+
+          if (response.data == null) {
+            debug("REQUEST: register sales, [WARNING] empty data]");
+          } else {
+            console.debug("REQUEST: register sales : %o", response.data);   //TODO: for debug
+
+            var maxReceiptNo = LocalStorage.getInvoiceSeq();
+            for (var idxRS in response.data) {
+              // save register sales
+              var RS = response.data[idxRS];
+              ds.saveRegisterSales(null, [RS]);
+
+              //get max receipt number
+              if (register_id == RS.register_id && maxReceiptNo <= RS.receipt_number) {
+                maxReceiptNo = RS.receipt_number + 1;
+              }
+
+              // save register sale items
+              var RSIs = RS['RegisterSaleItem'];
+              for (var idxRSI in RSIs) {
+                var RSI = RSIs[idxRSI];
+                ds.saveRegisterSaleItems(null, [RSI]);
+              }
+
+              // save register sale payments
+              var RSPs = RS['RegisterSalePayment'];
+              for (var idxRSP in RSPs) {
+                var RSP = RSPs[idxRSP];
+                ds.saveRegisterSalePayments(RSP);
+              }
+            }
+
+            // Save Next Receipt Number (register.invoice_sequence)
+            LocalStorage.setInvoiceSeq(maxReceiptNo);
+          }
+          var now = _getUnixTimestamp();
+          LocalStorage.saveDataSyncTime("register_sales", now);
+
+          deferred.resolve();
+        }, function (response) {
+          debug("REQUEST: register sales, error handler");
+          deferred.reject(response);
+        });
+    return deferred.promise;
+  }
+
 
   // --------------------------
   // Switching Register
@@ -1175,7 +1245,7 @@ angular.module('OnzsaApp.register', [])
     quickKeyLayout = quickKeyLayout["quick_keys"];
     $rootScope.$broadcast('quickkey.ready');
 
-    deferred.resolve(register.id);
+    deferred.resolve();
     return deferred.promise;
   }
 
@@ -1935,7 +2005,8 @@ angular.module('OnzsaApp.register', [])
       saleID = _getUUID();
       LocalStorage.saveSaleID(saleID);
       registerSale.sequence = 0;
-      registerSale.receipt_number++;
+      registerSale.receipt_number = LocalStorage.getInvoiceSeq();
+      LocalStorage.setInvoiceSeq(parseInt(registerSale.receipt_number) + 1);
       _saveRegisterSales(saleID, "sale_status_open");
     }
     return saleID;
