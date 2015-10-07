@@ -1021,11 +1021,6 @@ angular.module('OnzsaApp.register', [])
           } else {
             ds.saveProducts(null, response.data);
             console.debug("REQUEST: products : %o", response.data);   //TODO: for debug
-            for (var idx in response.data) {
-              if (typeof response.data[idx] == 'undefined' || response.data[idx].id == null || response.data[idx].id == 'undefined') {
-                console.error("@@@ ERROR : Find Undefined!!!");
-              }
-            }
           }
           var now = _getUnixTimestamp();
           LocalStorage.saveDataSyncTime("products", now);
@@ -1057,11 +1052,6 @@ angular.module('OnzsaApp.register', [])
           } else {
             ds.saveRegisterPaymentTypes(response.data);
             console.debug("REQUEST: payment_types : %o", response.data);   //TODO: for debug
-            for (var idx in response.data) {
-              if (typeof response.data[idx] == 'undefined' || response.data[idx].id == null || response.data[idx].id == 'undefined') {
-                console.error("@@@ ERROR : Find Undefined!!!");
-              }
-            }
           }
           var now = _getUnixTimestamp();
           LocalStorage.saveDataSyncTime("payment_types", now);
@@ -1094,11 +1084,6 @@ angular.module('OnzsaApp.register', [])
           } else {
             ds.saveTaxes(response.data);
             console.debug("REQUEST: taxes : %o", response.data);   //TODO: for debug
-            for (var idx in response.data) {
-              if (typeof response.data[idx] == 'undefined' || response.data[idx].id == null || response.data[idx].id == 'undefined') {
-                console.error("@@@ ERROR : Find Undefined!!!");
-              }
-            }
           }
           var now = _getUnixTimestamp();
           LocalStorage.saveDataSyncTime("taxes", now);
@@ -1130,7 +1115,7 @@ angular.module('OnzsaApp.register', [])
             for(var i=0; i<response.data.length; i++) {
               ds.savePriceBook(null, response.data[i]);
             }
-            debug("REQUEST: price books : ", response.data);
+            console.debug("REQUEST: price books : ", response.data);
           }
           deferred.resolve();
         }, function (response) {
