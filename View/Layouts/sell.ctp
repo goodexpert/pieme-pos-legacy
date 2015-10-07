@@ -170,23 +170,21 @@
     <!-- END JAVASCRIPTS -->
 
     <!-- BEGIN SESSION TIMEOUT SCRIPTS -->
-    <!--
-    <script src="/theme/onzsa/assets/global/plugins/bootstrap-sessiontimeout/jquery.sessionTimeout.min.js" type="text/javascript"></script>
+    <script src="/lib/bootstrap-session-timeout/dist/bootstrap-session-timeout.js" type="text/javascript"></script>
     <script type="text/javascript">
-    $(document).ready(function() {    
+      $(document).ready(function() {
         // initialize session timeout settings
         $.sessionTimeout({
             title: 'Session Timeout Notification',
             message: 'Your session is about to expire.',
             keepAliveUrl: '/users/ping.json',
-            redirUrl: '/users/lock',
+            redirUrl: '/users/logout',
             logoutUrl: '/users/logout',
-            warnAfter: 240000, //warn after 240 seconds
-            redirAfter: 300000, //redirect after 300 secons
+            warnAfter: 60000, //warn after 60 seconds
+            redirAfter: 62000, //redirect after 300 secons
         });
-    });
+      });
     </script>
-    -->
     <!-- END SESSION TIMEOUT SCRIPTS -->
 
     <!-- BEGIN GOOGLE ANALYTICS SCRIPTS -->
