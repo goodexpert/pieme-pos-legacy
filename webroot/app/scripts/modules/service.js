@@ -11,9 +11,9 @@ angular.module('OnzsaApp.register', [])
 
 .constant('registerConfig', {
   debug: true,
-  statusCheckInterval:       5000,   // 5sec
-  syncSaleDataInterval:     60000,   // 1min
-  syncUpdateDataInterval:  300000,   // 5min
+  statusCheckInterval:     120000,   // 2min
+  syncSaleDataInterval:    300000,   // 5min
+  syncUpdateDataInterval:  600000,   // 10min
 })
 
 .factory('Register', [

@@ -118,7 +118,7 @@
 <!-- END JAVASCRIPTS -->
 
 <!-- BEGIN SESSION TIMEOUT SCRIPTS -->
-<!--
+
 <script src="/theme/onzsa/assets/global/plugins/bootstrap-sessiontimeout/jquery.sessionTimeout.min.js" type="text/javascript"></script>
 <script type="text/javascript">
 $(document).ready(function() {
@@ -129,12 +129,12 @@ $(document).ready(function() {
         keepAliveUrl: '/users/ping.json',
         redirUrl: '/users/lock',
         logoutUrl: '/users/logout',
-        warnAfter: 240000, //warn after 240 seconds
-        redirAfter: 300000, //redirect after 300 secons
+        warnAfter: 6000, //warn after 240 seconds
+        redirAfter: 1000, //redirect after 300 secons
     });
 });
 </script>
--->
+
 <!-- END SESSION TIMEOUT SCRIPTS -->
 
 <!-- BEGIN GOOGLE ANALYTICS SCRIPTS -->

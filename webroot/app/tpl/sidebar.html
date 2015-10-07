@@ -155,4 +155,10 @@
     </li>
   </ul>
   <!-- END SIDEBAR MENU -->
-</div>  
+</div>
+
+<script>
+$(".myMenu ul li a").on("touchend", function(event) {
+window.location.href = $(this).attr("href");
+});
+</script>

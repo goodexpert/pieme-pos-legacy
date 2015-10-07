@@ -50,7 +50,7 @@
 <!--
 <script src="/theme/onzsa/assets/global/plugins/bootstrap-sessiontimeout/jquery.sessionTimeout.min.js" type="text/javascript"></script>
 <script type="text/javascript">
-$(document).ready(function() {    
+$(document).ready(function() {
     // initialize session timeout settings
     $.sessionTimeout({
         title: 'Session Timeout Notification',
