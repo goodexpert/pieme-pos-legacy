@@ -1,4 +1,4 @@
-<div class="daily-snapshot" data-ng-controller="DailySnapshotController as dailyCtrl">
+<div class="daily-snapshot">
   <link href="/css/dataTable.css" rel="stylesheet" type="text/css">
   <div class="portlet light bordered">
     <div class="page-content-wrapper" style="margin-top: 30px;">
@@ -9,7 +9,7 @@
             <h4>Register details</h4>
           </div>
           <div class="dashed-line"></div>
-          <div id="daily-snapshot-details" class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
+          <div id="close-register-details" class="col-md-12 col-sm-12 col-xs-12 col-alpha col-omega">
             <div class="col-md-6 col-sm-12 col-xs-6 col-alpha col-omega">
               <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="col-md-4 col-sm-4 col-xs-4"><span>Register: </span></div>
@@ -64,7 +64,7 @@
                 <th></th>
                 <th class="text-right">{{register.total_payments | currency}}</th>
               </tr>
-              <tr data-ng-repeat="sale in re  gister.sales">
+              <tr data-ng-repeat="sale in register.sales">
                 <td></td>
                 <td>{{sale.name}}</td>
                 <td class="text-right">{{sale.total_payments | currency}}</td>
@@ -199,7 +199,7 @@
         <div class="dashed-line"></div>
         <div class="col-md-12 col-sm-12 col-xs-12 pull-right margin-top-20 margin-bottom-20">
           <button class="btn btn-primary pull-right end-of-day">End of Day</button>
-          <button class="btn btn-default pull-right margin-right-10 print">Print</button>
+          <button class="btn btn-default pull-right margin-right-10 daily-snapshot-print" id="daily-snapshot-print">Print</button>
         </div>
       </div>
     </div>
@@ -207,7 +207,187 @@
   </div>
 </div>
 
-<style>
 
+<!-- ------------------------------------------ -->
+<!-- Print Templet -->
+<!-- ------------------------------------------ -->
+
+<div class="clearfix"></div>
+
+<div class="receipt-parent has-receipt-80" id =receipt>
+  <div id="receipt" class="receipt-content">
+    <div class="show-amount">
+      <div class="receipt-header text-center">
+        <h2>Daily Snapshot</h2>
+      </div>
+
+      <!-- Print : register details -->
+      <div class="register-details">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="row">
+            <strong>Register Details</strong>
+          </div>
+          <div class="row">
+            <div class="col-md-2 col-sm-4 col-xs-4"><span>Register: </span></div>
+            <div class="col-md-4 col-sm-8 col-xs-8">{{register.name}}</div>
+            <div class="col-md-2 col-sm-4 col-xs-4"><span>Outlet: </span></div>
+            <div class="col-md-4 col-sm-8 col-xs-8">{{register.outlet_name}}</div>
+          </div>
+          <div class="row">
+            <div class="col-md-2 col-sm-4 col-xs-4"><span>Opened: </span></div>
+            <div class="col-md-4 col-sm-8 col-xs-8">{{register.open_time}}</div>
+            <div class="col-md-2 col-sm-4 col-xs-4"><span>Closed: </span></div>
+            <div class="col-md-4 col-sm-8 col-xs-8">{{register.close_time}}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Print : Sales -->
+      <div class="dashed-line-gr"></div>
+
+      <div class="register-sales">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="row">
+            <strong>Sales</strong>
+          </div>
+          <div class="row">
+            <div class="col-md-8 col-sm-8 col-xs-8">New sales</div>
+            <div class="col-md-4 col-sm-4 col-xs-4 text-right">{{register.total_sales | currency}}</div>
+          </div>
+          <div class="row" data-ng-repeat="sale in register.sales">
+            <div class="col-md-8 col-sm-8 col-xs-8 ">&nbsp;&nbsp;&nbsp;{{sale.name}}</div>
+            <div class="col-md-4 col-sm-4 col-xs-4 text-right">{{sale.total_sales | currency}}</div>
+          </div>
+          <div class="row">
+            <div class="col-md-8 col-sm-8 col-xs-8 ">&nbsp;&nbsp;&nbsp;Tax (GST)</div>
+            <div class="col-md-4 col-sm-4 col-xs-4 text-right">{{register.total_taxes | currency}}</div>
+          </div>
+          <div class="row">
+            <div class="col-md-8 col-sm-8 col-xs-8">Discounts</div>
+            <div class="col-md-4 col-sm-4 col-xs-4 text-right">{{register.total_discounts | currency}}</div>
+          </div>
+          <div class="row">
+            <div class="col-md-8 col-sm-8 col-xs-8">Payments</div>
+            <div class="col-md-4 col-sm-4 col-xs-4 text-right">{{register.total_payments | currency}}</div>
+          </div>
+          <div class="row" data-ng-repeat="sale in register.sales">
+            <div class="col-md-8 col-sm-8 col-xs-8 " >&nbsp;&nbsp;&nbsp;{{sale.name}}</div>
+            <div class="col-md-4 col-sm-4 col-xs-4 text-right">{{sale.total_payments | currency}}</div>
+          </div>
+          <div class="row">
+            <div class="col-md-8 col-sm-8 col-xs-8">Transaction Count</div>
+            <div class="col-md-4 col-sm-4 col-xs-4 text-right">{{register.total_transactions}}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Print : Payments -->
+      <div class="dashed-line-gr"></div>
+
+      <div class="register-payments">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="row">
+            <strong>Payments</strong>
+          </div>
+          <div class="row" data-ng-repeat="payment in register.payments">
+            <div class="col-md-8 col-sm-8 col-xs-8 " style="padding-left: 10px;">{{payment.name}}</div>
+            <div class="col-md-4 col-sm-4 col-xs-4 text-right">{{payment.amount | currency}}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Print : Account Sales -->
+      <div class="print-wrap" data-ng-if="(register.layby_sales.sales.length > 0) || (register.layby_sales.payments.length > 0) || (register.account_sales.sales.length > 0) || (register.account_sales.payments.length > 0)">
+
+        <div class="dashed-line-gr"></div>
+
+        <div class="register-account-sales">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <div class="row">
+              <strong>Account sales</strong>
+            </div>
+
+            <!-- Layby sale started -->
+            <div class="print-wrap" ng-if="register.layby_sales.sales.length > 0">
+              <div class="row">
+                <div class="col-md-8 col-sm-8 col-xs-8">Layby sale started</div>
+                <div class="col-md-4 col-sm-4 col-xs-4 text-right">{{register.layby_sales.total_sales | currency}}</div>
+              </div>
+              <div class="row" data-ng-repeat="sale in register.layby_sales.sales">
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{sale.sale_date}}</div>
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{sale.reciept_number}}</div>
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{sale.user_name}}</div>
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{sale.customer_name}}</div>
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{sale.note}}</div>
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{sale.amount | currency}}</div>
+              </div>
+            </div>
+
+            <!-- Layby sale payments -->
+            <div class="print-wrap" ng-if="register.layby_sales.payments.length > 0">
+              <div class="row">
+                <div class="col-md-8 col-sm-8 col-xs-8">Layby sale payments</div>
+                <div class="col-md-4 col-sm-4 col-xs-4 text-right">{{register.layby_sales.total_payments | currency}}</div>
+              </div>
+              <div class="row" data-ng-repeat="payment in register.layby_sales.payments">
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{payment.sale_date}}</div>
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{payment.reciept_number}}</div>
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{payment.user_name}}</div>
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{payment.customer_name}}</div>
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{payment.note}}</div>
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{payment.amount | currency}}</div>
+              </div>
+            </div>
+
+            <!-- Account sale started -->
+            <div class="print-wrap" ng-if="register.account_sales.sales.length > 0">
+              <div class="row">
+                <div class="col-md-8 col-sm-8 col-xs-8">Account sale started</div>
+                <div class="col-md-4 col-sm-4 col-xs-4 text-right">{{register.account_sales.total_sales | currency}}</div>
+              </div>
+              <div class="row" data-ng-repeat="sale in register.account_sales.sales">
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{sale.sale_date}}</div>
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{sale.reciept_number}}</div>
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{sale.user_name}}</div>
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{sale.customer_name}}</div>
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{sale.note}}</div>
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{sale.amount | currency}}</div>
+              </div>
+            </div>
+
+            <!-- Account sale payments -->
+            <div class="print-wrap" ng-if="register.account_sales.payments.length > 0">
+              <div class="row">
+                <div class="col-md-8 col-sm-8 col-xs-8">Account sale payments</div>
+                <div class="col-md-4 col-sm-4 col-xs-4 text-right">{{register.account_sales.total_payments | currency}}</div>
+              </div>
+              <div class="row" data-ng-repeat="payment in register.account_sales.payments">
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{payment.sale_date}}</div>
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{payment.reciept_number}}</div>
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{payment.user_name}}</div>
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{payment.customer_name}}</div>
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{payment.note}}</div>
+                <div class="col-md-2 col-sm-4 col-xs-6 ">{{payment.amount | currency}}</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <div class="foot-space text-center" style="padding: 30px;">
+        <p><br><p><br>
+        Print by onzsa.com
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+
+<link href="app/styles/receipt.css" rel="stylesheet" type="text/css"/>
+<style>
 
 </style>

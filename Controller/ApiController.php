@@ -327,6 +327,7 @@ class ApiController extends AppController {
       $this->loadModel('MerchantCustomer');
       $user = $this->Auth->user();
       $query = $this->get('query');
+      $response = [];
 
       $customers = $this->MerchantCustomer->find('all', [
         'fields' => [

@@ -773,7 +773,7 @@ Datastore_sqlite = function () {
     //  [GET] SELECT
     // ------------------- 
     getRegisterSales: function (data, suc, err) {
-      var t = this, condition = [], queryString = "SELECT * FROM RegisterSales";
+      var t = this, condition = [], queryString = "";
 
       //console.debug(" %o", data);
       if (data != null) {
@@ -782,13 +782,16 @@ Datastore_sqlite = function () {
           queryString += " WHERE id = ?";
         }
         if (data.status != null) {
-          if (condition.length == 0) {
+          if (queryString == "") {
             queryString += " WHERE ";
           } else {
             queryString += " AND ";
           }
-          if (data.status == 'all') {
-            queryString += " status != 'sale_status_voided'";
+          if (data.status == 'history') {
+            queryString += " (status != 'sale_status_voided' and status != 'sale_status_open')";
+          }
+          else if (data.status == 'recall') {
+            queryString += " (status == 'sale_status_saved' or status == 'sale_status_layby' or status == 'sale_status_onaccount')";
           }
           else {
             condition.push(data.status);
@@ -797,17 +800,28 @@ Datastore_sqlite = function () {
         }
 
         if (data.register_id != null) {
-          queryString = _connectionQuery(queryString, " register_id = ?", condition, data.register_id);
-
-          if (data.sale_date != null) {
-            queryString = _connectionQuery(queryString, " sale_date >= ?", condition, data.sale_date);
+          if (queryString == "") {
+            queryString += " WHERE ";
+          } else {
+            queryString += " AND ";
           }
+          queryString += " register_id = ?";
+          condition.push(data.register_id);
         }
-        //var strToday = (new Date()).format("yyyy-MM-dd");
+
+        if (data.sale_date != null) {
+          if (queryString == "") {
+            queryString += " WHERE ";
+          } else {
+            queryString += " AND ";
+          }
+          queryString += " sale_date >= ?";
+          condition.push(data.sale_date);
+        }
 
         if (data.sync == 'date') {
           if (data.sale_date != null) {
-            if (condition.length == 0) {
+            if (queryString == "") {
               queryString += " WHERE ";
             } else {
               queryString += " AND ";
@@ -817,6 +831,7 @@ Datastore_sqlite = function () {
           }
         }
       }
+      queryString = "SELECT * FROM RegisterSales " + queryString;
 
       var success = function (t, a) {
         var rs = a.rows, i = 0;

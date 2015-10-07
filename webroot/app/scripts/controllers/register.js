@@ -21,6 +21,7 @@ angular.module('OnzsaApp', [])
   $rootScope.loadingInstance = null;
 
   // initialize the register service
+  sessionOut();
   openLoading();
   Register.init()
     .then(function(response) {
@@ -298,7 +299,8 @@ angular.module('OnzsaApp', [])
 
   $scope.viewHistory = function() {
     debug('viewHistory');
-    window.location = "/history";
+    //window.location = "/history";
+    $state.go('history');
   };
 
   $scope.viewDailyReport = function() {
@@ -623,6 +625,7 @@ angular.module('OnzsaApp', [])
     var modalInstance = $modal.open({
       templateUrl: '/app/tpl/numpad.html',
       controller: 'NumpadCtrl',
+      windowClass: 'numpad-dialog',
       resolve: {
         params: function() {
           return params;
@@ -646,6 +649,9 @@ angular.module('OnzsaApp', [])
         case 'line_discount':
           Register.updateLineDiscount(result.lineDiscount, result.lineDiscountType);
           break;
+        case 'cash_change' :
+          break;
+
       }
     });
   }
@@ -725,6 +731,18 @@ angular.module('OnzsaApp', [])
     });
   }
 
+  function sessionOut(){
+    // initialize session timeout settings
+    $.sessionTimeout({
+      title: 'Session Timeout Notification',
+      message: 'Your session is about to expire.',
+      keepAliveUrl: '/users/ping.json',
+      redirUrl: '/users/logout',
+      logoutUrl: '/users/logout',
+      warnAfter: 60000, //warn after 240 seconds
+      redirAfter: 60000, //redirect after 300 secons
+    });
+  };
 })
 
 .controller('AddNoteController', function($rootScope, $scope, $modalInstance, $window, Register, locale, items) {
@@ -820,7 +838,10 @@ angular.module('OnzsaApp', [])
 
     setNumber($scope.price_incl_tax.toString());
   } else if ('quantity' == $scope.numpadMode) {
-    setNumber(params.saleItem.quantity.toString());
+    //setNumber(params.saleItem.quantity.toString());
+  } else if ('cash_change' == $scope.numpadMode){
+    console.debug(params.toPayment);
+    setNumber(params.toPayment.toString());
   }
   angular.element('#change_number_input').select();
 
@@ -856,6 +877,10 @@ angular.module('OnzsaApp', [])
 
   $scope.isLinePriceMode = function() {
     return $scope.numpadMode == 'line_price';
+  }
+
+  $scope.isCashChangeMode = function() {
+    return $scope.numpadMode == 'cash_change';
   }
 
   $scope.isQuantityMode = function() {
@@ -976,6 +1001,10 @@ angular.module('OnzsaApp', [])
       result.saleItem = saleItem;
     } else if ('quantity' == $scope.numpadMode) {
       result.saleItem.quantity = parseFloat(number);
+    } else if ('cash_change' == $scope.numpadMode){
+      console.debug(result.toPayment);
+      result.toPayment =parseFloat(number);
+      console.debug(result.toPayment);
     }
 
     $modalInstance.close(result);
@@ -1082,7 +1111,7 @@ angular.module('OnzsaApp', [])
 
   // initialize payment modal
   init();
-
+  console.debug($scope);
   $scope.cancel = function() {
     if($scope.totalPaid == 0 ||$scope.totalPaid == null ) {
       endPayment('cancel');
@@ -1091,6 +1120,35 @@ angular.module('OnzsaApp', [])
     }
   };
 
+
+  $scope.toPayCashAmount= function(data) {
+    var params = {
+      numpadMode : 'cash_change',
+      toPayment : $scope.toPayment
+    };
+    openNumpad(params);
+    console.debug(data+'dd');
+  };
+      function openNumpad(params) {
+        var modalNumpadInstance = $modal.open({
+          templateUrl: '/app/tpl/numpad.html',
+          controller: 'NumpadCtrl',
+          windowClass: 'numpad-dialog',
+          backdrop: 'static',
+          size: 'sm',
+          resolve: {
+            params: function() {
+              return params;
+            }
+          }
+        });
+
+        modalNumpadInstance.result.then(function(result) {
+            console.debug(result);
+            $scope.toPayment = result.toPayment;
+            console.debug($scope.toPayment);
+        });
+      }
   $scope.layby = function() {
     if (!Register.isSelectedCustomer()) {
       alert("Customer not selected");

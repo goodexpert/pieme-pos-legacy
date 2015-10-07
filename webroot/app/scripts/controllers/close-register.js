@@ -221,20 +221,65 @@ angular.module('OnzsaApp', [])
     });
   }
 
+  $(".close-register-print-btn").click(function(){
+    print();
+  });
+
   $(".close-register-btn").click(function(){
     Register.closeRegister().then(function(closeTime) {
       $scope.register.close_time = closeTime;
       if (closeTime != null) {
         $timeout(function () {
-          print();
+          var register_info = {};
+          register_info.name = $scope.register.name;
+          register_info.outlet_name = $scope.register.outlet_name;
+          register_info.opened_time = $scope.register.open_time;
+          register_info.closed_time = $scope.register.close_time;
+          closedRegister(register_info);
         });
       }
-      window.location.href = "/dashboard";
 
     }, function(){
       //todo something
     });
   });
 
-});
+  function closedRegister(register_info) {
+    var modalInstance = $modal.open({
+      templateUrl: '/app/tpl/closed-register.html',
+      controller: 'ClosedRegisterController',
+      backdrop: 'static',
+      keyboard: false,
+      size: 'md',
+      resolve: {
+        items: function() {
+          return register_info;
+        }
+      }
+    });
 
+    modalInstance.result.then(function(result) {
+      if (result == 'print') {
+        print();
+      }
+      window.location.href = "/dashboard";
+    });
+  }
+})
+
+
+.controller('ClosedRegisterController', function($rootScope, $scope, $modalInstance, $window, Register, locale, items) {
+  $scope.register = items;
+  $scope.result = '';
+console.debug($scope.register);
+  $scope.skip = function() {
+    $scope.result = 'skip';
+    $modalInstance.close($scope.result);
+  };
+
+  $scope.confirm = function() {
+    $scope.result = 'print';
+    $modalInstance.close($scope.result);
+  };
+
+});
