@@ -463,7 +463,9 @@ angular.module('OnzsaApp', [])
 
   function reload(saleId) {
     debug("do reload");
-    Register.reloadRegisterSale(saleId);
+    openLoading();
+    Register.reloadRegisterSale(saleId)
+    .then(function() {closeLoading();}, function() {closeLoading();})
   }
 
   function getSaleItems() {

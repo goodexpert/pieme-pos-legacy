@@ -578,11 +578,12 @@ angular.module('OnzsaApp.register', [])
           return _receiveRegisterSales(register_id, changedRegister);
         })
         .then(function() {
+          _newRegisterSale();
+          return _reloadSale();
+        })
+        .then(function(){
           var deferred = $q.defer();
           var result = [];
-
-          _newRegisterSale();
-          _reloadSale();
 
           result["status"] = "initialized";
           deferred.resolve(result);
@@ -609,7 +610,7 @@ angular.module('OnzsaApp.register', [])
     var register = LocalStorage.getRegister();
     if (register == null) {
       result["status"] = "noneRegister";
-      deferred.reject(result);
+      deferred.reject(result);``
       $rootScope.$broadcast('register.failed');
       return deferred.promise;
     }
@@ -624,11 +625,13 @@ angular.module('OnzsaApp.register', [])
       return deferred.promise;
     }
     _newRegisterSale();
-    _reloadSale();
+    _reloadSale()
+    .then(function() {
+      result["status"] = "initialized";
+      deferred.resolve(result);
+      $rootScope.$broadcast('register.ready');
+    })
 
-    result["status"] = "initialized";
-    deferred.resolve(result);
-    $rootScope.$broadcast('register.ready');
     return deferred.promise;
   }
 
@@ -1206,7 +1209,7 @@ angular.module('OnzsaApp.register', [])
 
               //get max receipt number
               if (register_id == RS.register_id && maxReceiptNo <= RS.receipt_number) {
-                maxReceiptNo = RS.receipt_number + 1;
+                maxReceiptNo = parseInt(RS.receipt_number + 1);
               }
 
               // save register sale items
