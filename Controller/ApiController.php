@@ -369,6 +369,7 @@ class ApiController extends AppController {
           ]
         ]
       ]);
+      $response = [];
 
       if (!empty($customers) && is_array($customers)) {
         $response = Hash::map($customers, "{n}", function($array) {
@@ -591,27 +592,42 @@ class ApiController extends AppController {
             'classModel' => 'RegisterSaleItem',
             'foreignKey' => 'sale_id',
             'conditions' => [
-              'RegisterSaleItem.sale_id = RegisterSale.id'
+              'RegisterSaleItem.sale_id' => 'RegisterSale.id'
             ]
           ],
           'RegisterSalePayment' => [
             'classModel' => 'RegisterSalePayment',
             'foreignKey' => 'sale_id',
             'conditions' => [
-              'RegisterSalePayment.sale_id = RegisterSale.id'
+              'RegisterSalePayment.sale_id' => 'RegisterSale.id'
             ]
           ]
         ]
       ]);
 
-      $sales = $this->RegisterSale->find('all', [
-        'conditions' => [
+      $conditions = [];
+      if (!empty($sync_date)) {
+        $conditions[] = [
+          'RegisterSale.register_id' => $register_id,
+          'RegisterSale.created >=' => $sync_date
+        ];
+      } else {
+        $conditions[] = [
           'RegisterSale.register_id' => $register_id
+        ];
+      }
+
+      $sales = $this->RegisterSale->find('all', [
+        'conditions' => $conditions,
+        'order' => [
+          'RegisterSale.created' => 'ASC'
         ]
       ]);
 
       $response = Hash::map($sales, "{n}", function($array) {
         $newArray = $array['RegisterSale'];
+        $newArray['RegisterSaleItem'] = $array['RegisterSaleItem'];
+        $newArray['RegisterSalePayment'] = $array['RegisterSalePayment'];
         return $newArray;
       });
 
