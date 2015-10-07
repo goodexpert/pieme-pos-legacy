@@ -567,38 +567,15 @@ angular.module('OnzsaApp.register', [])
     debug("Register: do sub BootstrapSystem");
     var register_id = register.id;
 
-    if (changedRegister == false) {
-      return _switchRegister(register)
-      .then(function(){
-        return _receivePriceBooks(register_id);
-      })
-      .then(function() {
-        var deferred = $q.defer();
-        var result = [];
-
-        _newRegisterSale();
-        _reloadSale();
-
-        result["status"] = "initialized";
-        deferred.resolve(result);
-        $rootScope.$broadcast('register.ready');
-        return deferred.promise;
-      }
-      , function(response) {
-        onlineStatus = 'offline';
-        return _instantBootstrapSystem();
-      });
-    }
-
     return _switchRegister(register)
         .then(function(){
           return _receivePriceBooks(register_id);
         })
-        .then(function(){
-          return _receiveConfig();
+        .then(function() {
+          return _receiveConfig(changedRegister);
         })
         .then(function () {
-          return _receiveRegisterSales(register_id);
+          return _receiveRegisterSales(register_id, changedRegister);
         })
         .then(function() {
           var deferred = $q.defer();
@@ -1166,7 +1143,7 @@ angular.module('OnzsaApp.register', [])
   // --------------------------
   // Receive Config from server
   // --------------------------
-  function _receiveConfig() {
+  function _receiveConfig(changedRegister) {
     debug("REFRESH: config");
     debug("REQUEST: config >>>>>>>>>>>>>>>>>>>>>");
     $rootScope.$broadcast('loading.progress', {msg:'Receive register config information.'});
@@ -1184,7 +1161,9 @@ angular.module('OnzsaApp.register', [])
             console.debug("REQUEST: config : %o", response.data);
 
             //clear sync time
-            LocalStorage.saveDataSyncTime("register_sales", 0);
+            if (changedRegister == true) {
+              LocalStorage.saveDataSyncTime("register_sales", 0);
+            }
 
             deferred.resolve();
           }
@@ -1198,13 +1177,18 @@ angular.module('OnzsaApp.register', [])
   // --------------------------
   // Register Sales from server
   // --------------------------
-  function _receiveRegisterSales(register_id) {
+  function _receiveRegisterSales(register_id, changedRegister) {
     debug("REFRESH: register sales");
     debug("REQUEST: register sales >>>>>>>>>>>>>>>>>>>>>");
     $rootScope.$broadcast('loading.progress', {msg:'Receive register sales information.'});
 
     var lastSyncTime = LocalStorage.getDataSyncTime("register_sales");
     var deferred = $q.defer();
+    if (changedRegister == false) {
+      deferred.resolve();
+      return deferred.promise
+          ;
+    }
     $http.get('/api/get_register_sales.json?sync_date='+lastSyncTime+'&register_id='+register_id)
         .then(function (response) {
           debug("REQUEST: register sales, success handler");
