@@ -41,7 +41,7 @@
               <tr style="border-top:4px double black;">
                 <th>New sales</th>
                 <th></th>
-                <th class="text-right">{{register.total_sales | currency}}</th>
+                <th class="text-right">{{register.total_taxes + register.total_sales | currency}}</th>
               </tr>
               <tr data-ng-repeat="sale in register.sales">
                 <td></td>
@@ -254,7 +254,7 @@
           </div>
           <div class="row">
             <div class="col-md-8 col-sm-8 col-xs-8">New sales</div>
-            <div class="col-md-4 col-sm-4 col-xs-4 text-right">{{register.total_sales | currency}}</div>
+            <div class="col-md-4 col-sm-4 col-xs-4 text-right">{{register.total_sales + register.total_taxes  | currency}}</div>
           </div>
           <div class="row" data-ng-repeat="sale in register.sales">
             <div class="col-md-8 col-sm-8 col-xs-8 ">&nbsp;&nbsp;&nbsp;{{sale.name}}</div>
