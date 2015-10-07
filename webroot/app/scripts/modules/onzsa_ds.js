@@ -833,6 +833,9 @@ Datastore_sqlite = function () {
       }
       queryString = "SELECT * FROM RegisterSales " + queryString;
 
+      console.debug(queryString); //TODO: for debug
+      console.debug(condition);
+
       var success = function (t, a) {
         var rs = a.rows, i = 0;
         var resultSet = [];

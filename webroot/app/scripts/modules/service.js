@@ -24,8 +24,8 @@ angular.module('OnzsaApp.register', [])
             $http, $interval, $timeout,
             LocalStorage, registerConfig) {
 
-    // AngularJS will instantiate a singleton by calling "new" on this function
-    var sharedService = {};
+  // AngularJS will instantiate a singleton by calling "new" on this function
+  var sharedService = {};
 
   // The variables specified to the service globally.
   var ds = Datastore_sqlite;
@@ -277,7 +277,7 @@ angular.module('OnzsaApp.register', [])
 
   sharedService.switchRegister = function(register) {
     debug('Register: switchRegister');
-    return _checkOpenedRegister(register);
+    return _checkOpenedRegister(register, true);
   };
 
   sharedService.updateLineDiscount = function(discount, type) {
@@ -494,12 +494,7 @@ angular.module('OnzsaApp.register', [])
     $interval(_syncSaleData, syncSaleDataInterval);
     $interval(_syncUpdateData, syncUpdateDataInterval);
 
-    //clear sync time
-    LocalStorage.saveDataSyncTime("payment_types", 0);
-    LocalStorage.saveDataSyncTime("products", 0);
-    LocalStorage.saveDataSyncTime("taxes", 0);
-    LocalStorage.saveDataSyncTime("register_sales", 0);
-
+    var changedRegister = false;
     return _checkNetworkConnectivity()
         .then(function(response) {
           onlineStatus = 'online';
@@ -508,7 +503,10 @@ angular.module('OnzsaApp.register', [])
         .then(function(userInfo){
           return _checkInitDatastore(userInfo);
         })
-        .then(function(){
+        .then(function(change){
+          if (change == "change") {
+            changedRegister = true;
+          }
           return _receiveProducts();
         })
         .then(function(){
@@ -523,7 +521,7 @@ angular.module('OnzsaApp.register', [])
 
         .then(function(result){
               if (result.status == "selected") {
-                return _checkOpenedRegister(result.register);
+                return _checkOpenedRegister(result.register, changedRegister);
               } else if (result.status == "waitRegister") {
                 var deferred = $q.defer();
                 deferred.resolve(result);
@@ -539,7 +537,7 @@ angular.module('OnzsaApp.register', [])
   // --------------------------
   // bootstrapSystem - Register open check routine
   // --------------------------
-  function _checkOpenedRegister(register) {
+  function _checkOpenedRegister(register, changedRegister) {
     //console.debug("Register: do checking register open");
     //$rootScope.loadingMessage = "Check open status for register.";
     $rootScope.$broadcast('loading.progress', {msg:'Check open status for register.'});
@@ -547,7 +545,7 @@ angular.module('OnzsaApp.register', [])
     return _isOpenedRegister(register)
         .then(function(result){
               if (result.opened == true) {
-                return _subBootstrapSystem(result.data);
+                return _subBootstrapSystem(result.data, changedRegister);
               } else {
                 var deferred = $q.defer();
                 deferred.resolve(result);
@@ -565,9 +563,30 @@ angular.module('OnzsaApp.register', [])
   // --------------------------
   // bootstrapSystem - 2nd routine
   // --------------------------
-  function _subBootstrapSystem(register) {
+  function _subBootstrapSystem(register, changedRegister) {
     debug("Register: do sub BootstrapSystem");
     var register_id = register.id;
+
+    if (changedRegister == false) {
+      return _switchRegister(register)
+      .then(function() {
+        var deferred = $q.defer();
+        var result = [];
+
+        _newRegisterSale();
+        _reloadSale();
+
+        result["status"] = "initialized";
+        deferred.resolve(result);
+        $rootScope.$broadcast('register.ready');
+        return deferred.promise;
+      }
+      , function(response) {
+        onlineStatus = 'offline';
+        return _instantBootstrapSystem();
+      });
+    }
+
     return _switchRegister(register)
         .then(function(){
           return _receivePriceBooks(register_id);
@@ -579,21 +598,21 @@ angular.module('OnzsaApp.register', [])
           return _receiveRegisterSales(register_id);
         })
         .then(function() {
-              var deferred = $q.defer();
-              var result = [];
+          var deferred = $q.defer();
+          var result = [];
 
-              _newRegisterSale();
-              _reloadSale();
+          _newRegisterSale();
+          _reloadSale();
 
-              result["status"] = "initialized";
-              deferred.resolve(result);
-              $rootScope.$broadcast('register.ready');
-              return deferred.promise;
-            }
-            , function(response) {
-              onlineStatus = 'offline';
-              return _instantBootstrapSystem();
-            });
+          result["status"] = "initialized";
+          deferred.resolve(result);
+          $rootScope.$broadcast('register.ready');
+          return deferred.promise;
+        }
+        , function(response) {
+          onlineStatus = 'offline';
+          return _instantBootstrapSystem();
+        });
   }
 
   // --------------------------
@@ -673,12 +692,17 @@ angular.module('OnzsaApp.register', [])
       return;
     }
     debug("[SYNC DATA] sync start ");
+
+    var register = LocalStorage.getRegister();
     _receiveProducts()
         .then(function () {
           return _receivePaymentTypes();
         })
         .then(function () {
           return _receiveTaxes();
+        })
+        .then(function () {
+          return _receiveRegisterSales(register.id);
         })
         .then(function () {
           debug("[SYNC DATA] sync completed");
@@ -933,10 +957,11 @@ angular.module('OnzsaApp.register', [])
       debug("INIT: checking for the init of the Web SQL Database");
       //ds.dropAllLocalDataStore(); //TODO:
       ds.initLocalDataStore();
+      deferred.resolve("change");
     } else {
       debug("INIT: both id same");
+      deferred.resolve("same");
     }
-    deferred.resolve();
     return deferred.promise;
   }
 
@@ -1153,7 +1178,11 @@ angular.module('OnzsaApp.register', [])
             deferred.reject(response);
           } else {
             LocalStorage.saveConfig(response.data);
-            debug("REQUEST: config : %o", response.data);
+            console.debug("REQUEST: config : %o", response.data);
+
+            //clear sync time
+            LocalStorage.saveDataSyncTime("register_sales", 0);
+
             deferred.resolve();
           }
         }, function (response) {
@@ -1173,7 +1202,7 @@ angular.module('OnzsaApp.register', [])
 
     var lastSyncTime = LocalStorage.getDataSyncTime("register_sales");
     var deferred = $q.defer();
-    $http.get('/api/get_register_sales.json?st='+lastSyncTime+'&register_id='+register_id)
+    $http.get('/api/get_register_sales.json?sync_date='+lastSyncTime+'&register_id='+register_id)
         .then(function (response) {
           debug("REQUEST: register sales, success handler");
 
@@ -1268,7 +1297,7 @@ angular.module('OnzsaApp.register', [])
                 register.register_close_time = '';
                 register.register_open_count_sequence = opened.register_open_count_sequence;
 
-                return _subBootstrapSystem(register);
+                return _subBootstrapSystem(register, true);
               } else {
                 onlineStatus = 'offline';
                 return _instantBootstrapSystem();

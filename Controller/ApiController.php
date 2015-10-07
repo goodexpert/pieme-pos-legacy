@@ -582,7 +582,7 @@ class ApiController extends AppController {
       $this->request->onlyAllow('get');
 
       $register_id = $this->get('register_id');
-      $sync_date = $this->get('sync_date');
+      $sync_date = date("Y-m-d H:i:s", (int)$this->get('sync_date'));
       $user = $this->Auth->user();
 
       $this->loadModel('RegisterSale');
