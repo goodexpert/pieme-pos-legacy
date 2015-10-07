@@ -569,6 +569,9 @@ angular.module('OnzsaApp.register', [])
 
     if (changedRegister == false) {
       return _switchRegister(register)
+      .then(function(){
+        return _receivePriceBooks(register_id);
+      })
       .then(function() {
         var deferred = $q.defer();
         var result = [];
