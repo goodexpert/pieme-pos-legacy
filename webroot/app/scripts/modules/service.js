@@ -1392,9 +1392,10 @@ angular.module('OnzsaApp.register', [])
     item.tax_rate = saleProduct.tax_rate;
     item.product_uom = saleProduct.product_uom;
 
-    var excPrice       = _roundEx(priceBook.price + (priceBook.price * saleProduct.tax_rate) - priceBook.discount, 5);
-    item.sale_price    = _roundEx(excPrice                        / (1 + saleProduct.tax_rate), 5);
-    item.tax           = _roundEx(excPrice * saleProduct.tax_rate / (1 + saleProduct.tax_rate), 5);
+    var excPrice               = _roundEx(priceBook.price_include_tax - priceBook.discount, 2);
+    var tax_rate               = _roundEx(priceBook.tax                   /priceBook.price, 2);
+    item.sale_price = _roundEx(excPrice            / (1 + tax_rate), 2);
+    item.tax        = _roundEx(excPrice * tax_rate / (1 + tax_rate), 2);
     item.loyalty_value = _roundEx(priceBook.loyalty_value, 5);
     item.sequence = registerSale.sequence++;
     item.status = "sale_item_status_valid";
@@ -1407,7 +1408,7 @@ angular.module('OnzsaApp.register', [])
       //TODO: delete debug
       console.groupCollapsed("@ Price Calcuration");
       console.debug("@ supply_price   : %f  ", item.supply_price);
-      console.debug("@ mark           : %f%", (item.price - item.supply_price) * 100 / item.supply_price);
+      console.debug("@ mark       2    : %f%", (item.price - item.supply_price) * 100 / item.supply_price);
       console.debug("@ price          : %f  ", item.price);
       console.debug("@ discount       : %f  ", item.discount);
       console.debug("@ price_incl_tax : %f  ", excPrice);
@@ -1432,7 +1433,7 @@ angular.module('OnzsaApp.register', [])
               //TODO: delete debug
               console.groupCollapsed("@ Price Calcuration");
               console.debug("@ supply_price   : %f  ", item.supply_price);
-              console.debug("@ mark           : %f%", (item.price - item.supply_price) * 100 / item.supply_price);
+              console.debug("@ mark     1      : %f%", (item.price - item.supply_price) * 100 / item.supply_price);
               console.debug("@ price          : %f  ", item.price);
               console.debug("@ discount       : %f  ", item.discount);
               console.debug("@ price_incl_tax : %f  ", excPrice);
@@ -1471,14 +1472,14 @@ angular.module('OnzsaApp.register', [])
     if (oldItem.price != newItem.price) {
       price = newItem.price;
     }
-    var excPrice       = _roundEx(price + (price * newItem.tax_rate) - discount, 5);
-    newItem.sale_price = _roundEx(excPrice                    / (1 + newItem.tax_rate), 5);
-    newItem.tax        = _roundEx(excPrice * newItem.tax_rate / (1 + newItem.tax_rate), 5);
-
+    var excPrice               = _roundEx(priceBook.price_include_tax - discount, 2);
+    var tax_rate               = _roundEx(priceBook.tax                   /priceBook.price, 2);
+    newItem.sale_price = _roundEx(excPrice                        / (1 + tax_rate), 2);
+    newItem.tax        = _roundEx(excPrice * tax_rate / (1 + tax_rate), 2);
     //TODO: delete debug
     console.groupCollapsed("@ Price Calcuration");
     console.debug("@ supply_price   : %f  ", newItem.supply_price);
-    console.debug("@ mark           : %f%", (price - newItem.supply_price) * 100 / newItem.supply_price);
+    console.debug("@ mark       4    : %f%", (price - newItem.supply_price) * 100 / newItem.supply_price);
     console.debug("@ price(old)     : %f  ", oldItem.price);
     console.debug("@ price(new)     : %f  ", newItem.price);
     console.debug("@ discount(old)  : %f  ", oldItem.discount);
@@ -1501,15 +1502,16 @@ angular.module('OnzsaApp.register', [])
     lastestSaleItem.discount = priceBook.discount;
     lastestSaleItem.price = priceBook.price;
     lastestSaleItem.tax_rate = saleProduct.tax_rate;
-    var excPrice               = _roundEx(priceBook.price + (priceBook.price * saleProduct.tax_rate) - priceBook.discount, 5);
-    lastestSaleItem.sale_price = _roundEx(excPrice                        / (1 + saleProduct.tax_rate), 5);
-    lastestSaleItem.tax        = _roundEx(excPrice * saleProduct.tax_rate / (1 + saleProduct.tax_rate), 5);
+    var excPrice               = _roundEx(priceBook.price_include_tax, 2);
+    var tax_rate               = _roundEx(priceBook.tax                   /priceBook.price, 2);
+    lastestSaleItem.sale_price = _roundEx(excPrice                        / (1 + tax_rate), 2);
+    lastestSaleItem.tax        = _roundEx(excPrice * saleProduct.tax_rate / (1 + tax_rate), 2);
     debug("Add Quantity for Same Sell Item  to : %o", lastestSaleItem);
 
     //TODO: delete debug
     console.groupCollapsed("@ Price Calcuration");
     console.debug("@ supply_price   : %f  ", lastestSaleItem.supply_price);
-    console.debug("@ mark           : %f%", (lastestSaleItem.price - lastestSaleItem.supply_price) * 100 / lastestSaleItem.supply_price);
+    console.debug("@ mark        3   : %f%", (lastestSaleItem.price - lastestSaleItem.supply_price) * 100 / lastestSaleItem.supply_price);
     console.debug("@ price          : %f  ", lastestSaleItem.price);
     console.debug("@ discount       : %f  ", lastestSaleItem.discount);
     console.debug("@ price_incl_tax : %f  ", excPrice);
@@ -1560,9 +1562,13 @@ angular.module('OnzsaApp.register', [])
       var discountValue = registerSale.line_discount;
       if (registerSale.line_discount_type == 0) { // percent
         discountValue = _roundEx(registerSale.total_price_incl_tax * (discountValue / 100), 5);
+        registerSale.total_tax =_roundEx(registerSale.total_tax * (registerSale.line_discount/100) , 5);
+      }else{
+        registerSale.total_tax =_roundEx(saleItem.tax_rate * (registerSale.total_price_incl_tax - discountValue) , 5);
       }
       registerSale.total_discount       = _roundEx(registerSale.total_discount + discountValue, 5);
       registerSale.total_price_incl_tax = _roundEx(registerSale.total_price_incl_tax - discountValue, 5);
+
     }
   }
 
