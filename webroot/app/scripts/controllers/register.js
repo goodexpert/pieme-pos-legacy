@@ -24,7 +24,6 @@ angular.module('OnzsaApp', [])
   openLoading();
   Register.init()
     .then(function(response) {
-      closeLoading();
       if (response.status == "waitRegister") {
         debug('register open selector');
         openRegisterSelector(response.data);
@@ -34,17 +33,13 @@ angular.module('OnzsaApp', [])
       } else if (response.status == "initialized") {
         debug('register initialized');
         $rootScope.config = LocalStorage.getConfig();
+        preparedRegister({"name":"register.ready"});
       }
     }, function(response) {
       debug('register initialize failed');
       closeLoading();
       window.location.href = '/dashboard';
     });
-
-  if ($stateParams["saleId"] != null) {
-    debug("set state params[ saleId ] : %s", $stateParams["saleId"]);
-    reload($stateParams["saleId"]);
-  }
 
   // Broadcast
   $scope.$on('quickkey.ready', getQuickKeyLayout);
@@ -453,19 +448,31 @@ angular.module('OnzsaApp', [])
   };
 
   function preparedRegister(result) {
-    closeLoading();
     $rootScope.config = LocalStorage.getConfig();
 
     if ('register.ready' == result.name) {
+
+      if ($stateParams["saleId"] != null) {
+        debug("set state params[ saleId ] : %s", $stateParams["saleId"]);
+        reload($stateParams["saleId"])
+        .then(function() {
+          closeLoading();
+        }, function() {
+          closeLoading();
+        });
+      } else {
+        closeLoading();
+      }
+
     } else {
+      closeLoading();
     }
+
   }
 
   function reload(saleId) {
     debug("do reload");
-    openLoading();
-    Register.reloadRegisterSale(saleId)
-    .then(function() {closeLoading();}, function() {closeLoading();})
+    return Register.reloadRegisterSale(saleId);
   }
 
   function getSaleItems() {
@@ -581,21 +588,11 @@ angular.module('OnzsaApp', [])
     });
 
     modalInstance.result.then(function(selectedItem) {
-      openLoading();
       Register.switchRegister(selectedItem)
       .then(function(result) {
-        closeLoading();
         if (result.status == "openRegister") {
-          openLoading();
-          Register.openRegister(result.data)
-          .then(function(){
-            closeLoading();
-          }, function(){
-            closeLoading();
-          });
+          openRegister(result.data);
         }
-      }, function(){
-        closeLoading();
       });
     });
   }
@@ -695,17 +692,15 @@ angular.module('OnzsaApp', [])
     });
 
     modalInstance.result.then(function(register) {
-      openLoading();
-      Register.openRegister(register)
-      .then(function(){
-        closeLoading();
-      },function(){
-        closeLoading();
-      });
+      return Register.openRegister(register);
     });
   }
 
   function openLoading() {
+    if ($rootScope.loadingInstance != null) {
+      return;
+    }
+    $rootScope.loadingCount += 1;
     $rootScope.loadingInstance = $modal.open({
       templateUrl: '/app/tpl/loading.html',
       controller: 'LoadingController',
@@ -721,7 +716,11 @@ angular.module('OnzsaApp', [])
   }
 
   function closeLoading() {
-    $rootScope.loadingInstance.close();
+    if ($rootScope.loadingInstance != null) {
+      $rootScope.loadingCount -= 1;
+      $rootScope.loadingInstance.close();
+      $rootScope.loadingInstance = null
+    }
   }
 
 
@@ -1429,7 +1428,7 @@ angular.module("template/popup/register.html", []).run(["$templateCache", functi
     "  </button>\n" +
     "  <h4 class=\"modal-title\">Select a register</h4>\n" +
     "</div>\n" +
-    "<div class=\"modal-body\">\n" +
+    "<div class=\"modal-register-body\">\n" +
     "  <div class=\"\" style=\"width: 246px; margin: auto;\" data-always-visible=\"1\" data-rail-visible=\"0\">\n" +
     "    <a class=\"btn icon-btn medium\" style=\"margin-left: 0px;\" data-ng-repeat=\"item in items\" data-ng-click=\"selectItem(item)\">\n" +
     "      <img class=\"img-responsive payment\" data-ng-src=\"/img/cheque.png\" alt=\"ETFPOS\" src=\"/img/cheque.png\">\n" +

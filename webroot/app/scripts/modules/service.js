@@ -259,7 +259,7 @@ angular.module('OnzsaApp.register', [])
 
   sharedService.reloadRegisterSale = function(saleId) {
     debug('Register: reload register sale');
-    return angular.copy(_reloadSale(saleId));
+    return _reloadSale(saleId);
   };
 
   sharedService.getRegisterSaleItems = function(saleID, status, suc, err) {
@@ -1199,7 +1199,7 @@ angular.module('OnzsaApp.register', [])
 
               //get max receipt number
               if (register_id == RS.register_id && maxReceiptNo <= RS.receipt_number) {
-                maxReceiptNo = parseInt(RS.receipt_number + 1);
+                maxReceiptNo = parseInt(RS.receipt_number) + 1;
               }
 
               // save register sale items
@@ -2027,12 +2027,13 @@ angular.module('OnzsaApp.register', [])
   function _reloadSale(receivedSaleID) {
     //$rootScope.loadingMessage = "Reloading sales information.";
     $rootScope.$broadcast('loading.progress', {msg:'Reloading sales information.'});
-
+    var defer = $q.defer();
     var saleID = receivedSaleID;
     if (saleID == null) {
       saleID = LocalStorage.getSaleID();
       if (saleID == null) {
-        return;
+        defer.resolve();
+        return defer.promise;
       }
     } else {
       LocalStorage.saveSaleID(receivedSaleID);
@@ -2046,8 +2047,10 @@ angular.module('OnzsaApp.register', [])
           return _reloadRegisterSaleItmes(saleID)
         })
         .then(function(){
+          defer.resolve();
           $rootScope.$broadcast('sale.reloaded');
         });
+    return defer.promise;
   }
 
   //TODO: Get UUID for RegisterSaleItem
