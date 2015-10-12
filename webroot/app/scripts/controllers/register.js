@@ -41,6 +41,11 @@ angular.module('OnzsaApp', [])
       window.location.href = '/dashboard';
     });
 
+  if ($stateParams["saleId"] != null) {
+    debug("set state params[ saleId ] : %s", $stateParams["saleId"]);
+    reload($stateParams["saleId"]);
+  }
+
   // Broadcast
   $scope.$on('quickkey.ready', getQuickKeyLayout);
   $scope.$on('saleItems.added', refreshSaleItems);
@@ -172,10 +177,10 @@ angular.module('OnzsaApp', [])
   $scope.clearCustomerInfo = function() {
     debug("do clearCustomerInfo()");
     Register.clearCustomerInfo();
-    $scope.$apply(function() {
+    //$scope.$apply(function() {
       $scope.customer = null;
       $("#customer_code").val('');
-    });
+    //});
   };
 
   // Defines customer search callback
@@ -259,7 +264,7 @@ angular.module('OnzsaApp', [])
 
   $scope.doRefund = function() {
     debug('doRefund');
-    Register.syncData();
+    $state.go('refund')
   };
 
   $scope.doDiscount = function() {
@@ -307,6 +312,52 @@ angular.module('OnzsaApp', [])
     $state.go('close-register');
   };
 
+
+
+  // If recovery, already exsit
+  if ($scope.saleItems == null) $scope.saleItems = [];
+  $scope.registerSale = {
+    'receipt_number': 1,
+    'line_discount_type': 0,      // line discount type (0: percent, 1: currency)
+    'line_discount': 0.0,         // line discount number
+    'total_cost': 0.0,            // supply_price
+    'total_price': 0.0,           // price_exclude_tax(supply_price * markup)
+    'total_price_incl_tax': 0.0,  // retail_price(price + tax)
+    'total_discount': 0.0,
+    'total_tax': 0.0,             // price * tax_rate
+    'total_payment': 0.0,         // Paid
+    'sequence': 0
+  };
+  $scope.keyLayout = Register.getQuickKeyLayout();
+  $scope.viewMode = 'small';
+  $scope.getKeyStyle = function(quickKey) {
+    if ($scope.viewMode == 'small') {
+      return {
+        'background': quickKey.background,
+        'background-image': ''
+      }
+    } else {
+      return {
+        'background-image': 'url(' + quickKey.image + ')'
+      }
+    }
+  };
+
+  function preparedRegister(result) {
+    closeLoading();
+    $rootScope.config = LocalStorage.getConfig();
+
+    if ('register.ready' == result.name) {
+      var disabled = '';
+      $scope.user_type = LocalStorage.getConfig().user_type;
+      if ($scope.user_type == "user_type_cashier") {
+        var disabled = ' disabled';
+      }else{
+        var disabled = 'enabled';
+      }
+
+      $scope.functions ={};
+
   $scope.functions = {
     'fn_void_sale' : {
       id      : 'fn_void_sale',
@@ -340,7 +391,7 @@ angular.module('OnzsaApp', [])
     },
     'fn_do_refund' : {
       id      : 'fn_do_refund',
-      class   : 'yellow-gold',
+          class: 'yellow-gold ' + disabled,
       name    : 'Refund',
       callback: $scope.doRefund
     },
@@ -352,7 +403,7 @@ angular.module('OnzsaApp', [])
     },
     'fn_view_history' : {
       id      : 'fn_view_history',
-      class   : '',
+          class: '' + disabled,
       name    : 'Sales History',
       callback: $scope.viewHistory
     },
@@ -376,13 +427,13 @@ angular.module('OnzsaApp', [])
     },
     'fn_open_cash_drawer' : {
       id      : 'fn_open_cash_drawer',
-      class   : '',
+          class: '' + disabled,
       name    : 'No Sale',
       callback: $scope.openCashDrawer
     },
     'fn_do_setup' : {
       id      : 'fn_do_setup',
-      class   : '',
+          class: '' + disabled,
       name    : 'Setup',
       callback: $scope.doSetup
     },
@@ -399,6 +450,44 @@ angular.module('OnzsaApp', [])
       callback: function() {}
     }
   };
+
+      if ($scope.user_type == "user_type_cashier") {
+        $scope.functions['fn_do_refund'] = {
+          id: 'fn_do_refund',
+          class: '',
+          name: '',
+          callback: function () {
+          }
+        }
+        $scope.functions['fn_do_setup'] = {
+          id: 'fn_do_setup',
+          class: '',
+          name: '',
+          callback: function () {
+          }
+        }
+        $scope.functions['fn_view_history'] = {
+          id: 'fn_view_history',
+          class: '',
+          name: '',
+          callback: function () {
+          }
+        }
+        $scope.functions['fn_view_history'] = {
+          id: 'fn_view_history',
+          class: '',
+          name: '',
+          callback: function () {
+          }
+        }
+        $scope.functions['fn_open_cash_drawer'] = {
+          id: 'fn_open_cash_drawer',
+          class: '',
+          name: '',
+          callback: function () {
+          }
+        }
+      }
 
   $scope.function_keys = [
     angular.extend({position: 0}, $scope.functions['fn_void_sale']),
@@ -417,58 +506,29 @@ angular.module('OnzsaApp', [])
     angular.extend({position: 13}, $scope.functions['fn_do_logout']),
     angular.extend({position: 14}, $scope.functions['fn_do_nothing'])
   ];
+      if ($scope.user_type == "user_type_cashier"){
+        $scope.function_keys = [
+          angular.extend({position: 0}, $scope.functions['fn_void_sale']),
+          angular.extend({position: 1}, $scope.functions['fn_do_discount']),
+          angular.extend({position: 2}, $scope.functions['fn_do_line_price']),
+          angular.extend({position: 3}, $scope.functions['fn_do_payment']),
+          angular.extend({position: 4}, $scope.functions['fn_print_receipt']),
+          angular.extend({position: 5}, $scope.functions['fn_do_parking']),
+          angular.extend({position: 6}, $scope.functions['fn_do_recall']),
+          angular.extend({position: 7}, $scope.functions['fn_view_daily_report']),
+          angular.extend({position: 8}, $scope.functions['fn_close_register']),
+          angular.extend({position: 9}, $scope.functions['fn_do_logout']),
+          angular.extend({position: 11}, $scope.functions['fn_do_setup']),
+          angular.extend({position: 10}, $scope.functions['fn_do_nothing']),
+          angular.extend({position: 12}, $scope.functions['fn_open_cash_drawer']),
+          angular.extend({position: 13}, $scope.functions['fn_view_history']),
+          angular.extend({position: 14}, $scope.functions['fn_do_refund'])
 
-  // If recovery, already exsit
-  if ($scope.saleItems == null) $scope.saleItems = [];
-  $scope.registerSale = {
-    'receipt_number': 1,
-    'line_discount_type': 0,      // line discount type (0: percent, 1: currency)
-    'line_discount': 0.0,         // line discount number
-    'total_cost': 0.0,            // supply_price
-    'total_price': 0.0,           // price_exclude_tax(supply_price * markup)
-    'total_price_incl_tax': 0.0,  // retail_price(price + tax)
-    'total_discount': 0.0,
-    'total_tax': 0.0,             // price * tax_rate
-    'total_payment': 0.0,         // Paid
-    'sequence': 0
-  };
-  $scope.keyLayout = Register.getQuickKeyLayout();
-  $scope.viewMode = 'small';
-  $scope.getKeyStyle = function(quickKey) {
-    if ($scope.viewMode == 'small') {
-      return {
-        'background': quickKey.background,
-        'background-image': ''
+        ];
       }
     } else {
-      return {
-        'background-image': 'url(' + quickKey.image + ')'
       }
     }
-  };
-
-  function preparedRegister(result) {
-    $rootScope.config = LocalStorage.getConfig();
-
-    if ('register.ready' == result.name) {
-
-      if ($stateParams["saleId"] != null) {
-        debug("set state params[ saleId ] : %s", $stateParams["saleId"]);
-        reload($stateParams["saleId"])
-        .then(function() {
-          closeLoading();
-        }, function() {
-          closeLoading();
-        });
-      } else {
-        closeLoading();
-      }
-
-    } else {
-      closeLoading();
-    }
-
-  }
 
   function reload(saleId) {
     debug("do reload");
@@ -1279,16 +1339,23 @@ angular.module('OnzsaApp', [])
 
     dpsClient.connect(function (connected, error) {
       if (connected && $scope.toPayment > 0) {
-        dpsClient.payment($scope.invoiceNumber, $scope.toPayment, function (data, error) {
+        dpsClient.refund($scope.invoiceNumber, $scope.toPayment, function (data, error) {
           if (data.responsetext == "ACCEPTED" || data.responsetext == "SIG ACCEPTED") {
             // update payment display.
             updatePayment(payment, $scope.toPayment);
           }
         });
-      }
+      }/* else if (connected && $scope.toPayment > 0) {
+        dpsClient.refund($scope.invoiceNumber, $scope.toPayment, function (data, error) {
+              if (data.responsetext == "ACCEPTED" || data.responsetext == "SIG ACCEPTED") {
+                // update payment display.
+                updatePayment(payment, $scope.toPayment);
+              }
+            }
+        );
+      }*/
     });
   }
-
   function issueChange(amount, payment){
     var modalIssueInstance = $modal.open({
       templateUrl: '/app/tpl/change.html',

@@ -87,7 +87,7 @@ DpsClient.prototype.connect = function (callback) {
 
 DpsClient.prototype.refund = function (txnRef, amount, callback) {
   var self = this;
-
+  console.debug(amount);
   console.log(self.connected);
   console.log(self.socket);
   if (!self.connected || !self.socket)
@@ -354,7 +354,7 @@ function refund(socket, txnRef, amount){
   var message = '<Message type="Transaction" id="1234">';
   message += '<TxnType>Refund</TxnType>';
   message += '<TxnRef>' + txnRef + '</TxnRef>';
-  message += '<AmountRefund>' + amount + '</AmounRefund>';
+  message += '<AmountRefund>' + amount + '</AmountRefund>';
   message += '</Message>\n';
   socket.send(message);
 }

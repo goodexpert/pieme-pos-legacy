@@ -8,15 +8,6 @@
       <!-- SALES ITEMS CONTAINER BEGIN -->
       <div class="portlet light bordered sell-screen" id="sales_items_container">
 
-        <!--
-        <div class="portlet-title">
-          <div class="caption font-dark">
-            <span class="caption-subject bold uppercase">Sales Items</span>
-            <span class="caption-helper"></span>
-          </div>
-        </div>
-        -->
-
         <div class="portlet-body">
           <table datatable="" dt-options="registerCtrl.dtOptions" dt-columns="registerCtrl.dtColumns" dt-instance="registerCtrl.dtInstance" class="row-border hover" id="table_sales_items">
 
@@ -40,62 +31,6 @@
             </tfoot>
 
           </table>
-          <!--
-          <table class="table table-hover" id="table_sales_items">
-
-            <thead>
-              <tr>
-                <th class="sale-item-name text-left">Product</th>
-                <th class="sale-item-qty text-center">Qty</th>
-                <th class="sale-item-discount text-center">Discount</th>
-                <th class="sale-item-price text-center">Price</th>
-                <th class="text-center">&nbsp;</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              <tr class="order-product" data-ng-repeat="saleItem in saleItems">
-                <td class="sale-item-name text-left">
-                  {{saleItem.name}}
-                </td>
-                <td class="sale-item-qty text-right"
-                    data-quantity="{{saleItem.quantity}}"
-                    numpad-popup numpad-append-to-body="true" numpad-mode="'quantity'" ng-model="saleItem.quantity" ng-required="true">
-                  {{saleItem.quantity}}
-                </td>
-                <td class="sale-item-discount text-right"
-                    data-discount-type="0"
-                    data-discount="{{saleItem.discount}}"
-                    data-price="{{saleItem.price}}"
-                    data-sale-price="{{saleItem.sale_price}}"
-                    data-tax="{{saleItem.tax}}"
-                    data-tax-rate="{{saleItem.tax_rate}}"
-                    numpad-popup numpad-append-to-body="true" numpad-mode="'discount'" ng-model="saleItem" ng-required="true">
-                  ${{(saleItem.sale_price + saleItem.tax) | number:2}}
-                </td>
-                <td class="sale-item-price text-right">
-                  ${{((saleItem.sale_price + saleItem.tax) * saleItem.qty) | number:2}}
-                </td>
-                <td class="sale-item-remove text-center">
-                  <button class="btn btn-xs btn-circle btn-danger" data-ng-click="removeSellItem(saleItem)">
-                    <i class="glyphicon glyphicon-remove" aria-hidden="true"></i>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-
-            <tfoot>
-              <tr>
-                <td class="sale-item-name text-left">TOTAL</td>
-                <td class="sale-item-qty text-left">&nbsp;</td>
-                <td class="sale-item-discount text-left">&nbsp;</td>
-                <td class="sale-item-price text-right">${{(registerSale.total_price_incl_tax) | number:2}}</td>
-                <td class="text-left">&nbsp;</td>
-              </tr>
-            </tfoot>
-
-          </table>
-          -->
         </div>
       </div>
       <!-- SALES ITEMS CONTAINER END -->
@@ -199,23 +134,6 @@
                     sale
                   </span>
                 </a>
-                <!--
-                <a class="btn icon-btn {{viewMode}}"
-                    data-ng-repeat="quickKey in group.pages[0].keys | filter:search"
-                    data-ng-click="{{quickKey.position == 0 ? '' : 'addSellItem(quickKey)'}}"
-                    data-ng-model="quickKey"
-                    popover-template="{{quickKey.position != 0 ? '' : '\'myPopoverTemplate.html\''}}"
-                    popover-placement="bottom">
-                  <img class="img-responsive"
-                    data-ng-src="{{quickKey.image || '/img/no-image.png'}}" alt="{{quickKey.label}}">
-                  <div class="caption">
-                    <span>{{quickKey.label}}</span>
-                  </div>
-                  <span class="badge badge-danger">
-                    sale
-                  </span>
-                </a>
-                -->
               </div>
             </div>
             <ul class="nav nav-tabs">

@@ -792,6 +792,8 @@ Datastore_sqlite = function () {
           }
           else if (data.status == 'recall') {
             queryString += " (status == 'sale_status_saved' or status == 'sale_status_layby' or status == 'sale_status_onaccount')";
+          }else if (data.status == 'refund'){
+            queryString += " (status == 'sale_status_closed' or status == 'sale_status_layby' or status == 'sale_status_layby_closed' or status == 'sale_status_onaccount_closed' or status == 'sale_status_onaccount' )";
           }
           else {
             condition.push(data.status);

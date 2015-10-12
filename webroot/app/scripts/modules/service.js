@@ -616,7 +616,7 @@ angular.module('OnzsaApp.register', [])
     var register = LocalStorage.getRegister();
     if (register == null) {
       result["status"] = "noneRegister";
-      deferred.reject(result);``
+      deferred.reject(result);
       $rootScope.$broadcast('register.failed');
       return deferred.promise;
     }
@@ -1944,7 +1944,7 @@ angular.module('OnzsaApp.register', [])
   function _reloadRegisterSaleItmes(saleID) {
     var deferred = $q.defer();
     var sucItems = function(rs) {
-      debug("Register: reload find registerSaleItems count : " + rs.length);
+      console.debug("Register: reload find registerSaleItems count : %o",  rs);
       if (rs.length > 0) {
         _clearSellItems();
 
@@ -1953,14 +1953,14 @@ angular.module('OnzsaApp.register', [])
           var saleItem = {};
           saleItem.id = item.id;
           saleItem.product_id = item.product_id;
-          saleItem.name = item.name;
+          saleItem.name =item.name;
           saleItem.supply_price = item.supply_price;
           saleItem.price = item.price;
           saleItem.sale_price = item.sale_price;
           saleItem.tax = item.tax;
           saleItem.tax_rate = item.tax_rate;
           saleItem.discount = item.discount;
-          saleItem.quantity = item.quantity;
+          saleItem.quantity = -item.quantity;
           saleItem.loyalty_value = item.loyalty_value;
           saleItem.sequence = item.sequence;
           saleItem.status = item.status;
@@ -1993,7 +1993,7 @@ angular.module('OnzsaApp.register', [])
         registerSale.receipt_number = sale['receipt_number'];
         registerSale.total_cost = sale['total_cost'];
         registerSale.total_price = sale['total_price'];
-        registerSale.total_price_incl_tax = sale['total_price_incl_tax'];
+        registerSale.total_price_incl_tax = -sale['total_price_incl_tax'];
         registerSale.total_discount = sale['total_discount'];
         registerSale.total_tax = sale['total_tax'];
         registerSale.total_payment = sale['total_payment'];
