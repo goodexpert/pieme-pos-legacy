@@ -1960,7 +1960,7 @@ angular.module('OnzsaApp.register', [])
           saleItem.tax = item.tax;
           saleItem.tax_rate = item.tax_rate;
           saleItem.discount = item.discount;
-          saleItem.quantity = -item.quantity;
+          saleItem.quantity = item.quantity;
           saleItem.loyalty_value = item.loyalty_value;
           saleItem.sequence = item.sequence;
           saleItem.status = item.status;
@@ -1993,7 +1993,7 @@ angular.module('OnzsaApp.register', [])
         registerSale.receipt_number = sale['receipt_number'];
         registerSale.total_cost = sale['total_cost'];
         registerSale.total_price = sale['total_price'];
-        registerSale.total_price_incl_tax = -sale['total_price_incl_tax'];
+        registerSale.total_price_incl_tax = sale['total_price_incl_tax'];
         registerSale.total_discount = sale['total_discount'];
         registerSale.total_tax = sale['total_tax'];
         registerSale.total_payment = sale['total_payment'];

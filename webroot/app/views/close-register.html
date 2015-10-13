@@ -298,6 +298,20 @@
         </div>
       </div>
 
+      <!-- Print : Rounding -->
+      <div class="dashed-line-gr"></div>
+
+      <div class="rounding">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+          <div class="row">
+            <div class="col-md-8 col-sm-8 col-xs-8" style="padding:0">
+              <strong>Rounding</strong>
+            </div>
+            <div class="col-md-4 col-sm-4 col-xs-4 text-right">{{(register.total_sales + register.total_taxes) - register.total_payments | currency}} </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Print : Account Sales -->
       <div class="print-wrap" data-ng-if="(register.layby_sales.sales.length > 0) || (register.layby_sales.payments.length > 0) || (register.account_sales.sales.length > 0) || (register.account_sales.payments.length > 0)">
 
@@ -372,7 +386,6 @@
                 <div class="col-md-2 col-sm-4 col-xs-6 ">{{payment.amount | currency}}</div>
               </div>
             </div>
-
           </div>
         </div>
 

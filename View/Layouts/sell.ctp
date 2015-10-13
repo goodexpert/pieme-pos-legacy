@@ -171,20 +171,20 @@
 
     <!-- BEGIN SESSION TIMEOUT SCRIPTS -->
     <script src="/lib/bootstrap-session-timeout/dist/bootstrap-session-timeout.js" type="text/javascript"></script>
-    <script type="text/javascript">
-      $(document).ready(function() {
-        // initialize session timeout settings
-        $.sessionTimeout({
-            title: 'Session Timeout Notification',
-            message: 'Your session is about to expire.',
-            keepAliveUrl: '/api/ping.json',
-            redirUrl: '/users/logout',
-            logoutUrl: '/users/logout',
-            warnAfter: 60000, //warn after 60 seconds
-            redirAfter: 65000, //redirect after 300 secons
-        });
-      });
-    </script>
+<!--    <script type="text/javascript">-->
+<!--      $(document).ready(function() {-->
+<!--        // initialize session timeout settings-->
+<!--        $.sessionTimeout({-->
+<!--            title: 'Session Timeout Notification',-->
+<!--            message: 'Your session is about to expire.',-->
+<!--            keepAliveUrl: '/api/ping.json',-->
+<!--            redirUrl: '/users/logout',-->
+<!--            logoutUrl: '/users/logout',-->
+<!--            warnAfter: 60000, //warn after 60 seconds-->
+<!--            redirAfter: 65000, //redirect after 300 secons-->
+<!--        });-->
+<!--      });-->
+<!--    </script>-->
     <!-- END SESSION TIMEOUT SCRIPTS -->
 
     <!-- BEGIN GOOGLE ANALYTICS SCRIPTS -->
