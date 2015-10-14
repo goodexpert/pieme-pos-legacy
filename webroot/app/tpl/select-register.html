@@ -1,0 +1,19 @@
+<div class="modal-header">
+  <button class="pull-right confirm-close cancel" type="button" data-dismiss="modal" aria-hidden="true" data-ng-click="cancel()">
+  <i class="glyphicon glyphicon-remove"></i>
+  </button>
+  <h4 class="modal-title">Select a register</h4>
+</div>
+<div class="modal-register-body">
+  <div class="" style="width: 246px; margin: auto;" data-always-visible="1" data-rail-visible="0">
+  <a class="btn icon-btn medium" style="margin-left: 0px;" data-ng-repeat="item in items" data-ng-click="selectItem(item)">
+    <img class="img-responsive payment" data-ng-src="/img/cheque.png" alt="ETFPOS" src="/img/cheque.png">
+    <div class="payment caption">
+      <span class="ng-binding">{{item.name}}</span>
+    </div>
+    </a>
+  </div>
+</div>
+<div class="modal-footer">
+  <button class="btn blue" type="button" data-dismiss="modal" data-ng-click="cancel()">Cancel</button>
+</div>

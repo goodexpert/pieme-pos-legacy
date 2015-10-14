@@ -32,7 +32,6 @@ angular.module('OnzsaApp', [])
         openRegister(response.data);
       } else if (response.status == "initialized") {
         debug('register initialized');
-        $rootScope.config = LocalStorage.getConfig();
         preparedRegister({"name":"register.ready"});
       }
     }, function(response) {
@@ -312,7 +311,11 @@ angular.module('OnzsaApp', [])
     $state.go('close-register');
   };
 
-
+  $rootScope.changeRegister = function() {
+    debug('changeRegister');
+    $rootScope.registers = null;
+    changeRegister();
+  };
 
   // If recovery, already exsit
   if ($scope.saleItems == null) $scope.saleItems = [];
@@ -346,6 +349,7 @@ angular.module('OnzsaApp', [])
   function preparedRegister(result) {
     closeLoading();
     $rootScope.config = LocalStorage.getConfig();
+    $rootScope.register = LocalStorage.getRegister();
 
     if ('register.ready' == result.name) {
       var disabled = '';
@@ -633,9 +637,18 @@ angular.module('OnzsaApp', [])
     });
   };
 
+  function changeRegister() {
+    openLoading();
+    Register.getRegisters()
+    .then(function(respons) {
+      $rootScope.registers = respons.data;
+      openRegisterSelector(respons.data)
+    });
+  }
+
   function openRegisterSelector(registers) {
     var modalInstance = $modal.open({
-      templateUrl: 'template/popup/register.html',
+      templateUrl: 'app/tpl/select-register.html',
       controller: 'RegisterSelectorController',
       backdrop: 'static',
       keyboard: false,
@@ -739,7 +752,7 @@ angular.module('OnzsaApp', [])
 
   function openRegister(register) {
     var modalInstance = $modal.open({
-      templateUrl: '/app/tpl/openRegister.html',
+      templateUrl: '/app/tpl/open-register.html',
       controller: 'OpenRegisterController',
       backdrop: 'static',
       keyboard: false,
@@ -1085,6 +1098,7 @@ angular.module('OnzsaApp', [])
     $modalInstance.close(selectedItem);
   };
 
+  console.debug($scope.items);
 })
 
 .controller('ChangeCtrl', function($rootScope, $scope, $modalInstance, $window,locale, items, payments) {
@@ -1339,7 +1353,7 @@ angular.module('OnzsaApp', [])
 
     dpsClient.connect(function (connected, error) {
       if (connected && $scope.toPayment > 0) {
-        dpsClient.refund($scope.invoiceNumber, $scope.toPayment, function (data, error) {
+        dpsClient.paymnet($scope.invoiceNumber, $scope.toPayment, function (data, error) {
           if (data.responsetext == "ACCEPTED" || data.responsetext == "SIG ACCEPTED") {
             // update payment display.
             updatePayment(payment, $scope.toPayment);
@@ -1486,26 +1500,3 @@ angular.module('OnzsaApp', [])
         });
       }
 });
-
-angular.module("template/popup/register.html", []).run(["$templateCache", function($templateCache) {
-  $templateCache.put("template/popup/register.html",
-    "<div class=\"modal-header\">\n" +
-    "  <button class=\"pull-right confirm-close cancel\" type=\"button\" data-dismiss=\"modal\" aria-hidden=\"true\" data-ng-click=\"cancel()\">\n"+
-    "    <i class=\"glyphicon glyphicon-remove\"></i>\n" +
-    "  </button>\n" +
-    "  <h4 class=\"modal-title\">Select a register</h4>\n" +
-    "</div>\n" +
-    "<div class=\"modal-register-body\">\n" +
-    "  <div class=\"\" style=\"width: 246px; margin: auto;\" data-always-visible=\"1\" data-rail-visible=\"0\">\n" +
-    "    <a class=\"btn icon-btn medium\" style=\"margin-left: 0px;\" data-ng-repeat=\"item in items\" data-ng-click=\"selectItem(item)\">\n" +
-    "      <img class=\"img-responsive payment\" data-ng-src=\"/img/cheque.png\" alt=\"ETFPOS\" src=\"/img/cheque.png\">\n" +
-    "      <div class=\"payment caption\">\n" +
-    "        <span class=\"ng-binding\">{{item.name}}</span>\n" +
-    "      </div>\n" +
-    "    </a>\n" +
-    "  </div>\n" +
-    "</div>\n" +
-    "<div class=\"modal-footer\">\n" +
-    "  <button class=\"btn blue\" type=\"button\" data-dismiss=\"modal\" data-ng-click=\"cancel()\">Cancel</button>\n"+
-    "</div>");
-}]);

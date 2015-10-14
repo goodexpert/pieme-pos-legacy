@@ -1,176 +1,142 @@
 <?php
     $user = $this->Session->read('Auth.User');
  ?>
-<div class="container">
-    <div class="page-header-inner">
-        <!-- BEGIN LOGO -->
-        <div class="page-logo">
-            <a href="/home">
-            <img src="/img/ONZSA_logo-05.png" alt="logo" class="logo-default"/>
-            </a>
+<div data-ng-controller="HeaderController" class="page-header md-shadow-z-1-i navbar navbar-fixed-top">
+
+<!-- BEGIN HEADER INNER -->
+<div class="page-header-inner container">
+    <!-- BEGIN LOGO -->
+    <div class="page-logo">
+        <a href="#/">
+            <img src="/app/images/logo-default.png" alt="logo" class="logo-default"/>
+        </a>
+        <div class="menu-toggler sidebar-toggler">
+            <!-- DOC: Remove the above "hide" to enable the sidebar toggler button on header -->
         </div>
-        <!-- END LOGO -->
-        <!-- BEGIN HORIZANTAL MENU -->
-        <!-- DOC: Apply "hor-menu-light" class after the "hor-menu" class below to have a horizontal menu with white background -->
-        <!-- DOC: This is desktop version of the horizontal menu. The mobile version is defined(duplicated) sidebar menu below. So the horizontal menu has 2 seperate versions -->
-        <div class="hor-menu hidden-sm hidden-xs">
-            <ul class="nav navbar-nav">
-                <!-- DOC: Remove data-hover="dropdown" and data-close-others="true" attributes below to disable the horizontal opening on mouse hover -->
-                <li>
-                    <a href="/dashboard" data-hover="dropdown" data-close-others="true">DASHBOARD</a>
-                </li>
-                <li>
-                    <a href="/home" data-hover="dropdown" data-close-others="true">SALES SCREEN</a>
-                </li>
-                <li>
-                    <a href="/history" data-hover="dropdown" data-close-others="true">HISTORY</a>
-                </li>
-                <?php if ($user['user_type_id'] !== "user_type_cashier") : ?>
-                <li>
-                    <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
-                    STOCK <i class="fa fa-angle-down"></i></a>
-                    <ul class="dropdown-menu pull-left">
-                    <?php if ($user['user_type_id'] === "user_type_admin") : ?>
-                        <li>
-                            <a href="/product">STOCK</a>
-                        </li>
-                        <li>
-                            <a href="/product/brand">BRAND</a>
-                        </li>
-                        <li>
-                            <a href="/product/type">STOCK TYPE</a>
-                        </li>
-                        <li>
-                            <a href="/pricebook">PRICE BOOKS</a>
-                        </li>
-                        <li>
-                            <a href="/supplier">SUPPLIERS</a>
-                        </li>
-                        <li>
-                            <a href="/product/tag">CATEGORIES</a>
-                        </li>
-                    <?php endif; ?>
-                        <li>
-                            <a href="/stock_orders">STOCK CONTROL</a>
-                        </li>
-                    </ul>
-                </li>
-                <?php endif; ?>
-                <?php if ($user['user_type_id'] === "user_type_admin") : ?>
-                <li>
-                    <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
-                    CUSTOMER <i class="fa fa-angle-down"></i></a>
-                    <ul class="dropdown-menu pull-left">
-                        <li>
-                            <a href="/customer">CUSTOMER</a>
-                        </li>
-                        <li>
-                            <a href="/customer/group">Group</a>
-                        </li>
-                    </ul>
-                </li>
-                <?php endif; ?>
-                <?php if ($user['user_type_id'] !== "user_type_cashier") : ?>
-                <li>
-                    <a data-hover="dropdown" data-close-others="true" data-toggle="dropdown" href="javascript:;">
-                    SETTINGS <i class="fa fa-angle-down"></i></a>
-                    <ul class="dropdown-menu pull-left">
-                        <li>
-                            <a href="/setup">GENERAL</a>
-                        </li>
-                        <li>
-                            <a href="/account">PLAN</a>
-                        </li>
-                        <li>
-                            <a href="/setup/outlets_and_registers">OULTES & REGISTERS</a>
-                        </li>
-                        <li>
-                            <a href="/setup/quick_keys">STOCK LIST</a>
-                        </li>
-                        <li>
-                            <a href="/resources">RESOURCES</a>
-                        </li>
-                        <li>
-                            <a href="/setup/payments">PAYMENT TYPE</a>
-                        </li>
-                        <li>
-                            <a href="/setup/taxes">SALES TAXES</a>
-                        </li>
-                        <li>
-                            <a href="/setup/loyalty">LOYALTY</a>
-                        </li>
-                        <li>
-                            <a href="/setup/user">USERS</a>
-                        </li>
-                        <li>
-                            <a href="/setup/add_ons">ADD-ONS</a>
-                        </li>
-                    </ul>
-                </li>
-                <?php endif; ?>
-            </ul>
-        </div>
-        <!-- END HORIZANTAL MENU -->
-        <!-- BEGIN RESPONSIVE MENU TOGGLER -->
-        <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"></a>
-        <!-- END RESPONSIVE MENU TOGGLER -->
+    </div>
+    <!-- END LOGO -->
+
+
+  <!-- BEGIN RESPONSIVE MENU TOGGLER -->
+    <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"></a>
+    <!-- END RESPONSIVE MENU TOGGLER -->
+
+    <!-- BEGIN PAGE ACTIONS -->
+    <!-- DOC: Remove "hide" class to enable the page header actions -->
+    <!-- END PAGE ACTIONS -->
+
+    <!-- BEGIN PAGE TOP -->
+    <div class="page-top">
+        <!-- BEGIN HEADER SEARCH BOX -->
+        <!-- DOC: Apply "search-form-expanded" right after the "search-form" class to have half expanded search box -->
+        <!-- END HEADER SEARCH BOX -->
         <!-- BEGIN TOP NAVIGATION MENU -->
         <div class="top-menu">
             <ul class="nav navbar-nav pull-right">
-                <!-- BEGIN REGISTER DROPDOWN -->
-                <?php if (isset($user['MerchantRegister'])) : ?>
-                <li class="dropdown dropdown-user">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                    <span class="username">
-                    <?php echo $user['MerchantRegister']['name']; ?> </span>
-                    <?php if ($user['register_counts'] > 1) : ?>
+
+              <!-- BEGIN REGISTER DROPDOWN -->
+              <?php if ($user['user_type_id'] !== "user_type_cashier") : ?>
+              <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
+              <li class="dropdown dropdown-register">
+                <a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true">
+                  <i class="fa fa-fw fa-tv "></i>
+                  <span class="registername hide-on-mobile">{{register.name}}</span>
+                  <i class="fa fa-angle-down"></i>
+                </a>
+                <ul class="dropdown-menu">
+                  <li>
+                    <a href ng-click="changeRegister()"><i class="fa fa-refresh"></i> Change Register </a>
+                  </li>
+                </ul>
+              </li>
+              <?php endif ?>
+              <!-- END REGISTER DROPDOWN -->
+
+              <!-- BEGIN USER LOGIN DROPDOWN -->
+              <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
+              <li class="dropdown dropdown-user">
+                  <a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true">
+                    <i class="fa fa-fw fa-user "></i>
+                    <!--                    <img alt="" class="img-circle" src="/theme/metronic/assets/admin/layout2/img/avatar.png">-->
+                    <span class="username hide-on-mobile" id="TEST">{{config.user_display_name}}</span>
                     <i class="fa fa-angle-down"></i>
-                    <?php endif; ?>
-                    </a>
-                    <ul class="dropdown-menu" style="<?php echo $user['register_counts'] > 1 ? '' : 'display: none;'; ?>">
-                        <li id="change_register">
-                            <a href="javascript:;">
-                            <i class="icon-user"></i> Change Register </a>
-                        </li>
-                    </ul>
-                </li>
-                <?php endif; ?>
-                <!-- END REGISTER DROPDOWN -->
-                <!-- BEGIN USER LOGIN DROPDOWN -->
-                <li class="dropdown dropdown-user">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                    <img alt="" class="img-user" src="/img/user.png"/>
-                    <span class="username">
-                    <?php echo $user['display_name']; ?> </span>
-                    <i class="fa fa-angle-down"></i>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="/users/<?php echo $user['id'];?>">
-                            <i class="icon-user"></i> My Profile </a>
-                        </li>
-                        <li class="divider">
-                        </li>
-                        <li>
-                            <a href="#">
-                            <i class="icon-lock"></i> Lock Screen </a>
-                        </li>
-                        <li>
-                            <a href="/users/logout">
-                            <i class="icon-key"></i> Log Out </a>
-                        </li>
-                    </ul>
-                </li>
-                <!-- END USER LOGIN DROPDOWN -->
-                <!-- BEGIN QUICK SIDEBAR TOGGLER -->
-                <li class="dropdown dropdown-quick-sidebar-toggler">
-                    <a href="javascript:;" class="dropdown-toggle">
-                    <i class="glyphicon glyphicon-question-sign"></i>
-                    </a>
-                </li>
-                <!-- END QUICK SIDEBAR TOGGLER -->
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-default">
+                      <!--
+                      <li>
+                        <a href="#/profile/dashboard">
+                        <i class="icon-user"></i> My Profile </a>
+                      </li>
+                      <li>
+                        <a href="#">
+                        <i class="icon-calendar"></i> My Calendar </a>
+                      </li>
+                      <li>
+                        <a href="#">
+                        <i class="icon-envelope-open"></i> My Inbox <span class="badge badge-danger">
+                        3 </span>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#/todo">
+                        <i class="icon-rocket"></i> My Tasks <span class="badge badge-success">
+                        7 </span>
+                        </a>
+                      </li>
+                      <li class="divider">
+                      </li>
+                      <li>
+                        <a href="#">
+                        <i class="icon-lock"></i> Lock Screen </a>
+                      </li>
+                      -->
+                      <li>
+                        <a href="#"><i class="icon-notebook"></i> My Sales </a>
+                      </li>
+                      <li class="divider">
+                      <li>
+                        <a href="/signin/logout"><i class="icon-key"></i> Log Out </a>
+                      </li>
+                  </ul>
+              </li>
+              <!-- END USER LOGIN DROPDOWN -->
             </ul>
         </div>
         <!-- END TOP NAVIGATION MENU -->
     </div>
+    <!-- END PAGE TOP -->
 </div>
+<!-- END HEADER INNER -->
+
+</div>
+
+<script>
+  // Handles the horizontal menu
+  var handleHeader = function() {
+    // handle search box expand/collapse
+    $('.page-header').on('click', '.search-form', function(e) {
+      $(this).addClass("open");
+      $(this).find('.form-control').focus();
+
+      $('.page-header .search-form .form-control').on('blur', function(e) {
+        $(this).closest('.search-form').removeClass("open");
+        $(this).unbind("blur");
+      });
+    });
+
+    // handle hor menu search form on enter press
+    $('.page-header').on('keypress', '.hor-menu .search-form .form-control', function(e) {
+      if (e.which == 13) {
+        $(this).closest('.search-form').submit();
+        return false;
+      }
+    });
+
+    // handle header search button click
+    $('.page-header').on('mousedown', '.search-form.open .submit', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      $(this).closest('.search-form').submit();
+    });
+  };
+</script>

@@ -337,6 +337,11 @@ angular.module('OnzsaApp.register', [])
     return _getRegisterSalePayments(saleID, index);
   };
 
+  sharedService.getRegisters = function() {
+    debug('Register: retrieve Registers');
+    return _getRegisters();
+  };
+
   // --------------------------
   // _addSaleItemUomEa
   // --------------------------
@@ -974,10 +979,73 @@ angular.module('OnzsaApp.register', [])
   // --------------------------
   function _checkRegisterID() {
     var deferred = $q.defer();
+    $rootScope.$broadcast('loading.progress', {msg:'Check register ID.'});
+
+    _getRegisters()
+    .then(function(response){
+      var result = [];
+      var registers = response.data;
+      if (registers.length > 1) {
+        result["status"] = "waitRegister";
+        result["register"] = null;
+        result["data"] = registers;
+        deferred.resolve(result);
+      } else {
+        result["status"] = "selected";
+        result["register"] = registers[0];
+        result["data"] = registers;
+        deferred.resolve(result);
+      }
+    }, function (response) {
+      debug("REQUEST: registers, error handler");
+      deferred.reject(response);
+    });
+    return deferred.promise;
+
+    //debug("REFRESH: registers");
+    //debug("REQUEST: registers >>>>>>>>>>>>>>>>>>>>>");
+    ////$rootScope.loadingMessage = "Check register ID.";
+    //$rootScope.$broadcast('loading.progress', {msg:'Check register ID.'});
+    //
+    //$http.get('/api/registers.json')
+    //    .then(function (response) {
+    //      debug("REQUEST: registers, success handler");
+    //
+    //      if (response.data == null) {
+    //        debug("REQUEST: registers, [WARNING] empty data]");
+    //        deferred.reject(response);
+    //      } else {
+    //        var result = [];
+    //        debug("REQUEST: registers : %o", response.data);
+    //        var registers = response.data;
+    //        if (registers.length > 1) {
+    //          result["status"] = "waitRegister";
+    //          result["register"] = null;
+    //          result["data"] = registers;
+    //          deferred.resolve(result);
+    //        } else {
+    //          result["status"] = "selected";
+    //          result["register"] = registers[0];
+    //          result["data"] = registers;
+    //          deferred.resolve(result);
+    //        }
+    //      }
+    //    }, function (response) {
+    //      debug("REQUEST: registers, error handler");
+    //      deferred.reject(response);
+    //    });
+    //
+    //return deferred.promise;
+  }
+
+  // --------------------------
+  // get Register information
+  // --------------------------
+  function _getRegisters() {
+    var deferred = $q.defer();
 
     debug("REFRESH: registers");
     debug("REQUEST: registers >>>>>>>>>>>>>>>>>>>>>");
-    //$rootScope.loadingMessage = "Check register ID.";
     $rootScope.$broadcast('loading.progress', {msg:'Check register ID.'});
 
     $http.get('/api/registers.json')
@@ -988,20 +1056,8 @@ angular.module('OnzsaApp.register', [])
             debug("REQUEST: registers, [WARNING] empty data]");
             deferred.reject(response);
           } else {
-            var result = [];
             debug("REQUEST: registers : %o", response.data);
-            var registers = response.data;
-            if (registers.length > 1) {
-              result["status"] = "waitRegister";
-              result["register"] = null;
-              result["data"] = registers;
-              deferred.resolve(result);
-            } else {
-              result["status"] = "selected";
-              result["register"] = registers[0];
-              result["data"] = registers;
-              deferred.resolve(result);
-            }
+            deferred.resolve(response);
           }
         }, function (response) {
           debug("REQUEST: registers, error handler");
