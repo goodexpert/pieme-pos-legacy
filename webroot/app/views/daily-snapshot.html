@@ -75,6 +75,11 @@
                 <th></th>
                 <th class="text-right">{{register.total_transactions}}</th>
               </tr>
+              <tr style="border-top:4px double black;">
+                <th>Rounding</th>
+                <th></th>
+                <th class="text-right">{{(register.total_sales + register.total_taxes) - register.total_payments | currency}}</th>
+              </tr>
             </table>
           </div>
 

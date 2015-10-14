@@ -97,17 +97,26 @@ angular.module('OnzsaApp', [])
       .then(function() {
         var onAccountSales = 0.0, laybySales = 0.0, newSales = 0.0;
         var onAccountPayments = 0.0, laybyPayments = 0.0, newPayments = 0.0;
+                    var totalAmount = parseFloat(0);
         for (var idx in $scope.registerSales) {
 
           // Make data for sales section
           var registerSale = $scope.registerSales[idx];
+                      var amount = 0;
+
+                      for (var index in registerSale.payments) {
+                        amount += parseFloat(registerSale.payments[index].amount);
+                      }
+                      totalAmount += amount;
+                      console.debug('aaaaaaaaaaaaaaaaa : ', totalAmount);
+
           switch (registerSale.status) {
             case 'sale_status_layby':
             case 'sale_status_layby_closed':
               $scope.register.total_transactions += 1;
               $scope.register.total_taxes += registerSale.total_tax;
               $scope.register.total_discounts += registerSale.total_discount;
-              $scope.register.total_payments += registerSale.total_payment;
+                          $scope.register.total_payments = totalAmount;
               $scope.register.total_sales += registerSale.total_price;
 
               laybySales += registerSale.total_price;
@@ -146,7 +155,7 @@ angular.module('OnzsaApp', [])
               $scope.register.total_transactions += 1;
               $scope.register.total_taxes += registerSale.total_tax;
               $scope.register.total_discounts += registerSale.total_discount;
-              $scope.register.total_payments += registerSale.total_payment;
+                          $scope.register.total_payments = totalAmount;
               $scope.register.total_sales += registerSale.total_price;
 
               onAccountSales += registerSale.total_price;
@@ -184,11 +193,11 @@ angular.module('OnzsaApp', [])
               $scope.register.total_transactions += 1;
               $scope.register.total_taxes += registerSale.total_tax;
               $scope.register.total_discounts += registerSale.total_discount;
-              $scope.register.total_payments += registerSale.total_payment;
+                          $scope.register.total_payments = totalAmount;
               $scope.register.total_sales += registerSale.total_price;
 
               newSales += registerSale.total_price;
-              newPayments += registerSale.total_payment;
+                          newPayments = totalAmount;
               break;
           }
 
