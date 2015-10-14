@@ -1339,7 +1339,7 @@ angular.module('OnzsaApp', [])
 
     dpsClient.connect(function (connected, error) {
       if (connected && $scope.toPayment > 0) {
-        dpsClient.refund($scope.invoiceNumber, $scope.toPayment, function (data, error) {
+        dpsClient.payment($scope.invoiceNumber, $scope.toPayment, function (data, error) {
           if (data.responsetext == "ACCEPTED" || data.responsetext == "SIG ACCEPTED") {
             // update payment display.
             updatePayment(payment, $scope.toPayment);
