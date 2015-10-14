@@ -19,6 +19,7 @@ angular.module('OnzsaApp', [])
   //$rootScope.settings.layout.pageSidebarClosed = false;
   //openSplash();
   $rootScope.loadingInstance = null;
+  $rootScope.registers_count = 1;
 
   // initialize the register service
   openLoading();
@@ -26,6 +27,7 @@ angular.module('OnzsaApp', [])
     .then(function(response) {
       if (response.status == "waitRegister") {
         debug('register open selector');
+        $rootScope.registers_count = response.data.length;
         openRegisterSelector(response.data);
       } else if (response.status == "openRegister") {
         debug('register open check');
@@ -313,7 +315,6 @@ angular.module('OnzsaApp', [])
 
   $rootScope.changeRegister = function() {
     debug('changeRegister');
-    $rootScope.registers = null;
     changeRegister();
   };
 
@@ -641,7 +642,7 @@ angular.module('OnzsaApp', [])
     openLoading();
     Register.getRegisters()
     .then(function(respons) {
-      $rootScope.registers = respons.data;
+      $rootScope.registers_count = respons.data.length;
       openRegisterSelector(respons.data)
     });
   }
@@ -1353,7 +1354,7 @@ angular.module('OnzsaApp', [])
 
     dpsClient.connect(function (connected, error) {
       if (connected && $scope.toPayment > 0) {
-        dpsClient.paymnet($scope.invoiceNumber, $scope.toPayment, function (data, error) {
+        dpsClient.payment($scope.invoiceNumber, $scope.toPayment, function (data, error) {
           if (data.responsetext == "ACCEPTED" || data.responsetext == "SIG ACCEPTED") {
             // update payment display.
             updatePayment(payment, $scope.toPayment);

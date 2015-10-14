@@ -37,7 +37,7 @@
               <!-- BEGIN REGISTER DROPDOWN -->
               <?php if ($user['user_type_id'] !== "user_type_cashier") : ?>
               <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
-              <li class="dropdown dropdown-register">
+              <li class="dropdown dropdown-register" ng-if="registers_count > 1">
                 <a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true">
                   <i class="fa fa-fw fa-tv "></i>
                   <span class="registername hide-on-mobile">{{register.name}}</span>
@@ -48,6 +48,12 @@
                     <a href ng-click="changeRegister()"><i class="fa fa-refresh"></i> Change Register </a>
                   </li>
                 </ul>
+              </li>
+              <li class="dropdown dropdown-register" ng-if="registers_count == 1">
+                <a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true">
+                  <i class="fa fa-fw fa-tv "></i>
+                  <span class="registername hide-on-mobile">{{register.name}}</span>
+                </a>
               </li>
               <?php endif ?>
               <!-- END REGISTER DROPDOWN -->
