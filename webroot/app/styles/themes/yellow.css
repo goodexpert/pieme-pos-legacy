@@ -94,19 +94,25 @@ Page Header
   background-color: #dfe2e9;
 }
 .page-header.navbar .top-menu .navbar-nav > li.dropdown-user > .dropdown-toggle > .username {
-  color: #7f96ac;
+  color: #000;
 }
 .page-header.navbar .top-menu .navbar-nav > li.dropdown-user > .dropdown-toggle > i {
-  color: #7f96ac;
+  color: #000;
 }
 .page-header.navbar .top-menu .navbar-nav > li.dropdown-user > .dropdown-menu {
   width: 195px;
 }
 .page-header.navbar .top-menu .navbar-nav > li.dropdown-register > .dropdown-toggle > .registername {
-  color: #7f96ac;
+  color: #000;
 }
 .page-header.navbar .top-menu .navbar-nav > li.dropdown-register > .dropdown-toggle > i {
-  color: #7f96ac;
+  color: #000;
+}
+.page-header.navbar .top-menu .navbar-nav > li.dropdown-register > .dropdown-toggle-only > .registername {
+  color: #000;
+}
+.page-header.navbar .top-menu .navbar-nav > li.dropdown-register > .dropdown-toggle-only > i {
+  color: #000;
 }
 .page-header.navbar .top-menu .navbar-nav > li.dropdown-register > .dropdown-menu {
   width: 195px;

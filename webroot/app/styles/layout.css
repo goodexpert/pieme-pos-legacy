@@ -267,6 +267,10 @@ Page Header
   */
   padding: 23px 16px 14px 16px;
 }
+.page-header.navbar .top-menu .navbar-nav > li.dropdown > .dropdown-toggle-only {
+  margin: 0px;
+  padding: 23px 16px 14px 16px;
+}
 .page-header.navbar .top-menu .navbar-nav > li.dropdown > .dropdown-toggle:last-child {
   padding-right: 0;
 }
@@ -533,6 +537,30 @@ Page Header
   display: inline-block;
 }
 .page-header.navbar .top-menu .navbar-nav > li.dropdown-register .dropdown-toggle > i {
+  display: inline-block;
+  margin-top: 5px;
+  margin-right: 7px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+}
+.page-header.navbar .top-menu .navbar-nav > li.dropdown-register .dropdown-toggle-only {
+  padding: 19px 12px 19px 12px;
+  display:  block;
+}
+.page-header.navbar .top-menu .navbar-nav > li.dropdown-register .dropdown-toggle-only > .registername {
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 400;
+}
+.page-header.navbar .top-menu .navbar-nav > li.dropdown-register .dropdown-toggle-only > img {
+  float: left;
+  margin-top: -8px;
+  margin-right: 7px;
+  height: 39px;
+  display: inline-block;
+}
+.page-header.navbar .top-menu .navbar-nav > li.dropdown-register .dropdown-toggle-only > i {
   display: inline-block;
   margin-top: 5px;
   margin-right: 7px;

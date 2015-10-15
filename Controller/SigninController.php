@@ -269,6 +269,7 @@ class SigninController extends AppController {
                         $this->Session->write('Auth.User.current_outlet_id', $outlet['id']);
                     }
                     $this->Session->write('Auth.User.register_counts', count($registers));
+                    $this->Session->write('Auth.User.display_name', $data['MerchantUser']['display_name']);
 
                     // Create a cookie variable
                     $this->Cookie->write('session_id', rand());

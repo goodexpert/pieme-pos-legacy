@@ -69,8 +69,8 @@
 <!-- END PAGE SPINNER -->
 
 <!-- BEGIN HEADER -->
-<div data-ng-include="'/app/tpl/header.html'" data-ng-controller="HeaderController" class="page-header md-shadow-z-1-i navbar navbar-fixed-top">
-</div>
+<!--    <div data-ng-include="'/app/tpl/header.html'" data-ng-controller="HeaderController" class="page-header md-shadow-z-1-i navbar navbar-fixed-top"></div>-->
+<?php echo $this->element('header'); ?>
 <!-- END HEADER -->
 
 <div class="clearfix"></div>

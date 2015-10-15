@@ -36,7 +36,7 @@
 
               <!-- BEGIN REGISTER DROPDOWN -->
               <?php if ($user['user_type_id'] !== "user_type_cashier") : ?>
-              <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
+              <!-- case : multi register -->
               <li class="dropdown dropdown-register" ng-if="registers_count > 1">
                 <a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true">
                   <i class="fa fa-fw fa-tv "></i>
@@ -49,11 +49,12 @@
                   </li>
                 </ul>
               </li>
+              <!-- case : only one register -->
               <li class="dropdown dropdown-register" ng-if="registers_count == 1">
-                <a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true">
-                  <i class="fa fa-fw fa-tv "></i>
+                <span class="dropdown-toggle-only">
+                  <i class="fa fa-fw fa-tv"></i>
                   <span class="registername hide-on-mobile">{{register.name}}</span>
-                </a>
+                </span>
               </li>
               <?php endif ?>
               <!-- END REGISTER DROPDOWN -->
@@ -63,8 +64,8 @@
               <li class="dropdown dropdown-user">
                   <a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true">
                     <i class="fa fa-fw fa-user "></i>
-                    <!--                    <img alt="" class="img-circle" src="/theme/metronic/assets/admin/layout2/img/avatar.png">-->
-                    <span class="username hide-on-mobile" id="TEST">{{config.user_display_name}}</span>
+                    <span class="username hide-on-mobile" id="TEST" ng-if="!config"> <?php echo $user['display_name']; ?></span>
+                    <span class="username hide-on-mobile" id="TEST" ng-if="config">{{config.user_display_name}}</span>
                     <i class="fa fa-angle-down"></i>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-default">

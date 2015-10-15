@@ -5,25 +5,25 @@ App::uses('SimplePasswordHasher', 'Controller/Component/Auth');
 
 class UsersController extends AppController {
 
-/**
- * Components property.
- *
- * @var array
- */
+    /**
+     * Components property.
+     *
+     * @var array
+     */
     public $components = array('RequestHandler');
 
-/**
- * Name of layout to use with this View.
- *
- * @var string
- */
+    /**
+     * Name of layout to use with this View.
+     *
+     * @var string
+     */
     public $layout = 'home';
 
-/**
- * This controller uses the following models.
- *
- * @var array
- */
+    /**
+     * This controller uses the following models.
+     *
+     * @var array
+     */
     public $uses = array(
         'MerchantUser',
         'MerchantRetailer',
@@ -36,21 +36,21 @@ class UsersController extends AppController {
         'RegisterSale'
     );
 
-/**
- * Callback is called before any controller action logic is executed.
- *
- * @return void
- */
+    /**
+     * Callback is called before any controller action logic is executed.
+     *
+     * @return void
+     */
     public function beforeFilter() {
         parent::beforeFilter();
         $this->Auth->allow('login');
     }
 
-/**
- * Add a new user function.
- *
- * @return void
- */
+    /**
+     * Add a new user function.
+     *
+     * @return void
+     */
     public function add() {
         $user = $this->Auth->user();
 
@@ -99,11 +99,11 @@ class UsersController extends AppController {
         $this->set('outlets', $outlets);
     }
 
-/**
- * Edit a user details function.
- *
- * @return void
- */
+    /**
+     * Edit a user details function.
+     *
+     * @return void
+     */
     public function edit($id) {
         $user = $this->Auth->user();
 
@@ -114,11 +114,11 @@ class UsersController extends AppController {
 
             $dataSource = $this->MerchantUser->getDataSource();
             $dataSource->begin();
-            
+
             try {
                 $data = $this->request->data;
                 $data['merchant_id'] = $user['merchant_id'];
-                
+
                 if (empty($data['password'])) {
                     unset($data['password']);
                 }
@@ -126,12 +126,12 @@ class UsersController extends AppController {
                 if (isset($data['outlet_id']) && empty($data['outlet_id'])) {
                     $data['outlet_id'] = null;
                 }
-                
+
                 $this->MerchantUser->id = $id;
                 $this->MerchantUser->save($data);
-                
+
                 $dataSource->commit();
-                
+
                 $result['success'] = true;
                 $result['user_id'] = $this->MerchantUser->id;
             } catch (Exception $e) {
@@ -156,16 +156,16 @@ class UsersController extends AppController {
             )
         ));
         $this->set('outlets', $outlets);
-        
+
         $users = $this->MerchantUser->findById($id);
         $this->set('users',$users);
     }
 
-/**
- * View a user details function.
- *
- * @return void
- */
+    /**
+     * View a user details function.
+     *
+     * @return void
+     */
     public function view($id) {
         $this->request->allowMethod(['get']);
 
@@ -178,24 +178,25 @@ class UsersController extends AppController {
                 array(
                     'table' => 'merchant_outlets',
                     'alias' => 'MerchantOutlet',
-                    'type' => 'INNER',
-                   )
+                    'type' => 'LEFT',
+                    'conditions' => array(
+                        'MerchantOutlet.id = MerchantUser.outlet_id'
+                    )
+                )
             ),
             'conditions' => array(
-              'MerchantUser.id' => $id
+                'MerchantUser.id' => $id
             )
         ));
 
-        $user = array_merge($user, $user['MerchantUser']);
-        unset($user['MerchantUser']);
 
-        $this->set('user', $user);
+        $this->set('user', $user['MerchantUser']);
 
         /*
         $user = $this->Auth->user();
         $user = $this->MerchantUser->findById($id);
         $this->set('user',$user);
-        
+
         $this->RegisterSale->bindModel(array(
             'belongsTo' => array(
                 'MerchantUser' => array(
@@ -210,31 +211,35 @@ class UsersController extends AppController {
         ));
          */
 
-        $conditions = array(
-            'MerchantCustomer.id = Register.customer_id',
-        );
         $sales = $this->RegisterSale->find('all', array(
             'fields' => array(
                 'RegisterSale.*',
+                'MerchantCustomer.id',
+                'MerchantCustomer.customer_code',
                 'MerchantCustomer.name'
             ),
-                'joins' => array(
+            'joins' => array(
                 array(
                     'table' => 'merchant_customers',
                     'alias' => 'MerchantCustomer',
                     'type' => 'INNER',
-                    'condition' => $conditions
+                    'condition' => array(
+                        'MerchantCustomer.id = Register.customer_id',
+                    )
                 )
+            ),
+            'conditions' => array(
+                'RegisterSale.user_id' => $id
             )
         ));
         $this->set('sales',$sales);
     }
 
-/**
- * Login function.
- *
- * @return void
- */
+    /**
+     * Login function.
+     *
+     * @return void
+     */
     public function login() {
         if ($this->request->is('post')) {
             $data = $this->request->data;
@@ -308,7 +313,7 @@ class UsersController extends AppController {
                 $user['last_ip_address'] = $_SERVER['REMOTE_ADDR'];
                 $user['last_logged'] = date("Y-m-d H:i:s");
                 $this->MerchantUser->save($user);
-                
+
                 if(!empty($user['retailer_id'])) {
                     $_SESSION["Auth"]["User"]["MerchantRetailer"] = $this->MerchantRetailer->findById($user['retailer_id']);
                 }
@@ -326,11 +331,11 @@ class UsersController extends AppController {
         $this->layout = 'signin';
     }
 
-/**
- * Logout function.
- *
- * @return void
- */
+    /**
+     * Logout function.
+     *
+     * @return void
+     */
     public function logout() {
         // Delete a cookie variable
         $this->Cookie->delete('session_id');
@@ -338,11 +343,11 @@ class UsersController extends AppController {
         return $this->redirect($this->Auth->logout());
     }
 
-/**
- * Lock screen function.
- *
- * @return void
- */
+    /**
+     * Lock screen function.
+     *
+     * @return void
+     */
     public function lock() {
         if ($this->request->is('post')) {
         }
@@ -351,11 +356,11 @@ class UsersController extends AppController {
         $this->layout = 'lock';
     }
 
-/**
- * Keepalive function.
- *
- * @return void
- */
+    /**
+     * Keepalive function.
+     *
+     * @return void
+     */
     public function ping() {
         if ($this->request->is('ajax')) {
             $this->serialize(array(
