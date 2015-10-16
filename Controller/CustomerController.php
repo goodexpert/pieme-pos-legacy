@@ -4,6 +4,22 @@ App::uses('AppController', 'Controller');
 
 class CustomerController extends AppController {
 
+    // Authorized : Customer can access only admin (exclude 'customer_quick_add')
+    public function isAuthorized($user = null) {
+        if (isset($user['user_type_id'])) {
+            if ($user['user_type_id'] === 'user_type_admin') {
+                return true;
+            } else {
+                if (in_array($this->action, array('customer_quick_add'))) {
+                    return true;
+                }
+            }
+        }
+
+        // Default deny
+        return false;
+    }
+
 /**
  * Components property.
  *

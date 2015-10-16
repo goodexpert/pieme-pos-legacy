@@ -4,6 +4,34 @@ App::uses('AppController', 'Controller');
 
 class ReportsController extends AppController {
 
+    // Authorized : Report can access admin and manager(some function)
+  public function isAuthorized($user = null) {
+    if (isset($user['user_type_id'])) {
+      if ($user['user_type_id'] === 'user_type_admin') {
+        return true;
+      } else if ($user['user_type_id'] === 'user_type_manager') {
+        if (in_array($this->action, array(
+            'sales_by_period',
+            'sales_by_month',
+            'sales_by_day',
+            'sales_by_hour',
+            'sales_by_category',
+            'payments_by_month',
+            'popular_products',
+            'products_by_user',
+            'products_by_customer',
+            'products_by_customer_group',
+            'products_by_type',
+            'closures'
+          ))) {
+          return true;
+        }
+      }
+    }
+    // Default deny
+    return false;
+  }
+
 /**
  * This controller does not use a model
  *

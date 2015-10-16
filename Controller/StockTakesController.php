@@ -5,6 +5,15 @@ App::uses('CakeEmail', 'Network/Email');
 
 class StockTakesController extends AppController {
 
+    // Authorized : StockTakes can access only admin
+    public function isAuthorized($user = null) {
+        if (isset($user['user_type_id'])) {
+            return (bool)($user['user_type_id'] === 'user_type_admin');
+        }
+        // Default deny
+        return false;
+    }
+
 /**
  * Components property.
  *

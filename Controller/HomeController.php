@@ -4,7 +4,13 @@ App::uses('AppController', 'Controller');
 
 class HomeController extends AppController {
 
-/**
+    // Authorized : not use controll
+    public function isAuthorized($user = null) {
+        // Default deny
+        return false;
+    }
+
+    /**
  * Components property.
  *
  * @var array

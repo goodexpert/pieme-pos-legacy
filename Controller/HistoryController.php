@@ -4,6 +4,15 @@ App::uses('AppController', 'Controller');
 
 class HistoryController extends AppController {
 
+    // Authorized : History can access admin and manager(some function)
+    public function isAuthorized($user = null) {
+        if (isset($user['user_type_id'])) {
+            return (bool)(($user['user_type_id'] === 'user_type_admin') || ($user['user_type_id'] === 'user_type_manager'));
+        }
+        // Default deny
+        return false;
+    }
+
 /**
  * Components property.
  *

@@ -4,6 +4,15 @@ App::uses('AppController', 'Controller');
 
 class DashboardController extends AppController {
 
+    // Authorized : Dashboard can access admin and manager(some function)
+    public function isAuthorized($user = null) {
+        if (isset($user['user_type_id'])) {
+            return (bool)(($user['user_type_id'] === 'user_type_admin') || ($user['user_type_id'] === 'user_type_manager'));
+        }
+        // Default deny
+        return false;
+    }
+
 /**
  * Name of layout to use with this View.
  *

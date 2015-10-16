@@ -8,6 +8,15 @@ App::uses('AppController', 'Controller');
 class ResourcesController extends AppController
 {
 
+    // Authorized : Resources can access only admin
+    public function isAuthorized($user = null) {
+        if (isset($user['user_type_id'])) {
+            return (bool)($user['user_type_id'] === 'user_type_admin');
+        }
+        // Default deny
+        return false;
+    }
+
     /**
      * Components property.
      *

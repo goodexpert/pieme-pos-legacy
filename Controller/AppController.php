@@ -31,14 +31,15 @@ App::uses('Controller', 'Controller');
  * @link		http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
-
     public $components = array(
+        'Auth' => array(),
         'Session',
         'Cookie' => array(
             'name' => 'Session',
             'secure' => true
         ),
         'Auth' => array(
+            'authorize' => 'Controller',
             'loginAction' => array(
                 'controller' => 'signin',
                 'action' => 'index'
@@ -67,8 +68,17 @@ class AppController extends Controller {
             'shared_secret' => 'LDDWUKJT6E0DPMEZTCK1HPDQOHUKDE',
              */
         )
+        //,'DebugKit.Toolbar'  //TODO: for DebugKit
     );
 
+    // Default Authorize
+    public function isAuthorized($user = null) {
+        if (isset($user)) {
+            return true;
+        }
+        // Default deny
+        return false;
+    }
 
 /**
  * An array containing headers.
@@ -86,6 +96,7 @@ class AppController extends Controller {
         $this->headers = $this->readHeaders();
         $this->set('menu', '');
         $this->set('submenu', '');
+
     }
 
 /**

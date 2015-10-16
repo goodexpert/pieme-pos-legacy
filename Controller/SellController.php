@@ -4,6 +4,15 @@ App::uses('AppController', 'Controller');
 
 class SellController extends AppController {
 
+    // Authorized : User who have login session can access
+    public function isAuthorized($user = null) {
+        if (isset($user)) {
+            return true;
+        }
+        // Default deny
+        return false;
+    }
+
 /**
  * Components property.
  *

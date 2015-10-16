@@ -5,7 +5,13 @@ App::uses('CakeTime', 'Utility');
 
 class SignupController extends AppController {
 
-/**
+    // Authorized : everyone can access Signup
+    public function isAuthorized($user = null) {
+        // Default deny
+        return true;
+    }
+
+    /**
  * Components property.
  *
  * @var array

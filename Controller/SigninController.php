@@ -5,6 +5,12 @@ App::uses('SimplePasswordHasher', 'Controller/Component/Auth');
 
 class SigninController extends AppController {
 
+    // Authorized : everyone can access Signin
+    public function isAuthorized($user = null) {
+        // Default deny
+        return true;
+    }
+
 /**
  * Components property.
  *

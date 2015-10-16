@@ -5,6 +5,23 @@ App::uses('SimplePasswordHasher', 'Controller/Component/Auth');
 
 class UsersController extends AppController {
 
+    // Authorized : Report can access admin and other(some function)
+    public function isAuthorized($user = null) {
+        if (isset($user['user_type_id'])) {
+            if ($user['user_type_id'] === 'user_type_admin') {
+                return true;
+            } else {
+                if (in_array($this->action, array(
+                    'login', 'logout', 'lock', 'ping'
+                ))) {
+                    return true;
+                }
+            }
+        }
+        // Default deny
+        return false;
+    }
+
     /**
      * Components property.
      *

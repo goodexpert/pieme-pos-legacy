@@ -5,6 +5,23 @@ App::uses('CakeTime', 'Utility');
 
 class ApiController extends AppController {
 
+  // Authorized : User who have login session can access but limited some function
+  public function isAuthorized($user = null) {
+
+    // have login session
+    if (isset($user)) {
+
+      // if you want limit some function, write here
+      //if (in_array($this->action, array('edit', 'delete'))) {
+      //    return true;
+      //  }
+      //}
+      return true;
+    }
+    // Default deny
+    return false;
+  }
+
 /**
  * Components property.
  *
