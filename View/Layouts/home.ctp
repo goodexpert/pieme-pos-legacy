@@ -1,3 +1,6 @@
+<?php
+  $user = $this->Session->read('Auth.User');
+?>
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8 no-js" data-ng-app="OnzsaApp"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9 no-js" data-ng-app="OnzsaApp"> <![endif]-->
@@ -55,48 +58,51 @@
 </head>
 <!-- END HEAD -->
 
-<!-- BEGIN BODY -->
-<body data-ng-controller="AppController" class="page-md page-boxed page-header-fixed page-container-bg-solid page-sidebar-closed-hide-logo">
+  <!-- BEGIN BODY -->
+  <body data-ng-controller="AppController" class="page-md page-boxed page-header-fixed page-container-bg-solid ">
 
-<!-- BEGIN PAGE SPINNER -->
-<!--
-<div ng-spinner-bar class="page-spinner-bar">
-    <div class="bounce1"></div>
-    <div class="bounce2"></div>
-    <div class="bounce3"></div>
-</div>
--->
-<!-- END PAGE SPINNER -->
-
-<!-- BEGIN HEADER -->
-<!--    <div data-ng-include="'/app/tpl/header.html'" data-ng-controller="HeaderController" class="page-header md-shadow-z-1-i navbar navbar-fixed-top"></div>-->
-<?php echo $this->element('header'); ?>
-<!-- END HEADER -->
-
-<div class="clearfix"></div>
-
-<!-- BEGIN CONTAINER -->
-<div class="container">
-  <div class="page-container">
-    <!-- BEGIN SIDEBAR -->
-    <div data-ng-include="'/app/tpl/sidebar.html'" data-ng-controller="SidebarController" class="page-sidebar-wrapper">
+    <!-- BEGIN PAGE SPINNER -->
+    <!--
+    <div ng-spinner-bar class="page-spinner-bar">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
     </div>
-    <!-- END SIDEBAR -->
-    <div class="page-content-wrapper">
-      <div class="page-content">
-        <!-- BEGIN STYLE CUSTOMIZER(optional) -->
-        <!-- END STYLE CUSTOMIZER -->
-        <!-- BEGIN ACTUAL CONTENT -->
-        <?php echo $this->fetch('content'); ?>
-        <!-- END ACTUAL CONTENT -->
-        <div class="clearfix"></div>
+    -->
+    <!-- END PAGE SPINNER -->
+
+    <!-- BEGIN HEADER -->
+    <!-- <div data-ng-include="'/app/tpl/header.html'" data-ng-controller="HeaderController" class="page-header md-shadow-z-1-i navbar navbar-fixed-top"></div>-->
+    <?php echo $this->element('header'); ?>
+    <!-- END HEADER -->
+
+    <div class="clearfix"></div>
+
+    <!-- BEGIN CONTAINER -->
+    <div class="container">
+      <div class="page-container">
+        <!-- BEGIN SIDEBAR -->
+        <!-- <div data-ng-include="'/app/tpl/sidebar.html'" data-ng-controller="SidebarController" class="page-sidebar-wrapper"> -->
+        <?php if ($user['user_type_id'] !== "user_type_cashier") : ?>
+          <?php echo $this->element('sidebar'); ?>
+        <?php endif; ?>
+
+        <!-- END SIDEBAR -->
+        <div class="page-content-wrapper">
+          <div class="page-content">
+            <!-- BEGIN STYLE CUSTOMIZER(optional) -->
+            <!-- END STYLE CUSTOMIZER -->
+            <!-- BEGIN ACTUAL CONTENT -->
+            <?php echo $this->fetch('content'); ?>
+            <!-- END ACTUAL CONTENT -->
+            <div class="clearfix"></div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <!-- BEGIN FOOTER -->
-  <!-- END FOOTER -->
-</div>
-<!-- END CONTAINER -->
+      <!-- BEGIN FOOTER -->
+      <!-- END FOOTER -->
+    </div> 
+    <!-- END CONTAINER -->
 
 
 
@@ -114,28 +120,34 @@
   -->
   <script src="/app/scripts/modules/layout.js" type="text/javascript"></script>
   <!-- END PAGE LEVEL SCRIPTS -->
-
+    <script>
+      /* Init Metronic's core jquery plugins and layout scripts */
+      $(document).ready(function () {
+        <?php if ($user['user_type_id'] === "user_type_cashier") : ?>
+          $('body').addClass('sidebar-force-closed');
+        <?php endif; ?>
+        Layout.init();
+      });
+    </script>
 <!-- END JAVASCRIPTS -->
 
-<!-- BEGIN SESSION TIMEOUT SCRIPTS -->
-<!--
-<script src="/theme/onzsa/assets/global/plugins/bootstrap-sessiontimeout/jquery.sessionTimeout.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-$(document).ready(function() {
-    // initialize session timeout settings
-    $.sessionTimeout({
-        title: 'Session Timeout Notification',
-        message: 'Your session is about to expire.',
-        keepAliveUrl: '/users/ping.json',
-        redirUrl: '/users/lock',
-        logoutUrl: '/users/logout',
-        warnAfter: 240000, //warn after 240 seconds
-        redirAfter: 300000, //redirect after 300 secons
-    });
-});
-</script>
--->
-<!-- END SESSION TIMEOUT SCRIPTS -->
+    <!-- BEGIN SESSION TIMEOUT SCRIPTS -->
+    <script src="/lib/bootstrap-session-timeout/dist/bootstrap-session-timeout.js" type="text/javascript"></script>
+<!--    <script type="text/javascript">-->
+<!--      $(document).ready(function() {-->
+<!--        // initialize session timeout settings-->
+<!--        $.sessionTimeout({-->
+<!--            title: 'Session Timeout Notification',-->
+<!--            message: 'Your session is about to expire.',-->
+<!--            keepAliveUrl: '/api/ping.json',-->
+<!--            redirUrl: '/users/logout',-->
+<!--            logoutUrl: '/users/logout',-->
+<!--            warnAfter: 60000, //warn after 60 seconds-->
+<!--            redirAfter: 65000, //redirect after 300 secons-->
+<!--        });-->
+<!--      });-->
+<!--    </script>-->
+    <!-- END SESSION TIMEOUT SCRIPTS -->
 
 <!-- BEGIN GOOGLE ANALYTICS SCRIPTS -->
 <script>

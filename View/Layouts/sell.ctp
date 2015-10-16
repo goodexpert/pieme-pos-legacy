@@ -1,61 +1,64 @@
+<?php
+  $user = $this->Session->read('Auth.User');
+?>
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8 no-js" data-ng-app="OnzsaApp"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9 no-js" data-ng-app="OnzsaApp"> <![endif]-->
-<!--[if !IE]><!-- >
+<!--[if !IE]><!-->
 <!--
 <html lang="en" data-ng-app="OnzsaApp" manifest="/cache.appcache">
 -->
 <html lang="en" data-ng-app="OnzsaApp">
 <!--<![endif]-->
-  <!-- BEGIN HEAD -->
-  <head>
-    <title data-ng-bind="'ONZSA POS | ' + $state.current.data.pageTitle"></title>
+<!-- BEGIN HEAD -->
+<head>
+  <title data-ng-bind="'ONZSA POS | ' + $state.current.data.pageTitle"></title>
 
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"> 
-    <meta name="description" content=""/>
-    <meta name="author" content=""/>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+  <meta name="description" content=""/>
+  <meta name="author" content=""/>
 
-    <!-- BEGIN GLOBAL MANDATORY STYLES -->
-    <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&amp;subset=all" rel="stylesheet" type="text/css">
-    <link href="/theme/metronic/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-    <link href="/theme/metronic/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet" type="text/css"/>
-    <link href="/theme/metronic/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
-    <link href="/theme/metronic/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>
-    <link href="/theme/metronic/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css"/>
-    <link href="/lib/angular-hotkeys/build/hotkeys.min.css" rel="stylesheet" type="text/css"/>
-    <link href="/lib/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
-    <link href="/lib/datatables/vendor/datatables-tabletools/css/dataTables.tableTools.css" rel="stylesheet" type="text/css">
-    <link href="/lib/angular-datatables/dist/plugins/bootstrap/datatables.bootstrap.min.css" rel="stylesheet" type="text/css">
-    <!-- END GLOBAL MANDATORY STYLES -->
+  <!-- BEGIN GLOBAL MANDATORY STYLES -->
+  <link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&amp;subset=all" rel="stylesheet">
+  <link href="/theme/metronic/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet"/>
+  <link href="/theme/metronic/assets/global/plugins/simple-line-icons/simple-line-icons.min.css" rel="stylesheet"/>
+  <link href="/theme/metronic/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="/theme/metronic/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet"/>
+  <link href="/theme/metronic/assets/global/plugins/uniform/css/uniform.default.css" rel="stylesheet"/>
+  <link href="/lib/angular-hotkeys/build/hotkeys.min.css" rel="stylesheet"/>
+  <link href="/lib/datatables/media/css/jquery.dataTables.min.css" rel="stylesheet">
+  <link href="/lib/datatables/vendor/datatables-tabletools/css/dataTables.tableTools.css" rel="stylesheet">
+  <link href="/lib/angular-datatables/dist/plugins/bootstrap/datatables.bootstrap.min.css" rel="stylesheet">
+  <!-- END GLOBAL MANDATORY STYLES -->
 
-    <!-- BEGIN DYMANICLY LOADED CSS FILES(all plugin and page related styles must be loaded between GLOBAL and THEME css files ) -->
-    <link id="ng_load_plugins_before"/>
-    <!-- END DYMANICLY LOADED CSS FILES -->
+  <!-- BEGIN DYMANICLY LOADED CSS FILES (all plugin and page related styles must be loaded between GLOBAL and THEME css files ) -->
+  <link id="ng_load_plugins_before"/>
+  <!-- END DYMANICLY LOADED CSS FILES -->
 
-    <!-- BEGIN THEME STYLES -->
-    <!-- DOC: To use 'material design' style just load 'components-md.css' stylesheet instead of 'components.css' in the below style tag -->
-    <link href="/theme/metronic/assets/global/css/components-md.css" id="style_components" rel="stylesheet" type="text/css"/>
-    <link href="/theme/metronic/assets/global/css/plugins-md.css" rel="stylesheet" type="text/css"/>
-    <!--
-    <link href="/theme/metronic/assets/admin/layout2/css/layout.css" rel="stylesheet" type="text/css"/>
-    <link href="/theme/metronic/assets/admin/layout2/css/themes/default.css" rel="stylesheet" type="text/css" id="style_color">
-    <link href="/theme/metronic/assets/admin/layout2/css/custom.css" rel="stylesheet" type="text/css"/>
-    -->
+  <!-- BEGIN THEME STYLES -->
+  <!-- DOC: To use 'material design' style just load 'components-md.css' stylesheet instead of 'components.css' in the below style tag -->
+  <link href="/theme/metronic/assets/global/css/components-md.css" id="style_components" rel="stylesheet"/>
+  <link href="/theme/metronic/assets/global/css/plugins-md.css" rel="stylesheet"/>
+  <!--
+  <link href="/theme/metronic/assets/admin/layout2/css/layout.css" rel="stylesheet"/>
+  <link href="/theme/metronic/assets/admin/layout2/css/themes/default.css" rel="stylesheet" id="style_color">
+  <link href="/theme/metronic/assets/admin/layout2/css/custom.css" rel="stylesheet"/>
+  -->
 
-    <link href="/app/styles/layout.css" rel="stylesheet"/>
-    <link href="/app/styles/themes/yellow.css" rel="stylesheet"/>
-    <link href="/app/styles/custom.css" rel="stylesheet"/>
-    <!-- END THEME STYLES -->
+  <link href="/app/styles/layout.css" rel="stylesheet"/>
+  <link href="/app/styles/themes/yellow.css" rel="stylesheet"/>
+  <link href="/app/styles/custom.css" rel="stylesheet"/>
+  <!-- END THEME STYLES -->
 
-    <link rel="shortcut icon" href="favicon.ico"/>
-  </head>
-  <!-- END HEAD -->
+  <link rel="shortcut icon" href="favicon.ico"/>
+</head>
+<!-- END HEAD -->
 
   <!-- BEGIN BODY -->
-  <body data-ng-controller="AppController" class="page-md page-boxed page-header-fixed page-container-bg-solid page-sidebar-closed-hide-logo">
+  <body data-ng-controller="AppController" class="page-md page-boxed page-header-fixed page-container-bg-solid ">
 
     <!-- BEGIN PAGE SPINNER -->
     <!--
@@ -68,7 +71,7 @@
     <!-- END PAGE SPINNER -->
 
     <!-- BEGIN HEADER -->
-<!--    <div data-ng-include="'/app/tpl/header.html'" data-ng-controller="HeaderController" class="page-header md-shadow-z-1-i navbar navbar-fixed-top"></div>-->
+    <!-- <div data-ng-include="'/app/tpl/header.html'" data-ng-controller="HeaderController" class="page-header md-shadow-z-1-i navbar navbar-fixed-top"></div>-->
     <?php echo $this->element('header'); ?>
     <!-- END HEADER -->
 
@@ -78,8 +81,11 @@
     <div class="container">
       <div class="page-container">
         <!-- BEGIN SIDEBAR -->
-        <div data-ng-include="'/app/tpl/sidebar.html'" data-ng-controller="SidebarController" class="page-sidebar-wrapper">
-        </div>
+        <!-- <div data-ng-include="'/app/tpl/sidebar.html'" data-ng-controller="SidebarController" class="page-sidebar-wrapper"> -->
+        <?php if ($user['user_type_id'] !== "user_type_cashier") : ?>
+          <?php echo $this->element('sidebar'); ?>
+        <?php endif; ?>
+
         <!-- END SIDEBAR -->
         <div class="page-content-wrapper">
           <div class="page-content">
@@ -153,7 +159,6 @@
     -->
     <script src="/app/scripts/modules/layout.js" type="text/javascript"></script>
     <!-- END PAGE LEVEL SCRIPTS -->
-
     <script>
       /* Init Metronic's core jquery plugins and layout scripts */
       $(document).ready(function () {
@@ -166,6 +171,11 @@
           }
         }
         history.pushState(location.origin, location.hash, location.pathname);
+
+        <?php if ($user['user_type_id'] === "user_type_cashier") : ?>
+          $('body').addClass('sidebar-force-closed');
+        <?php endif; ?>
+        Layout.init();
       });
     </script>
     <!-- END JAVASCRIPTS -->

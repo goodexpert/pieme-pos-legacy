@@ -1,0 +1,226 @@
+<?php
+  $user = $this->Session->read('Auth.User');
+?>
+
+<div data-ng-controller="SidebarController" class="page-sidebar-wrapper">
+
+  <div class="page-sidebar navbar-collapse collapse page-sidebar-menu-closed">
+    <!-- BEGIN SIDEBAR MENU -->
+    <!-- DOC: Apply "page-sidebar-menu-light" class right after "page-sidebar-menu" to enable light sidebar menu style(without borders) -->
+    <!-- DOC: Apply "page-sidebar-menu-hover-submenu" class right after "page-sidebar-menu" to enable hoverable(hover vs accordion) sub menu mode -->
+    <!-- DOC: Apply "page-sidebar-menu-closed" class right after "page-sidebar-menu" to collapse("page-sidebar-closed" class must be applied to the body element) the sidebar sub menu mode -->
+    <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
+    <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
+    <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
+    <ul class="page-sidebar-menu page-sidebar-menu-hover-submenu page-sidebar-menu-closed page-sidebar-closed" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" ng-class="{'page-sidebar-menu-closed': settings.layout.pageSidebarClosed}">
+
+
+      <?php if ($user['user_type_id'] === "user_type_admin") : ?>
+
+        <!-- Dashboard -->
+        <li class="start">
+          <a href="/dashboard" >
+            <i class="icon-home"></i>
+            <span class="title">Dashboard</span>
+          </a>
+        </li>
+
+        <!-- Point of Sale -->
+        <li >
+          <a href="/" ng-click="home()">
+            <i class="icon-pointer"></i>
+            <span class="title">Point of Sale</span>
+          </a>
+        </li>
+
+        <!-- Online Store -->
+        <li >
+          <a href="#" class="tooltips" title="" data-placement="right" data-toggle="tooltip" data-original-title="Comming Soon.">
+            <i class="icon-basket"></i>
+            <span class="title">Online Store</span>
+          </a>
+        </li>
+
+        <!-- History -->
+        <li>
+          <a href="/history" >
+            <i class="icon-bar-chart"></i>
+            <span class="title">Reports</span>
+          </a>
+        </li>
+
+        <!-- Stock -->
+        <li>
+          <a href="javascript:;">
+            <i class="icon-tag"></i>
+            <span class="title">Stock</span>
+            <span class="arrow "></span>
+          </a>
+          <ul class="sub-menu">
+            <li>
+              <a href="/product">
+                <span> Stock</span>
+              </a>
+            </li>
+            <li>
+              <a href="/product/brand">
+                <span>Brand</span>
+              </a>
+            </li>
+            <li>
+              <a href="/product/type">
+                <span>Stock Type</span>
+              </a>
+            </li>
+            <li>
+              <a href="/pricebook">
+                <span>Pricebook</span>
+              </a>
+            </li>
+            <li>
+              <a href="/supplier">
+                <span>Suppliers</span>
+              </a>
+            </li>
+            <li>
+              <a href="/product/tag">
+                <span>Categories</span>
+              </a>
+            </li>
+            <li>
+              <a href="/stock_orders">
+                <span>Stock Control</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Customers -->
+        <li>
+          <a href="javascript:;">
+            <i class="icon-users"></i>
+            <span class="title">Customers</span>
+            <span class="arrow "></span>
+          </a>
+          <ul class="sub-menu">
+            <li>
+              <a href="/customer">
+                <span>Customer</span>
+              </a>
+            </li>
+            <li>
+              <a href="/customer/group">
+                <span>Group</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Setting -->
+        <li>
+          <a href="javascript:;">
+            <i class="icon-settings"></i>
+            <span class="title">Settings</span>
+            <span class="arrow "></span>
+          </a>
+          <ul class="sub-menu">
+            <li>
+              <a href="/setup">
+                <span>General</span>
+              </a>
+            </li>
+            <li>
+              <a href="/account">
+                <span>Plan</span>
+              </a>
+            </li>
+            <li>
+              <a href="/setup/outlets_and_registers">
+                <span>Outlets & Registers</span>
+              </a>
+            </li>
+            <li>
+              <a href="/setup/quick_keys">
+                <span>Stock List</span>
+              </a>
+            </li>
+            <li>
+              <a href="/setup/resources">
+                <span>Resources</span>
+              </a>
+            </li>
+            <li>
+              <a href="/setup/payments">
+                <span>Payment Type</span>
+              </a>
+            </li>
+            <li>
+              <a href="/setup/taxes">
+                <span>Sales Taxes</span>
+              </a>
+            </li>
+            <li>
+              <a href="/setup/loyalty">
+                <span>Loyalty</span>
+              </a>
+            </li>
+            <li>
+              <a href="/setup/user">
+                <span>Users</span>
+              </a>
+            </li>
+            <li>
+              <a href="/setup/add_ons">
+                <span>Add-ons</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+      <?php elseif ($user['user_type_id'] === "user_type_manager") : ?>
+
+        <!-- Dashboard -->
+        <li class="start">
+          <a href="/dashboard" >
+            <i class="icon-home"></i>
+            <span class="title">Dashboard</span>
+          </a>
+        </li>
+
+        <!-- Point of Sale -->
+        <li >
+          <a href="/" ng-click="home()">
+            <i class="icon-pointer"></i>
+            <span class="title">Point of Sale</span>
+          </a>
+        </li>
+
+        <!-- Online Store -->
+        <li >
+          <a href="#" class="tooltips" title="" data-placement="right" data-toggle="tooltip" data-original-title="Comming Soon.">
+            <i class="icon-basket"></i>
+            <span class="title">Online Store</span>
+          </a>
+        </li>
+
+        <!-- History -->
+        <li>
+          <a href="/history" >
+            <i class="icon-bar-chart"></i>
+            <span class="title">Reports</span>
+          </a>
+        </li>
+
+      <?php elseif ($user['user_type_id'] === "user_type_cashier") : ?>
+
+       <!-- Cashier can access only sell screen -->
+
+      <?php endif; ?>
+
+    </ul>
+    <!-- END SIDEBAR MENU -->
+  </div>
+
+
+</div>
+<!-- END page-sidebar-wrapper -->
