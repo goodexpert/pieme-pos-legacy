@@ -696,10 +696,18 @@ class ApiController extends AppController {
       $this->loadModel('RegisterSale');
       $this->loadModel('RegisterSaleItem');
       $this->loadModel('RegisterSalePayment');
+      $this->loadModel('MerchantRegister');
 
       $dataSource = $this->RegisterSale->getDataSource();
       $response = [];
       $response['ids'] = [];
+
+      $register = $this->MerchantRegister->find('first',array(
+          'conditions' => array(
+              'MerchantRegister.id' => $data['registerId'],
+          )
+      ));
+      $maxReceiptNo = $register['MerchantRegister']['invoice_sequence'];
 
       foreach ($data['syncData'] as $sale) {
         $dataSource->begin();
@@ -707,6 +715,9 @@ class ApiController extends AppController {
         try {
           if (isset($sale['sale_date']) && !empty($sale['sale_date'])) {
             $sale['sale_date'] = date("Y-m-d H:i:s", (int)$sale['sale_date']);
+          }
+          if ($sale['receipt_number'] >= $maxReceiptNo) {
+            $maxReceiptNo = $sale['receipt_number'] + 1;
           }
 
           $this->RegisterSale->create();
@@ -734,6 +745,9 @@ class ApiController extends AppController {
           $response['error'] = $e->getMessage();
         }
       }
+
+      $register['MerchantRegister']['invoice_sequence'] = $maxReceiptNo;
+      $this->MerchantRegister->save($register['MerchantRegister']);
 
       $this->serialize($response);
     }

@@ -342,6 +342,12 @@ angular.module('OnzsaApp.register', [])
     return _getRegisters();
   };
 
+
+  sharedService.doSyncNow = function() {
+    debug('Register: retrieve sync sale data');
+    return _syncSaleData();
+  };
+
   // --------------------------
   // _addSaleItemUomEa
   // --------------------------
@@ -796,10 +802,13 @@ angular.module('OnzsaApp.register', [])
             debug("[SYNC SALE] sync request >>>>>>>>>>");
             debug(RS);
 
+            var register_id = LocalStorage.getRegisterID();
+
             $.ajax({
               url: "/api/upload_register_sales.json",
               type: "POST",
               data: {
+                registerId: register_id,
                 syncData: RS,
               },
               success: function (result) {
