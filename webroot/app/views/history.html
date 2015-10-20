@@ -1,4 +1,15 @@
-<div data-ng-controller="HistoryController as historyCtrl" class="portlet light bordered" ng-style="{'overflow': 'auto'}">
-  <table datatable="" dt-default="" dt-options="historyCtrl.dtOptions" dt-columns="historyCtrl.dtColumns" class="row-border hover">
-  </table>
+<div data-ng-controller="HistoryController as historyCtrl" ng-style="{'overflow': 'auto'}">
+
+  <div class="dropdown portlet light bordered history">
+    <i class="fa fa-history"></i> </i><span>Register Open Period : </span>
+    <select class="open-period" name="open-period" id="open-period" ng-model="period" ng-change="changePeriod()">
+      <option ng-repeat="open in opens" ng-selected="{{$index == ((page - 1) * limit) }}" value="{{$index}}">{{$index + 1}}. {{open.register_open_time}} ~ {{open.register_close_time}}</option>
+      <option value="more" text-center>--- Get more data ---</option>
+    </select>
+  </div>
+
+  <div class="portlet light bordered history">
+    <table datatable="" dt-default="" dt-options="historyCtrl.dtOptions" dt-columns="historyCtrl.dtColumns" class="row-border hover" id="history-table"></table>
+  </div>
+
 </div>

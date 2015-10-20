@@ -9,18 +9,30 @@
  */
 angular.module('OnzsaApp', [])
 
-.controller('HistoryController', function($rootScope, $scope, $state, $http, $modal, $q, $filter, locale, DTOptionsBuilder, DTColumnBuilder, DTColumnDefBuilder) {
+.controller('HistoryController', function($rootScope, $scope, $state, $http, $modal, $q, $filter, locale, LocalStorage, Register, DTOptionsBuilder, DTColumnDefBuilder, DTColumnBuilder, DTInstances) {
 
   $scope.$on('$viewContentLoaded', function() {   
     // initialize core components
     Metronic.initAjax();
   });
 
+  $scope.period = 0;
+  $scope.limit = 5;
+  $scope.page = 1;
+  Register.getRegisterOpenPeriod($scope.limit, $scope.page)
+  .then(function(response) {
+    if (response['data']['success'] == true) {
+      $scope.opens = response['data']['opens'];
+      $scope.changePeriod();
+    }
+  });
+
   // initialize the history sales table
   var vm = this;
+  vm.dtInstance = null;
   vm.dtOptions = DTOptionsBuilder
     .fromFnPromise(function() {
-      return reloadData();
+      return reloadHistory();
     })
     .withOption('deferRender', true)
     .withOption('scrollY', 480)
@@ -104,22 +116,69 @@ angular.module('OnzsaApp', [])
   // define alias for local Datastore
   $scope.ds = Datastore_sqlite;
 
-  function reloadData() {
+  $scope.changePeriod = function() {
+    debug("do changePeriod");
+    if ($scope.period == "more") {
+      $scope.page += 1;
+      Register.getRegisterOpenPeriod($scope.limit, $scope.page)
+      .then(function(response) {
+        if (response['data']['success'] == true) {
+          $.merge($scope.opens, response['data']['opens']);
+          $scope.period = $scope.limit * ($scope.page - 1) + 1;
+          $scope.changePeriod();
+        } else {
+          if (response['data']['count'] == 0) {
+            debug("no more register open period data");
+          }
+        }
+      }, function(response){
+        debug("error : get more register open period");
+      });
+    } else {
+      if (vm.dtInstance == null) {
+        DTInstances.getLast().then(function (instance) {
+          vm.dtInstance = instance;
+        });
+      }
+      vm.dtInstance.reloadData();
+    }
+  }
+
+  function reloadHistory() {
     var defer = $q.defer();
     var data = [];
-    var today = (new Date()).format("yyyy-MM-dd") + " 00:00:00";
-    var todayTime = Math.floor(new Date(today).getTime() / 1000);
+
+    if (vm.dtInstance == null) {
+      DTInstances.getLast().then(function (instance) {
+        vm.dtInstance = instance;
+      });
+    }
+
+    var idx = $scope.period;
+    if ($scope.opens == null) {
+      defer.resolve([]);
+      return defer.promise;
+    }
+
+    var open = $scope.opens[idx];
+
+    var openTime = Math.floor(new Date(open.register_open_time).getTime() / 1000);
+    var closeTime = Math.floor(new Date(open.register_close_time).getTime() / 1000);
+
     var condition = {
       'id' : null,
       'status' : "history",
-      'sale_date' : todayTime
+      'sale_period_from' : openTime,
+      'sale_period_to' : closeTime
     };
 
     $scope.ds.getRegisterSales(condition, function(data) {
       $scope.register_sales = data;
       defer.resolve(data);
+      debug("register sales data : %o", data);
     }, function(error) {
       defer.resolve([]);
+      debug("register sales data nothing");
     });
 
     return defer.promise;

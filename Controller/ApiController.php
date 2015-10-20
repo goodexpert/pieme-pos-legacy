@@ -882,4 +882,57 @@ class ApiController extends AppController {
     $this->serialize($result);
     return;
   }
+
+
+  /**
+   * Retreive register sales and items for openning register by register_id
+   *
+   * @return array
+   */
+  public function get_register_open_period() {
+    $this->request->onlyAllow('get');
+
+    $register_id = $this->get('register_id');
+    $limit = $this->get('limit');
+    $page = $this->get('page');
+    $user = $this->Auth->user();
+
+    $result = array(
+        'success' => false
+    );
+    try {
+      $this->loadModel('MerchantRegisterOpen');
+      $register_opens = $this->MerchantRegisterOpen->find('all', array(
+          'conditions' => [
+              'MerchantRegisterOpen.register_id' => $register_id
+          ]
+          , 'order' => [
+              'MerchantRegisterOpen.register_open_time' => 'desc'
+          ]
+          , 'limit' => $limit
+          , 'page' => $page
+      ));
+
+      $result['count'] = count($register_opens);
+      if(count($register_opens) > 0) {
+        $opens = Hash::map($register_opens, "{n}", function($array) {
+          $newArray = [];
+          $newArray['id'] = $array['MerchantRegisterOpen']['id'];
+          $newArray['register_id'] = $array['MerchantRegisterOpen']['register_id'];
+          $newArray['register_open_count_sequence'] = $array['MerchantRegisterOpen']['register_open_count_sequence'];
+          $newArray['register_open_time'] = $array['MerchantRegisterOpen']['register_open_time'];
+          $newArray['register_close_time'] = $array['MerchantRegisterOpen']['register_close_time'];
+          return $newArray;
+        });
+
+        $result['opens'] = $opens;
+        $result['success'] = true;
+      }
+    } catch (Exception $e) {
+      $result['message'] = $e->getMessage();
+    }
+
+    $this->serialize($result);
+  }
+
 }

@@ -777,16 +777,14 @@ Datastore_sqlite = function () {
 
       //console.debug(" %o", data);
       if (data != null) {
+        // Search with Register Sale ID
         if (data.id != null) {
           condition.push(data.id);
           queryString += " WHERE id = ?";
         }
+        // Search with status
         if (data.status != null) {
-          if (queryString == "") {
-            queryString += " WHERE ";
-          } else {
-            queryString += " AND ";
-          }
+          if (queryString == "") { queryString += " WHERE "; } else { queryString += " AND "; }
           if (data.status == 'history') {
             queryString += " (status != 'sale_status_voided' and status != 'sale_status_open')";
           }
@@ -800,34 +798,35 @@ Datastore_sqlite = function () {
             queryString += " status = ?";
           }
         }
-
+        // Search with Register ID
         if (data.register_id != null) {
-          if (queryString == "") {
-            queryString += " WHERE ";
-          } else {
-            queryString += " AND ";
-          }
+          if (queryString == "") { queryString += " WHERE "; } else { queryString += " AND "; }
           queryString += " register_id = ?";
           condition.push(data.register_id);
         }
 
+        // Search with sale date
         if (data.sale_date != null) {
-          if (queryString == "") {
-            queryString += " WHERE ";
-          } else {
-            queryString += " AND ";
-          }
+          if (queryString == "") { queryString += " WHERE "; } else { queryString += " AND "; }
           queryString += " sale_date >= ?";
           condition.push(data.sale_date);
         }
 
+        // Search with sale period
+        if (data.sale_period_from != null) {
+          if (queryString == "") { queryString += " WHERE "; } else { queryString += " AND "; }
+          queryString += " sale_date >= ?";
+          condition.push(data.sale_period_from);
+        }
+        if (data.sale_period_to != null) {
+          if (queryString == "") { queryString += " WHERE "; } else { queryString += " AND "; }
+          queryString += " sale_date <= ?";
+          condition.push(data.sale_period_to);
+        }
+
         if (data.sync == 'date') {
           if (data.sale_date != null) {
-            if (queryString == "") {
-              queryString += " WHERE ";
-            } else {
-              queryString += " AND ";
-            }
+            if (queryString == "") { queryString += " WHERE "; } else { queryString += " AND "; }
             condition.push(data.sale_date);
             queryString += " sale_date is not null and sale_date > ? and sync_status <> 'sync_success'";
           }

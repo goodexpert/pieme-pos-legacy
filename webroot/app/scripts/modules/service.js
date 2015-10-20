@@ -343,6 +343,11 @@ angular.module('OnzsaApp.register', [])
   };
 
 
+  sharedService.getRegisterOpenPeriod = function(limit, page) {
+    debug('Register: retrieve Register Open Period');
+    return _getRegisterOpenPeriod(limit, page);
+  };
+
   sharedService.doSyncNow = function() {
     debug('Register: retrieve sync sale data');
     return _syncSaleData();
@@ -2123,6 +2128,19 @@ angular.module('OnzsaApp.register', [])
         });
     return defer.promise;
   }
+
+
+  // --------------------------
+  // Get register open period
+  // --------------------------
+  function _getRegisterOpenPeriod(limit, page) {
+    var register_id = LocalStorage.getRegisterID();
+    return $http.get('/api/get_register_open_period.json?register_id='+register_id+'&limit='+limit+'&page='+page);
+  }
+
+
+
+
 
   //TODO: Get UUID for RegisterSaleItem
   function _getUUID() {
