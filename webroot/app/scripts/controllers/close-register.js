@@ -235,7 +235,7 @@ angular.module('OnzsaApp', [])
   });
 
   $(".close-register-btn").click(function(){
-    Register.closeRegister().then(function(closeTime) {
+    Register.closeRegister($scope.register).then(function(closeTime) {
       $scope.register.close_time = closeTime;
       if (closeTime != null) {
         $timeout(function () {

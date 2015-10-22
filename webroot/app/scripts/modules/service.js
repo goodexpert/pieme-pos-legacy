@@ -75,9 +75,9 @@ angular.module('OnzsaApp.register', [])
     return _openRegister(register);
   };
 
-  sharedService.closeRegister = function() {
+  sharedService.closeRegister = function(closedData) {
     debug('Register: close register');
-    return _closeRegister(LocalStorage.getRegister());
+    return _closeRegister(LocalStorage.getRegister(), closedData);
   };
 
   sharedService.openSale = function() {
@@ -1358,19 +1358,32 @@ angular.module('OnzsaApp.register', [])
   // --------------------------
   // Close Register
   // --------------------------
-  function _closeRegister(register) {
+  function _closeRegister(register ,closedData) {
+    console.debug(closedData);
+
     //console.debug("Do close register (id): %s (%s)", register.id, register.register_open_sequence_id);
     var defer = $q.defer();
-    $http.post('/api/close_register.json', {'openId': register.register_open_sequence_id})
+    $http.post('/api/close_register.json', {'openId'                : register.register_open_sequence_id ,
+                                            'total_sales'           : closedData.total_sales,
+                                            'total_taxes'           : closedData.total_taxes,
+                                            'total_discount'        : closedData.total_discounts,
+                                            'total_payments'        : closedData.total_payments,
+                                            'onAccount'             : closedData.account_sales.total_sales,
+                                            'onAccount_closed'      : closedData.account_sales.total_payments,
+                                            'layby_sales'           : closedData.layby_sales.total_sales,
+                                            'layby_sales_closed'    : closedData.layby_sales.total_sales})
     .then(function (response) {
       if (response.data.success == true) {
         defer.resolve(response.data.close_time);
+        console.log(register);
+        console.debug(closedData);
         //window.location.href = "/dashboard";
       } else {
         defer.reject();
       }
     }, function() {
-      defer.reject()
+      defer.reject();
+      console.log('rejected');
     });;
     return defer.promise;
   }
