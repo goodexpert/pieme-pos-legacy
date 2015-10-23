@@ -150,12 +150,12 @@ DpsClient.prototype.refund = function (txnRef, amount, callback) {
         else if ("SIGNATURE REQD" == text1) {
           $(".display-msg").empty();
           $(".display-msg").text(text1 +' '+ text2);
-          $(".display-msg").append('<img src ="images/payment/icon-06.png"></img>');
+          $(".display-msg").append('<img style="width: 30%" src ="images/payment/icon-06.png"></img>');
 
         } else if ("SIGNATURE OK Y/N?" == text1) {
           $(".display-msg").empty();
           $(".display-msg").text(text1 +' '+ text2);
-          $(".display-msg").append('<img src ="images/payment/icon-06.png"></img>');
+          $(".display-msg").append('<img style="width: 30%" src ="images/payment/icon-06.png"></img>');
           $(".eftpos_status").find("button").remove();
           $(".eftpos_status").find(".modal-content").append('<button class="btn btn-success accept-sign">Yes</button><button class="btn btn-primary decline-sign">No</button>');
           $(".accept-sign").click(function(){
@@ -272,12 +272,12 @@ DpsClient.prototype.payment = function (txnRef, amount, callback) {
         else if ("SIGNATURE REQD" == text1) {
           $(".display-msg").empty();
           $(".display-msg").text(text1 +' '+ text2);
-          $(".display-msg").append('<img src ="app/images/payment/icon-06.png"></img>');
+          $(".display-msg").append('<img style="width:30%" src ="app/images/payment/icon-06.png"></img>');
 
         } else if ("SIGNATURE OK Y/N?" == text1) {
           $(".display-msg").empty();
           $(".display-msg").text(text1 +' '+ text2);
-          $(".display-msg").append('<img src ="app/images/payment/icon-06.png"></img>');
+          $(".display-msg").append('<img  style = "width:30%" src ="app/images/payment/icon-06.png"></img>');
           $(".eftpos_status").find("button").remove();
           $(".eftpos_status").find(".modal-content").append('<button class="btn btn-success accept-sign">Yes</button><button class="btn btn-primary decline-sign">No</button>');
           $(".accept-sign").click(function(){

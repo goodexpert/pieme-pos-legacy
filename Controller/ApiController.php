@@ -775,10 +775,19 @@ class ApiController extends AppController {
 
       $close_time = date("Y-m-d H:i:s");
       $opens['MerchantRegisterOpen']['register_close_time'] = $close_time;
+      $opens['MerchantRegisterOpen']['total_sales']         = $data['total_sales'];
+      $opens['MerchantRegisterOpen']['total_tax']           = $data['total_taxes'];
+      $opens['MerchantRegisterOpen']['total_discounts']      = $data['total_discount'];
+      $opens['MerchantRegisterOpen']['total_payments']      = $data['total_payments'];
+      $opens['MerchantRegisterOpen']['onaccount']           = $data['onAccount'];
+      $opens['MerchantRegisterOpen']['onaccount_closed']    = $data['onAccount_closed'];
+      $opens['MerchantRegisterOpen']['layby']               = $data['layby_sales'];
+      $opens['MerchantRegisterOpen']['layby_closed']        = $data['layby_sales_closed'];
       $this->MerchantRegisterOpen->save($opens['MerchantRegisterOpen']);
 
       $result['success'] = true;
       $result['close_time'] = $close_time;
+      $result['total_sales'] = $opens['MerchantRegisterOpen'];
     } catch (Exception $e) {
       $result['message'] = $e->getMessage();
     }
