@@ -454,6 +454,15 @@ angular.module('OnzsaApp', [])
       name    : '',
       callback: function() {}
     }
+    //,
+    //'fn_do_sync_now' : {
+    //  id      : 'fn_do_sync_now',
+    //  class   : '',
+    //  name    : 'Sync Now',
+    //  callback: function() {
+    //    Register.doSyncNow();
+    //  }
+    //}   //TODO: for TEST
   };
 
       if ($scope.user_type == "user_type_cashier") {
@@ -510,6 +519,7 @@ angular.module('OnzsaApp', [])
     angular.extend({position: 12}, $scope.functions['fn_do_setup']),
     angular.extend({position: 13}, $scope.functions['fn_do_logout']),
     angular.extend({position: 14}, $scope.functions['fn_do_nothing'])
+    //angular.extend({position: 14}, $scope.functions['fn_do_sync_now'])  //TODO: for TEST
   ];
       if ($scope.user_type == "user_type_cashier"){
         $scope.function_keys = [
@@ -568,7 +578,7 @@ angular.module('OnzsaApp', [])
     refreshSaleItems();
     if (Register.isSelectedCustomer()) {
       $scope.customer = Register.getCustomerInfo();
-      console.debug("@@@ $scope.customer :%o", $scope.customer);
+      console.debug("customer :%o", $scope.customer);
     }
   }
 

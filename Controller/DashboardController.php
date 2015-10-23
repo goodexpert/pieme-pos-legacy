@@ -48,60 +48,95 @@ class DashboardController extends AppController {
     public function index() {
         $user = $this->Auth->user();
 
-        $this->loadModel("MerchantOutlet");
-        $this->loadModel("MerchantRegister");
-        $this->loadModel("RegisterSale");
+        // Set date range (1month)
+        $interval = new DateInterval('P1D');
+        $begin = new DateTime(date('Y-m-d'));
+        $begin = $begin->modify( '-14 day' );
+        $end = new DateTime(date('Y-m-d'));
+        $end = $end->modify( '+1 day' );
+        $daterange = new DatePeriod($begin, $interval ,$end);
+        $sale_days = array();
+        foreach ($daterange as $date) {
+            $sale_days[] = $date->format("Y-m-d");
+        }
 
+        // Get outlet IDs
+        $outlet_ids = array();
+        $outlet_names = array();
         $outlets = $this->MerchantOutlet->find('all', array(
             'conditions' => array(
                 'MerchantOutlet.merchant_id' => $user['merchant_id']
             )
         ));
-        $outlet_ids = array();
-        foreach($outlets as $outlet) {
+        foreach ($outlets as $outlet) {
             array_push($outlet_ids, $outlet['MerchantOutlet']['id']);
+            array_push($outlet_names, $outlet['MerchantOutlet']['name']);
         }
+
+        // -----------------
+        // Get Sales
+        // -----------------
+
+        $outlets = array();
+        foreach ($outlet_ids as $outlet_id) {
+            // Get register IDs
+            $register_ids = array();
+            $registers = $this->MerchantRegister->find('all', array(
+                'conditions' => array(
+                    'MerchantRegister.outlet_id' => $outlet_id
+                )
+            ));
+            foreach ($registers as $register) {
+                array_push($register_ids, $register['MerchantRegister']['id']);
+            }
+
+            // Get sale data per day
+            $amounts = array();
+            foreach ($daterange as $date) {
+                $targetSale = $this->RegisterSale->find('all', [
+                    'fields' => [
+                        'RegisterSale.sale_date',
+                        'RegisterSale.total_price_incl_tax'
+                    ],
+                    'conditions' => array(
+                        'RegisterSale.sale_date >=' => $date->format("Y-m-d 00:00:00"),
+                        'RegisterSale.sale_date <=' => $date->format("Y-m-d 23:59:59"),
+                        'RegisterSale.register_id' => $register_ids
+                    )
+                ]);
+
+                // Get total amount
+                $total_amount = 0;
+                if (!empty($targetSale)) {
+                    foreach ($targetSale as $saleData) {
+                        $total_amount += $saleData["RegisterSale"]["total_price_incl_tax"];
+                    }
+                }
+                $amounts[] = $total_amount;
+            }
+            $outlets[] = $amounts;
+        }
+
+        $sales["sale_days"] = $sale_days;
+        $sales["outlet_names"] = $outlet_names;
+        $sales["outlets"] = $outlets;
+
+        $this->set('sales',$sales);
+
+        // -----------------
+        // Get Products
+        // -----------------
+
         $registers = $this->MerchantRegister->find('all', array(
             'conditions' => array(
                 'MerchantRegister.outlet_id' => $outlet_ids
             )
         ));
-        $register_ids = array();
-        foreach($registers as $register) {
+        foreach ($registers as $register) {
             array_push($register_ids, $register['MerchantRegister']['id']);
         }
 
-        $sales = array();
-        $count = 0;
-        for($i = 0; $i <= 5; $i++) {
-            $amount = 0;
-            $tax = 0;
-            $cost = 0;
-            $month = date("m") - $i;
-            if($month <= 0) {
-                $month = 12 + $month;
-            }
-            $data = $this->RegisterSale->find('all', array(
-                'conditions' => array(
-                    'RegisterSale.register_id' => $register_ids,
-                    'RegisterSale.sale_date >=' => date("Y").'-'.$month.'-01',
-                    'RegisterSale.sale_date <=' => date("Y").'-'.$month.'-31'
-                )
-            ));
-            $count = count($data);
-            foreach($data as $sale) {
-                $amount += $sale['RegisterSale']['total_price_incl_tax'];
-                $tax += $sale['RegisterSale']['total_tax'];
-                $cost += $sale['RegisterSale']['total_cost'];
-            }
-
-            $sales[date("M", strtotime('2015-'.$month.'-01'))]['amount'] = $amount;
-            $sales[date("M", strtotime('2015-'.$month.'-01'))]['tax'] = $tax;
-            $sales[date("M", strtotime('2015-'.$month.'-01'))]['cost'] = $cost;
-            $sales[date("M", strtotime('2015-'.$month.'-01'))]['count'] = $count;
-            $sales[date("M", strtotime('2015-'.$month.'-01'))]['sales'] = $data;
-        }
-        $this->set('sales', $sales);
+//        $this->set('products',$products);
     }
 
 }

@@ -57,12 +57,12 @@
   </div>
 </form>
 
-<table class="table-bordered dataTable table-price">
+<table id="closeTable" class="table-bordered dataTable">
   <colgroup>
     <col width="15%">
     <col width="5%">
-    <col width="">
-    <col width="15%">
+    <col width="20%">
+    <col width="20%">
     <col width="10%">
     <col width="10%">
     <col width="10%">
@@ -96,22 +96,12 @@
 <!-- END CONTENT -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
-<!--[if lt IE 9]>
-<script src="/theme/onzsa/assets/global/plugins/respond.min.js"></script>
-<script src="/theme/onzsa/assets/global/plugins/excanvas.min.js"></script> 
-<![endif]-->
-<script src="/theme/onzsa/assets/global/plugins/jquery-1.11.0.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
-<!-- IMPORTANT! Load jquery-ui-1.10.3.custom.min.js before bootstrap.min.js to fix bootstrap tooltip conflict with jquery ui tooltip -->
-<script src="/theme/onzsa/assets/global/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/jquery.blockui.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/jquery.cokie.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
-<script src="/theme/onzsa/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+
+<!-- BEGIN CORE PLUGINS -->
+<?php echo $this->element('script-jquery'); ?>
+<?php echo $this->element('script-angularjs'); ?>
 <!-- END CORE PLUGINS -->
+
 <!-- BEGIN PAGE LEVEL PLUGINS -->
 <script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/jquery.vmap.js" type="text/javascript"></script>
 <script src="/theme/onzsa/assets/global/plugins/jqvmap/jqvmap/maps/jquery.vmap.russia.js" type="text/javascript"></script>
@@ -139,13 +129,22 @@
 <script src="/theme/onzsa/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <script src="/js/dataTable.js" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
+<!-- END PAGE LEVEL SCRIPTS -->
+<?php echo $this->element('common-init'); ?>
 <script>
-jQuery(document).ready(function() {    
-    Metronic.init(); // init metronic core componets
-    Layout.init(); // init layout
-    Index.init();
-    
+  jQuery(document).ready(function() {
+    documentInit();
+  });
+
+  function documentInit() {
+    // common init function
+    commonInit();
+    $("#closeTable").DataTable({
+      searching: false
+    });
+    $("#closeTable_length").hide();
+
     $("#date_from").datepicker();
     $("#date_to").datepicker();
-});
+  }
 </script>

@@ -918,9 +918,7 @@ background:rgba(223,173,53,1.00);
     background: #ffffff;
     border-radius: 5px;
 }
-.line-box-content{
-    border-radius: 0 0 5px 5px;
-}
+
 .line-box-content dt, .line-box-content dd {
 
 }

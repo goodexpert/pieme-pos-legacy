@@ -51,6 +51,31 @@ Rounded Portlets
   padding: 10px 12px !important;
 }
 
+.portlet.light.dashboard {
+  margin: 0 0 8px 0 !important;
+  padding: 10px 12px !important;
+}
+
+.dashboard-area {
+  margin:  0;
+  padding: 0;
+}
+
+.dashboard-warpper {
+  padding: 0px 5px 8px 5px;
+}
+
+.dashboard-box {
+  margin: 0 0 8px 0 !important;
+  padding: 0;
+}
+
+.dashboard-title {
+  margin: 0 !important;
+  padding: 0px 10px !important;
+  min-height: 38px !important;
+}
+
 .page-content-wrapper .page-content {
   padding: 10px 20px 10px 20px !important;
 }
