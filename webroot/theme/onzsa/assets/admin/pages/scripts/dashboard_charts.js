@@ -482,7 +482,7 @@ var Dashboard = function () {
 
                             $("#tooltip").remove();
                             var x    = item.datapoint[0].toFixed(2),
-                                y    = item.datapoint[1].toFixed(2)
+                                y    = item.datapoint[1].toFixed(2),
                             date = item.series.data[item.datapoint[0]][0];
 
                             showChartTooltip(item.pageX, item.pageY, item.datapoint[0], '$' + item.datapoint[1].formatMoney(2, '.', ','),  date);
@@ -499,24 +499,22 @@ var Dashboard = function () {
         //  Product Pie Chart
         // -----------------------------------------------------------------
 
-        initProductPieChart: function (sales) {
+        initProductPieChart: function (products) {
             if (!jQuery.plot) {
                 return;
             }
 
             // get sample data
             var data = [];
-            var series = Math.floor(Math.random() * 10) + 1;
-            series = series < 5 ? 5 : series;
-            for (var i = 0; i < series; i++) {
+            var product_name = products['name'];
+            var product_count = products['count'];
+            for (var i = 0; i < product_name.length; i++) {
                 data[i] = {
-                    label: "Series" + (i + 1),
-                    data: Math.floor(Math.random() * 100) + 1
+                    label: product_name[i],
+                    data: product_count[i]
                 };
             }
-            console.debug(data);
-            console.debug($('#chart_product').size());
-
+            var seriesIndex = null;
             if ($('#chart_product').size() !== 0) {
 
                 $('#chart_product_loading').hide();
@@ -526,21 +524,21 @@ var Dashboard = function () {
                     series: {
                         pie: {
                             show: true,
-                            radius: 1,
+                            radius: 0.8,
+                            tilt: 0.5,
                             label: {
                                 show: true,
-                                radius: 3 / 4,
+                                radius: 0.4,
                                 formatter: function(label, series) {
-                                    return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">' + label + '<br/>' + Math.round(series.percent) + '%</div>';
+                                    return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">' + label + '<br/>' + Math.round(series.percent) + '% ('+ series['data'][0][1] +')</div>';
                                 },
-                                background: {
-                                    opacity: 0.5
-                                }
-                            }
+                                threshold: 0.1
+                            },
+                            stroke: {color: '#fff', width: 2}
                         }
                     },
                     legend: {
-                        show: true
+                        show: false
                     },
                     grid: {
                         hoverable: true
@@ -549,15 +547,34 @@ var Dashboard = function () {
                 $("#chart_product").bind("plothover", pieHover);
             }
 
-
-
-            function pieHover(event, pos, obj) {
-                if (!obj)
-                    return;
-                percent = parseFloat(obj.series.percent).toFixed(2);
-                $("#hover").html('<span style="font-weight: bold; color: ' + obj.series.color + '">' + obj.series.label + ' (' + percent + '%)</span>');
+            function showChartTooltip(x, y, label, percent, count) {
+                $('<div id="tooltip" class="chart-tooltip text-align:center">' + label + ' : ' + Math.round(percent) + '% ('+ count +')<\/div>').css({
+                    position: 'absolute',
+                    display: 'none',
+                    top: y - 40,
+                    left: x - 40,
+                    border: '0px solid #ccc',
+                    padding: '2px 6px',
+                    'background-color': '#fff'
+                }).appendTo("body").fadeIn(200);
             }
 
+            function pieHover(event, pos, obj) {
+                if (obj) {
+                    if (seriesIndex != obj.seriesIndex) {
+                        seriesIndex = obj.seriesIndex;
+
+                        $("#tooltip").remove();
+                        var percent = parseFloat(obj.series.percent).toFixed(2),
+                            count   = obj.series['data'][0][1],
+                            label   = obj.series.label;
+                        showChartTooltip(pos.pageX, pos.pageY, label, percent, count);
+                    }
+                } else {
+                    $("#tooltip").remove();
+                    seriesIndex = null;
+                }
+            }
         },
 
         // -----------------------------------------------------------------

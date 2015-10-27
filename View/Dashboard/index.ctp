@@ -26,9 +26,9 @@
       <!-- BEGIN CHART AREA -->
       <div class="row">
         <div class="col-md-12 col-xs-12 col-sm-12 dashboard-area">
-          <input type="hidden" id="sales-data" value='<?php echo json_encode($sales);?>'>
 
           <!-- BEGIN PORTLET CHART 1 -->
+          <input type="hidden" id="sales-data" value='<?php echo json_encode($sales);?>'>
           <div class="col-md-6 col-xs-12 col-sm-12 dashboard-warpper ">
             <div class="portlet light bordered dashboard">
               <div class="portlet-title">
@@ -47,6 +47,7 @@
           <!-- END PORTLET CHART 1 -->
 
           <!-- BEGIN PORTLET CHART 2-->
+          <input type="hidden" id="products-data" value='<?php echo json_encode($products);?>'>
           <div class="col-md-6 col-xs-12 col-sm-12 dashboard-warpper ">
             <div class=" portlet light bordered dashboard">
               <div class="portlet-title">
@@ -63,7 +64,6 @@
             </div>
           </div>
           <!-- END PORTLET CHART 2 -->
-
 
         </div>
       </div>
@@ -218,9 +218,10 @@
 
     // page init function
     var sales_data = JSON.parse($("#sales-data").val());
+    var products_data = JSON.parse($("#products-data").val());
 
     Dashboard.initAmountLineChart(sales_data);
-    Dashboard.initProductPieChart(sales_data);
+    Dashboard.initProductPieChart(products_data);
 
   }
   </script>

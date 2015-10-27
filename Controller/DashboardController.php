@@ -28,7 +28,8 @@ class DashboardController extends AppController {
     public $uses = array(
         'MerchantOutlet',
         'MerchantRegister',
-        'RegisterSale'
+        'RegisterSale',
+        'RegisterSaleItem'
     );
 
 /**
@@ -127,16 +128,68 @@ class DashboardController extends AppController {
         // Get Products
         // -----------------
 
-        $registers = $this->MerchantRegister->find('all', array(
-            'conditions' => array(
-                'MerchantRegister.outlet_id' => $outlet_ids
-            )
-        ));
-        foreach ($registers as $register) {
-            array_push($register_ids, $register['MerchantRegister']['id']);
+        $products = array();
+
+        // get all registers with outlets
+        if (count($outlet_ids) > 0) {
+            $registers = $this->MerchantRegister->find('all', array(
+                'fields' => [
+                    'MerchantRegister.id'
+                ],
+                'conditions' => array(
+                    'MerchantRegister.outlet_id' => $outlet_ids
+                )
+            ));
+            foreach ($registers as $register) {
+                array_push($register_ids, $register['MerchantRegister']['id']);
+            }
+
+            // get all register sales with registers
+            if (count($register_ids) > 0) {
+                $register_sales = $this->RegisterSale->find('all', array(
+                    'fields' => [
+                        'RegisterSale.id'
+                    ],
+                    'conditions' => array(
+                        'RegisterSale.register_id' => $register_ids
+                    )
+                ));
+                $sale_ids = array();
+                foreach ($register_sales as $register_sale) {
+                    array_push($sale_ids, $register_sale['RegisterSale']['id']);
+                }
+
+                // get all sale items with register sales
+                if (count($sale_ids) > 0) {
+                    $sale_items = $this->RegisterSaleItem->find('all', array(
+                        'fields' => [
+                            'RegisterSaleItem.id',
+                            'RegisterSaleItem.name',
+                            'RegisterSaleItem.product_id',
+                        ],
+                        'conditions' => array(
+                            'RegisterSaleItem.sale_id' => $sale_ids
+                        )
+                    ));
+                    $product_name = [];
+                    $product_count = [];
+                    foreach ($sale_items as $sale_item) {
+                        $item_id = $sale_item['RegisterSaleItem']['product_id'];
+                        $item_name = $sale_item['RegisterSaleItem']['name'];
+                        if (array_key_exists($item_id, $product_name) == true) {
+                            $product_count[$item_id] = $product_count[$item_id] + 1;
+                        } else {
+                            $product_name[$item_id] = $item_name;
+                            $product_count[$item_id] = 1;
+                        }
+                    }
+                    $products['name'] = array_values($product_name);
+                    $products['count'] = array_values($product_count);
+                }
+            }
         }
 
-//        $this->set('products',$products);
+        $this->set('products',$products);
     }
 
 }
