@@ -534,15 +534,12 @@ var Dashboard = function () {
                                 },
                                 threshold: 0.1
                             },
+                            combine: { threshold: 0.01 },
                             stroke: {color: '#fff', width: 2}
                         }
                     },
-                    legend: {
-                        show: false
-                    },
-                    grid: {
-                        hoverable: true
-                    }
+                    legend:  { show: false },
+                    grid:    { hoverable: true }
                 });
                 $("#chart_product").bind("plothover", pieHover);
             }
