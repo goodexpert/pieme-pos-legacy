@@ -278,6 +278,11 @@ angular.module('OnzsaApp', [])
     openNumpad(params);
   };
 
+  $scope.specifiedDiscount20 = function() {
+    debug('specifiedDiscount20');
+    Register.updateLineDiscount(20, 0)
+  };
+
   $scope.doLinePrice = function() {
     debug('doLinePrice');
     Register.createLineItem()
@@ -436,6 +441,12 @@ angular.module('OnzsaApp', [])
       name    : 'No Sale',
       callback: $scope.openCashDrawer
     },
+    'fn_do_discount_20' : {
+      id      : 'fn_do_discount_20',
+      class   : 'green',
+      name    : '20% Discount',
+      callback: $scope.specifiedDiscount20
+    },
     'fn_do_setup' : {
       id      : 'fn_do_setup',
           class: '' + disabled,
@@ -516,9 +527,10 @@ angular.module('OnzsaApp', [])
     angular.extend({position: 9}, $scope.functions['fn_view_daily_report']),
     angular.extend({position: 10}, $scope.functions['fn_close_register']),
     angular.extend({position: 11}, $scope.functions['fn_open_cash_drawer']),
-    angular.extend({position: 12}, $scope.functions['fn_do_setup']),
-    angular.extend({position: 13}, $scope.functions['fn_do_logout']),
-    angular.extend({position: 14}, $scope.functions['fn_do_nothing'])
+    angular.extend({position: 12}, $scope.functions['fn_do_discount_20']),
+    angular.extend({position: 13}, $scope.functions['fn_do_setup']),
+    angular.extend({position: 14}, $scope.functions['fn_do_logout'])
+    //angular.extend({position: 14}, $scope.functions['fn_do_nothing'])
     //angular.extend({position: 14}, $scope.functions['fn_do_sync_now'])  //TODO: for TEST
   ];
       if ($scope.user_type == "user_type_cashier"){
@@ -532,13 +544,12 @@ angular.module('OnzsaApp', [])
           angular.extend({position: 6}, $scope.functions['fn_do_recall']),
           angular.extend({position: 7}, $scope.functions['fn_view_daily_report']),
           angular.extend({position: 8}, $scope.functions['fn_close_register']),
-          angular.extend({position: 9}, $scope.functions['fn_do_logout']),
-          angular.extend({position: 11}, $scope.functions['fn_do_setup']),
-          angular.extend({position: 10}, $scope.functions['fn_do_nothing']),
-          angular.extend({position: 12}, $scope.functions['fn_open_cash_drawer']),
-          angular.extend({position: 13}, $scope.functions['fn_view_history']),
-          angular.extend({position: 14}, $scope.functions['fn_do_refund'])
-
+          angular.extend({position: 9}, $scope.functions['fn_do_discount_20']),
+          angular.extend({position: 10}, $scope.functions['fn_do_logout']),
+          angular.extend({position: 11}, $scope.functions['fn_do_nothing']),
+          angular.extend({position: 12}, $scope.functions['fn_do_nothing']),
+          angular.extend({position: 13}, $scope.functions['fn_do_nothing']),
+          angular.extend({position: 14}, $scope.functions['fn_do_nothing'])
         ];
       }
     } else {
