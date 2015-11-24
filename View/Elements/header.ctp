@@ -68,9 +68,16 @@
               <!-- DOC: Apply "dropdown-dark" class after below "dropdown-extended" to change the dropdown styte -->
               <li class="dropdown dropdown-user">
                   <a href="#" class="dropdown-toggle" dropdown-menu-hover data-toggle="dropdown" data-close-others="true">
-                    <i class="fa fa-fw fa-user "></i>
-                    <span class="username hide-on-mobile" id="TEST" ng-if="!config"> <?php echo $user['display_name']; ?></span>
-                    <span class="username hide-on-mobile" id="TEST" ng-if="config">{{config.user_display_name}}</span>
+                    <?php if ($user['user_type_id'] === "user_type_admin") : ?>
+                      <i class="fa fa-fw fa-male "></i>
+                    <?php elseif($user['user_type_id'] === "user_type_manager") : ?>
+                      <i class="fa fa-fw fa-users "></i>
+                    <?php else : ?>
+                      <i class="fa fa-fw fa-user "></i>
+                    <?php endif; ?>
+                    <span class="username hide-on-mobile" id="TEST" ng-if="!config"> <?php echo $user['display_name']; ?>
+                    </span>
+                    <span class="username hide-on-mobile" id="TEST" ng-if="config"> {{config.user_display_name}}</span>
                     <i class="fa fa-angle-down"></i>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-default">
