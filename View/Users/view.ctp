@@ -51,9 +51,6 @@ $AuthUser = $this->Session->read('Auth.User');
       <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
         <ul>
           <li>You have 25 days left on your trial. Activate your account now.</li>
-          <li>You have 25 days left on your trial. Activate your account now.</li>
-          <li>You have 25 days left on your trial. Activate your account now.</li>
-          <li>You have 25 days left on your trial. Activate your account now.</li>
         </ul>
       </div>
     </div>
@@ -104,11 +101,14 @@ $AuthUser = $this->Session->read('Auth.User');
       <input type="hidden" id="monthly_sales" value="<?php echo $monthly; ?>">
     </div>
     <div class="col-lg-6 col-md-12 col-xs-12 col-sm-12 user-info-box-bg margin-top-20">
-      <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title">Sales History</div>
+      <div class="col-md-12 col-xs-12 col-sm-12 col-alpha col-omega form-title">Sales History (lastest 10 items)</div>
       <div class="form-body line-box line-box-content col-md-12 col-xs-12 col-sm-12 col-alpha col-omega">
-        <?php if (!empty($sales)) {
+        <?php
+        $cnt = 0;
+        if (!empty($sales)) {
           foreach ($sales as $sale) { ?>
             <?php echo $sale['RegisterSale']['sale_date']; ?> // $<?php echo number_format($sale['RegisterSale']['total_price_incl_tax'], 2, '.', ','); ?>
+            <?php if ($cnt++ == 10) break; ?>
             <br>
           <?php }
         } else {
