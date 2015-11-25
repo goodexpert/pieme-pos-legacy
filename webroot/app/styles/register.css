@@ -1,6 +1,6 @@
 @charset "UTF-8";
 
-/* ----------- REGISTER CSS BEGIN ----------- */
+/* ----------- PRINT CSS BEGIN ----------- */
 
 @media print {
   .sell-screen-column {
@@ -14,7 +14,23 @@
     left: 0px;
     display:block;
   }
+
+  .not-print {
+    display: none;
+  }
+
+  .do-print {
+    display: block;
+  }
 }
+
+@media not print {
+  .do-print {
+    display: none;
+  }
+}
+
+/* ----------- REGISTER CSS BEGIN ----------- */
 
 .btn-function {
   display: inline-block;

@@ -1,3 +1,6 @@
+<?php
+    $user = $this->Session->read('Auth.User');
+?>
 <link href="/css/dataTable.css" rel="stylesheet" type="text/css">
 <div class="clearfix"></div>
 <div id="notify"></div>
@@ -6,15 +9,40 @@
     <h2 class="pull-left col-md-7 col-xs-7 col-sm-7 col-alpha col-omega">
         Sales Totals by Month
     </h2>
-    <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20">
-        <a href="#" id="export"><button class="btn btn-white pull-right">
-            <div class="glyphicon glyphicon-export"></div>&nbsp;
-        export</button></a>
+    <div class="pull-right col-md-5 col-xs-5 col-sm-5 col-alpha col-omega margin-top-20 not-print">
+        <a href="#" id="print"><button class="btn btn-white pull-right print-btn">
+            <div class="fa fa-print"></div>&nbsp;Print</button></a>
+<!--        <a href="#" id="export"><button class="btn btn-white pull-right">-->
+<!--            <div class="glyphicon glyphicon-export"></div>&nbsp;export</button></a>-->
     </div>
 </div>
 
+<!-- PRINT HEADER START portlet box yellow light bordered dashboard-box line-box-content-->
+<div class="portlet light bordered col-md-12 col-xs-12 col-sm-12 line-box do-print">
+    <h2><?php echo $merchant[0]['name']; ?></h2>
+    <?php if (count($outlets) > 1) {
+        foreach ($outlets as $outlet) { 
+            if ((!empty($_GET['outlet_id']) && $outlet['id'] == $_GET['outlet_id']) ||
+                 (empty($_GET['outlet_id']) && $outlet['id'] == $user['outlet_id'])){
+                echo "<h3>"; echo $outlet['name']; echo "</h3>";
+                echo $outlet['physical_address1']; echo "&nbsp;"; echo $outlet['physical_address2']; echo "<br>";
+                echo $outlet['physical_state'];  echo "&nbsp;"; echo $outlet['physical_city']; echo "&nbsp;"; echo $outlet['physical_postcode']; echo "&nbsp;";
+                echo $outlet['physical_country']; echo "<p>";
+                echo "Ph. "; echo $outlet['phone'];
+            }
+        }
+    } elseif (count($outlets) == 1) {
+        echo "<h3>"; echo $outlets[0]['name']; echo "</h3>";
+        echo $outlets[0]['physical_address1']; echo "&nbsp;"; echo $outlets[0]['physical_address2']; echo "<br>";
+        echo $outlets[0]['physical_state'];  echo "&nbsp;"; echo $outlets[0]['physical_city']; echo "&nbsp;"; echo $outlets[0]['physical_postcode']; echo "&nbsp;";
+        echo $outlets[0]['physical_country']; echo "<p>";
+        echo "Ph. "; echo $outlets[0]['phone'];
+    } ?>
+</div>
+<!-- PRINT HEADER END -->
+
 <!-- FILTER -->
-<form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box" action="/reports/sales/sales_by_month" method="get">
+<form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box not-print" action="/reports/sales/sales_by_month" method="get">
     <div class="col-md-4 col-xs-6 col-sm-6">
         <dl>
             <dt>Start month</dt>
@@ -36,7 +64,7 @@
             </dd>
         </dl>
     </div>
-    <div class="col-md-4 col-xs-6 col-sm-6">
+    <div class="col-md-3 col-xs-6 col-sm-6">
         <dl>
             <dt>Year</dt>
             <dd>
@@ -46,7 +74,7 @@
             </dd>
         </dl>
      </div>
-    <div class="col-md-4 col-xs-6 col-sm-6">
+    <div class="col-md-5 col-xs-6 col-sm-6">
         <dl>
             <dt>Compare to the last</dt>
             <dd>
@@ -58,17 +86,41 @@
             </dd>
         </dl>
      </div>
-     <div class="col-md-12 col-xs-6 col-sm-6">
-         <button type="submit" class="btn btn-primary filter pull-right">Update</button>
-     </div>
+    <?php if ($user['user_type_id'] === "user_type_admin") : ?>
+        <div class="col-md-4 col-xs-6 col-sm-6">
+            <dl>
+                <dt>Outlet</dt>
+                <dd>
+                    <select name="outlet_id">
+                        <option value=""></option>
+                        <?php foreach ($outlets as $outlet) { ?>
+                            <option
+                                value="<?php echo $outlet['id']; ?>" <?php if (isset($_GET['outlet_id']) && $_GET['outlet_id'] == $outlet['id']) {
+                                echo "selected";
+                            } ?>><?php echo $outlet['name']; ?></option>
+                        <?php } ?>
+                    </select>
+                </dd>
+            </dl>
+        </div>
+        <div class="col-md-8 col-xs-6 col-sm-6">
+            <button type="submit" class="btn btn-primary filter pull-right">Update</button>
+        </div>
+    <?php else : ?>
+        <div class="col-md-12 col-xs-6 col-sm-6">
+            <button type="submit" class="btn btn-primary filter pull-right">Update</button>
+        </div>
+    <?php endif; ?>
 </form>
+
 <table id="productTable" class="table-bordered dataTable table-price">
     <thead>
     <tr>
-        <th>&nbsp;</th>
+        <th>Month</th>
         <?php if(isset($_GET['period'])) {
             foreach($sales as $key => $value) {
-                $month = date('M', strtotime('2015-'.$key));?>
+                $month = date('Y-M', strtotime($key));
+                ?>
                 <th class="text-right">
                     <?php echo $month;?>
                 </th>
@@ -223,6 +275,10 @@
 <script>
 jQuery(document).ready(function() {
     documentInit();
+});
+
+$(".print-btn").click(function(){
+    print();
 });
 
 function documentInit() {

@@ -64,13 +64,20 @@ class DashboardController extends AppController {
         // Get outlet IDs
         $outlet_ids = array();
         $outlet_names = array();
-        $outlets = $this->MerchantOutlet->find('all', array(
-            'conditions' => array(
-                'MerchantOutlet.merchant_id' => $user['merchant_id']
-            )
-        ));
-        foreach ($outlets as $outlet) {
-            array_push($outlet_ids, $outlet['MerchantOutlet']['id']);
+
+        if ($user['user_type_id'] === "user_type_admin") {
+            $outlets = $this->MerchantOutlet->find('all', array(
+                'conditions' => array(
+                    'MerchantOutlet.merchant_id' => $user['merchant_id']
+                )
+            ));
+            foreach ($outlets as $outlet) {
+                array_push($outlet_ids, $outlet['MerchantOutlet']['id']);
+                array_push($outlet_names, $outlet['MerchantOutlet']['name']);
+            }
+        } else  if ($user['user_type_id'] === "user_type_manager") {
+            $outlet = $this->MerchantOutlet->findById($user['outlet_id']);
+            array_push($outlet_ids, $user['outlet_id']);
             array_push($outlet_names, $outlet['MerchantOutlet']['name']);
         }
 

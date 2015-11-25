@@ -14,7 +14,6 @@ class ReportsController extends AppController {
             'sales_by_period',
             'sales_by_month',
             'sales_by_day',
-            'sales_by_hour',
             'sales_by_category',
             'payments_by_month',
             'popular_products',
@@ -38,6 +37,7 @@ class ReportsController extends AppController {
  * @var array
  */
     public $uses = array(
+        'Merchant',
         'MerchantOutlet',
         'MerchantRegister',
         'RegisterSale',
@@ -69,16 +69,25 @@ class ReportsController extends AppController {
         $user = $this->Auth->user();
         
         if(isset($_GET['from'])) {
-        
-            $outlets = $this->MerchantOutlet->find('all', array(
-                'conditions' => array(
-                    'MerchantOutlet.merchant_id' => $user['merchant_id']
-                )
-            ));
-            
+
+
+            //TODO: Only modified select oulet info logic. must change cacluration
+            // Get outlet info
             $outlet_ids = array();
-            foreach($outlets as $outlet) {
-                array_push($outlet_ids, $outlet['MerchantOutlet']['id']);
+            $outlet_names = array();
+            if ($user['user_type_id'] === "user_type_admin") {
+                $outlets = $this->MerchantOutlet->find('all', array(
+                    'conditions' => array(
+                        'MerchantOutlet.merchant_id' => $user['merchant_id']
+                    )
+                ));
+                foreach($outlets as $outlet) {
+                    array_push($outlet_ids, $outlet['MerchantOutlet']['id']);
+                }
+            } else  if ($user['user_type_id'] === "user_type_manager") {
+                $outlet = $this->MerchantOutlet->findById($user['outlet_id']);
+                array_push($outlet_ids, $user['outlet_id']);
+                array_push($outlet_names, $outlet['MerchantOutlet']['name']);
             }
             
             $registers = $this->MerchantRegister->find('all', array(
@@ -141,19 +150,48 @@ class ReportsController extends AppController {
     public function sales_by_month() {
         $user = $this->Auth->user();
 
-        if(isset($_GET['period'])) {
+        // get Merchant info
+        $merchant_info = array();
+        $merchant = $this->Merchant->findById($user['merchant_id']);
+        array_push($merchant_info, $merchant['Merchant']);
 
-            $outlets = $this->MerchantOutlet->find('all', array(
-                'conditions' => array(
-                    'MerchantOutlet.merchant_id' => $user['merchant_id']
-                )
-            ));
-            
-            $outlet_ids = array();
-            foreach($outlets as $outlet) {
+        // Get outlet info
+        $outlet_ids = array();
+        $oultet_infos = array();
+        if ($user['user_type_id'] === "user_type_admin") {
+            if(isset($_GET['outlet_id']) && !empty($_GET['outlet_id'])) {
+                $outlet = $this->MerchantOutlet->findById($_GET['outlet_id']);
                 array_push($outlet_ids, $outlet['MerchantOutlet']['id']);
+
+                $outlets = $this->MerchantOutlet->find('all', array(
+                    'conditions' => array(
+                        'MerchantOutlet.merchant_id' => $user['merchant_id']
+                    )
+                ));
+                foreach ($outlets as $outlet) {
+                    array_push($oultet_infos, $outlet['MerchantOutlet']);
+                }
+            } else {
+                $outlets = $this->MerchantOutlet->find('all', array(
+                    'conditions' => array(
+                        'MerchantOutlet.merchant_id' => $user['merchant_id']
+                    )
+                ));
+                foreach ($outlets as $outlet) {
+                    array_push($outlet_ids, $outlet['MerchantOutlet']['id']);
+                    array_push($oultet_infos, $outlet['MerchantOutlet']);
+                }
             }
-            
+        } else if ($user['user_type_id'] === "user_type_manager") {
+            $outlet = $this->MerchantOutlet->findById($user['outlet_id']);
+            array_push($outlet_ids, $user['outlet_id']);
+            array_push($oultet_infos, $outlet['MerchantOutlet']);
+        }
+
+
+
+        if(isset($_GET['period']) && !empty($_GET['period'])) {
+
             $registers = $this->MerchantRegister->find('all', array(
                 'conditions' => array(
                    'MerchantRegister.outlet_id' => $outlet_ids
@@ -189,14 +227,18 @@ class ReportsController extends AppController {
                 }
                 $criteria['RegisterSale.sale_date >='] = $year.'-'.$month.'-01';
                 $criteria['RegisterSale.sale_date <='] = $year.'-'.$month.'-31';
-            
-                $sales[$month] = $this->RegisterSale->find('all', array(
+
+                $key = $year.'-'.$month;
+
+                $sales[$key] = $this->RegisterSale->find('all', array(
                     'conditions' => $criteria
                 ));
                 $month = $month - 1;
             }
             $this->set('sales',$sales);
         }
+        $this->set('merchant',$merchant_info);
+        $this->set('outlets',$oultet_infos);
     }
 
 /**
@@ -206,82 +248,109 @@ class ReportsController extends AppController {
  */
     public function sales_by_day() {
         $user = $this->Auth->user();
-        
-        if(isset($_GET['from'])) {
-        
+
+        // Get outlet info
+        $outlet_ids = array();
+        $outlet_names = array();
+        if ($user['user_type_id'] === "user_type_admin") {
             $outlets = $this->MerchantOutlet->find('all', array(
                 'conditions' => array(
                     'MerchantOutlet.merchant_id' => $user['merchant_id']
                 )
             ));
-            
-            $outlet_ids = array();
             foreach($outlets as $outlet) {
                 array_push($outlet_ids, $outlet['MerchantOutlet']['id']);
             }
-            
-            $registers = $this->MerchantRegister->find('all', array(
-                'conditions' => array(
-                   'MerchantRegister.outlet_id' => $outlet_ids
-                )
-            ));
-            
-            $register_ids = array();
-            foreach($registers as $register) {
-                array_push($register_ids, $register['MerchantRegister']['id']);
-            }
-            
-            $criteria = array(
-                'RegisterSale.register_id' => $register_ids
-            );
-            
-            $interval = new DateInterval('P1D');
-            $begin = new DateTime(date('Y-m-d'));
-            $begin = $begin->modify( '-60 day' );
-            $end = new DateTime(date('Y-m-d'));
-            
-            foreach($_GET as $key => $value) {
-                if(!empty($value)) {
-                    if($key == 'from') {
-                        $criteria['RegisterSale.sale_date >='] = $value;
-                        $begin = new DateTime($value);
-                    }
-                    if($key == 'to') {
-                        $criteria['RegisterSale.sale_date <='] = $value;
-                        $end = new DateTime($value);
+        } else  if ($user['user_type_id'] === "user_type_manager") {
+            $outlet = $this->MerchantOutlet->findById($user['outlet_id']);
+            array_push($outlet_ids, $user['outlet_id']);
+            array_push($outlet_names, $outlet['MerchantOutlet']['name']);
+        }
+
+        // Get register info
+        $registers = $this->MerchantRegister->find('all', array(
+            'conditions' => array(
+               'MerchantRegister.outlet_id' => $outlet_ids
+            )
+        ));
+        $register_ids = array();
+        foreach($registers as $register) {
+            array_push($register_ids, $register['MerchantRegister']['id']);
+        }
+        // Set date range
+        $interval = new DateInterval('P1D');
+        $begin = new DateTime(date('Y-m-d'));
+        $begin = $begin->modify( '-1 month' );
+        $end = new DateTime(date('Y-m-d'));
+        foreach($_GET as $key => $value) {
+            if(!empty($value) && $value != '') {
+                if($key == 'from') {
+                    $begin = new DateTime($value);
+                    $endTemp = new DateTime($value);
+                    $endTemp = $endTemp->modify( '+1 month' );
+                    if ($endTemp < $end) {
+                        $end = $endTemp;
                     }
                 }
+                if($key == 'to') {
+                    $end = new DateTime($value);
+                }
             }
-            
-            $end = $end->modify( '+1 day' );
+        }
+        $end = $end->modify( '+1 day' );
+        $daterange = new DatePeriod($begin, $interval ,$end);
+        $sale_days = array();
+        foreach ($daterange as $date) {
+            $sale_days[] = $date->format("Y-m-d");
+        }
 
-            $daterange = new DatePeriod($begin, $interval ,$end);
+        // set conditions
+        $criteria = array(
+            'RegisterSale.register_id' => $register_ids
+        );
+        $criteria['RegisterSale.sale_date >='] = $begin;
+        $criteria['RegisterSale.sale_date <='] = $end;
 
-            $sales = array();
+        $sales = array();
+        foreach($daterange as $date) {
+            $saleData = [];
+            $salesIncl = 0;
+            $tax = 0;
+            $salesExc = 0;
+            $cost = 0;
+            $discounts = 0;
+            $grossProfit = 0;
+            $grossMargin = 0;
 
-            foreach($daterange as $date) {
-                $sales[$date->format("Y-m-d")] = array();
-                $targetSale = $this->RegisterSale->find('all', array(
-                    'conditions' => array(
-                        'RegisterSale.sale_date >=' => $date->format("Y-m-d 00:00:00"),
-                        'RegisterSale.sale_date <=' => $date->format("Y-m-d 23:59:59")
-                    )
-                ));
-                if(!empty($targetSale))
-                    foreach($targetSale as $saleData)
-                        array_push($sales[$date->format("Y-m-d")], $saleData);
-            }
-
-            $this->RegisterSale->bindModel(array(
-                'hasMany' => array(
-                    'RegisterSaleItem' => array(
-                        'className' => 'RegisterSaleItem',
-                        'foreignKey' => 'sale_id'
-                    )
+            $sales[$date->format("Y-m-d")] = array();
+            $targetSale = $this->RegisterSale->find('all', array(
+                'conditions' => array(
+                    'RegisterSale.sale_date >=' => $date->format("Y-m-d 00:00:00"),
+                    'RegisterSale.sale_date <=' => $date->format("Y-m-d 23:59:59")
                 )
             ));
-            $this->set('sales',$sales);
+            if(!empty($targetSale)) {
+                foreach ($targetSale as $sale) {
+                    $salesIncl += $sale['RegisterSale']['total_price_incl_tax'];
+                    $tax += $sale['RegisterSale']['total_tax'];
+                    $salesExc += $sale['RegisterSale']['total_price'];
+                    $cost += $sale['RegisterSale']['total_cost'];
+                    $discounts += $sale['RegisterSale']['total_discount'];
+                }
+                $grossProfit = $salesExc - $cost;
+                $grossMargin = $grossProfit / $salesExc * 100;
+            }
+            $saleData['salesIncl'] = $salesIncl;
+            $saleData['tax'] = $tax;
+            $saleData['salesExc'] = $salesExc;
+            $saleData['cost'] = $cost;
+            $saleData['discounts'] = $discounts;
+            $saleData['grossProfit'] = $grossProfit;
+            $saleData['grossMargin'] = $grossMargin;
+            $sales[$date->format("Y-m-d")] = $saleData;
         }
+
+        $this->set('sales',$sales);
     }
 
 /**

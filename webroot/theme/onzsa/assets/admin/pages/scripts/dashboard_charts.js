@@ -1,4 +1,4 @@
-var Dashboard = function () {
+var DashboardCharts = function () {
 
     return {
 
@@ -571,6 +571,93 @@ var Dashboard = function () {
                     $("#tooltip").remove();
                     seriesIndex = null;
                 }
+            }
+        },
+
+
+        // -----------------------------------------------------------------
+        //  Amount Line Chart
+        // -----------------------------------------------------------------
+
+        initSalesDayChart: function (sales) {
+            if (!jQuery.plot) {
+                return;
+            }
+
+            function showChartTooltip(x, y, xValue, yValue, date) {
+                $('<div id="tooltip" class="chart-tooltip">' + date + ' : ' + yValue + '<\/div>').css({
+                    position: 'absolute',
+                    display: 'none',
+                    top: y - 40,
+                    left: x - 40,
+                    border: '0px solid #ccc',
+                    padding: '2px 6px',
+                    'background-color': '#fff'
+                }).appendTo("body").fadeIn(200);
+            }
+
+            var labels = [], data_count = 0, datas = [], days =[];
+            data_count = $(sales).toArray().length;
+            //if (data_count > 0) {
+            //    labels = sales['outlet_names'];
+            //    days = sales['sale_days'];
+            //
+            //    $.each(sales["outlets"], function(key, value) {
+            //        var amount = [];
+            //        $.each(value, function(key, value) {
+            //            amount.push([days[key], value]);
+            //        });
+            //        datas.push( { data: amount, lines:  { fill: false, lineWidth: 1, shadowSize: 0 } } );
+            //        datas.push( { data: amount, points: { fill: true,  lineWidth: 3, radius: 5 }, label: labels[key], shadowSize: 0 } );
+            //    });
+            //
+            //}
+
+            Number.prototype.formatMoney = function(c, d, t){
+                var n = this,
+                    c = isNaN(c = Math.abs(c)) ? 2 : c,
+                    d = d == undefined ? "." : d,
+                    t = t == undefined ? "," : t,
+                    s = n < 0 ? "-" : "",
+                    i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "",
+                    j = (j = i.length) > 3 ? j % 3 : 0;
+                return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+            };
+
+            if ($('#chart_amount').size() != 0) {
+
+                $('#chart_amount_loading').hide();
+                $('#chart_amount_content').show();
+
+                var options = {
+                    series: { lines: {show: true}, points: {show: true} },
+                    xaxis:  { mode: "categories", ticks: 14, min: 0, font: { size: 0 } },
+                    yaxis:  { ticks: 10, tickColor: "#eee", min: 0 },
+                    grid:   { hoverable: true, clickable: true, borderWidth: 1}
+                };
+
+                var chart_amount = $.plot($("#chart_amount"), datas, options);
+
+                var previousPoint = null;
+                $("#chart_amount").bind("plothover", function (event, pos, item) {
+                    $("#x").text(pos.x.toFixed(2));
+                    $("#y").text(pos.y.toFixed(2));
+                    if (item) {
+                        if (previousPoint != item.dataIndex) {
+                            previousPoint = item.dataIndex;
+
+                            $("#tooltip").remove();
+                            var x    = item.datapoint[0].toFixed(2),
+                                y    = item.datapoint[1].toFixed(2),
+                                date = item.series.data[item.datapoint[0]][0];
+
+                            showChartTooltip(item.pageX, item.pageY, item.datapoint[0], '$' + item.datapoint[1].formatMoney(2, '.', ','),  date);
+                        }
+                    } else {
+                        $("#tooltip").remove();
+                        previousPoint = null;
+                    }
+                });
             }
         },
 

@@ -1509,18 +1509,19 @@ angular.module('OnzsaApp', [])
     $scope.receipt['customer_name'] = $scope.customerInfo.name;
     console.debug('scope.receipt %o', $scope.receipt);
   }
-      function paymentClose(data){
-        var modalInstance = $modal.open({
-          templateUrl: '/app/tpl/payment-close.html',
-          controller: 'PaymentCtrl',
-          backdrop: 'static',
-          keyboard: false,
-          size: 'sm',
-          resolve: {
-            items: function() {
-              return data;
-            }
-          }
-        });
+
+  function paymentClose(data){
+    var modalInstance = $modal.open({
+      templateUrl: '/app/tpl/payment-close.html',
+      controller: 'PaymentCtrl',
+      backdrop: 'static',
+      keyboard: false,
+      size: 'sm',
+      resolve: {
+        items: function() {
+          return data;
+        }
       }
+    });
+  }
 });
