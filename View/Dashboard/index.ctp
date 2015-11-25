@@ -1,4 +1,6 @@
-
+<?php
+  $user = $this->Session->read('Auth.User');
+?>
 <div class="clearfix"></div>
       <!-- BEGIN SAMPLE PORTLET CONFIGURATION MODAL FORM-->
       <div class="modal fade" id="portlet-config" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -78,20 +80,26 @@
             <div class="portlet box yellow light bordered dashboard-box line-box-content ">
               <div class="portlet-title dashboard-title">
                 <div class="caption dashboard">
-                  <i class="fa fa-file-text-o"></i>Reports
+                  <i class="fa fa-file-text-o"></i>Sale Reports
                 </div>
               </div>
               <div class="col-md-12 col-xs-12 col-sm-12 portlet-body">
                 <ul class="col-md-6 col-xs-12 col-sm-12 dashboard-list">
+                  <li><a href="/reports/sales/sales_by_month">Sales Totals by Month</a></li>
                   <li><a href="/reports/sales/sales_by_period">Sales Totals by Period</a></li>
                   <li><a href="/reports/sales/sales_by_day">Sales Totals by Day</a></li>
-                  <li><a href="/reports/sales/sales_by_category">Sales by Tag</a></li>
-                  <li><a href="/reports/sales/payments_by_month">Payment Types by Month</a></li>
+
+                  <?php if ($user['user_type_id'] === "user_type_admin") : ?>
+                    <li><a href="/reports/sales/sales_by_hour">Sales Activity by Hour</a></li>
+                  <?php endif; ?>
+
                 </ul>
                 <ul class="col-md-6 col-xs-12 col-sm-12 dashboard-list">
-                  <li><a href="/reports/sales/sales_by_month">Sales Totals by Month</a></li>
-                  <li><a href="/reports/sales/sales_by_hour">Sales Activity by Hour</a></li>
-                  <li><a href="/reports/sales/register_sales_detail">Register Sales Detail</a></li>
+                  <?php if ($user['user_type_id'] === "user_type_admin") : ?>
+                    <li><a href="/reports/sales/payments_by_month">Payment Types by Month</a></li>
+                    <li><a href="/reports/sales/sales_by_category">Sales by Tag</a></li>
+                    <li><a href="/reports/sales/register_sales_detail">Register Sales Detail</a></li>
+                  <?php endif; ?>
                 </ul>
               </div>
             </div>
@@ -99,28 +107,51 @@
           <!-- END PORTLET SECTION 1 -->
 
           <!-- BEGIN PORTLET SECTION 2-->
-          <div class="col-md-6 col-xs-12 col-sm-12 dashboard-warpper">
-            <div class="portlet box yellow light bordered dashboard-box line-box-content ">
-              <div class="portlet-title dashboard-title">
-                <div class="caption">
-                  <i class="fa fa-file-text-o"></i>Product Reports
+          <?php if ($user['user_type_id'] === "user_type_admin") : ?>
+            <div class="col-md-6 col-xs-12 col-sm-12 dashboard-warpper">
+              <div class="portlet box yellow light bordered dashboard-box line-box-content ">
+                <div class="portlet-title dashboard-title">
+                  <div class="caption">
+                    <i class="fa fa-file-text-o"></i>Product Reports
+                  </div>
+                </div>
+                <div class="col-md-12 col-xs-12 col-sm-12 portlet-body">
+                  <ul class="col-md-6 col-xs-12 col-sm-12 dashboard-list">
+                    <li><a href="/reports/sales/popular_products">Popular Products</a></li>
+                    <li><a href="/reports/sales/products_by_type">Product Sales by Type</a></li>
+                    <li><a href="/reports/sales/products_by_supplier">Product Sales by Supplier</a></li>
+                    <li><a href="/reports/sales/products_by_oulet">Product Sales by Outlet</a></li>
+                  </ul>
+                  <ul class="col-md-6 col-xs-12 col-sm-12 dashboard-list">
+                    <li><a href="/reports/sales/products_by_user">Product Sales by User</a></li>
+                    <li><a href="/reports/sales/products_by_customer">Product Sales by Customer</a></li>
+                    <li><a href="/reports/sales/products_by_customer_group">Product Sales by Customer Group</a></li>
+                  </ul>
                 </div>
               </div>
-              <div class="col-md-12 col-xs-12 col-sm-12 portlet-body">
-                <ul class="col-md-6 col-xs-12 col-sm-12 dashboard-list">
-                  <li><a href="/reports/sales/popular_products">Popular Products</a></li>
-                  <li><a href="/reports/sales/products_by_type">Product Sales by Type</a></li>
-                  <li><a href="/reports/sales/products_by_oulet">Product Sales by Outlet</a></li>
-                  <li><a href="/reports/sales/products_by_supplier">Product Sales by Supplier</a></li>
-                </ul>
-                <ul class="col-md-6 col-xs-12 col-sm-12 dashboard-list">
-                  <li><a href="/reports/sales/products_by_user">Product Sales by User</a></li>
-                  <li><a href="/reports/sales/products_by_customer">Product Sales by Customer</a></li>
-                  <li><a href="/reports/sales/products_by_customer_group">Product Sales by Customer Group</a></li>
-                </ul>
+            </div>
+          <?php else : ?>
+            <!-- If manager, display menu for section 3 to section 2 -->
+            <div class="col-md-6 col-xs-12 col-sm-12 dashboard-warpper">
+              <div class="portlet box yellow light bordered dashboard-box line-box-content ">
+                <div class="portlet-title dashboard-title">
+                  <div class="caption">
+                    <i class="fa fa-file-text-o"></i>Register Reports
+                  </div>
+                </div>
+                <div class="col-md-12 col-xs-12 col-sm-12 portlet-body">
+                  <ul class="col-md-6 col-xs-12 col-sm-12 dashboard-list">
+                    <li><a href="/reports/closures">Register Closures</a></li>
+                    <li>&nbsp;</li>
+                    <li>&nbsp;</li>
+                  </ul>
+                  <ul class="col-md-6 col-xs-12 col-sm-12 dashboard-list">
+                    <li> </li>
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
+          <?php endif; ?>
           <!-- END PORTLET SECTION 2 -->
         </div>
       </div>
@@ -130,32 +161,12 @@
         <div class="col-md-12 col-xs-12 col-sm-12 dashboard-area">
 
           <!-- BEGIN PORTLET SECTION 3 -->
+          <?php if ($user['user_type_id'] === "user_type_admin") : ?>
           <div class="col-md-6 col-xs-12 col-sm-12 dashboard-warpper">
             <div class="portlet box yellow light bordered dashboard-box line-box-content ">
               <div class="portlet-title dashboard-title">
                 <div class="caption">
-                  <i class="fa fa-file-text-o"></i>Stock Reports
-                </div>
-              </div>
-              <div class="col-md-12 col-xs-12 col-sm-12 portlet-body">
-                <ul class="col-md-6 col-xs-12 col-sm-12 dashboard-list">
-                  <li><a href="/reports/stock/levels">Stock Levels</a></li>
-                  <li><a href="/reports/stock/low">Low Stock</a></li>
-                </ul>
-                <ul class="col-md-6 col-xs-12 col-sm-12 dashboard-list">
-                  <li><a href="/reports/stock/onhand">Stock On Hand</a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-          <!-- END PORTLET SECTION 3 -->
-
-          <!-- BEGIN PORTLET SECTION 4-->
-          <div class="col-md-6 col-xs-12 col-sm-12 dashboard-warpper">
-            <div class="portlet box yellow light bordered dashboard-box line-box-content ">
-              <div class="portlet-title dashboard-title">
-                <div class="caption">
-                  <i class="fa fa-file-text-o"></i>Product Reports
+                  <i class="fa fa-file-text-o"></i>Register Reports
                 </div>
               </div>
               <div class="col-md-12 col-xs-12 col-sm-12 portlet-body">
@@ -169,6 +180,30 @@
               </div>
             </div>
           </div>
+          <?php endif; ?>
+          <!-- END PORTLET SECTION 3 -->
+
+          <!-- BEGIN PORTLET SECTION 4-->
+          <?php if ($user['user_type_id'] === "user_type_admin") : ?>
+            <div class="col-md-6 col-xs-12 col-sm-12 dashboard-warpper">
+              <div class="portlet box yellow light bordered dashboard-box line-box-content ">
+                <div class="portlet-title dashboard-title">
+                  <div class="caption">
+                    <i class="fa fa-file-text-o"></i>Stock Reports
+                  </div>
+                </div>
+                <div class="col-md-12 col-xs-12 col-sm-12 portlet-body">
+                  <ul class="col-md-6 col-xs-12 col-sm-12 dashboard-list">
+                    <li><a href="/reports/stock/levels">Stock Levels</a></li>
+                    <li><a href="/reports/stock/low">Low Stock</a></li>
+                  </ul>
+                  <ul class="col-md-6 col-xs-12 col-sm-12 dashboard-list">
+                    <li><a href="/reports/stock/onhand">Stock On Hand</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          <?php endif; ?>
           <!-- END PORTLET SECTION 4 -->
         </div>
       </div>
@@ -220,8 +255,8 @@
     var sales_data = JSON.parse($("#sales-data").val());
     var products_data = JSON.parse($("#products-data").val());
 
-    Dashboard.initAmountLineChart(sales_data);
-    Dashboard.initProductPieChart(products_data);
+    DashboardCharts.initAmountLineChart(sales_data);
+    DashboardCharts.initProductPieChart(products_data);
 
   }
   </script>

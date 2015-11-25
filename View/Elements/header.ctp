@@ -75,7 +75,7 @@
                     <?php else : ?>
                       <i class="fa fa-fw fa-user "></i>
                     <?php endif; ?>
-                    <span class="username hide-on-mobile" id="TEST" ng-if="!config"> <?php echo $user['display_name']; ?>
+                    <span class="username hide-on-mobile" id="TEST" ng-if="!config">&nbsp; <?php echo $user['display_name']; ?>
                     </span>
                     <span class="username hide-on-mobile" id="TEST" ng-if="config"> {{config.user_display_name}}</span>
                     <i class="fa fa-angle-down"></i>

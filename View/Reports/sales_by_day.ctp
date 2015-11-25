@@ -18,6 +18,8 @@
     </div>
 </div>
 
+
+
 <!-- FILTER -->
 <form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box" action="/reports/sales/sales_by_day" method="get">
     <div class="col-md-6 col-xs-6 col-sm-6">
@@ -46,134 +48,122 @@
         <button type="submit" class="btn btn-primary filter pull-right">Update</button>
     </div>
 </form>
+
+<!-- BEGIN CHART AREA -->
+<!--<div class="row">-->
+<!--    <div class="col-md-12 col-xs-12 col-sm-12 dashboard-area">-->
+<!---->
+        <!-- BEGIN PORTLET CHART 1 -->
+<!--        <input type="hidden" id="sales-data" value='--><?php //echo json_encode($sales);?><!--'>-->
+<!--        <div class="col-md-12 col-xs-12 col-sm-12 dashboard-warpper ">-->
+<!--            <div class="portlet light bordered dashboard">-->
+<!--                <div class="portlet-title">-->
+<!--                    <div class="caption">-->
+<!--                        <i class="fa fa-bar-chart"></i>Sales Totals by Day-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="portlet-body">-->
+<!--                    <div id="chart_sales_day_loading"> <img src="/theme/metronic/assets/admin/layout/img/loading.gif" alt="loading"/> </div>-->
+<!--                    <div id="chart_sales_day_content" class="display-none">-->
+<!--                        <div id="chart_sales_day" class="chart" style="height: 228px;"> </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+        <!-- END PORTLET CHART 1 -->
+<?php
+//foreach ($sales as $key => $value) {
+//    var_dump($key);
+//    var_dump($value);
+//    var_dump($value["salesIncl"]);
+//    var_dump($value["tax"]);
+//    var_dump($value["salesExc"]);
+//    var_dump($value["cost"]);
+//    var_dump($value["discounts"]);
+//    var_dump($value["grossProfit"]);
+//    var_dump($value["grossMargin"]);
+//}
+?>
+<!--    </div>-->
+<!--</div>-->
+<!-- END CHART AREA -->
+
 <div class="scroll-table-wide">
     <table id="productTable" class="table-bordered dataTable table-price">
-        <colgroup>
-            <col width="">
-            <col width="20%">
-        </colgroup>
+
         <thead>
         <tr>
             <th></th>
             <?php if (!empty($sales)) {
-                foreach ($sales as $date => $data) { ?>
-                    <th class="text-right"><?php echo $date; ?></th>
+                foreach ($sales as $key => $value) { ?>
+                    <th class="text-center" style="white-space:nowrap;"><?php echo $key; ?></th>
                 <?php }
             } ?>
         </tr>
         </thead>
         <tbody>
-        <?php if (isset($_GET['from'])) {
-            $salesIncl = 0;
-            $tax = 0;
-            $salesExc = 0;
-            $cost = 0;
-            $discounts = 0; ?>
+            <?php if (count($sales) > 0) {
+                $salesIncl = 0;
+                $tax = 0;
+                $salesExc = 0;
+                $cost = 0;
+                $discounts = 0;
+            ?>
             <tr>
-                <td>Sales incl. tax ($)</td>
-                <?php foreach ($sales as $sale) {
-                    if (!empty($sale)) {
-                        foreach ($sale as $data) {
-                            $salesIncl += $data['RegisterSale']['total_price_incl_tax'];
-                        }
-                    } ?>
-                    <td class="text-right">
-                        <?php echo number_format($salesIncl, 2, '.', ','); ?>
+                <td  style="white-space:nowrap;">Sales incl. tax</td>
+                <?php foreach ($sales as $key => $value) { ?>
+                    <td class="text-right ">
+                        $<?php echo number_format($value['salesIncl'], 2, '.', ','); ?>
                     </td>
-                    <?php $salesIncl = 0;
-                } ?>
+                <?php } ?>
             </tr>
             <tr>
-                <td>Tax ($)</td>
-                <?php foreach ($sales as $sale) {
-                    if (!empty($sale)) {
-                        foreach ($sale as $data) {
-                            $tax += $data['RegisterSale']['total_tax'];
-                        }
-                    } ?>
+                <td style="white-space:nowrap;">Tax</td>
+                <?php foreach ($sales as $key => $value) { ?>
                     <td class="text-right">
-                        <?php echo number_format($tax, 2, ',', '.'); ?>
+                        $<?php echo number_format($value['tax'], 2, '.', ','); ?>
                     </td>
-                    <?php $tax = 0;
-                } ?>
+                <?php } ?>
             </tr>
             <tr>
-                <td>Sales exc. tax ($)</td>
-                <?php foreach ($sales as $sale) {
-                    if (!empty($sale)) {
-                        foreach ($sale as $data) {
-                            $salesExc += $data['RegisterSale']['total_price'];
-                        }
-                    } ?>
+                <td style="white-space:nowrap;">Sales exc. tax</td>
+                <?php foreach ($sales as $key => $value) { ?>
                     <td class="text-right">
-                        <?php echo number_format($salesExc, 2, '.', ','); ?>
+                        $<?php echo number_format($value['salesExc'], 2, '.', ','); ?>
                     </td>
-                    <?php $salesExc = 0;
-                } ?>
+                <?php } ?>
             </tr>
             <tr>
-                <td>Cost of goods ($)</td>
-                <?php foreach ($sales as $sale) {
-                    if (!empty($sale)) {
-                        foreach ($sale as $data) {
-                            $cost += $data['RegisterSale']['total_cost'];
-                        }
-                    } ?>
+                <td style="white-space:nowrap;">Cost of goods</td>
+                <?php foreach ($sales as $key => $value) { ?>
                     <td class="text-right">
-                        <?php echo number_format($cost, 2, '.', ','); ?>
+                       $<?php echo number_format($value['cost'], 2, '.', ','); ?>
                     </td>
-                    <?php $cost = 0;
-                } ?>
+                <?php } ?>
             </tr>
             <tr>
-                <td>Discounts ($)</td>
-                <?php foreach ($sales as $sale) {
-                    if (!empty($sale)) {
-                        foreach ($sale as $data) {
-                            $discounts += $data['RegisterSale']['total_discount'];
-                        }
-                    } ?>
+                <td style="white-space:nowrap;">Discounts</td>
+                <?php foreach ($sales as $key => $value) { ?>
                     <td class="text-right">
-                        <?php echo number_format($discounts, 2, '.', ','); ?>
+                        $<?php echo number_format($value['discounts'], 2, '.', ','); ?>
                     </td>
-                    <?php $discounts = 0;
-                } ?>
+                <?php } ?>
             </tr>
             <tr class="table-color">
-                <td>Gross Profit ($)</td>
-                <?php foreach ($sales as $sale) {
-                    if (!empty($sale)) {
-                        foreach ($sale as $data) {
-                            $salesExc += $data['RegisterSale']['total_price'];
-                            $cost += $data['RegisterSale']['total_cost'];
-                        }
-                    } ?>
+                <td style="white-space:nowrap;">Gross Profit</td>
+                <?php foreach ($sales as $key => $value) { ?>
                     <td class="text-right">
-                        <?php echo number_format($salesExc - $cost, 2, '.', ','); ?>
+                        $<?php echo number_format($value['grossProfit'], 2, '.', ','); ?>
                     </td>
-                    <?php $salesExc = 0;
-                    $cost = 0;
-                } ?>
+                <?php } ?>
             </tr>
             <tr class="table-color">
-                <td>Gross Margin</td>
-                <?php foreach ($sales as $sale) {
-                    if (!empty($sale)) {
-                        foreach ($sale as $data) {
-                            $salesExc += $data['RegisterSale']['total_price'];
-                            $cost += $data['RegisterSale']['total_cost'];
-                        }
-                    } ?>
+                <td style="white-space:nowrap;">Gross Margin</td>
+                <?php foreach ($sales as $key => $value) { ?>
                     <td class="text-right">
-                        <?php if ($salesExc > 0) {
-                            echo number_format(($salesExc - $cost) / $salesExc * 100, 1, '.', '') . '%';
-                        } else {
-                            echo "0%";
-                        } ?>
+                        <?php echo number_format($value['salesIncl'], 1, '.', '') . '%'; ?>
                     </td>
-                    <?php $salesExc = 0;
-                    $cost = 0;
-                } ?>
+                <?php } ?>
             </tr>
         <?php } else { ?>
             <tr>
@@ -217,6 +207,7 @@
 <script src="/theme/onzsa/assets/admin/pages/scripts/index.js" type="text/javascript"></script>
 <script src="/theme/onzsa/assets/admin/pages/scripts/tasks.js" type="text/javascript"></script>
 <script src="/js/dataTable.js" type="text/javascript"></script>
+<script src="/theme/onzsa/assets/admin/pages/scripts/dashboard_charts.js"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 
 <?php echo $this->element('common-init'); ?>
@@ -231,5 +222,11 @@ function documentInit() {
     
     $("#date_from").datepicker({ dateFormat: 'yy-mm-dd' });
     $("#date_to").datepicker({ dateFormat: 'yy-mm-dd' });
+
+
+    // page init function
+    var sales_data = JSON.parse($("#sales-data").val());
+
+    DashboardCharts.initSalesDayChart(sales_data);
 }
 </script>
