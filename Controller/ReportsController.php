@@ -21,7 +21,8 @@ class ReportsController extends AppController {
             'products_by_customer',
             'products_by_customer_group',
             'products_by_type',
-            'closures'
+            'closures',
+            'closure_verify'
           ))) {
           return true;
         }
