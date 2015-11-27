@@ -37,6 +37,10 @@
 
     Router::connect('/reports/sales/:action/*', array('controller' => 'reports'));
 
+    Router::connect('/reports/closure_verify/:id',
+        array('controller' => 'reports', 'action' => 'closure_verify'),
+        array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));
+
     Router::connect('/product/:id',
         array('controller' => 'product', 'action' => 'view'),
         array('pass' => array('id'), 'id' => '[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}'));

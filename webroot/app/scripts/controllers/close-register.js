@@ -102,13 +102,11 @@ angular.module('OnzsaApp', [])
 
           // Make data for sales section
           var registerSale = $scope.registerSales[idx];
-                      var amount = 0;
-
-                      for (var index in registerSale.payments) {
-                        amount += parseFloat(registerSale.payments[index].amount);
-                      }
-                      totalAmount += amount;
-                      console.debug('aaaaaaaaaaaaaaaaa : ', totalAmount);
+          var amount = 0;
+          for (var index in registerSale.payments) {
+            amount += parseFloat(registerSale.payments[index].amount);
+          }
+          totalAmount += amount;
 
           switch (registerSale.status) {
             case 'sale_status_layby':
@@ -116,10 +114,10 @@ angular.module('OnzsaApp', [])
               $scope.register.total_transactions += 1;
               $scope.register.total_taxes += registerSale.total_tax;
               $scope.register.total_discounts += registerSale.total_discount;
-                          $scope.register.total_payments = totalAmount;
+              $scope.register.total_payments = totalAmount;
               $scope.register.total_sales += registerSale.total_price;
 
-              laybySales += registerSale.total_price;
+              laybySales += registerSale.total_price_incl_tax;
               laybyPayments += registerSale.total_payment;
 
               var laybySale = {};
@@ -193,11 +191,11 @@ angular.module('OnzsaApp', [])
               $scope.register.total_transactions += 1;
               $scope.register.total_taxes += registerSale.total_tax;
               $scope.register.total_discounts += registerSale.total_discount;
-                          $scope.register.total_payments = totalAmount;
+              $scope.register.total_payments = totalAmount;
               $scope.register.total_sales += registerSale.total_price;
 
               newSales += registerSale.total_price;
-                          newPayments = totalAmount;
+              newPayments = totalAmount;
               break;
           }
 

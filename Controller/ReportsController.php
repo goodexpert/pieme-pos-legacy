@@ -40,8 +40,13 @@ class ReportsController extends AppController {
         'Merchant',
         'MerchantOutlet',
         'MerchantRegister',
+        'MerchantRegisterOpen',
+        'MerchantUser',
+        'MerchantCustomer',
+        'MerchantPaymentType',
         'RegisterSale',
-        'RegisterSaleItem'
+        'RegisterSaleItem',
+        'RegisterSalePayment'
     );
 
 /**
@@ -2439,21 +2444,33 @@ class ReportsController extends AppController {
  */
     public function closures() {
         $user = $this->Auth->user();
-        
-        $this->loadModel('MerchantOutlet');
-        $outlets = $this->MerchantOutlet->find('all', array(
-            'conditions' => array(
-                'MerchantOutlet.merchant_id' => $user['merchant_id']
-            )
-        ));
-        $this->set('outlets',$outlets);
-        
+
+        // get Merchant info
+        $merchant_info = array();
+        $merchant = $this->Merchant->findById($user['merchant_id']);
+        array_push($merchant_info, $merchant['Merchant']);
+
+        // Get outlet info
         $outlet_ids = array();
-        foreach($outlets as $outlet) {
-            array_push($outlet_ids,$outlet['MerchantOutlet']['id']);
+        $oultet_infos = array();
+        if ($user['user_type_id'] === "user_type_admin") {
+
+            $outlets = $this->MerchantOutlet->find('all', array(
+                'conditions' => array(
+                    'MerchantOutlet.merchant_id' => $user['merchant_id']
+                )
+            ));
+            foreach ($outlets as $outlet) {
+                array_push($outlet_ids, $outlet['MerchantOutlet']['id']);
+                array_push($oultet_infos, $outlet['MerchantOutlet']);
+            }
+        } else if ($user['user_type_id'] === "user_type_manager") {
+            $outlet = $this->MerchantOutlet->findById($user['outlet_id']);
+            array_push($outlet_ids, $user['outlet_id']);
+            array_push($oultet_infos, $outlet['MerchantOutlet']);
         }
-        
-        $this->loadModel('MerchantRegister');
+
+
         $registers = $this->MerchantRegister->find('all', array(
             'conditions' => array(
                 'MerchantRegister.outlet_id' => $outlet_ids
@@ -2466,7 +2483,6 @@ class ReportsController extends AppController {
             array_push($register_ids,$register['MerchantRegister']['id']);
         }
         
-        $this->loadModel('MerchantRegisterOpen');
         $this->MerchantRegisterOpen->bindModel(array(
             'belongsTo' => array(
                 'MerchantRegister' => array(
@@ -2495,8 +2511,232 @@ class ReportsController extends AppController {
         $closures = $this->MerchantRegisterOpen->find('all', array(
             'conditions' => $criteria
         ));
+
         $this->set('closures',$closures);
+        $this->set('merchant',$merchant_info);
+        $this->set('outlets',$oultet_infos);
 
     }
 
+    /**
+     * Register closure information
+     *
+     * @return void
+     */
+    public function closure_verify($id) {
+        $user = $this->Auth->user();
+
+        $register_info = array();
+
+        $total = array();
+        $total['tax'] = 0.00;
+        $total['transaction'] = 0;
+        $total['discount'] = 0.00;
+        $total['payment'] = 0.00;
+        $total['sale'] = 0.00;
+
+        $layby_sales = array();
+        $laybySales = 0.00;
+        $laybyPayments = 0.00;
+
+        $onaccount_sales = array();
+        $onaccountSales = 0.00;
+        $onaccountPayments = 0.00;
+
+        $new_sales = array();
+        $salesAmount = 0.00;
+        $paymentsAmount = 0.00;
+
+        // get register closure information
+        $closure = $this->MerchantRegisterOpen->findById($id);
+        if (count($closure) > 0) {
+            $closure = $closure['MerchantRegisterOpen'];
+            $register_info['opened'] = $closure['register_open_time'];
+            $register_info['closed'] = $closure['register_close_time'];
+        }
+
+        // get register details
+        $register = $this->MerchantRegister->findById($closure['register_id']);
+        if (count($register) > 0) {
+            $register = $register['MerchantRegister'];
+            $register_info['name'] = $register['name'];
+        }
+
+        // get outlet detailes
+        $outlet = $this->MerchantOutlet->findById($register['outlet_id']);
+        if (count($outlet) > 0) {
+            $outlet = $outlet['MerchantOutlet'];
+            $register_info['outlet'] = $outlet['name'];
+        }
+
+        // get payment types
+        $payment_types = $this->MerchantPaymentType->find('all', array(
+            'conditions' => array(
+                'MerchantPaymentType.merchant_id' => $user['merchant_id'],
+                'MerchantPaymentType.is_active' => 1
+            )
+        ));
+        $payment_types = Hash::map($payment_types, "{n}", function($type) {
+            $newType = [];
+            $newType['name'] = $type['MerchantPaymentType']['name'];
+            $newType['id'] = $type['MerchantPaymentType']['id'];
+            $newType['type_id'] = $type['MerchantPaymentType']['payment_type_id'];
+            $newType['amount'] = 0.00;
+            return $newType;
+        });
+
+        // get sales data
+        $conditions = [];
+        if (!empty($closure['register_close_time'])) {
+            $conditions[] = [
+                'RegisterSale.register_id' => $register['id'],
+                'RegisterSale.sale_date >=' => $closure['register_open_time'],
+                'RegisterSale.sale_date <=' => $closure['register_close_time']
+            ];
+        } else {
+            $conditions[] = [
+                'RegisterSale.register_id' => $register['id'],
+                'RegisterSale.sale_date >=' => $closure['register_open_time']
+            ];
+        }
+        $sales = $this->RegisterSale->find('all', [
+            'conditions' => $conditions
+        ]);
+        if (count($sales) > 0) {
+            $sales = Hash::map($sales, "{n}", function($sale) {
+                return $sale['RegisterSale'];
+            });
+
+            // get payments with sale_id
+            for ($idx = 0; $idx < count($sales); $idx++) {
+                $sale = $sales[$idx];
+                $sale_id = $sale['id'];
+                $payments = $this->RegisterSalePayment->find('all', array(
+                    'conditions' => array(
+                        'RegisterSalePayment.sale_id' => $sale_id
+                    )
+                ));
+                $payments = Hash::map($payments, "{n}", function($payment) {
+                    return $payment['RegisterSalePayment'];
+                });
+                $sales[$idx]['payments'] = $payments;
+
+                // get total amount
+                $amount = 0.00;
+                foreach ($payments as $payment) {
+                    $amount += (float)$payment['amount'];
+
+                    for ($loop = 0; $loop < count($payment_types); $loop++ ) {
+                        if ($payment_types[$loop]['id'] == $payment['merchant_payment_type_id']) {
+                            $payment_types[$loop]['amount'] += (float)$payment['amount'];
+                        }
+                    }
+                };
+                $total['payment'] += $amount;
+
+                // get user name
+                $user_name = $this->MerchantUser->findById($sale['user_id']);
+                if (count($user_name) > 0) {
+                    $user_name = $user_name['MerchantUser']['username'];
+                }
+
+                // get customer name
+                $customer_name = $this->MerchantCustomer->findById($sale['customer_id']);
+                if (count($customer_name) > 0) {
+                    $customer_name = $customer_name['MerchantCustomer']['name'];
+                }
+
+
+                    // get value with sale status
+                switch ($sale['status']) {
+                    case 'sale_status_layby':
+                    case 'sale_status_layby_closed':
+                    //TODO: add logic for on layby sale
+//                        $total['transaction'] += 1;
+//                        $total['tax'] += $sale['total_tax'];
+//                        $total['discount'] += $sale['total_discount'];
+//                        $total['sale'] += $sale['total_price_incl_tax'];
+//
+//                        $laybySales += $sale['total_price_incl_tax'];
+//                        $laybyPayments += $sale['total_payment'];
+//
+//                        $laybySale = array();
+//                        $laybySale['sale_date'] = $sale['sale_date'];
+//                        $laybySale['reciept_number'] = $sale['receipt_number'];
+//                        $laybySale['user_name'] = $user_name;
+//                        $laybySale['customer_name'] = $customer_name;
+//                        $laybySale['note'] = $sale['note'];
+//                        $laybySale['amount'] = $sale['total_price_incl_tax'];
+
+
+
+//                        $scope.register.layby_sales.total_sales += registerSale.total_price;
+//                        $scope.register.layby_sales.sales.push(laybySale);
+//
+//                        if (registerSale.payments != null) {
+//                            for (var loop in registerSale.payments) {
+//                                var salePayment = registerSale.payments[loop];
+//                                var laybyPayment = {};
+//                                laybyPayment.sale_date = new Date(salePayment.payment_date * 1000).format("yyyy-MM-dd hh:mm:ss");
+//                                laybyPayment.reciept_number = registerSale.receipt_number;
+//                                laybyPayment.user_name = registerSale.user_name;
+//                                laybyPayment.customer_name = registerSale.customer_name;
+//                                laybyPayment.note = _getPaymentTypeName(salePayment.payment_type_id);
+//                                laybyPayment.amount = salePayment.amount;
+//
+//                                $scope.register.layby_sales.total_payments += salePayment.amount;
+//                                $scope.register.layby_sales.payments.push(laybyPayment);
+//                            }
+//                        }
+                        break;
+
+
+                    case 'sale_status_onaccount':
+                    case 'sale_status_onaccount_closed':
+
+                        //TODO: add logic for on account sale
+
+                        $total['transaction'] += 1;
+                        $total['tax'] += $sale['total_tax'];
+                        $total['discount'] += $sale['total_discount'];
+                        $total['sale'] += $sale['total_price_incl_tax'];
+                        break;
+
+
+                    case 'sale_status_closed':
+                        $total['transaction'] += 1;
+                        $total['tax'] += $sale['total_tax'];
+                        $total['discount'] += $sale['total_discount'];
+                        $total['sale'] += $sale['total_price_incl_tax'];
+
+                        $salesAmount += $sale['total_price'];;
+                        $paymentsAmount += $amount;
+                        break;
+                }
+            }
+
+            if ($salesAmount > 0 || $paymentsAmount > 0) {
+                $sale = array("name" => "New", "total_sales" => $salesAmount, "total_payments" => $paymentsAmount );
+                $new_sales[] = $sale;
+            }
+
+            //TODO: layby and onaccount
+//            if (onAccountSales > 0 || onAccountPayments > 0) {
+//                var sale = {"name" : "On account", "total_sales" : onAccountSales, "total_payments" : onAccountPayments };
+//                $scope.register.sales.push(sale);
+//            }
+//            if (laybySales > 0 || laybyPayments > 0) {
+//                var sale = {"name" : "Layby", "total_sales" : laybySales, "total_payments" : laybyPayments };
+//                $scope.register.sales.push(sale);
+//            }
+        }
+
+
+        $this->set('register_info', $register_info);
+        $this->set('payment_types', $payment_types);
+        $this->set('sales', $sales);
+        $this->set('new_sales', $new_sales);
+        $this->set('total', $total);
+
+    }
 }

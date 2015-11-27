@@ -1,3 +1,6 @@
+<?php
+  $user = $this->Session->read('Auth.User');
+?>
 <link href="/css/dataTable.css" rel="stylesheet" type="text/css">
 <div class="clearfix"></div>
 <div id="notify"></div>
@@ -19,7 +22,7 @@
 </div>
 
 <!-- FILTER -->
-<form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box" methond="/reports/closures" method="get">
+<form class="col-md-12 col-xs-12 col-sm-12 line-box filter-box" action="/reports/closures" method="get">
   <div class="col-md-4 col-xs-6 col-sm-6">
     <dl>
       <dt>Register</dt>
@@ -36,24 +39,27 @@
       </dd>
     </dl>
   </div>
-  <div class="col-md-4 col-xs-6 col-sm-6">
-    <dl>
-      <dt>Outlet</dt>
-      <dd>
-        <select name="outlet_id">
-          <option></option>
-          <?php foreach ($outlets as $outlet) { ?>
-            <option
-                value="<?php echo $outlet['MerchantOutlet']['id']; ?>" <?php if (isset($_GET['outlet_id']) && $_GET['outlet_id'] == $outlet['MerchantOutlet']['id']) {
-              echo "selected";
-            } ?>><?php echo $outlet['MerchantOutlet']['name']; ?></option>
-          <?php } ?>
-        </select>
-      </dd>
-    </dl>
-  </div>
+  <?php if ($user['user_type_id'] === "user_type_admin") : ?>
+    <div class="col-md-4 col-xs-6 col-sm-6">
+      <dl>
+        <dt>Outlet</dt>
+        <dd>
+          <select name="outlet_id">
+            <option></option>
+            <?php foreach ($outlets as $outlet) { ?>
+              <option value="<?php echo $outlet['id']; ?>"
+                  <?php if (isset($_GET['outlet_id']) && $_GET['outlet_id'] == $outlet['id']) {
+                    echo "selected";
+                  } ?>>
+                <?php echo $outlet['name']; ?></option>
+            <?php } ?>
+          </select>
+        </dd>
+      </dl>
+    </div>
+  <?php endif; ?>
   <div class="col-md-12 col-xs-12 col-sm-12">
-    <button class="btn btn-primary filter pull-right">Update</button>
+    <button type="submit"  class="btn btn-primary filter pull-right">Update</button>
   </div>
 </form>
 
@@ -79,7 +85,7 @@
   <tbody>
   <?php foreach ($closures as $closure) { ?>
     <tr>
-      <td><?php echo $closure['MerchantRegister']['name']; ?></td>
+      <td><a href="/reports/closure_verify/<?php echo $closure['MerchantRegisterOpen']['id']; ?>"><?php echo $closure['MerchantRegister']['name']; ?></a></td>
       <td class="text-right"><?php echo $closure['MerchantRegisterOpen']['register_open_count_sequence']; ?></td>
       <td><?php echo $closure['MerchantRegisterOpen']['register_open_time']; ?></td>
       <td><?php if (empty($closure['MerchantRegisterOpen']['register_close_time'])) {
@@ -88,7 +94,7 @@
           echo $closure['MerchantRegisterOpen']['register_close_time'];
         } ?></td>
       <td class="text-right">
-        $<?php echo number_format($closure['MerchantRegisterOpen']['total_payments'], 2, '.', ','); ?></td>
+        $<?php echo number_format($closure['MerchantRegisterOpen']['total_sales'] + $closure['MerchantRegisterOpen']['total_tax'], 2, '.', ','); ?></td>
     </tr>
   <?php } ?>
   </tbody>

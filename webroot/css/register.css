@@ -1109,8 +1109,27 @@ background:rgba(223,173,53,1.00);
     float: left;
 }
 
-/** Close **/
+/** Closing Verify **/
 
+#closure-verify-wrapper {
+    float: left;
+    width: 700px;
+    border-radius: 8px;
+    margin-left: 21%;
+    margin-right: 21%;
+}
+#closure-verify-details, #closure-verify-sales, #closure-verify-payments {
+    margin: 10px 0;
+}
+#closure-verify-details span {
+    font-weight: bold;
+}
+.sales-table th, .sales-table td {
+    border-bottom: 1px dashed black;
+    padding: 5px;
+}
+
+/** Close **/
 
 #close-register-wrapper {
     float: left;
