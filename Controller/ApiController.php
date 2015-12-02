@@ -949,4 +949,143 @@ class ApiController extends AppController {
     $this->serialize($result);
   }
 
+
+
+
+  public function get_register_sales_info() {
+    $draw = $this->request->query('draw');
+    $start = $this->request->query('start');
+    $length = $this->request->query('length');
+    $columns = $this->request->query('columns');
+    $orders = $this->request->query('order');
+    $search = $this->request->query('search');
+
+    $this->request->onlyAllow('get');
+
+    $user = $this->Auth->user();
+    $register_id = $user['MerchantRegister']['id'];
+
+    $this->loadModel('RegisterSale');
+    $this->loadModel('MerchantUser');
+
+    $order = array();
+
+    foreach ($orders as $item) {
+      if ($item['column'] == '0') {
+        $order['RegisterSale.created'] = $item['dir'];
+      }
+    }
+
+
+
+
+//    $filtered_total = 15;
+    $total = $this->RegisterSale->find('count');
+    $this->RegisterSale->bindModel([
+        'belongsTo' => [
+            'MerchantCustomer' => [
+                'classModel' => 'MerchantCustomer',
+                'foreignKey' => 'customer_id',
+            ],
+            'MerchantUser' => [
+                'classModel' => 'MerchantUser',
+                'foreignKey' => 'user_id',
+            ]
+        ],
+        'hasMany' => [
+            'RegisterSaleItem' => [
+                'classModel' => 'RegisterSaleItem',
+                'foreignKey' => 'sale_id',
+                'conditions' => [
+                    'RegisterSaleItem.sale_id' => 'RegisterSale.id'
+                ]
+            ],
+            'RegisterSalePayment' => [
+                'classModel' => 'RegisterSalePayment',
+                'foreignKey' => 'sale_id',
+                'conditions' => [
+                    'RegisterSalePayment.sale_id' => 'RegisterSale.id'
+                ]
+            ]
+        ]
+    ]);
+    $conditions = [];
+
+    if (!empty($search['value'])) {
+      $conditions = array(
+          'or' => array(
+              'RegisterSale.created LIKE' => '%' . $search['value'] . '%',
+              'MerchantUser.username LIKE' => '%' . $search['value'] . '%',
+              'MerchantUser.username LIKE' => '%' . $search['value'] . '%',
+              'MerchantCustomer.name LIKE' => '%' . $search['value'] . '%'
+
+          )
+      );
+    }
+
+    $condition = [];
+      $condition[] = [
+          'RegisterSale.register_id' => $register_id
+      ];
+    $filtered_total = sizeOf($this->RegisterSale->find('all', array(
+        'conditions' => $conditions
+    )));
+
+    $this->RegisterSale->bindModel([
+        'belongsTo' => [
+            'MerchantCustomer' => [
+                'classModel' => 'MerchantCustomer',
+                'foreignKey' => 'customer_id',
+            ],
+            'MerchantUser' => [
+                'classModel' => 'MerchantUser',
+                'foreignKey' => 'user_id',
+            ]
+        ],
+        'hasMany' => [
+            'RegisterSaleItem' => [
+                'classModel' => 'RegisterSaleItem',
+                'foreignKey' => 'sale_id',
+                'conditions' => [
+                    'RegisterSaleItem.sale_id' => 'RegisterSale.id'
+                ]
+            ],
+            'RegisterSalePayment' => [
+                'classModel' => 'RegisterSalePayment',
+                'foreignKey' => 'sale_id',
+                'conditions' => [
+                    'RegisterSalePayment.sale_id' => 'RegisterSale.id'
+                ]
+            ]
+        ]
+    ]);
+
+    $sales = $this->RegisterSale->find('all', [
+        'conditions' => $conditions,
+        'limit' => $length,
+        'offset' => $start,
+        'order' => $order
+    ]);
+
+    $resultset = Hash::map($sales, "{n}", function($array) {
+      $newArray = $array['RegisterSale'];
+      $newArray['user_name'] = $array['MerchantUser']['username'];
+      $newArray['customer_name'] = $array['MerchantCustomer']['name'];
+      $newArray['sale_date'] = CakeTime::toUnix($newArray['sale_date']);
+      $newArray['total_payment'] = 0;
+      return $newArray;
+    });
+
+    $this->RegisterSale->unbindModel([
+        'hasMany' => [ 'RegisterSaleItem', 'RegisterSalePayment' ]
+    ]);
+
+    $response['draw'] = $draw;
+    $response['recordsTotal'] = $total;
+    $response['recordsFiltered'] = $filtered_total;
+    $response['data'] = $resultset;
+
+    $this->serialize($response);
+  }
+
 }

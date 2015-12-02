@@ -165,7 +165,11 @@ class SigninController extends AppController {
         if (empty($errors)) {
             if ($this->Auth->login()) {
                 $user = $this->Auth->user();
-
+              if (!empty($user['is_deleted']) && $user['is_deleted'] == 1) {
+                $this->Auth->logout();
+                $this->Session->setFlash(__('This user has been deleted, please contact to admin.'));
+                return $this->redirect($this->Auth->redirect(), 301, false);
+              }
                 if (!empty($user['allow_ip_address']) && $user['allow_ip_address'] !== $_SERVER['REMOTE_ADDR']) {
                     $this->Auth->logout();
                     $this->Session->setFlash(__('Not allowed ip address.'));
