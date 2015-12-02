@@ -116,6 +116,7 @@
     <div class="form-actions fluid">
       <div class="col-md-12 margin-top-20 col-omega">
         <div class="pull-right">
+          <button type="button" id="delete" class="btn btn-default btn-wide Delete  margin-right-10">Delete</button>
           <button type="button" class="btn btn-default btn-wide cancel margin-right-10">Cancel</button>
           <button type="button" id="submit" class="btn btn-primary btn-wide">Submit</button>
         </div>
@@ -176,6 +177,26 @@
         }
       });
     });
+
+      $("#delete").click(function () {
+        $.ajax({
+          url: location.pathname + '.json',
+          type: 'POST',
+          data: {
+            is_deleted: 1
+          },
+          success: function (result) {
+            if (result.success) {
+              window.location.href = "/users/" + result.user_id;
+            } else {
+              console.log(result);
+            }
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            console.log(textStatus, errorThrown);
+          }
+        });
+      });
   }
 </script>
 <!-- END JAVASCRIPTS --> 
