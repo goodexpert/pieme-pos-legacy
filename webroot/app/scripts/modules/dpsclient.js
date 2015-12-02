@@ -151,7 +151,7 @@ DpsClient.prototype.refund = function (txnRef, amount, callback) {
           $(".display-msg").empty();
           $(".display-msg").text(text1 +' '+ text2);
           $(".display-msg").append('<img style="width: 30%" src ="images/payment/icon-06.png"></img>');
-          print();
+
         } else if ("SIGNATURE OK Y/N?" == text1) {
           $(".display-msg").empty();
           $(".display-msg").text(text1 +' '+ text2);
@@ -273,7 +273,6 @@ DpsClient.prototype.payment = function (txnRef, amount, callback) {
           $(".display-msg").empty();
           $(".display-msg").text(text1 +' '+ text2);
           $(".display-msg").append('<img style="width:30%" src ="app/images/payment/icon-06.png"></img>');
-          print();
 
         } else if ("SIGNATURE OK Y/N?" == text1) {
           $(".display-msg").empty();
