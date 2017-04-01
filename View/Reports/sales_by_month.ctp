@@ -69,7 +69,16 @@
             <dt>Year</dt>
             <dd>
                 <select name="year">
-                    <option value="2015">2015</option>
+                    <?php
+                        $starting_year = 2015;
+                        for($starting_year; $starting_year <= date('Y'); $starting_year++) {
+                            if($starting_year == date('Y')) {
+                                echo '<option value="'.$starting_year.'" selected="selected">'.$starting_year.'</option>';
+                            } else {
+                                echo '<option value="'.$starting_year.'">'.$starting_year.'</option>';
+                            }
+                        }
+                     ?>
                 </select>
             </dd>
         </dl>
