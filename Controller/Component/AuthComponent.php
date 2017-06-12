@@ -942,9 +942,10 @@ class AuthComponent extends Component {
 			if (empty($result) || !is_array($result)) {
 				return false;
 			}
-			if ($result['Merchant']['allow_use_pincode'] == 1) {
-				$this->loginAction = '/signin/pinpad';
-			}
+			// PIEME: block pinpad
+			//if ($result['Merchant']['allow_use_pincode'] == 1) {
+			//	$this->loginAction = '/signin/pinpad';
+			//}
 		}
 		return true;
 	}

@@ -228,7 +228,9 @@
 <script src="/theme/onzsa/assets/global/scripts/metronic.js" type="text/javascript"></script>
 <script src="/theme/onzsa/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
 <script src="/theme/onzsa/assets/admin/pages/scripts/login-soft.js" type="text/javascript"></script>
-<script src="https://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places&language=kr" type="text/javascript"></script>
+<!-- PIEME: Renew Google maps api key -->
+<!--<script src="https://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places&language=kr" type="text/javascript"></script>-->
+<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBNApY8FdSRmLmD84uX498cHRoGS71BneY&libraries=places"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
 

@@ -107,7 +107,7 @@ $AuthUser = $this->Session->read('Auth.User');
 </div>
 <!-- END CONTENT -->
 <!-- USER ADD BOX -->
-<div class="confirmation-modal modal fade in customer_add" tabindex="-1" role="dialog" aria-hidden="false">
+<div id="customer_add_modal" class="confirmation-modal modal fade in customer_add" tabindex="-1" role="dialog" aria-hidden="false">
   <div class="vertical-alignment-helper">
     <div class="modal-dialog">
       <div class="modal-content add-user-container">
@@ -143,7 +143,7 @@ $AuthUser = $this->Session->read('Auth.User');
                   <dl>
                     <dt class="col-md-4">Id</dt>
                     <dd class="col-md-8">
-                      <?php if ($AuthUser['Merchant']['allow_use_pincode'] === "1"): ?>
+                      <?php if (false) /* PIEME:block pinpad ($AuthUser['Merchant']['allow_use_pincode'] === "1")*/ : ?>
                         <input type="text" name="MerchantUser[password]" id="merchant_user_password"
                                placeholder="Enter 4 digit "></input>
                         <span id="merchant_user_username" hidden><?php echo $AuthUser['Merchant']['domain_prefix']?>_</span>
@@ -152,8 +152,8 @@ $AuthUser = $this->Session->read('Auth.User');
                                placeholder="username@onzsa.com"></input>
                       <?php endif; ?>
                       <div class="help-block with-errors"></div>
-                    </>
-                    <?php if ($AuthUser['Merchant']['allow_use_pincode'] === "0"): ?>
+                    </dd>
+                    <?php if (true) /* PIEME:block pinpad ($AuthUser['Merchant']['allow_use_pincode'] === "0")*/ : ?>
                       <dt class="col-md-4">Password</dt>
                       <dd class="col-md-8">
                         <input type="password" title="Please agree to our policy!" name="MerchantUser[password]"
@@ -268,6 +268,18 @@ $AuthUser = $this->Session->read('Auth.User');
     <script>
       jQuery(document).ready(function () {
         documentInit();
+
+        // PIEME: add init modal
+        $('#customer_add_modal').on('shown.bs.modal', function (event) {
+          $('#merchant_user_username').val("");
+          $('#merchant_user_password').val("");
+          $('#merchant_user_password_confirm').val("");
+          $('#merchant_user_display_name').val("");
+          $('#merchant_user_email').val("");
+          $('#merchant_user_type_id_modal option').eq(0).prop('selected', true);
+          $('#merchant_user_outlet_id_modal').eq(0).prop('selected', true);
+          $('#merchant_allow_ip').val("");
+        });
       });
 
       function documentInit() {
@@ -292,9 +304,14 @@ $AuthUser = $this->Session->read('Auth.User');
 
 
       $(".customer_quick_add").click(function () {
-        $(".customer_add").show();
+        // PIEME: change using bs method and init dropzone
+        //$(".customer_add").show();
+        var dropzone = Dropzone.forElement("div#myAwesomeDropzone");
+        dropzone.emit("resetFiles");
+        $("#customer_add_modal").modal('show');
         $(".modal-backdrop").show();
       });
+
       Dropzone.options.myAwesomeDropzone = {
         accept: function (file, done) {
           console.log("uploaded");
@@ -306,9 +323,13 @@ $AuthUser = $this->Session->read('Auth.User');
               this.removeFile(this.files[0]);
             }
           });
+          // PIEME: add init dropzone
+          this.on("resetFiles", function () {
+            this.removeAllFiles();
+          });
         }
       };
-      <?php if ($AuthUser['Merchant']['allow_use_pincode'] === "1"):?>
+      <?php if (false) /* PIEME: block pinpad ($AuthUser['Merchant']['allow_use_pincode'] === "1")*/ :?>
       // form validation
       var formValidation = function () {
         $("#user-add-form").validate({
@@ -365,7 +386,7 @@ $AuthUser = $this->Session->read('Auth.User');
             },
             'MerchantUser[username]': {
               required: true,
-              email: true,
+              // email: true, // PIEME: ID
               remote: {
                 url: '/signup/check_username.json',
                 type: 'post',
@@ -405,8 +426,6 @@ $AuthUser = $this->Session->read('Auth.User');
             element.parent("dd").find(".help-block").html(error);
           }
         });
-        console.log("00")
-
       }
       <?php endif; ?>
       $(".add_customer-submit").click(function () {
@@ -415,7 +434,7 @@ $AuthUser = $this->Session->read('Auth.User');
           type: 'POST',
           data: {
             user_type_id: $("#merchant_user_type_id_modal").val(),
-            username: $("#merchant_user_username").text()+$("#merchant_user_password").val(),
+            username: $("#merchant_user_username").val()/* PIEME: block pinpad +$("#merchant_user_password").val()*/,
             password: $("#merchant_user_password").val(),
             display_name: $("#merchant_user_display_name").val(),
             email: $("#merchant_user_email").val(),
@@ -425,11 +444,14 @@ $AuthUser = $this->Session->read('Auth.User');
             if (result.success) {
               window.location.href = "/users/" + result.user_id;
             } else {
-              console.log(result);
+              console.error(result);
+              $(".modal-backdrop").hide();
+              $.notify("Warning: "+result.message,  "warn", { autoHide: true });
             }
           },
           error: function (jqXHR, textStatus, errorThrown) {
             console.log(textStatus, errorThrown);
+            $(".modal-backdrop").hide();
           }
         });
 
