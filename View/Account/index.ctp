@@ -14,7 +14,7 @@
     <h5><span id="total_product"><?php echo $total_product;?></span> Products</h5>
     <h5><span id="total_customer"><?php echo $total_customer;?></span> Customers</h5>
 </div>
-<div class="inventory-tab">
+<div class="inventory-tab hidden">
     <li id="show_retail" target="retailer" class="active">Retail</li>
     <li id="show_franchise" target="franchise">Franchise</li>
     <li id="show_franchise_hq" target="franchise_hq">Franchise HQ</li>
@@ -25,6 +25,7 @@
             Select a Plan
         </h4>
         <?php foreach($plans as $plan) { ?>
+            <?php if(isset($plan['Plan']['is_active']) && $plan['Plan']['is_active'] == 1) { ?>
             <div class="col-md-3 col-sm-6 col-xs-6 margin-bottom-20 <?php if(strpos($plan['Plan']['id'], 'franchise') == true && strpos($plan['Plan']['id'], 'hq') == false){echo 'franchise hidden';} else if(strpos($plan['Plan']['id'], 'hq') == true){echo 'franchise_hq hidden';} else if(strpos($plan['Plan']['id'], 'retailer') == true){echo 'retailer';}?>">
                 <div class="plan-item clickable <?php if($user['Plan']['id'] == $plan['Plan']['id']){echo "selected_plan";}?> line-box">
                     <div class="col-md-12 col-sm-12 col-xs-12 plan-header">
@@ -86,6 +87,7 @@
                     </div>
                 </div>
             </div>
+            <?php } ?>
         <?php } ?>
     </div>
 </div>
