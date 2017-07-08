@@ -83,6 +83,18 @@ class UsersController extends AppController {
                 $data = $this->request->data;
                 $data['merchant_id'] = $user['merchant_id'];
 
+                // PIEME: add process route
+                // if admin , hide outlet
+                // admin and outlet == null pass
+                // admin and outlet != null pass
+                // not admin and outlet == null error
+                // not admin and outlet != null passs
+                if($data['user_type_id'] != 'user_type_admin' && (isset($data['outlet_id']) == false || $data['outlet_id'] == "")) {
+                    $result['message'] = 'Need to select outlet';
+                    $this->serialize($result);
+                    return;
+                }
+
                 $this->MerchantUser->create();
                 $this->MerchantUser->save($data);
 

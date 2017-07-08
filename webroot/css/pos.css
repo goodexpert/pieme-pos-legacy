@@ -2446,3 +2446,6 @@ and (-webkit-min-device-pixel-ratio: 1) { /* STYLES GO HERE */ }
 }
 /*END DROP ZONE*/
 
+.notifyjs-corner {
+    z-index: 9999 !important;
+}
