@@ -172,7 +172,7 @@ class SignupController extends AppController {
             'domain_prefix' => 'master',
             'first_name' => 'Steve',
             'last_name' => 'Park',
-            'username' => 'master@onzsa.com',
+            'username' => 'master@goodexpert.org',
             'password' => 'master',
             'physical_city' => 'Auckland',
             'physical_country' => 'NZ',
@@ -324,7 +324,7 @@ class SignupController extends AppController {
             if (empty($this->Auth->subdomain) || $this->Auth->subdomain === $data['domain_prefix']) {
                 $redirect_url = '/signin';
             } else {
-                $redirect_url = 'https://' . $data['domain_prefix'] . '.onzsa.com/signin';
+                $redirect_url = 'https://' . $data['domain_prefix'] . '.pieme.co.nz/signin';
             }
             $this->redirect($redirect_url);
         } catch (Exception $e) {
@@ -425,7 +425,7 @@ class SignupController extends AppController {
 
             $names = explode(".", $_SERVER['HTTP_HOST']);
             if ($_SERVER['HTTP_HOST'] !== 'localhost' && !is_numeric($names[0])) {
-                $this->redirect('https://'.$data['domain_prefix'].'.onzsa.com/users/login');
+                $this->redirect('https://'.$data['domain_prefix'].'.pieme.co.nz/users/login');
             } else {
                 $this->redirect('/users/login');
             }
@@ -476,7 +476,7 @@ class SignupController extends AppController {
 
         $group = array();
         $group['merchant_id'] = $merchant_id;
-        $group['group_code'] = 'onzsa';
+        $group['group_code'] = 'pieme';
         $group['name'] = 'All Customers';
 
         $this->MerchantCustomerGroup->create();
@@ -909,8 +909,8 @@ class SignupController extends AppController {
         // create a discount product
         $product['merchant_id'] = $merchant_id;
         $product['name'] = 'Line Price';
-        $product['handle'] = 'onzsa-line-price';
-        $product['sku'] = 'onzsa-line-price';
+        $product['handle'] = 'pieme-line-price';
+        $product['sku'] = 'pieme-line-price';
         $product['supply_price'] = 0;
         $product['markup'] = 0;
         $product['price'] = 0;
@@ -1043,7 +1043,7 @@ class SignupController extends AppController {
         $loyalty['welcome_email_subject'] = 'Welcome to the ' . $store_name . ' Loyalty Program';
 
         $email_body = '<h1>Welcome to ' . $store_name . ' Loyalty Program</h1>';
-        $email_body .= '<p>You can earn Loyalty $ when you make purchases at onzsa and redeem your credit in store.</p>';
+        $email_body .= '<p>You can earn Loyalty $ when you make purchases at pieme and redeem your credit in store.</p>';
         $email_body .= '<p>Thanks,<br>' . $store_name . '</p>';
         $email_body .= '<p>Register your details with the ' . $store_name . ' Loyalty Program to earn an additional $ Loyalty:</p>';
         $loyalty['welcome_email_body'] = base64_encode($email_body);

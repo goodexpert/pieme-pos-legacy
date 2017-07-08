@@ -42,7 +42,7 @@
                                             'placeholder' => 'Your store address'
                                         ));
                                      ?>
-                                        <span class="input-group-addon">.onzsa.com</span>
+                                        <span class="input-group-addon">.pieme.co.nz</span>
                                     </div>
                                     <div class="help-block with-errors"><?php echo isset($errors['domain_prefix']) ? $errors['domain_prefix'] : ''; ?></div>
                                 <?php
@@ -50,7 +50,7 @@
                                  ?>
                                     <div>
                                         <span class="pull-left"><?php echo $subdomain; ?></span>
-                                        <a href="https://secure.onzsa.com/users/login" class="pull-right">Not your store?</a>
+                                        <a href="https://secure.pieme.co.nz/users/login" class="pull-right">Not your store?</a>
                                     </div>
                                 <?php
                                     endif;
@@ -95,7 +95,7 @@
                             echo $this->Form->end();
                          ?>
                     </div>
-                    <p class="create_account">Don't have an account? <a href="https://secure.onzsa.com/signup">Try Onzsa for free</a></p>
+                    <p class="create_account">Don't have an account? <a href="https://secure.pieme.co.nz/signup">Try Onzsa for free</a></p>
                 </div>
             </div>
         </div>
@@ -140,7 +140,7 @@ jQuery(document).ready(function() {
         var domain_prefix = document.getElementById('domain_prefix');
         if (domain_prefix != null) {
             var form = document.getElementById('login_form');
-            form.action = "https://"+domain_prefix.value+".onzsa.com/users/login";
+            form.action = "https://"+domain_prefix.value+".pieme.co.nz/users/login";
         }
     });
      */

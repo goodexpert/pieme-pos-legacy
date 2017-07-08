@@ -149,7 +149,7 @@ $AuthUser = $this->Session->read('Auth.User');
                         <span id="merchant_user_username" hidden><?php echo $AuthUser['Merchant']['domain_prefix']?>_</span>
                       <?php else: ?>
                         <input type="text" name="MerchantUser[username]" id="merchant_user_username"
-                               placeholder="username@onzsa.com"></input>
+                               placeholder="username@pieme.co.nz"></input>
                       <?php endif; ?>
                       <div class="help-block with-errors"></div>
                     </>

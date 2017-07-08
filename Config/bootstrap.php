@@ -112,3 +112,27 @@ CakeLog::config('error', array(
 	'types' => array('warning', 'error', 'critical', 'alert', 'emergency'),
 	'file' => 'error',
 ));
+
+/**
+ * Global application contants
+ */
+if (!defined('DOMAIN_NAME')) {
+	define('DOMAIN_NAME', 'pieme.co.nz');
+}
+
+if (!defined('DOMAIN_SUFFIX')) {
+	define('DOMAIN_SUFFIX', '.' . DOMAIN_NAME);
+}
+
+if (!defined('EMAIL_SUFFIX')) {
+	define('EMAIL_SUFFIX', '@' . DOMAIN_NAME);
+}
+
+if (!defined('HOME_URL')) {
+	define('HOME_URL', 'www' . DOMAIN_SUFFIX);
+}
+
+if (!defined('SUPPORT_EMAIL')) {
+	define('SUPPORT_EMAIL', 'support' . EMAIL_SUFFIX);
+}
+

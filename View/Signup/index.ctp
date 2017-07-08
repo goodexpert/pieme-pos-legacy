@@ -65,7 +65,7 @@
                                             'placeholder' => 'Private web address'
                                         ));
                                      ?>
-                                        <span class="input-group-addon">.onzsa.com</span>
+                                        <span class="input-group-addon">.pieme.co.nz</span>
                                     </div>
                                     <div class="help-block with-errors"></div>
                                 </dd>
@@ -151,7 +151,7 @@
                                 </dd>
                                 <dt> Terms</dt>
                                 <dd>
-                                    <p><a href ="http://www.onzsa.com/terms.html" target="_blank"> Terms and conditions </a><p>
+                                    <p><a href ="http://www.pieme.co.nz/terms.html" target="_blank"> Terms and conditions </a><p>
                                     <input type="checkbox" title="Please agree to our policy!" name="data[agree]" id="terms" class="form-control"/>
                                     <label class="error" for="data[agree]" style="display: none;">Please agree to our policy!</label>                                    </input>
                                     <div class="help-block with-errors"></div>
@@ -228,7 +228,7 @@
 <script src="/theme/onzsa/assets/global/scripts/metronic.js" type="text/javascript"></script>
 <script src="/theme/onzsa/assets/admin/layout/scripts/layout.js" type="text/javascript"></script>
 <script src="/theme/onzsa/assets/admin/pages/scripts/login-soft.js" type="text/javascript"></script>
-<script src="https://maps.googleapis.com/maps/api/js?sensor=false&amp;libraries=places&language=kr" type="text/javascript"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAkQKt33BQF66kFdCclnA_rn3tjvVz2lvI&amp;sensor=false&amp;libraries=places&language=kr" type="text/javascript"></script>
 <!-- END PAGE LEVEL SCRIPTS -->
 <script>
 

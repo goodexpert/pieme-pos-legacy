@@ -293,14 +293,14 @@ class AuthComponent extends Component {
 		$domain = explode(".", $_SERVER['HTTP_HOST']);
 
 		if (count($domain) == 2) {
-			header('Location: http://www.onzsa.com' . $_SERVER['REQUEST_URI']);
+			header('Location: http://www.pieme.co.nz' . $_SERVER['REQUEST_URI']);
 		} elseif ($_SERVER['HTTP_HOST'] === 'localhost') {
 			$domain = $domain[0];
 		} elseif (is_numeric($domain[0])) {
 			throw new NotFoundException();
 		} else {
 			$domain = $domain[0];
-			if (!$this->isExistDomain($domain)) {
+			if ($domain != 'pos' && !$this->isExistDomain($domain)) {
 				throw new NotFoundException();
 			}
 		}
@@ -342,7 +342,7 @@ class AuthComponent extends Component {
 					$domain = $domain_prefix;
 				}
 
-				$redirect_url = 'https://' . $domain. '.onzsa.com';
+				$redirect_url = 'https://' . $domain. '.pieme.co.nz';
 			  return $controller->redirect($redirect_url, 301, true);
 			} elseif ($isAllowed) {
 			  return $controller->redirect('/', 301, true);
@@ -375,13 +375,13 @@ class AuthComponent extends Component {
 		if ($isAllowed) {
 			$redirect_url = '/';
 			if (!empty($this->subdomain) && $this->subdomain === 'secure') {
-				$redirect_url = 'https://' . $domain_prefix . '.onzsa.com';
+				$redirect_url = 'https://' . $domain_prefix . '.pieme.co.nz';
 			}
 			$controller->redirect($redirect_url, 301, true);
 		}
 
 		if (!empty($this->subdomain) && $this->subdomain === 'secure') {
-			$controller->redirect('https://' . $domain_prefix . '.onzsa.com' . $_SERVER['REQUEST_URI']);
+			$controller->redirect('https://' . $domain_prefix . '.pieme.co.nz' . $_SERVER['REQUEST_URI']);
 		}
 */
 		if ($this->_isLoginAction($controller) && $domain !== 'localhost') {

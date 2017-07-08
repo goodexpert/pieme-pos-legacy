@@ -221,7 +221,7 @@
 		'cookieTimeout' => 1440,
 		'checkAgent' => false,
 		'ini' => array(
-			'session.cookie_domain' => '.onzsa.com'
+			'session.cookie_domain' => '.pieme.co.nz'
 		)
 	));
 

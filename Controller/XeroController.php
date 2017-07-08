@@ -121,7 +121,7 @@ class XeroController extends AppController {
             $xml .= "<Date>" . $sale['RegisterSale']['sale_date'] . "</Date>";
             $xml .= "<DueDate>" . $sale['RegisterSale']['sale_date'] . "</DueDate>";
             $xml .= "<Status>AUTHORISED</Status>";
-            $xml .= "<Url>" . "http://secure.onzsa.com" . "/history?sale_id=" . $id . "</Url>";
+            $xml .= "<Url>" . "http://pos.pieme.co.nz" . "/history?sale_id=" . $id . "</Url>";
             $xml .= "<LineAmountTypes>Inclusive</LineAmountTypes>";
             $xml .= "<SubTotal>" . $sale['RegisterSale']['total_price'] . "</SubTotal>";
             $xml .= "<TotalTax>" . $sale['RegisterSale']['total_tax'] . "</TotalTax>";

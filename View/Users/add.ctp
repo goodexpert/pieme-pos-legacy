@@ -26,7 +26,7 @@
                   <dl>
                     <dt class="col-md-4">Username</dt>
                     <dd class="col-md-8">
-                        <input type="text" name="merchant_user['username']" id="merchant_user_username" placeholder="username@onzsa.com">                
+                        <input type="text" name="merchant_user['username']" id="merchant_user_username" placeholder="username@pieme.co.nz">                
                      </dd>
                   </dl>
                   <dl>
