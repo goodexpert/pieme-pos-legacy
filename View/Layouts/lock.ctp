@@ -6,7 +6,7 @@
 <!--<![endif]-->
 <head>
     <?php echo $this->Html->charset(); ?>
-    <title>ONZSA | <?php echo $this->fetch('title'); ?></title>
+    <title>PieMe | <?php echo $this->fetch('title'); ?></title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta content="" name="description"/>
@@ -29,20 +29,20 @@
     <link href="/theme/onzsa/assets/admin/layout/css/themes/default.css" rel="stylesheet" type="text/css" id="style_color"/>
     <link href="/theme/onzsa/assets/admin/layout/css/custom.css" rel="stylesheet" type="text/css"/>
     <!-- END THEME STYLES -->
-    <link rel="shortcut icon" href="/onzsa.ico"/>
+    <link rel="shortcut icon" href="/pieme.ico"/>
 </head>
 <body class="page-header-fixed page-quick-sidebar-over-content page-full-width">
     <div class="page-lock"> 
         <div class="page-logo">
-            <a class="brand" href="http://www.pieme.co.nz">
-                <img src="/img/ONZSA_logo-05.png" alt="logo" class="logo-default"/>
+            <a class="brand" href="http://www.pieme.co.nz/">
+                <img src="/img/pieme_logo.png" alt="logo" class="logo-default"/>
             </a>
         </div>
         <div class="page-body">
             <?php echo $this->fetch('content'); ?>
         </div>
         <div class="page-footer-custom">
-            2015 &copy; Onzsa Limited
+            2017 &copy; PieMe Limited
         </div>
     </div>
 </body>

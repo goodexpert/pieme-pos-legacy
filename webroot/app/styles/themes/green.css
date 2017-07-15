@@ -277,9 +277,9 @@ Side bar
     background-color: #31c0cc;  /*51*/
     border: 2px solid #2eadb8;  /*71*/
 }
-
-
-
 .selected_plan>div>.plan-price {
+    background-color: #31c0cc;  /*51*/
+}
+.page-header.navbar {
     background-color: #31c0cc;  /*51*/
 }

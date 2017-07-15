@@ -6,7 +6,7 @@
 <!--<![endif]-->
 <head>
     <?php echo $this->Html->charset(); ?>
-    <title>ONZSA | <?php echo $this->fetch('title'); ?></title>
+    <title>PieMe | <?php echo $this->fetch('title'); ?></title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta content="" name="description"/>
@@ -37,7 +37,7 @@
     <link href="/css/pos.css" rel="stylesheet" type="text/css"/>
     <link href="/css/custom.keypad.css" rel="stylesheet" type="text/css">
     <!-- END THEME STYLES -->
-    <link rel="shortcut icon" href="/onzsa.ico"/>
+    <link rel="shortcut icon" href="/pieme.ico"/>
 </head>
 <body class="page-header-fixed page-quick-sidebar-over-content page-full-width">
     <div id="container">
@@ -45,8 +45,8 @@
             <div class="page-header navbar navbar-fixed-top">
                 <div class="page-header-inner container">
                     <div class="page-logo">
-                        <a href="http://www.pieme.co.nz">
-                            <img src="/img/ONZSA_logo-05.png" alt="logo" class="logo-default"/>
+                        <a href="http://www.pieme.co.nz/">
+                            <img src="/img/pieme_logo.png" alt="logo" class="logo-default"/>
                         </a>
                     </div>
                 </div>
@@ -59,7 +59,7 @@
 <!--
             <div class="page-footer">
                 <div class="page-footer-inner">
-                    2015 &copy; Onzsa Limited
+                    2017 &copy; PieMe Limited
                 </div>
             </div>
 -->

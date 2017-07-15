@@ -77,7 +77,7 @@
 
           <!-- BEGIN PORTLET SECTION 1 -->
           <div class="col-md-6 col-xs-12 col-sm-12 dashboard-warpper">
-            <div class="portlet box yellow light bordered dashboard-box line-box-content ">
+            <div class="portlet box green light bordered dashboard-box line-box-content ">
               <div class="portlet-title dashboard-title">
                 <div class="caption dashboard">
                   <i class="fa fa-file-text-o"></i>Sale Reports
@@ -109,7 +109,7 @@
           <!-- BEGIN PORTLET SECTION 2-->
           <?php if ($user['user_type_id'] === "user_type_admin") : ?>
             <div class="col-md-6 col-xs-12 col-sm-12 dashboard-warpper">
-              <div class="portlet box yellow light bordered dashboard-box line-box-content ">
+              <div class="portlet box green light bordered dashboard-box line-box-content ">
                 <div class="portlet-title dashboard-title">
                   <div class="caption">
                     <i class="fa fa-file-text-o"></i>Product Reports
@@ -133,7 +133,7 @@
           <?php else : ?>
             <!-- If manager, display menu for section 3 to section 2 -->
             <div class="col-md-6 col-xs-12 col-sm-12 dashboard-warpper">
-              <div class="portlet box yellow light bordered dashboard-box line-box-content ">
+              <div class="portlet box green light bordered dashboard-box line-box-content ">
                 <div class="portlet-title dashboard-title">
                   <div class="caption">
                     <i class="fa fa-file-text-o"></i>Register Reports
@@ -163,7 +163,7 @@
           <!-- BEGIN PORTLET SECTION 3 -->
           <?php if ($user['user_type_id'] === "user_type_admin") : ?>
           <div class="col-md-6 col-xs-12 col-sm-12 dashboard-warpper">
-            <div class="portlet box yellow light bordered dashboard-box line-box-content ">
+            <div class="portlet box green light bordered dashboard-box line-box-content ">
               <div class="portlet-title dashboard-title">
                 <div class="caption">
                   <i class="fa fa-file-text-o"></i>Register Reports
@@ -186,7 +186,7 @@
           <!-- BEGIN PORTLET SECTION 4-->
           <?php if ($user['user_type_id'] === "user_type_admin") : ?>
             <div class="col-md-6 col-xs-12 col-sm-12 dashboard-warpper">
-              <div class="portlet box yellow light bordered dashboard-box line-box-content ">
+              <div class="portlet box green light bordered dashboard-box line-box-content ">
                 <div class="portlet-title dashboard-title">
                   <div class="caption">
                     <i class="fa fa-file-text-o"></i>Stock Reports

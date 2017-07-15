@@ -9,7 +9,7 @@
 <!--<![endif]-->
   <!-- BEGIN HEAD -->
   <head>
-    <title data-ng-bind="ONZSA | <?php echo $this->fetch('title'); ?>"></title>
+    <title data-ng-bind="PieMe | <?php echo $this->fetch('title'); ?>"></title>
 
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -45,11 +45,12 @@
     <link href="/theme/metronic/assets/admin/layout2/css/custom.css" rel="stylesheet" type="text/css"/>
     -->
     <link href="/app/styles/layout.css" rel="stylesheet" type="text/css"/>
-    <link href="/app/styles/themes/yellow.css" rel="stylesheet" type="text/css"/>
+    <!-- link href="/app/styles/themes/yellow.css" rel="stylesheet"/ --> <!-- PIEME: change theme -->
+    <link href="/app/styles/themes/green.css" rel="stylesheet"/>
     <link href="/app/styles/custom.css" rel="stylesheet" type="text/css"/>
     <!-- END THEME STYLES -->
 
-    <link rel="shortcut icon" href="favicon.ico"/>
+    <link rel="shortcut icon" href="/pieme.ico"/>
   </head>
   <!-- END HEAD -->
 

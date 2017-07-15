@@ -19,7 +19,7 @@ if (isset($user['Addons']['shopify_auth_token'])) {
   <h2>
     Add-ons
   </h2>
-  <h5>Onzsa integrates with other business and productivity apps to help you streamline your business.</h5>
+  <h5>PieMe integrates with other business and productivity apps to help you streamline your business.</h5>
 </div>
 <div class="col-xs-12 margin-bottom-20">
   <div class="bg-gr inline-block">
@@ -36,12 +36,12 @@ if (isset($user['Addons']['shopify_auth_token'])) {
       <div class="col-md-8 col-xs-8 col-sm-8">
         <h3 class="no-margin">Xero</h3>
 
-        <p>Onzsa integrates seamlessly with the Xero accounting software to share customers, product sales, and
+        <p>PieMe integrates seamlessly with the Xero accounting software to share customers, product sales, and
           invoices.</p>
       </div>
       <?php if (empty($xero_auth_token)) : ?>
         <a href="/xero/noxero" class="btn btn-default"><span class="glyphicon glyphicon-plus margin-right-5"></span>Add
-          to Onzsa</a>
+          to PieMe</a>
       <?php else : ?>
         <a href="/setup/xero" class="btn btn-default"><span class="glyphicon glyphicon-cog margin-right-5"></span>Setting</a>
       <?php endif; ?>
@@ -62,7 +62,7 @@ if (isset($user['Addons']['shopify_auth_token'])) {
       </div>
       <?php if (empty($shopify_auth_token)) : ?>
         <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-plus margin-right-5"></span>Add to
-          Onzsa</a>
+          PieMe</a>
       <?php else : ?>
         <a href="#" class="btn btn-default"><span class="glyphicon glyphicon-cog margin-right-5"></span>Setting</a>
       <?php endif; ?>

@@ -12,7 +12,7 @@
 <!--<![endif]-->
 <!-- BEGIN HEAD -->
 <head>
-  <title data-ng-bind="'ONZSA POS | ' + $state.current.data.pageTitle"></title>
+  <title data-ng-bind="'PieMe | ' + $state.current.data.pageTitle"></title>
 
   <meta charset="utf-8"/>
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -51,11 +51,12 @@
   <link href="/css/register-pos.css" rel="stylesheet"/>
   <link href="/app/styles/layout.css" rel="stylesheet"/>
   <link href="/app/styles/register.css" rel="stylesheet"/>
-  <link href="/app/styles/themes/yellow.css" rel="stylesheet"/>
+  <!-- link href="/app/styles/themes/yellow.css" rel="stylesheet"/ --> <!-- PIEME: change theme -->
+  <link href="/app/styles/themes/green.css" rel="stylesheet"/>
   <link href="/app/styles/custom.css" rel="stylesheet"/>
   <!-- END THEME STYLES -->
 
-  <link rel="shortcut icon" href="favicon.ico"/>
+  <link rel="shortcut icon" href="/pieme.ico"/>
 </head>
 <!-- END HEAD -->
 

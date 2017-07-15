@@ -12,7 +12,11 @@
     "Point-of-sale"
   ],
   "license": "MIT",
+<<<<<<< HEAD
   "homepage": "http://www.pieme.co.nz",
+=======
+  "homepage": "http://www.pieme.co.nz/",
+>>>>>>> d0f9443110a875423bf164f1047848b5553ce95a
   "ignore": [
     "**/.*",
     "node_modules",
