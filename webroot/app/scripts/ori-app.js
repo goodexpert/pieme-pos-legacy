@@ -237,6 +237,7 @@ angular.module('OnzsaApp', [
               '/theme/metronic/assets/global/plugins/jquery.sparkline.min.js',
               '/theme/metronic/assets/global/plugins/typeahead/handlebars.min.js',
               '/theme/metronic/assets/global/plugins/typeahead/typeahead.bundle.min.js',
+
               '/theme/metronic/assets/global/plugins/select2/select2.min.js',
               '/theme/metronic/assets/admin/pages/scripts/tasks.js',
 
@@ -248,7 +249,6 @@ angular.module('OnzsaApp', [
               '/lib/angular-datatables/dist/plugins/tabletools/angular-datatables.tabletools.min.js',
 
               '/app/scripts/modules/scale-client.js',
-              '/app/scripts/modules/cashdrawer-client.js',
               '/app/scripts/modules/onzsa_ds.js',
               '/app/scripts/modules/service.js',
               '/app/scripts/modules/storage.js',
@@ -368,56 +368,6 @@ angular.module('OnzsaApp', [
         }]
       }
     })
-    .state('history', {
-      absolute: true,
-      cache: false,
-      url: "/history",
-      views: {
-        "lazyLoadView": {
-          templateUrl: '/app/views/history.html'
-        }
-      },
-      resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
-        deps: ['$ocLazyLoad', function($ocLazyLoad) {
-          return $ocLazyLoad.load([{
-            name: 'dependencies',
-            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
-            files: [
-              '/theme/metronic/assets/global/plugins/morris/morris.css',
-              '/theme/metronic/assets/global/plugins/select2/select2.css',
-              '/theme/metronic/assets/admin/pages/css/tasks.css',
-              '/app/styles/register.css',
-
-              '/theme/metronic/assets/global/plugins/morris/morris.min.js',
-              '/theme/metronic/assets/global/plugins/morris/raphael-min.js',
-              '/theme/metronic/assets/global/plugins/jquery.sparkline.min.js',
-
-              '/theme/metronic/assets/global/plugins/select2/select2.min.js',
-              '/theme/metronic/assets/admin/pages/scripts/tasks.js',
-
-              '/lib/angular-datatables/dist/plugins/colreorder/angular-datatables.colreorder.min.js',
-              '/lib/angular-datatables/dist/plugins/columnfilter/angular-datatables.columnfilter.min.js',
-              '/lib/angular-datatables/dist/plugins/fixedcolumns/angular-datatables.fixedcolumns.min.js',
-              '/lib/angular-datatables/dist/plugins/fixedheader/angular-datatables.fixedheader.min.js',
-              '/lib/angular-datatables/dist/plugins/scroller/angular-datatables.scroller.min.js',
-              '/lib/angular-datatables/dist/plugins/tabletools/angular-datatables.tabletools.min.js',
-
-              '/app/scripts/modules/onzsa_ds.js',
-              '/app/scripts/modules/service.js',
-              '/app/scripts/modules/storage.js',
-              //'/app/scripts/modules/ui-register-tpls-new.js',
-            ]
-          },
-            {
-              name: 'HistoryController',
-              insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
-              files: [
-                '/app/scripts/controllers/history.js'
-              ]
-            }]);
-        }]
-      }
-    })
     .state('close-register', {
       absolute: true,
       cache: false,
@@ -520,58 +470,6 @@ angular.module('OnzsaApp', [
         }]
       }
     })
-    .state('refund', {
-      absolute: true,
-      cache: false,
-      url: "/refund",
-      views: {
-        "lazyLoadView": {
-          controller: 'RefundController', // This view will use DailySnapshotController loaded below in the resolve
-          templateUrl: '/app/views/refund.html'
-        }
-      },
-      resolve: { // Any property in resolve should return a promise and is executed before the view is loaded
-        deps: ['$ocLazyLoad', function($ocLazyLoad) {
-          return $ocLazyLoad.load([{
-            name: 'dependencies',
-            insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
-            files: [
-              '/theme/metronic/assets/global/plugins/morris/morris.css',
-              '/theme/metronic/assets/global/plugins/select2/select2.css',
-              '/theme/metronic/assets/admin/pages/css/tasks.css',
-              '/app/styles/register.css',
-
-              '/theme/metronic/assets/global/plugins/morris/morris.min.js',
-              '/theme/metronic/assets/global/plugins/morris/raphael-min.js',
-              '/theme/metronic/assets/global/plugins/jquery.sparkline.min.js',
-
-              '/theme/metronic/assets/global/plugins/select2/select2.min.js',
-              '/theme/metronic/assets/admin/pages/scripts/tasks.js',
-
-              '/lib/angular-datatables/dist/plugins/colreorder/angular-datatables.colreorder.min.js',
-              '/lib/angular-datatables/dist/plugins/columnfilter/angular-datatables.columnfilter.min.js',
-              '/lib/angular-datatables/dist/plugins/fixedcolumns/angular-datatables.fixedcolumns.min.js',
-              '/lib/angular-datatables/dist/plugins/fixedheader/angular-datatables.fixedheader.min.js',
-              '/lib/angular-datatables/dist/plugins/scroller/angular-datatables.scroller.min.js',
-              '/lib/angular-datatables/dist/plugins/tabletools/angular-datatables.tabletools.min.js',
-
-              '/app/scripts/modules/onzsa_ds.js',
-              '/app/scripts/modules/service.js',
-              '/app/scripts/modules/storage.js',
-              //'/app/scripts/modules/ui-register-tpls-new.js',
-            ]
-          },
-            {
-              name: 'RefundController',
-              insertBefore: '#ng_load_plugins_before', // load the above css files before a LINK element with this ID. Dynamic CSS files must be loaded between core and theme css files
-              files: [
-                '/app/scripts/controllers/refund.js'
-              ]
-            }]);
-        }]
-      }
-    })
-
     .state("test", {
       absolute: true,
       cache: false,
