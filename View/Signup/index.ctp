@@ -151,7 +151,7 @@
                                 </dd>
                                 <dt> Terms</dt>
                                 <dd>
-                                    <p><a href ="http://www.onzsa.com/terms.html" target="_blank"> Terms and conditions </a><p>
+                                    <p><a href ="http://www.pieme.co.nz//terms.html" target="_blank"> Terms and conditions </a><p>
                                     <input type="checkbox" title="Please agree to our policy!" name="data[agree]" id="terms" class="form-control"/>
                                     <label class="error" for="data[agree]" style="display: none;">Please agree to our policy!</label>                                    </input>
                                     <div class="help-block with-errors"></div>

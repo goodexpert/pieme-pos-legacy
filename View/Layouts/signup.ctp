@@ -48,7 +48,7 @@
                 <div class="page-header-inner container">
                     <div class="page-logo">
                         <a href="/index.php">
-                        <img src="/img/ONZSA_logo-05.png" alt="logo" class="logo-default"/>
+                        <img src="/img/pieme_logo.png" alt="logo" class="logo-default"/>
                         </a>
                     </div>
                 </div>

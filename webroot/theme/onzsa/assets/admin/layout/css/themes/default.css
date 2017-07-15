@@ -10,15 +10,15 @@ Page Header
 ***********/
 /* Header search bar, toggler button & top menu */
 .page-header.navbar {
-  	background: #ffd05f; /* Old browsers */
-	background: -moz-linear-gradient(top, #ffd05f 0%, #ffbe22 100%); /* FF3.6+ */
-	background: -webkit-linear-gradient(top, #ffd05f 0%, #ffbe22 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, #ffd05f 0%, #ffbe22 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, #ffd05f 0%, #ffbe22 100%); /* IE10+ */
-	background: linear-gradient(to bottom, #ffd05f 0%, #ffbe22 100%); /* W3C */
+  	background: #31c0cc; /* Old browsers */
+	background: -moz-linear-gradient(top, #31c0cc 0%, #2eadb8 100%); /* FF3.6+ */
+	background: -webkit-linear-gradient(top, #31c0cc 0%, #2eadb8 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #31c0cc 0%, #2eadb8 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #31c0cc 0%, #2eadb8 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #31c0cc 0%, #2eadb8 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffd05f', endColorstr='#ffbe22',GradientType=0 ); /* IE6-9 */
-	border-bottom : 1px solid #dca625;
-	box-shadow: inset 0 -1px rgba(255, 255, 255, 0.4);
+	border-bottom : 1px solid #2eadb8;
+	box-shadow: inset 0 -1px rgba(49, 192, 204, 0.4);
   /* Top notification menu/bar */
   /* Header seaech box */
   /* Toggler button for sidebar expand/collapse and responsive sidebar menu */

@@ -49,7 +49,8 @@
   -->
 
   <link href="/app/styles/layout.css" rel="stylesheet"/>
-  <link href="/app/styles/themes/yellow.css" rel="stylesheet"/>
+  <!-- link href="/app/styles/themes/yellow.css" rel="stylesheet"/ --> <!-- PIEME: change theme -->
+  <link href="/app/styles/themes/green.css" rel="stylesheet"/>
   <link href="/app/styles/custom.css" rel="stylesheet"/>
   <!-- END THEME STYLES -->
 

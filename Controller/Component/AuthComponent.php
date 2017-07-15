@@ -293,7 +293,7 @@ class AuthComponent extends Component {
 		$domain = explode(".", $_SERVER['HTTP_HOST']);
 
 		if (count($domain) == 2) {
-			header('Location: http://www.onzsa.com' . $_SERVER['REQUEST_URI']);
+			header('Location: http://www.pieme.co.nz/' . $_SERVER['REQUEST_URI']);
 		} elseif ($_SERVER['HTTP_HOST'] === 'localhost') {
 			$domain = $domain[0];
 		} elseif (is_numeric($domain[0])) {

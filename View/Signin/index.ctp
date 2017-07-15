@@ -89,13 +89,13 @@
                                 </dd>
                             </dl>
                             <div class="dashed-line-gr"></div>
-                            <button class="btn btn-success submit"><img src="/img/ONZSA_eye.png">Start onzsa</button>
+                            <button class="btn btn-success submit"><img src="/img/pieme_pie.png"> Start PIEME</button>
                         </div>
                         <?php
                             echo $this->Form->end();
                          ?>
                     </div>
-                    <p class="create_account">Don't have an account? <a href="/signup">Try Onzsa for free</a></p>
+                    <p class="create_account">Don't have an account? <a href="/signup">Try PIEME for free</a></p>
                 </div>
             </div>
         </div>

@@ -45,8 +45,8 @@
             <div class="page-header navbar navbar-fixed-top">
                 <div class="page-header-inner container">
                     <div class="page-logo">
-                        <a href="http://www.onzsa.com">
-                            <img src="/img/ONZSA_logo-05.png" alt="logo" class="logo-default"/>
+                        <a href="http://www.pieme.co.nz/">
+                            <img src="/img/pieme_logo.png" alt="logo" class="logo-default"/>
                         </a>
                     </div>
                 </div>

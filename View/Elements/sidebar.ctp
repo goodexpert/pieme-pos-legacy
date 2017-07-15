@@ -12,7 +12,7 @@
     <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
     <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
     <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-    <ul class="page-sidebar-menu page-sidebar-menu-hover-submenu page-sidebar-menu-closed page-sidebar-closed" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" ng-class="{'page-sidebar-menu-closed': settings.layout.pageSidebarClosed}">
+    <ul id="sidebar-menu" class="page-sidebar-menu page-sidebar-menu-hover-submenu page-sidebar-menu-closed page-sidebar-closed" data-keep-expanded="false" data-auto-scroll="true" data-slide-speed="200" ng-class="{'page-sidebar-menu-closed': settings.layout.pageSidebarClosed}">
 
 
       <?php if ($user['user_type_id'] === "user_type_admin") : ?>
@@ -30,14 +30,6 @@
           <a href="/" ng-click="home()">
             <i class="icon-pointer"></i>
             <span class="title">Point of Sale</span>
-          </a>
-        </li>
-
-        <!-- Online Store -->
-        <li >
-          <a href="#" class="tooltips" title="" data-placement="right" data-toggle="tooltip" data-original-title="Comming Soon.">
-            <i class="icon-basket"></i>
-            <span class="title">Online Store</span>
           </a>
         </li>
 
@@ -195,14 +187,6 @@
           </a>
         </li>
 
-        <!-- Online Store -->
-        <li >
-          <a href="#" class="tooltips" title="" data-placement="right" data-toggle="tooltip" data-original-title="Comming Soon.">
-            <i class="icon-basket"></i>
-            <span class="title">Online Store</span>
-          </a>
-        </li>
-
         <!-- History -->
         <li>
           <a href="/history" >
@@ -219,6 +203,8 @@
 
     </ul>
     <!-- END SIDEBAR MENU -->
+
+
   </div>
 
 

@@ -6,7 +6,7 @@
         <div align="center" border="0" cellpadding="0" cellspacing="0" height="100%" width="100%" style="border-collapse:collapse!important;margin:0px;padding:0px;height:100%!important;width:100%!important;background-color:#e8e8e8;padding: 10px 0;">
             <div border="0" cellpadding="0" cellspacing="0" style="border-collapse:collapse!important;width:600px;background: white; box-shadow: 0 3px 3px rgba(0,0,0,0.2);border-radius: 5px;">
                 <div style="width: 100%;display: inline-block;  background: #f0cb4b; padding:10px 0;border-radius: 5px 5px 0 0;">
-                    <img src="<?php echo $baseUrl; ?>/img/ONZSA_logo-05.png" style="float:left;margin:0 20px;width: 115px; ">
+                    <img src="<?php echo $baseUrl; ?>/img/pieme_logo.png" style="float:left;margin:0 20px;width: 115px; ">
                 </div>
                 <div style="width: 100%;display: inline-block;  color: #454545;">
                     <p style="float: left;font-size: 27px;margin: 30px 0 15px 0; text-align: center;width: 100%;">Welcome to ONZSA</p>
