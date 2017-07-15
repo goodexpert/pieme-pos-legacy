@@ -106,7 +106,8 @@ fieldset[disabled] .btn-function.active {
 }
 
 .dataTables_scrollBody {
-  background-image: url('/app/images/onzsa_bg.png');
+  /*background-image: url('/app/images/onzsa_bg.png');*/  /* PIEME: change theme */
+  background-image: url('/app/images/pieme_bg.png');
   background-repeat: no-repeat;
   background-position: center;
 }
