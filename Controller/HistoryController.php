@@ -58,32 +58,63 @@ class HistoryController extends AppController {
  */
     public function index() {
         $user = $this->Auth->user();
-        
-        $date_from = $this->get('date_from');
-        $date_to = $this->get('date_to');
-        $filter = $this->get('filter');
-        $customer = $this->get('customer');
-        $receipt_number = $this->get('receipt_number');
-        $register_id = $this->get('register_id');
-        $user_id = $this->get('user_id');;
-        $amount = $this->get('amount');;
-        $this->request->data = $_GET;
-
-        $sales = $this->_getRegisterSales($user['merchant_id'], $user['retailer_id'],
-            $filter, $register_id, $user_id, $customer, $date_from, $date_to, $receipt_number, $amount);
-        $this->set('sales', $sales);
 
         $payments = $this->_getPaymentTypes($user['merchant_id']);
         $this->set('payments', $payments);
 
-        $status = $this->_getSaleStatus();
-        $this->set('status', $status);
-
         $registers = $this->_getRegisters($user['merchant_id'], $user['retailer_id']);
         $this->set('registers', $registers);
 
+        $status = $this->_getSaleStatus();
+        $this->set('status', $status);
+
         $users = $this->_getUsers($user['merchant_id'], $user['retailer_id']);
         $this->set('users', $users);
+    }
+
+/**
+ * Get the sales history.
+ *
+ * @return void
+ */
+    public function history() {
+        $result = array(
+            'draw' => 1,
+            'recordsTotal' => 0,
+            'recordsFiltered' => 0,
+            'data' => array()
+        );
+        $user = $this->Auth->user();
+
+        if ($this->request->is('ajax')) {
+            $start = intval($this->get('start', 0));
+            $length = intval($this->get('length', 10));
+
+            $page = $start / $length;
+            $offset = $start % $length;
+
+            $searchValue = $this->get('search[value]');
+            $searchRegex = $this->get('search[regex]');
+
+            $date_from = $this->get('date_from');
+            $date_to = $this->get('date_to');
+            $filter = $this->get('filter');
+            $customer = $this->get('customer');
+            $receipt_number = $this->get('receipt_number');
+            $register_id = $this->get('register_id');
+            $user_id = $this->get('user_id');;
+            $amount = $this->get('amount');;
+
+            $result['draw'] = $this->get('draw');
+
+            $report = $this->_getRegisterSales($user['merchant_id'], $user['retailer_id'], $filter, $register_id, $user_id, $customer, $date_from, $date_to, $receipt_number, $amount, $length, $page, $offset);
+            $result['recordsTotal'] = $report['total'];
+            $result['recordsFiltered'] = $report['filtered'];
+            $result['data'] = $report['data'];
+            $result['conditions'] = $report['conditions'];
+            $result['receipt_number'] = $this->post['receipt_number'];
+        }
+        $this->serialize($result);
     }
 
 /**
@@ -101,7 +132,13 @@ class HistoryController extends AppController {
  * @param string amount
  * @return array
  */
-    protected function _getRegisterSales($merchant_id, $retailer_id, $status, $register_id, $user_id, $customer_name, $date_from, $date_to, $receipt_number, $amount) {
+    protected function _getRegisterSales($merchant_id, $retailer_id, $status, $register_id, $user_id, $customer_name, $date_from, $date_to, $receipt_number, $amount, $limit, $page, $offset) {
+        $report = array(
+            'total' => 0,
+            'filtered' => 0,
+            'data' => array()
+        );
+
         $this->loadModel('RegisterSale');
 
         $this->RegisterSaleItem->bindModel(array(
@@ -186,63 +223,96 @@ class HistoryController extends AppController {
 
         $this->RegisterSale->virtualFields['status_name'] = 'SaleStatus.name';
 
-        $results = $this->RegisterSale->find('all', array(
-            'fields' => array(
-                'RegisterSale.*',
-                'MerchantCustomer.*',
-                'MerchantUser.*',
-            ),
-            'joins' => array(
-                array(
-                    'table' => 'merchant_registers',
-                    'alias' => 'MerchantRegister',
-                    'type' => 'INNER',
-                    'conditions' => array(
-                        'MerchantRegister.id = RegisterSale.register_id'
-                    )
-                ),
-                array(
-                    'table' => 'merchant_outlets',
-                    'alias' => 'MerchantOutlet',
-                    'type' => 'INNER',
-                    'conditions' => array(
-                        'MerchantOutlet.id = MerchantRegister.outlet_id'
-                    )
-                ),
-                array(
-                    'table' => 'merchant_customers',
-                    'alias' => 'MerchantCustomer',
-                    'type' => 'LEFT',
-                    'conditions' => array(
-                        'MerchantCustomer.id = RegisterSale.customer_id'
-                    )
-                ),
-                array(
-                    'table' => 'merchant_users',
-                    'alias' => 'MerchantUser',
-                    'type' => 'LEFT',
-                    'conditions' => array(
-                        'MerchantUser.id = RegisterSale.user_id'
-                    )
-                ),
-                array(
-                    'table' => 'sale_status',
-                    'alias' => 'SaleStatus',
-                    'type' => 'LEFT',
-                    'conditions' => array(
-                        'SaleStatus.id = RegisterSale.status'
-                    )
+        $fields = array(
+            'RegisterSale.*',
+            'MerchantCustomer.*',
+            'MerchantUser.*',
+            'SaleStatus.name'
+        );
+
+        $joins = array(
+            array(
+                'table' => 'merchant_registers',
+                'alias' => 'MerchantRegister',
+                'type' => 'INNER',
+                'conditions' => array(
+                    'MerchantRegister.id = RegisterSale.register_id'
                 )
             ),
+            array(
+                'table' => 'merchant_outlets',
+                'alias' => 'MerchantOutlet',
+                'type' => 'INNER',
+                'conditions' => array(
+                    'MerchantOutlet.id = MerchantRegister.outlet_id'
+                )
+            ),
+            array(
+                'table' => 'merchant_customers',
+                'alias' => 'MerchantCustomer',
+                'type' => 'LEFT',
+                'conditions' => array(
+                    'MerchantCustomer.id = RegisterSale.customer_id'
+                )
+            ),
+            array(
+                'table' => 'merchant_users',
+                'alias' => 'MerchantUser',
+                'type' => 'LEFT',
+                'conditions' => array(
+                    'MerchantUser.id = RegisterSale.user_id'
+                )
+            ),
+            array(
+                'table' => 'sale_status',
+                'alias' => 'SaleStatus',
+                'type' => 'LEFT',
+                'conditions' => array(
+                    'SaleStatus.id = RegisterSale.status'
+                )
+            )
+        );
+
+        $report['total'] = $this->RegisterSale->find('count', array(
+            'fields' => $fields,
+            'joins' => $joins,
+            'conditions' => array(
+                'MerchantOutlet.merchant_id' => $merchant_id
+            )
+        ));
+
+        $report['filtered'] = $this->RegisterSale->find('count', array(
+            'fields' => $fields,
+            'joins' => $joins,
+            'conditions' => $conditions
+        ));
+
+        $records = $this->RegisterSale->find('all', array(
+            'fields' => $fields,
+            'joins' => $joins,
             'conditions' => $conditions,
             'order' => array('RegisterSale.created'),
+            'limit' => $limit,
+            'page' => $page,
+            'offset' => $offset,
             'recursive' => 2
         ));
+
+        $report['data'] = Hash::map($records, "{n}", function($array) {
+            $newArray = $array['RegisterSale'];
+            $newArray['display_name'] = $array['MerchantUser']['display_name'];
+            $newArray['customer_name'] = $array['MerchantCustomer']['name'];
+            $newArray['user'] = $array['MerchantUser'];
+            $newArray['customer'] = $array['MerchantCustomer'];
+            $newArray['status_name'] = $array['SaleStatus']['name'];
+            return $newArray;
+        });
+        $report['conditions'] = $conditions;
 
         // reset virtual field so it won't mess up subsequent finds
         unset($this->RegisterSale->virtualFields['status_name']);
 
-        return $results;
+        return $report;
     }
 
 /**
