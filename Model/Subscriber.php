@@ -51,8 +51,8 @@ class Subscriber extends AppModel {
  */
     public $validate = array(
         'username' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty',
+            'notBlank' => array(
+                'rule' => 'notBlank',
                 'message' => 'Please enter your email address.'
             ),
             'email' => array(
@@ -65,8 +65,8 @@ class Subscriber extends AppModel {
             ),
         ),
         'password' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty',
+            'notBlank' => array(
+                'rule' => 'notBlank',
                 'message' => 'Please enter a password.'
             ),
             'minLength' => array(

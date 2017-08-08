@@ -51,8 +51,8 @@ class TaxRate extends AppModel {
  */
     public $validate = array(
         'name' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty'
+            'notBlank' => array(
+                'rule' => 'notBlank'
             ),
         ),
     );

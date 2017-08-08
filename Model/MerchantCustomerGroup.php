@@ -44,13 +44,13 @@ class MerchantCustomerGroup extends AppModel {
  */
     public $validate = array(
         'group_code' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty'
+            'notBlank' => array(
+                'rule' => 'notBlank'
             ),
         ),
         'name' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty'
+            'notBlank' => array(
+                'rule' => 'notBlank'
             ),
         ),
     );

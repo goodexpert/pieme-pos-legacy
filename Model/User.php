@@ -64,21 +64,21 @@ class User extends AppModel {
             ),
         ),
         'first_name' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty'
+            'notBlank' => array(
+                'rule' => 'notBlank'
             ),
         ),
         'last_name' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty'
+            'notBlank' => array(
+                'rule' => 'notBlank'
             ),
         ),
         'email' => array(
             'email' => array(
                 'rule' => 'email'
             ),
-            'notEmpty' => array(
-                'rule' => 'notEmpty'
+            'notBlank' => array(
+                'rule' => 'notBlank'
             ),
         ),
     );

@@ -51,8 +51,8 @@ class MerchantUserType extends AppModel {
  */
     public $validate = array(
         'user_type' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty'
+            'notBlank' => array(
+                'rule' => 'notBlank'
             ),
         ),
     );

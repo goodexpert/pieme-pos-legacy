@@ -51,8 +51,8 @@ class MerchantResource extends AppModel {
  */
     public $validate = array(
         'name' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty',
+            'notBlank' => array(
+                'rule' => 'notBlank',
                 'message' => 'Please enter your resource name.'
             ),
         ),

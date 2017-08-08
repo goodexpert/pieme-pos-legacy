@@ -51,8 +51,8 @@ class Merchant extends AppModel {
  */
     public $validate = array(
         'name' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty',
+            'notBlank' => array(
+                'rule' => 'notBlank',
                 'message' => 'Please enter your store name.'
             ),
             'minLength' => array(
@@ -61,8 +61,8 @@ class Merchant extends AppModel {
             ),
         ),
         'domain_prefix' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty',
+            'notBlank' => array(
+                'rule' => 'notBlank',
                 'message' => 'Please enter a private web address.'
             ),
             'minLength' => array(

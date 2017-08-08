@@ -52,8 +52,8 @@ class Signup extends AppModel {
     public $validate = array(
         /*
         'name' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty',
+            'notBlank' => array(
+                'rule' => 'notBlank',
                 'message' => 'Please enter your store name.'
             ),
             'minLength' => array(
@@ -62,8 +62,8 @@ class Signup extends AppModel {
             ),
         ),
         'domain_prefix' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty',
+            'notBlank' => array(
+                'rule' => 'notBlank',
                 'message' => 'Please enter a private web address.'
             ),
             'minLength' => array(
@@ -77,8 +77,8 @@ class Signup extends AppModel {
         ),
          */
         'username' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty',
+            'notBlank' => array(
+                'rule' => 'notBlank',
                 'message' => 'Please enter your email address.'
             ),
             'email' => array(
@@ -87,8 +87,8 @@ class Signup extends AppModel {
             ),
         ),
         'password' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty',
+            'notBlank' => array(
+                'rule' => 'notBlank',
                 'message' => 'Please enter a password.'
             ),
             'minLength' => array(
@@ -97,26 +97,26 @@ class Signup extends AppModel {
             ),
         ),
         'first_name' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty',
+            'notBlank' => array(
+                'rule' => 'notBlank',
                 'message' => 'Please enter your first name.'
             ),
         ),
         'last_name' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty',
+            'notBlank' => array(
+                'rule' => 'notBlank',
                 'message' => 'Please enter your last name.'
             ),
         ),
         'physical_city' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty',
+            'notBlank' => array(
+                'rule' => 'notBlank',
                 'message' => 'Please enter your city and select from the list.'
             ),
         ),
         'default_currency' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty',
+            'notBlank' => array(
+                'rule' => 'notBlank',
                 'message' => 'Please choose your currency.'
             ),
         ),

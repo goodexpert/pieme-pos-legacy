@@ -51,8 +51,8 @@ class ResourceType extends AppModel {
  */
     public $validate = array(
         'name' => array(
-            'notEmpty' => array(
-                'rule' => 'notEmpty',
+            'notBlank' => array(
+                'rule' => 'notBlank',
                 'message' => 'Please enter the resource type name.'
             ),
         ),
