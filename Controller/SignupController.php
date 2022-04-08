@@ -324,7 +324,7 @@ class SignupController extends AppController {
             if (empty($this->Auth->subdomain) || $this->Auth->subdomain === $data['domain_prefix']) {
                 $redirect_url = '/signin';
             } else {
-                $redirect_url = 'https://' . $data['domain_prefix'] . '.pieme.co.nz/signin';
+                $redirect_url = 'http://' . $data['domain_prefix'] . DOMAIN_SUFFIX . '/signin';
             }
             $this->redirect($redirect_url);
         } catch (Exception $e) {
@@ -334,106 +334,6 @@ class SignupController extends AppController {
                 $this->set('errors', json_decode($e->getMessage(), true));
             }
         }
-
-        /*
-        try {
-            if (isset($data['plan_id_1']) && !empty($data['plan_id_1']) && $data['plan_id_1'] == 'subscriber_plan_franchise') {
-                // create a retailer
-                $this->MerchantRetailer->create();
-                $data['merchant_id'] = $data['parent_merchant_id'];
-                $this->MerchantRetailer->save($data);
-                $merchant_id = $data['parent_merchant_id'];
-                $retailer_id = $this->MerchantRetailer->id;
-                
-                // create a default user
-                $this->_createDefaultUser($merchant_id, $retailer_id, $data['username'], $data['password'], $data['first_name'] . ' ' . $data['last_name']);
-                
-                // create a quick key
-                $quick_key_id = $this->_createDefaultQuickKey($merchant_id, $retailer_id);
-
-                // create a receipt template
-                $receipt_template_id = $this->_createDefaultReceiptTemplate($merchant_id, $retailer_id, $data['name']);
-                
-                // create a main outlet and register
-                $this->createDefaultOutlet($merchant_id, $retailer_id, $quick_key_id, $receipt_template_id);
-            } else {
-                // create a contact
-                $this->Contact->create();
-                $contact['Contact'] = $data;
-                $contact['Contact']['email'] = $data['username'];
-                $this->Contact->save($contact);
-                
-                // create a subscriber
-                $this->Subscriber->create();
-                $subscriber['Subscriber']['contact_id'] = $this->Contact->id;
-                $subscriber['Subscriber']['username'] = $data['username'];
-                $subscriber['Subscriber']['password'] = $data['password'];
-                $this->Subscriber->save($subscriber);
-                $data['subscriber_id'] = $this->Subscriber->id;
-
-                // create a merchant
-                $this->Merchant->create();
-                $merchant['Merchant'] = $data;
-                $merchant['Merchant']['merchant_code'] = $this->_generateMerchantCode(6);
-                if ($data['plan_id'] == 'subscriber_plan_retailer_trial') {
-                    $merchant['Merchant']['trial_ends'] = CakeTime::format('+30 days', '%Y-%m-%d');
-                }
-                $this->Merchant->save($merchant);
-                $merchant_id = $this->Merchant->id;
-                
-                // create a default user
-                $this->_createDefaultUser($merchant_id, NULL, $data['username'], $data['password'], $data['first_name'] . ' ' . $data['last_name']);
-                
-                // create a default customer group
-                $customer_group_id = $this->_createDefaultCustomerGroup($merchant_id);
-    
-                // create a default customer
-                $this->_createDefaultCustomer($merchant_id, $customer_group_id);
-    
-                // create default tax rates
-                $default_tax_id = $this->_createDefaultTaxRates($merchant_id, $data['physical_country']);
-    
-                // create default payment types
-                $this->_createDefaultPaymentTypes($merchant_id);
-    
-                // create a quick key
-                $quick_key_id = $this->_createDefaultQuickKey($merchant_id, NULL);
-    
-                // create a receipt template
-                $receipt_template_id = $this->_createDefaultReceiptTemplate($merchant_id, NULL, $data['name']);
-    
-                // create a main outlet and register
-                $this->_createDefaultOutlet($merchant_id, NULL, $quick_key_id, $receipt_template_id);
-    
-                // create default supplier
-                $supplier_id = $this->_createDefaultSupplier($merchant_id, $contact, $data['name']);
-    
-                // create default products
-                $this->_createDefaultProducts($merchant_id, $supplier_id, $default_tax_id, $quick_key_id);
-    
-                // create a default price book
-                $this->_createDefaultPriceBook($merchant_id, $customer_group_id);
-    
-                // create a default inventories
-                $this->_createDefaultInventory($merchant_id);
-    
-                // create a merchant loyalty
-                $this->_createMerchantLoyalty($merchant_id, $data['name']);
-            }
-
-            $dataSource->commit();
-
-            $names = explode(".", $_SERVER['HTTP_HOST']);
-            if ($_SERVER['HTTP_HOST'] !== 'localhost' && !is_numeric($names[0])) {
-                $this->redirect('https://'.$data['domain_prefix'].'.pieme.co.nz/users/login');
-            } else {
-                $this->redirect('/users/login');
-            }
-        } catch (Exception $e) {
-            $dataSource->rollback();
-            $this->Session->setFlash($e->getMessage());
-        }
-         */
     }
 
 /**

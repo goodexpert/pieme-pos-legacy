@@ -65,7 +65,7 @@
                                             'placeholder' => 'Private web address'
                                         ));
                                      ?>
-                                        <span class="input-group-addon">.pieme.co.nz</span>
+                                        <span class="input-group-addon"><?php echo DOMAIN_SUFFIX; ?></span>
                                     </div>
                                     <div class="help-block with-errors"></div>
                                 </dd>
@@ -151,45 +151,13 @@
                                 </dd>
                                 <dt> Terms</dt>
                                 <dd>
-                                    <p><a href ="http://www.pieme.co.nz/terms.html" target="_blank"> Terms and conditions </a><p>
+                                    <p><a href ="http://<?php echo SECURE_URL; ?>/terms.html" target="_blank"> Terms and conditions </a><p>
                                     <input type="checkbox" title="Please agree to our policy!" name="data[agree]" id="terms" class="form-control"/>
-                                    <label class="error" for="data[agree]" style="display: none;">Please agree to our policy!</label>                                    </input>
+                                        <label class="error" for="data[agree]" style="display: none;">Please agree to our policy!</label>
+                                    </input>
                                     <div class="help-block with-errors"></div>
-                                    </dd>
-                                
-                            </dl>
-                            <!--
-                            <div class="dashed-line-gr"></div>
-                            <dl>
-                                <dt>Type</dt>
-                                <dd>
-                                    <select id="plan_id_1" name="plan_id_1">
-                                        <option value="subscriber_plan_retailer">Single Merchant</option>
-                                        <option value="subscriber_plan_franchise">Join Franchise</option>
-                                        <option value="subscriber_plan_franchise_hq">Open Franchise</option>
-                                        <option value="subscriber_plan_retailer_trial" selected>Trial</option>
-                                    </select>
-                                </dd>
-                                <dt class="plan_id_2" style="display: none;">Plan</dt>
-                                <dd class="plan_id_2" style="display: none;">
-                                    <select id="plan_id_2" name="plan_id_2">
-                                        <option value="small">Small</option>
-                                        <option value="medium">Medium</option>
-                                        <option value="large">Large</option>
-                                        <option value="xlarge">Extra Large</option>
-                                    </select>
-                                    <h5><a>Detail about our plan</a></h5>
-                                </dd>
-                                <dt class="merchant_code" style="display: none;">Store code</dt>
-                                <dd class="merchant_code" style="display: none;">
-                                    <input type="text" id="merchant_code" name="merchant_code" maxlength="6" placeholder="Enter store code" autocomplete="off">
-                                    <input type="hidden" id="subscriber_id" name="subscriber_id">
-                                    <input type="hidden" id="parent_merchant_id" name="parent_merchant_id">
                                 </dd>
                             </dl>
-                            -->
-
-
                             <div class="dashed-line-gr"></div>
                             <button type="submit" id="signup" class="btn btn-success" >Start</button>
                             </form>
@@ -248,37 +216,6 @@ jQuery(document).ready(function() {
         document.getElementById('physical_city').value = null;
         document.getElementById('physical_country').value = null;
     });
-
-/*
-    $(document).on("keyup", "#merchant_code", function() {
-        if($(this).val().length == 6) {
-            console.log("Identifying...");
-
-            $.ajax({
-                url: '/signup/check_exist.json',
-                type: 'POST',
-                data: {
-                    merchant_code: $("#merchant_code").val()
-                },
-                success: function(result) {
-                    if(result.success) {
-                        $("#subscriber_id").val(result.subscriber_id);
-                        $("#store_name").val(result.store_name);
-                        $("#parent_merchant_id").val(result.merchant_id);
-                        $("#merchant_code").removeClass("invalid");
-                        $("#signup").attr({"disabled":false});
-                    } else {
-                        $("#subscriber_id").val('');
-                        $("#store_name").val('');
-                        $("#parent_merchant_id").val('');
-                        $("#merchant_code").addClass("invalid");
-                        $("#signup").attr({"disabled":true});
-                    }
-                }
-            });
-        }
-    });
-*/
 });
 
 

@@ -34,7 +34,7 @@
 <body class="page-header-fixed page-quick-sidebar-over-content page-full-width">
     <div class="page-lock"> 
         <div class="page-logo">
-            <a class="brand" href="http://www.pieme.co.nz/">
+            <a class="brand" href="http://<?php echo HOME_URL; ?>/">
                 <img src="/img/pieme_logo.png" alt="logo" class="logo-default"/>
             </a>
         </div>

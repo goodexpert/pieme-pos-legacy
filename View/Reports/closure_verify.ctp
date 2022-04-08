@@ -443,7 +443,7 @@
 
       <div class="foot-space text-center" style="padding: 30px;">
         <p><br><p><br>
-          Print by pieme.co.nz
+          Print by <?php echo DOMAIN_NAME; ?>
       </div>
 
     </div>
