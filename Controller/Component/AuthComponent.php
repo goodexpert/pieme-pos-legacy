@@ -290,20 +290,13 @@ class AuthComponent extends Component {
 	public function startup(Controller $controller) {
 		$methods = array_flip(array_map('strtolower', $controller->methods));
 		$action = strtolower($controller->request->params['action']);
-		$domain = explode(".", $_SERVER['HTTP_HOST']);
+		$domain = explode('.', str_replace(DOMAIN_NAME, '', $_SERVER['HTTP_HOST']));
 
-		if (count($domain) == 2) {
-			header('Location: http://www.pieme.co.nz/' . $_SERVER['REQUEST_URI']);
-		} elseif ($_SERVER['HTTP_HOST'] === 'localhost') {
-			$domain = $domain[0];
-		} elseif (is_numeric($domain[0])) {
-			throw new NotFoundException();
-		} else {
-			$domain = $domain[0];
-			if ($domain != 'pos' && !$this->isExistDomain($domain)) {
-				throw new NotFoundException();
-			}
+		if (count($domain) < 1 || !$this->isExistDomain($domain[0])) {
+			$redirect_url = 'http://' . SECURE_URL;
+			return $controller->redirect($redirect_url, 301, true);
 		}
+		$domain = $domain[0];
 
 		$isMissingAction = (
 			$controller->scaffold === false &&
@@ -317,17 +310,6 @@ class AuthComponent extends Component {
 		if (!$this->_setDefaults()) {
 			return false;
 		}
-
-/*
-		if ($this->_isAllowed($controller)) {
-			$this->_getUser();
-			return true;
-		}
-
-		if (!$this->_getUser()) {
-			return $this->_unauthenticated($controller);
-		}
-*/
 
 		$isAllowed = $this->_isAllowed($controller);
 		$isLogined = $this->_getUser();
@@ -343,48 +325,17 @@ class AuthComponent extends Component {
 					$domain = $domain_prefix;
 				}
 
-				$redirect_url = 'https://' . $domain. '.pieme.co.nz';
-			  return $controller->redirect($redirect_url, 301, true);
+				$redirect_url = 'http://' . $domain . DOMAIN_SUFFIX;
+			    return $controller->redirect($redirect_url, 301, true);
 			} elseif ($isAllowed) {
-			  return $controller->redirect('/', 301, true);
+			  	return $controller->redirect('/', 301, true);
 			}
 		} elseif ($isAllowed) {
 			return true;
 		} else {
 			return $this->_unauthenticated($controller);
 		}
-/*
-		if ($isAllowed && !$isLogined) {
-			return true;
-		} elseif (!$isAllowed && !$isLogined) {
-			return $this->_unauthenticated($controller);
-		}
 
-		$user = $this->user();
-		$domain_prefix = $user['Merchant']['domain_prefix'];
-		$isAllowedDomain = (
-			empty($this->subdomain) ||
-			in_array($this->subdomain, array('secure', $domain_prefix))
-		);
-
-		if ($isAllowed && !$isAllowedDomain) {
-			return true;
-		} elseif (!$isAllowed && !$isAllowedDomain) {
-			return $this->_unauthenticated($controller);
-		}
-
-		if ($isAllowed) {
-			$redirect_url = '/';
-			if (!empty($this->subdomain) && $this->subdomain === 'secure') {
-				$redirect_url = 'https://' . $domain_prefix . '.pieme.co.nz';
-			}
-			$controller->redirect($redirect_url, 301, true);
-		}
-
-		if (!empty($this->subdomain) && $this->subdomain === 'secure') {
-			$controller->redirect('https://' . $domain_prefix . '.pieme.co.nz' . $_SERVER['REQUEST_URI']);
-		}
-*/
 		if ($this->_isLoginAction($controller) && $domain !== 'localhost') {
 			$this->setLoginDomain($domain);
 		}
@@ -943,7 +894,7 @@ class AuthComponent extends Component {
  * @return bool true if a domain can be found, false if one cannot.
  */
 	public function isExistDomain($domain) {
-		if (!in_array($domain, array('secure'))) {
+		if (!in_array($domain, array('localhost', 'secure'))) {
 			$result = ClassRegistry::init('Merchant')->find('first', array(
 				'conditions' => array(
 					'Merchant.domain_prefix' => $domain
