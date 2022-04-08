@@ -18,6 +18,33 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
+/**
+ * Global application contants.
+ */
+if (!defined('DOMAIN_NAME')) {
+	define('DOMAIN_NAME', 'pieme.co.nz');
+}
+
+if (!defined('DOMAIN_SUFFIX')) {
+	define('DOMAIN_SUFFIX', '.' . DOMAIN_NAME);
+}
+
+if (!defined('EMAIL_SUFFIX')) {
+	define('EMAIL_SUFFIX', '@' . DOMAIN_NAME);
+}
+
+if (!defined('HOME_URL')) {
+	define('HOME_URL', 'www' . DOMAIN_SUFFIX);
+}
+
+if (!defined('SECURE_URL')) {
+	define('SECURE_URL', 'secure' . DOMAIN_SUFFIX);
+}
+
+if (!defined('SUPPORT_EMAIL')) {
+	define('SUPPORT_EMAIL', 'support' . EMAIL_SUFFIX);
+}
+
 //setLocale(LC_ALL, 'deu');
 //Configure::write('Config.language', 'deu');
 
@@ -232,7 +259,7 @@
 		'cookieTimeout' => 1440,
 		'checkAgent' => false,
 		'ini' => array(
-			'session.cookie_domain' => '.pieme.co.nz'
+			'session.cookie_domain' => DOMAIN_SUFFIX
 		)
 	));
 
