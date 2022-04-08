@@ -894,7 +894,7 @@ class AuthComponent extends Component {
  * @return bool true if a domain can be found, false if one cannot.
  */
 	public function isExistDomain($domain) {
-		if (!in_array($domain, array('localhost', 'secure'))) {
+		if (!in_array($domain, array('localhost', 'pos', 'secure'))) {
 			$result = ClassRegistry::init('Merchant')->find('first', array(
 				'conditions' => array(
 					'Merchant.domain_prefix' => $domain

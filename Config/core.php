@@ -37,6 +37,10 @@ if (!defined('HOME_URL')) {
 	define('HOME_URL', 'www' . DOMAIN_SUFFIX);
 }
 
+if (!defined('POS_URL')) {
+	define('POS_URL', 'pos' . DOMAIN_SUFFIX);
+}
+
 if (!defined('SECURE_URL')) {
 	define('SECURE_URL', 'secure' . DOMAIN_SUFFIX);
 }
